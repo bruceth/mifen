@@ -1,3 +1,4 @@
+/*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import * as React from 'react';
 import { VPage, Page, View, List, LMR, left0, FA } from 'tonva';
 import { observer } from 'mobx-react';

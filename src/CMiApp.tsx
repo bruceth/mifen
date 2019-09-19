@@ -1,3 +1,4 @@
+/*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import * as React from 'react';
 import { CApp, CUq, Controller, VPage, CAppBase, IConstructor } from 'tonva';
 import { CHome } from './home';

@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { observable, IObservableArray, computed, isObservableArray } from 'mobx';
+/*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
+import { observable, IObservableArray, computed } from 'mobx';
 import { CUqBase } from '../CUqBase';
 import { CMiApp } from '../CMiApp';
 import { VStockInfo } from './VStockInfo'

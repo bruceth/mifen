@@ -1,0 +1,5 @@
+MAP UserSettings (
+  key user ID $user,
+  key name Char(32),
+  value text
+);

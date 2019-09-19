@@ -1,3 +1,4 @@
+/*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { VPage, Page, View, List, LMR, FA } from 'tonva';
@@ -40,7 +41,7 @@ export class VHome extends View<CHome> {
       <List header={header}
         items={PageItems}
         item={{ render: this.renderRow, onClick: this.onSelected, key: this.rowKey }}
-        before={'搜索' + ' ' + '资料'}
+        before={'搜索 资料'}
       />
     </>
   });

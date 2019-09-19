@@ -1,3 +1,4 @@
+/*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import * as React from 'react';
 import {nav, User, Page} from 'tonva';
 import {Prop, Media, IconText, FA, PropGrid} from 'tonva';

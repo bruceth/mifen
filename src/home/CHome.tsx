@@ -1,3 +1,4 @@
+/*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import * as React from 'react';
 import { nav } from 'tonva';
 import { PageItems, Controller } from 'tonva';
@@ -16,6 +17,7 @@ class HomePageItems<T> extends PageItems<T> {
     this.pageSize = 30;
     this.firstSize = 30;
   }
+
   protected async load(param: any, pageStart: any, pageSize: number): Promise<any[]> {
     let query = {
       name: 'tagpe',
@@ -29,6 +31,7 @@ class HomePageItems<T> extends PageItems<T> {
     if (Array.isArray(result) === false) return [];
     return result as any[];
   }
+  
   protected setPageStart(item: any) {
     this.pageStart = item === undefined ? 0 : item.order;
   }
@@ -37,15 +40,11 @@ class HomePageItems<T> extends PageItems<T> {
 export class CHome extends CUqBase {
   PageItems: PageItems<any> = new HomePageItems<any>(this);
 
-  constructor(cApp: CMiApp) {
-    super(cApp);
-  }
-
   onPage = () => {
     this.PageItems.more();
   }
 
-  async searchMain(key:any) {
+  async searchMain(key: any) {
     if (key !== undefined) await this.PageItems.first(key);
   }
 
@@ -54,7 +53,7 @@ export class CHome extends CUqBase {
   }
 
   async load() {
-    this.searchMain({tag:1});
+    this.searchMain({ tag: 1 });
   }
 
   renderSiteHeader = () => {

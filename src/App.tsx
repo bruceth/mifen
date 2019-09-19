@@ -1,13 +1,10 @@
 import * as React from 'react';
 import './App.css';
-import { NavView, nav, Page, Tabs, start, AppConfig } from 'tonva';
-//import { startApp } from 'tonva';
+import { NavView, start, AppConfig } from 'tonva';
 import { CMiApp } from 'CMiApp';
-//import ui from './ui';
-//import { faceTabs } from 'facetabs';
 
 const appConfig:AppConfig = {
-  appName: 'bruce/mi',
+  appName: 'bruce/mifen',
   version: '1.01',
   tvs: undefined, //TVs;
 };

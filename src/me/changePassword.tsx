@@ -1,3 +1,4 @@
+/*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import * as React from 'react';
 import {Page, nav, Form, Context, Schema, UiSchema, UiPasswordItem} from 'tonva';
 //import center from './center';
