@@ -8,7 +8,7 @@ import { VTags, VNewTag } from './VTags';
 import { nav } from 'tonva';
 
 export class CStockInfo extends CUqBase {
-  readonly cApp: CMiApp;
+  get cApp(): CMiApp { return this._cApp as CMiApp };
   baseItem: NStockInfo;
   @observable protected loaded: boolean = false;
 

@@ -46,11 +46,11 @@ class HomePageItems<T> extends PageItems<T> {
 export class CHome extends CUqBase {
   PageItems: HomePageItems<any> = new HomePageItems<any>(this);
   userTag: UserTag;
-  get app(): CMiApp { return this.cApp as CMiApp };
+  get cApp(): CMiApp { return this._cApp as CMiApp };
 
   disposeAutorun = autorun(async () => {
     let oldID = this.userTag && this.userTag.tagID;
-    this.userTag = { tagName: this.app.config.tagName, tagID: this.app.tagID };
+    this.userTag = { tagName: this.cApp.config.tagName, tagID: this.cApp.tagID };
     if (oldID !== this.userTag.tagID) {
       await this.load();
     }
@@ -62,7 +62,7 @@ export class CHome extends CUqBase {
 
 
   onTaged = async (item:any) => {
-    await this.app.selectTag(item);
+    await this.cApp.selectTag(item);
     this.closePage();
   }
 
@@ -79,7 +79,7 @@ export class CHome extends CUqBase {
   }
 
   async load() {
-    let tagID = this.app.tagID;
+    let tagID = this.cApp.tagID;
     if (tagID > 0) {
       this.PageItems.reset();
       this.PageItems.resetStart();

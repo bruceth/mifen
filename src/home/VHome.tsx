@@ -17,7 +17,7 @@ export class VHome extends View<CHome> {
     if (this.controller.isLogined) {
       viewMetaButton = <button type="button" className="btn w-100" onClick={openMetaView}>view</button>
     }
-    let title = this.controller.app.config.tagName;
+    let title = this.controller.cApp.config.tagName;
     let { onTags } = this.controller;
 
     let right = <button className="btn btn-outline-success bg-light" onClick={onTags}>...
