@@ -49,7 +49,7 @@ export class CMiApp extends CAppBase {
     //let ret = await this.miApi.page('q_stocksquery', params, 0, 100);
     let env = process.env;
     //
-    this.loadConfig();
+    await this.loadConfig();
     this.openVPage(VHome);
   }
 
@@ -95,6 +95,7 @@ export class CMiApp extends CAppBase {
     let i = this.tags.findIndex(v => v.name === name);
     if (i >= 0) {
       this.config.tagName = name;
+      this.saveConfig();
     }
   }
 
