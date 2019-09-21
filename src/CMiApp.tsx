@@ -65,8 +65,9 @@ export class CMiApp extends CAppBase {
   }
 
   protected async loadConfig() {
-    await this.loadTags();
-    let r = await this.uqs.mi.UserSettings.query({ user: this.user.id, name: 'config' });
+    let rets = await Promise.all([this.loadTags(),
+        this.uqs.mi.UserSettings.query({ user: this.user.id, name: 'config' })]);
+    let r = rets[1];
     if (r !== undefined) {
       let ret = r.ret;
       if (ret !== undefined && ret.length > 0) {
