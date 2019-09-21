@@ -13,7 +13,7 @@ export type UiType =  'form' | 'arr' | 'group' | 'button' | 'submit' | 'custom' 
     | 'updown' | 'color' | 'checkbox' | 'checkboxes' | 'radio' | 'range';
 
 export type ChangingHandler = (context:Context, value:any, prev:any) => boolean;
-export type ChangedHandler = (context:Context, value:any, prev:any) => void;
+export type ChangedHandler = (context:Context, value:any, prev:any) => Promise<void>;
 
 export interface UiItem {
     widget?: UiType;

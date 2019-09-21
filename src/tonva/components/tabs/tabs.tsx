@@ -46,6 +46,12 @@ class Tab {
         if (this.load === undefined) return;
         await this.load();
     }
+
+    async firstStart() {
+        if (this._content === undefined) return;
+        if (this.load === undefined) return;
+        await this.load();
+    }
 }
 
 export const TabCaptionComponent = (label:string, icon:string, color:string) => <div 
@@ -85,12 +91,19 @@ export const TabCaptionComponent = (label:string, icon:string, color:string) => 
         if (this.selectedTab === undefined) this.selectedTab = this.tabs[0];
         this.selectedTab.selected = true;
     }
-
+    /*
     async componentWillMount() {
         if (this.tabs === undefined) return;
         if (this.tabs.length === 0) return;
         let tab = this.tabs[0];
         await tab.start();
+    }
+    */
+    async componentDidMount() {
+        if (this.tabs === undefined) return;
+        if (this.tabs.length === 0) return;
+        let tab = this.tabs[0];
+        await tab.firstStart();
     }
 
     private tabClick = async (tab:Tab) => {

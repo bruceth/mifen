@@ -16,20 +16,25 @@ export interface PageHeaderState {
 export class PageHeader extends React.Component<PageHeaderProps, PageHeaderState> {
     constructor(props: PageHeaderProps) {
         super(props);
-        this.navChange = this.navChange.bind(this);
+        //this.navChange = this.navChange.bind(this);
         this.state = {
-            hasBack: false,
+            //hasBack: false,
+            hasBack: nav.level > 1
         };
     }
+    /*
     navChange() {
         this.setState({
             hasBack: nav.level > 1
         })
     }
+    */
+    /*
     componentWillMount() {
         this.navChange();
         //this.navChangeHandler = nav.events.add('change', this.navChange);
     }
+    */
     componentWillUnmount() {
         //nav.events.remove('change', this.navChangeHandler);
     }
@@ -62,7 +67,7 @@ export class PageHeader extends React.Component<PageHeaderProps, PageHeaderState
                     let {nick, name} = user;
                     debugLogout = <div className="d-flex align-items-center">
                         <small className="text-light">{nick || name}</small>
-                        <a className="btn ml-2 cursor-pointer" href="#"
+                        <a className="btn ml-2 cursor-pointer" href="#/"
                             role="button"
                             onClick={this.logoutClick}>
                             <i className="fa fa-sign-out fa-lg" />

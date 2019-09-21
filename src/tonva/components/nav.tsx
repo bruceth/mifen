@@ -72,12 +72,14 @@ export class NavView extends React.Component<Props, NavViewState> {
             fetchError: undefined
         };
     }
+    /*
     async componentWillMount() {
         window.addEventListener('popstate', this.navBack);
     }
-
+    */
     async componentDidMount()
     {
+        window.addEventListener('popstate', this.navBack);
         nav.set(this);
         /*
         let start = this.props.start;
@@ -782,7 +784,10 @@ export class Nav {
                 <span id={uh.hash} onClick={()=>this.back()} /*style={mobileHeaderStyle}*/>
                     <i className="fa fa-arrow-left" />
                 </span>
-                <iframe src={uh.url} title={String(sheetId)} />
+                {
+                    // eslint-disable-next-line 
+                    <iframe src={uh.url} title={String(sheetId)} />
+                }
             </article>, 
             ()=> {
                 resolve();

@@ -1,13 +1,15 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import * as React from 'react';
-import { nav } from 'tonva';
-import { PageItems, Controller } from 'tonva';
+import { PageItems } from 'tonva';
+import { autorun } from 'mobx';
+import { UserTag } from '../types';
+import { CMiApp } from '../CMiApp';
 import { CUqBase } from '../CUqBase';
 import { CStockInfo, NStockInfo } from '../stockinfo';
 import { VSiteHeader } from './VSiteHeader';
 import { VSearchHeader } from './VSearchHeader';
 import { VHome } from './VHome';
-import { CMiApp } from 'CMiApp';
+import { VSelectTag } from './VSelectTag';
 
 class HomePageItems<T> extends PageItems<T> {
   cHome: CHome;
@@ -31,14 +33,38 @@ class HomePageItems<T> extends PageItems<T> {
     if (Array.isArray(result) === false) return [];
     return result as any[];
   }
-  
+
   protected setPageStart(item: any) {
     this.pageStart = item === undefined ? 0 : item.order;
+  }
+
+  resetStart() {
+    this.pageStart = 0;
   }
 }
 
 export class CHome extends CUqBase {
-  PageItems: PageItems<any> = new HomePageItems<any>(this);
+  PageItems: HomePageItems<any> = new HomePageItems<any>(this);
+  userTag: UserTag;
+  get app(): CMiApp { return this.cApp as CMiApp };
+
+  disposeAutorun = autorun(async () => {
+    let oldID = this.userTag && this.userTag.tagID;
+    this.userTag = { tagName: this.app.config.tagName, tagID: this.app.tagID };
+    if (oldID !== this.userTag.tagID) {
+      await this.load();
+    }
+  });
+
+  onTags = async () => {
+    this.openVPage(VSelectTag);
+  }
+
+
+  onTaged = async (item:any) => {
+    await this.app.selectTag(item);
+    this.closePage();
+  }
 
   onPage = () => {
     this.PageItems.more();
@@ -48,12 +74,17 @@ export class CHome extends CUqBase {
     if (key !== undefined) await this.PageItems.first(key);
   }
 
+  //作为tabs中的首页，internalStart不会被调用
   async internalStart(param: any) {
-
   }
 
   async load() {
-    this.searchMain({ tag: 1 });
+    let tagID = this.app.tagID;
+    if (tagID > 0) {
+      this.PageItems.reset();
+      this.PageItems.resetStart();
+      this.searchMain({ tag: tagID });
+    }
   }
 
   renderSiteHeader = () => {

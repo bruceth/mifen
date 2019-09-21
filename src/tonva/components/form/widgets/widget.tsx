@@ -13,8 +13,8 @@ export abstract class Widget {
     protected context: Context;
     protected fieldProps:FieldProps;
     protected children: React.ReactNode;
-    protected itemSchema: ItemSchema;
-    protected ui: UiItem;
+    protected _itemSchema: ItemSchema;
+    protected _ui: UiItem;
     protected defaultValue: any;
     protected value: any;
     protected rules: Rule[];
@@ -29,10 +29,10 @@ export abstract class Widget {
         this.context = context;
         let {name} = itemSchema;
         this.name = name;
-        this.itemSchema = itemSchema;
+        this._itemSchema = itemSchema;
         this.fieldProps = fieldProps;
         this.children = children;
-        this.ui = context.getUiItem(name);
+        this._ui = context.getUiItem(name);
         if (this.ui === undefined) {
             this.readOnly = false;
             this.disabled = false;
@@ -47,6 +47,9 @@ export abstract class Widget {
         this.value = this.defaultValue =  context.getValue(name); //defaultValue;
         this.init();
     }
+
+    protected get itemSchema(): ItemSchema {return this._itemSchema};
+    protected get ui(): UiItem {return this._ui};
 
     protected init() {
         this.rules = [];

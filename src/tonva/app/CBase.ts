@@ -3,16 +3,17 @@ import { IConstructor } from "./CAppBase";
 
 export abstract class CBase extends Controller {
     protected readonly _uqs: any;
-    readonly cApp: any;
+    protected readonly _cApp: any;
 
     constructor(cApp: any) {
         super(undefined);
-        this.cApp = cApp;
+        this._cApp = cApp;
         this._uqs = cApp.uqs;
         this.init();
     }
 
     protected get uqs(): any {return this._uqs}
+    get cApp(): any {return this._cApp}
 
     protected init() {}
 
@@ -26,10 +27,12 @@ export abstract class CBase extends Controller {
 }
 
 export abstract class CSub extends CBase {
-    protected readonly owner: CBase;
+    protected _owner: CBase;
 
     constructor(owner: CBase) {
         super(owner.cApp);
-        this.owner = owner;
+        this._owner = owner;
     }
+
+    protected get owner(): CBase {return this._owner}
 }

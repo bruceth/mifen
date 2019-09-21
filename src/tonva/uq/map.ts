@@ -107,7 +107,7 @@ export class Map extends Entity {
 }
 
 abstract class MapCaller extends EntityCaller<any> {
-    protected entity: Map;
+    protected get entity(): Map {return this._entity as Map;}
     get path():string {return undefined;}
 
     protected abstract getCaller(param: any):EntityCaller<any>;

@@ -1,4 +1,6 @@
-import { AppUI, CApp } from "tonva";
+export { VHome } from './main';
+
+//import { AppUI, CApp } from "tonva";
 //import { VHome } from './main';
 //import { CMiApp } from '../CMiApp';
 //import miUI from './mi';

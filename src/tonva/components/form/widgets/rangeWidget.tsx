@@ -6,7 +6,7 @@ import { Widget } from './widget';
 export class RangeWidget extends Widget {
     protected inputType = 'range';
     protected input: HTMLInputElement;
-    protected ui: UiRange;
+    protected get ui(): UiRange {return this._ui as UiRange};
 
     setReadOnly(value:boolean) {this.input.readOnly = this.readOnly = value}
     setDisabled(value:boolean) {this.input.disabled = this.disabled = value}

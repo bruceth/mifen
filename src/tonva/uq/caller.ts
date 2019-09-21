@@ -73,7 +73,7 @@ export abstract class EntityCaller<T> extends Caller<T> {
 }
 
 export abstract class ActionCaller extends EntityCaller<any> {
-    protected entity: Action;
+    protected get entity(): Action {return this._entity as Action;}
 }
 
 export class QueryQueryCaller extends EntityCaller<any> {

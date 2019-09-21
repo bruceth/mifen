@@ -10,7 +10,7 @@ const radioStyle:React.CSSProperties = {height: 'auto'};
 
 export class RadioWidget extends Widget {
     protected inputs: {[index:number]: HTMLInputElement} = {};
-    protected ui: UiRadio;
+    protected get ui(): UiRadio {return this._ui as UiRadio};
 
     protected setElementValue(value:any) {
         for (let i in this.inputs) {

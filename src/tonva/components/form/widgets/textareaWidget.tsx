@@ -5,9 +5,9 @@ import { UiTextAreaItem } from '../../schema';
 import { StringSchema } from '../../schema';
 
 export class TextAreaWidget extends Widget {
-    protected itemSchema: StringSchema;
+    protected get itemSchema(): StringSchema {return this._itemSchema as StringSchema};
     protected input: HTMLTextAreaElement;
-    protected ui: UiTextAreaItem;
+    protected get ui(): UiTextAreaItem {return this._ui as UiTextAreaItem};
 
     protected setElementValue(value:any) {this.input.value = value}
     protected onInputChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {

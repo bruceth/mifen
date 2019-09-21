@@ -5,7 +5,7 @@ import { Widget } from './widget';
 import { observer } from 'mobx-react';
 
 export class ButtonWidget extends Widget {
-    protected ui: UiButton;
+    protected get ui(): UiButton {return this._ui as UiButton};
 
     protected onClick = async () => {
         this.clearError();

@@ -5,7 +5,7 @@ import { NumBaseSchema } from '../../schema';
 
 export class NumberWidget extends TextWidget {
     protected inputType = 'number';
-    protected itemSchema: NumBaseSchema;
+    protected get itemSchema(): NumBaseSchema {return this._itemSchema as NumBaseSchema};
 
     protected buildRules() {
         super.buildRules();

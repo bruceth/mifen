@@ -1,24 +1,41 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
-import * as React from 'react';
 import { CApp, CUq, Controller, VPage, CAppBase, IConstructor } from 'tonva';
 import { CHome } from './home';
 import { consts } from './consts';
+import { observable, computed } from 'mobx';
+import { nav } from 'tonva';
 import { MiApi } from './net';
-import {nav} from 'tonva';
-import { VHome } from 'ui/main';
+import { VHome } from './ui';
 import { CUqBase } from './CUqBase';
 import { CExplorer } from './explorer';
+import { UQs } from './uqs';
+import { MiConfigs } from './types';
+
+export const defaultTagName = '自选股';
 
 export class CMiApp extends CAppBase {
   cExporer: CExplorer;
   cHome: CHome;
   miApi: MiApi;
+  @observable config: MiConfigs = { tagName: defaultTagName };
+  @observable tags: any[] = undefined;
+
+  get uqs(): UQs { return this._uqs as UQs };
+
+  @computed get tagID(): number {
+    if (this.tags !== undefined) {
+      let name = this.config.tagName;
+      let i = this.tags.findIndex(v => v.name === name);
+      if (i >= 0) {
+        return this.tags[i].id as number;
+      }
+    }
+    return -1;
+  }
 
   protected async internalStart() {
     if (this.isLogined) {
     }
-
-    let n = nav;
 
     let token = this.user.token;
 
@@ -26,17 +43,76 @@ export class CMiApp extends CAppBase {
     this.miApi = new MiApi(miHost, 'fsjs/', 'miapi', token, false);
     this.cExporer = this.newC(CExplorer);
     this.cHome = this.newC(CHome);
-   
+
     //some test code
-    let params = [];
+    //let params = [];
     //let ret = await this.miApi.page('q_stocksquery', params, 0, 100);
     let env = process.env;
     //
-
+    this.loadConfig();
     this.openVPage(VHome);
   }
 
-  protected newC<T extends CUqBase>(type: IConstructor<T>):T {
+  async saveConfig() {
+    let v = JSON.stringify(this.config);
+    let param = {
+      user: this.user.id,
+      arr1: [
+        { name: 'config', value: v }
+      ]
+    };
+    await this.uqs.mi.UserSettings.add(param);
+  }
+
+  protected async loadConfig() {
+    await this.loadTags();
+    let r = await this.uqs.mi.UserSettings.query({ user: this.user.id, name: 'config' });
+    if (r !== undefined) {
+      let ret = r.ret;
+      if (ret !== undefined && ret.length > 0) {
+        let cStr = ret[0].value;
+        let c = JSON.parse(cStr);
+        if (this.tags !== undefined) {
+          let name = c.tagName;
+          let i = this.tags.findIndex(v => v.name === name);
+          if (i < 0 && this.tags.length > 0) {
+            i = this.tags.findIndex(v => v.name === defaultTagName);
+            if (i >= 0) {
+              c.tagName = defaultTagName;
+            }
+            else {
+              c.tagName = this.tags[0].name;
+            }
+          }
+        }
+        this.config = c;
+      }
+    }
+  }
+
+  selectTag = async (item:any) => {
+    let {name, id} = item as {name:string, id:number};
+    let i = this.tags.findIndex(v => v.name === name);
+    if (i >= 0) {
+      this.config.tagName = name;
+    }
+  }
+
+  protected async loadTags(): Promise<void> {
+    if (this.tags === undefined) {
+      let r = await this.uqs.mi.AllTags.query(undefined);
+      let ret = r.ret;
+      if (ret.length <= 0) {
+        let param = {id: undefined, name: defaultTagName};
+        await this.uqs.mi.SaveTag.submit(param);
+        r = await this.uqs.mi.AllTags.query(undefined);
+        ret = r.ret;
+      }
+      this.tags = ret;
+    }
+  }
+
+  protected newC<T extends CUqBase>(type: IConstructor<T>): T {
     return new type(this);
   }
 

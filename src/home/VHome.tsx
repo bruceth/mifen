@@ -17,10 +17,15 @@ export class VHome extends View<CHome> {
     if (this.controller.isLogined) {
       viewMetaButton = <button type="button" className="btn w-100" onClick={openMetaView}>view</button>
     }
+    let title = this.controller.app.config.tagName;
+    let { onTags } = this.controller;
 
-    return <Page header="自选股"  onScrollBottom={onPage} 
+    let right = <button className="btn btn-outline-success bg-light" onClick={onTags}>...
+    </button>;
+
+
+    return <Page header={title} right={right} onScrollBottom={onPage} 
       headerClassName='bg-primary py-1 px-3'>
-      
       <this.content />
     </Page>;
   })
@@ -41,7 +46,8 @@ export class VHome extends View<CHome> {
       <List header={header}
         items={PageItems}
         item={{ render: this.renderRow, onClick: this.onSelected, key: this.rowKey }}
-        before={'搜索 资料'}
+        before={'搜索'}
+        none={'----'}
       />
     </>
   });

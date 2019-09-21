@@ -6,7 +6,7 @@ import { UiSelect } from '../../schema';
 
 export class SelectWidget extends Widget {
     protected select: HTMLSelectElement;
-    protected ui: UiSelect;
+    protected get ui(): UiSelect {return this._ui as UiSelect};
     @observable protected readOnly: boolean;
 
     protected setElementValue(value:any) {this.select.value = value}

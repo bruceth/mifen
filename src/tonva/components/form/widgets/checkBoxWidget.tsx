@@ -5,7 +5,7 @@ import { UiCheckItem } from '../../schema';
 
 export class CheckBoxWidget extends Widget {
     protected input: HTMLInputElement;
-    protected ui: UiCheckItem;
+    protected get ui(): UiCheckItem {return this._ui as UiCheckItem};
     protected trueValue: any;
     protected falseValue: any;
 

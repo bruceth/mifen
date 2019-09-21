@@ -5,7 +5,7 @@ import { UiTextItem, StringSchema } from '../../schema';
 
 export class TextWidget extends Widget {
     protected inputType = 'text';
-    protected ui: UiTextItem;
+    protected get ui(): UiTextItem {return this._ui as UiTextItem};
     protected input: HTMLInputElement;
 
     protected setElementValue(value:any) {

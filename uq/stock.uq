@@ -47,7 +47,8 @@ RETURNS ret (
 ) {
   into ret select a.id, a.name
     from Tag as a
-    where a.user=$user;
+    where a.user=$user
+    order by id;
 };
 
 

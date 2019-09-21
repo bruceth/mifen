@@ -5,7 +5,7 @@ import { UiIdItem, TempletType } from '../../schema';
 import { observable } from 'mobx';
 
 export class IdWidget extends Widget {
-    protected ui: UiIdItem;
+    protected get ui(): UiIdItem {return this._ui as UiIdItem};
     @observable protected value:number;
     setReadOnly(value:boolean) {this.readOnly = value}
     setDisabled(value:boolean) {this.disabled = value}    

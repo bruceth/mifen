@@ -9,7 +9,7 @@ import { observable } from 'mobx';
 
 export class ImageWidget extends Widget {
     protected input: HTMLInputElement;
-    protected ui: UiImageItem;
+    protected get ui(): UiImageItem {return this._ui as UiImageItem};
     @observable private imageSrc: string;
 
     protected init() {

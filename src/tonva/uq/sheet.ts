@@ -168,7 +168,7 @@ export class Sheet extends Entity {
 
 
 abstract class SheetCaller<T> extends EntityCaller<T> {
-    protected entity: Sheet;
+    protected get entity(): Sheet {return this._entity as Sheet;}
     protected readonly suffix:string;
     get path():string {return `sheet/${this.entity.name}/${this.suffix}`;}
 }

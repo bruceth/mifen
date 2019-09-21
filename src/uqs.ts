@@ -6,5 +6,6 @@ export interface UQs {
         TagStock: Map;
         SaveTag: Action;
         AllTags: Query;
+        UserSettings: Map;
     }
 }
