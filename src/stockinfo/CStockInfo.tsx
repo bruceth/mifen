@@ -4,7 +4,7 @@ import { CUqBase } from '../CUqBase';
 import { CMiApp } from '../CMiApp';
 import { VStockInfo } from './VStockInfo'
 import { NStockInfo, StockPrice, StockEarning, StockRoe, StockCapitalearning, StockBonus, StockDivideInfo } from './StockInfoType';
-import { VTags, VNewTag } from './VTags';
+import { VTags, VNewTag, VEditTag } from './VTags';
 import { nav } from 'tonva';
 
 export class CStockInfo extends CUqBase {
@@ -12,17 +12,17 @@ export class CStockInfo extends CUqBase {
   baseItem: NStockInfo;
   @observable protected loaded: boolean = false;
 
-  @observable price : StockPrice;
+  @observable price: StockPrice;
   @observable roe: StockRoe;
-  @observable tags: any[] = undefined;
-  @observable stockTags:any[];
+  //@observable tags: any[] = undefined;
+  @observable stockTags: any[];
   selectedTags: any[];
 
-  protected _earning: IObservableArray<StockEarning> = observable.array<StockEarning>([], { deep: true});
-  protected _capitalearning: IObservableArray<StockCapitalearning> = observable.array<StockCapitalearning>([], { deep: true});
-  protected _bonus: IObservableArray<StockBonus> = observable.array<StockBonus>([], { deep: true});
-  protected _divideInfo: IObservableArray<StockDivideInfo> = observable.array<StockDivideInfo>([], { deep: true});
-  
+  protected _earning: IObservableArray<StockEarning> = observable.array<StockEarning>([], { deep: true });
+  protected _capitalearning: IObservableArray<StockCapitalearning> = observable.array<StockCapitalearning>([], { deep: true });
+  protected _bonus: IObservableArray<StockBonus> = observable.array<StockBonus>([], { deep: true });
+  protected _divideInfo: IObservableArray<StockDivideInfo> = observable.array<StockDivideInfo>([], { deep: true });
+
   @computed get earning(): IObservableArray<StockEarning> {
     if (this.loaded === false) return undefined;
     return this._earning;
@@ -47,12 +47,12 @@ export class CStockInfo extends CUqBase {
     this.loading();
   }
 
-  async loadTags():Promise<void> {
-    if (this.tags === undefined) {
-      let ret = await this.uqs.mi.AllTags.query(undefined);
-      this.tags = ret.ret;
-    }
-  }
+  // async loadTags(): Promise<void> {
+  //   if (this.tags === undefined) {
+  //     let ret = await this.uqs.mi.AllTags.query(undefined);
+  //     this.tags = ret.ret;
+  //   }
+  // }
 
   loading = async () => {
     if (!this.baseItem)
@@ -60,7 +60,7 @@ export class CStockInfo extends CUqBase {
     let { id } = this.baseItem;
     let rets = await Promise.all([
       this.cApp.miApi.query('q_stockallinfo', [id]),
-      this.uqs.mi.TagStock.query({user: nav.user.id, stock: id})
+      this.uqs.mi.TagStock.query({ user: nav.user.id, stock: id })
     ]);
     this.stockTags = rets[1].ret;
     let ret = rets[0];
@@ -121,10 +121,10 @@ export class CStockInfo extends CUqBase {
   }
 
   onTags = async () => {
-    await this.loadTags();
-    this.selectedTags = this.tags.filter(v => {
+    //await this.loadTags();
+    this.selectedTags = this.cApp.tags.filter(v => {
       let i = this.stockTags.findIndex(st => st.tag.id === v.id);
-      return i>=0;
+      return i >= 0;
     });
     //await this.loadTags();
     this.openVPage(VTags);
@@ -134,16 +134,41 @@ export class CStockInfo extends CUqBase {
     this.openVPage(VNewTag);
   }
 
-  onSaveNewTag = async (data:any) => {
-    let {name} = data;
-    let param = {id: undefined, name: name};
+  onEditTag = (param:any) => {
+    this.openVPage(VEditTag, param);
+  }
+
+  onSaveNewTag = async (data: any) => {
+    let { name } = data;
+    let param = { id: undefined, name: name };
     let ret = await this.uqs.mi.SaveTag.submit(param);
-    let {retId} = ret;
+    let { retId } = ret;
     if (retId < 0) {
       alert(name + ' 已经被使用了');
       return;
     }
-    this.tags.push({id: retId, name: name});
+    this.cApp.tags.push({ id: retId, name: name });
+    this.closePage();
+  }
+
+  onSaveTag = async (data: any) => {
+    let { id, name } = data;
+    let param = { id: id, name: name };
+    let i = this.cApp.tags.findIndex(v=> v.id !== id && v.name === name);
+    if (i >= 0) {
+      alert(name + ' 已经被使用了');
+      return;
+    }
+    let ret = await this.uqs.mi.SaveTag.submit(param);
+    let { retId } = ret;
+    if (retId ===undefined || retId < 0) {
+      alert(name + ' 已经被使用了');
+      return;
+    }
+    i = this.cApp.tags.findIndex(v=> v.id === id);
+    if (i >= 0) {
+      this.cApp.tags[i].name = name;
+    }
     this.closePage();
   }
 
@@ -152,7 +177,7 @@ export class CStockInfo extends CUqBase {
       user: nav.user.id,
       tag: tag.id,
       arr1: [
-        {stock: this.baseItem.id}
+        { stock: this.baseItem.id }
       ]
     };
     if (isSelected === true) {
@@ -166,7 +191,7 @@ export class CStockInfo extends CUqBase {
     }
     else {
       let ret = await this.uqs.mi.TagStock.del(param);
-      let i = this.stockTags.findIndex(v=>v.tag.id === tag.id);
+      let i = this.stockTags.findIndex(v => v.tag.id === tag.id);
       this.stockTags.splice(i, 1);
     }
   }

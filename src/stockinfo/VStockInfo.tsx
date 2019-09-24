@@ -54,7 +54,6 @@ export class VStockInfo extends VPage<CStockInfo> {
 
   protected onClickName = (item: NStockInfo) => {
     let { symbol } = item;
-    //window.event.preventDefault();
     let url = `http://finance.sina.com.cn/realstock/company/${symbol}/nc.shtml`;
     window.open(url, '_blank');
   }

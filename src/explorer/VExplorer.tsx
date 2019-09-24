@@ -66,10 +66,6 @@ export class VExplorer extends View<CExplorer> {
 
   protected onClickName = (item: NStockInfo) => {
     this.controller.openStockInfo(item);
-    /* let {symbol} = item;
-    event.preventDefault();
-    let url = `http://finance.sina.com.cn/realstock/company/${symbol}/nc.shtml`;
-    window.open(url, '_blank'); */
   }
 
   protected onSelected = async (item: any): Promise<void> => {
