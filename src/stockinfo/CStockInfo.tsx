@@ -134,7 +134,7 @@ export class CStockInfo extends CUqBase {
     this.openVPage(VNewTag);
   }
 
-  onEditTag = (param:any) => {
+  onEditTag = (param: any) => {
     this.openVPage(VEditTag, param);
   }
 
@@ -154,18 +154,18 @@ export class CStockInfo extends CUqBase {
   onSaveTag = async (data: any) => {
     let { id, name } = data;
     let param = { id: id, name: name };
-    let i = this.cApp.tags.findIndex(v=> v.id !== id && v.name === name);
+    let i = this.cApp.tags.findIndex(v => v.id !== id && v.name === name);
     if (i >= 0) {
       alert(name + ' 已经被使用了');
       return;
     }
     let ret = await this.uqs.mi.SaveTag.submit(param);
     let { retId } = ret;
-    if (retId ===undefined || retId < 0) {
+    if (retId === undefined || retId < 0) {
       alert(name + ' 已经被使用了');
       return;
     }
-    i = this.cApp.tags.findIndex(v=> v.id === id);
+    i = this.cApp.tags.findIndex(v => v.id === id);
     if (i >= 0) {
       this.cApp.tags[i].name = name;
     }
