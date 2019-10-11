@@ -12,6 +12,7 @@ import { UQs } from './uqs';
 import { MiConfigs } from './types';
 
 export const defaultTagName = '自选股';
+export const defaultBlackListTagName = '黑名单';
 
 export class CMiApp extends CAppBase {
   cExporer: CExplorer;
@@ -104,14 +105,42 @@ export class CMiApp extends CAppBase {
     if (this.tags === undefined) {
       let r = await this.uqs.mi.AllTags.query(undefined);
       let ret = r.ret;
-      if (ret.length <= 0) {
-        let param = {id: undefined, name: defaultTagName};
-        await this.uqs.mi.SaveTag.submit(param);
+      let bc = await this.checkDefaultTags(ret);
+      if (bc) {
+
         r = await this.uqs.mi.AllTags.query(undefined);
         ret = r.ret;
       }
       this.tags = ret;
     }
+  }
+
+  protected async checkDefaultTags(list:any[]): Promise<boolean> {
+    let br = false;
+    if (list === undefined) {
+      let param = {id: undefined, name: defaultTagName};
+      await this.uqs.mi.SaveTag.submit(param);
+      param = {id: undefined, name: defaultBlackListTagName};
+      await this.uqs.mi.SaveTag.submit(param);
+      br = true;
+    }
+    else {
+      let param;
+      let i = list.findIndex(v => v.name === defaultTagName);
+      if (i < 0) {
+        param = {id: undefined, name: defaultTagName};
+        await this.uqs.mi.SaveTag.submit(param);
+        br = true;
+      }
+      i = list.findIndex(v => v.name === defaultBlackListTagName);
+      if (i < 0) {
+        param = {id: undefined, name: defaultBlackListTagName};
+        await this.uqs.mi.SaveTag.submit(param);
+        br = true;
+      }
+    }
+
+    return br;
   }
 
   protected newC<T extends CUqBase>(type: IConstructor<T>): T {

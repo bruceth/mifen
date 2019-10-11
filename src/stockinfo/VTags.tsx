@@ -2,6 +2,7 @@ import * as React from 'react';
 import { observer } from 'mobx-react-lite';
 import { VPage, Page, FA, List, Form, ItemSchema, StringSchema, UiInputItem, UiSchema, Context, IdSchema, UiIdItem, LMR } from 'tonva';
 import { CStockInfo } from './CStockInfo';
+import { defaultBlackListTagName, defaultTagName } from 'CMiApp';
 
 export class VTags extends VPage<CStockInfo> {
   async open(param?: any) {
@@ -19,7 +20,8 @@ export class VTags extends VPage<CStockInfo> {
 
   private renderTag = (tag: any) => {
     let left = <div className="px-3 py-2 cursor-pointer">{tag.name}</div>;
-    let right = <div className="px-3 py-2 cursor-pointer" onClick={(e)=>this.onEditTag(tag, e)}>编辑</div>;
+    let fdTag = tag.name === defaultBlackListTagName || tag.name === defaultTagName;
+    let right = fdTag ? '' : <div className="px-3 py-2 cursor-pointer" onClick={(e)=>this.onEditTag(tag, e)}>编辑</div>;
     return <LMR className="mx-3 my-2" left={left} right={right}>
     </LMR>;
   }
