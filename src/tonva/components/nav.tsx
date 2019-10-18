@@ -17,6 +17,7 @@ import '../css/va-form.css';
 import '../css/va.css';
 import '../css/animation.css';
 import { FA } from './simple';
+import { userApi } from '../net';
 
 /*
 const regEx = new RegExp('Android|webOS|iPhone|iPad|' +
@@ -61,7 +62,7 @@ export class NavView extends React.Component<Props, NavViewState> {
     private waitCount: number = 0;
     private waitTimeHandler?: NodeJS.Timer;
 
-    constructor(props) {
+    constructor(props:Props) {
         super(props);
         this.back = this.back.bind(this);
         this.navBack = this.navBack.bind(this);
@@ -296,10 +297,12 @@ export class NavView extends React.Component<Props, NavViewState> {
 
     private isHistoryBack:boolean = false;
     navBack() {
-        nav.log('backbutton pressed - nav level: ' + this.stack.length);
+        //nav.log('backbutton pressed - nav level: ' + this.stack.length);
+        let tick = Date.now();
         this.isHistoryBack = true;
         this.back(true);
         this.isHistoryBack = false;
+        console.log(`///\\\\ ${Date.now()-tick}ms backbutton pressed - nav level: ${this.stack.length}`);
     }
 
     async back(confirm:boolean = true) {
@@ -409,6 +412,7 @@ export class NavView extends React.Component<Props, NavViewState> {
 }
 
 export interface NavSettings {
+    oem?: string;
     loginTop?: JSX.Element;
 }
 
@@ -543,6 +547,10 @@ export class Nav {
         this.navSettings = settings;
     }
 
+    get oem():string {
+        return this.navSettings && this.navSettings.oem;
+    }
+
     hashParam: string;
     private centerHost: string;
     private arrs = ['/test', '/test/'];
@@ -643,6 +651,12 @@ export class Nav {
 
     saveLocalUser() {
         this.local.user.set(this.user);
+    }
+
+    async loadMe() {
+        let me = await userApi.me();
+        this.user.icon = me.icon;
+        this.user.nick = me.nick;
     }
 
     async logined(user: User, callback?: (user:User)=>Promise<void>) {

@@ -67,26 +67,38 @@ export class PageHeader extends React.Component<PageHeaderProps, PageHeaderState
                     let {nick, name} = user;
                     debugLogout = <div className="d-flex align-items-center">
                         <small className="text-light">{nick || name}</small>
-                        <a className="btn ml-2 cursor-pointer" href="#/"
-                            role="button"
-                            onClick={this.logoutClick}>
-                            <i className="fa fa-sign-out fa-lg" />
-                        </a>
+                        {
+                            // eslint-disable-next-line
+                            <div className="ml-2 py-2 px-3 cursor-pointer"
+                                role="button"
+                                onClick={this.logoutClick}>
+                                <i className="fa fa-sign-out fa-lg" />
+                            </div>
+                        }
                     </div>;
                 }
             }
         }
         if (b) {
             switch (this.props.back) {
-                case 'none': back = undefined; break;
+                case 'none':
+                    back = undefined;
+                    break;
                 default:
-                case 'back': back = <nav onClick={this.back}><i className="fa fa-angle-left" /></nav>; break;
-                case 'close': back = <nav onClick={this.back}><i className="fa fa-close" /></nav>; break;
+                case 'back':
+                    back = <nav onClick={this.back}><i className="fa fa-angle-left" /></nav>;
+                    break;
+                case 'close':
+                    back = <nav onClick={this.back}><i className="fa fa-close" /></nav>;
+                    break;
             }
         }
         if (window.self !== window.top) {
             console.log(document.location.href);
             pop = <header onClick={this.openWindow} />;
+        }
+        if (back === undefined && typeof center === 'string') {
+            center = <div className="px-3">{center}</div>;
         }
         let rightView = (right || debugLogout) && <aside>{right} {debugLogout}</aside>;
         return <header className={className}>

@@ -6,6 +6,7 @@ import {ApiBase} from './apiBase';
 import { host } from './host';
 import { nav } from '../components';
 import { LocalCache, LocalMap, env } from '../tool';
+import {decodeUserToken} from '../tool/user';
 
 let channelUIs:{[name:string]: HttpChannel} = {};
 let channelNoUIs:{[name:string]: HttpChannel} = {};
@@ -151,7 +152,7 @@ export class UqApi extends ApiBase {
         if (channel !== undefined) return channel;
         let uqToken = appUq(this.uq); //, this.uqOwner, this.uqName);
         if (!uqToken) {
-            debugger;
+            //debugger;
             await this.init();
             uqToken = appUq(this.uq);
         }
@@ -495,9 +496,12 @@ export interface UqServiceData {
 const appUqsName = 'appUqs';
 
 export class CenterAppApi extends CenterApiBase {
-    private local: LocalCache = env.localDb.item(appUqsName);
+    //private local: LocalCache = env.localDb.item(appUqsName);
     //private cachedUqs: UqAppData;
     async uqs(appOwner:string, appName:string):Promise<UqAppData> {
+        let ret:UqAppData = await this.get('tie/app-uqs', {appOwner:appOwner, appName:appName});
+        return ret;
+        /*
         let ret:UqAppData;
         let appUqs = this.local.get();
         if (appUqs) {
@@ -513,10 +517,12 @@ export class CenterAppApi extends CenterApiBase {
         }
         //return this.cachedUqs = _.cloneDeep(ret);
         return ret;
+        */
     }
     private async uqsPure(appOwner:string, appName:string):Promise<UqAppData> {
         return await this.get('tie/app-uqs', {appOwner:appOwner, appName:appName});
     }
+    /*
     private async isOkCheckUqs(appOwner:string, appName:string):Promise<boolean> {
         let ret = await this.uqsPure(appOwner, appName);
         let {id:cachedId, uqs:cachedUqs} = this.local.get(); //.cachedUqs;
@@ -537,6 +543,7 @@ export class CenterAppApi extends CenterApiBase {
         }
         return ret;
     }
+    */
     async unitxUq(unit:number):Promise<UqServiceData> {
         return await this.get('tie/unitx-uq', {unit:unit});
     }
@@ -549,7 +556,7 @@ export async function loadAppUqs(appOwner:string, appName:string): Promise<UqApp
     let centerAppApi = new CenterAppApi('tv/', undefined);
     //let unit = meInFrame.unit;
     let ret = await centerAppApi.uqs(appOwner, appName);
-    await centerAppApi.checkUqs(appOwner, appName);
+    //await centerAppApi.checkUqs(appOwner, appName);
     /*
     .then(v => {
         if (v === false) {
@@ -560,3 +567,65 @@ export async function loadAppUqs(appOwner:string, appName:string): Promise<UqApp
     */
     return ret;
 }
+
+//import { nav } from '../ui';
+
+export interface RegisterParameter {
+    nick:string, 
+    user:string, 
+    pwd:string,
+    country:number, 
+    mobile:number, 
+    mobileCountry:number,
+    email:string,
+    verify:string,
+};
+
+export class UserApi extends CenterApiBase {
+    async login(params: {user: string, pwd: string, guest: number}): Promise<any> {
+        //(params as any).device = nav.local.device.get();
+        let ret = await this.get('user/login', params);
+        switch (typeof ret) {
+            default: return;
+            case 'string': return decodeUserToken(ret);
+            case 'object':
+                let token = ret.token;
+                let user = decodeUserToken(token);
+                let {nick, icon} = ret;
+                if (nick) user.nick = nick;
+                if (icon) user.icon = icon;
+                return user;
+        }
+        // !== undefined) return decodeToken(token);
+    }
+    async register(params: RegisterParameter): Promise<any>
+    {
+        return await this.post('user/register', params);
+    }
+
+    async setVerify(account:string, type:'mobile'|'email', oem:string) {
+        return await this.post('user/set-verify', {account:account, type:type});
+    }
+
+    async checkVerify(account:string, verify:string) {
+        return await this.post('user/check-verify', {account:account, verify:verify});
+    }
+
+    async isExists(account:string) {
+        return await this.get('user/is-exists', {account:account});
+    }
+
+    async resetPassword(account:string, password:string, verify:string, type:'mobile'|'email') {
+        return await this.post('user/reset-password', {account:account, password, verify, type});
+    }
+    
+    async userSetProp(prop:string, value:any) {
+        await this.post('tie/user-set-prop', {prop:prop, value:value});
+    }
+
+    async me():Promise<any> {
+        return await this.get('tie/me');
+    }
+}
+
+export const userApi = new UserApi('tv/', undefined);

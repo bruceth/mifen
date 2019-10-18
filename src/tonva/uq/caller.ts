@@ -87,7 +87,7 @@ export class QueryQueryCaller extends EntityCaller<any> {
 }
 
 export class QueryPageCaller extends EntityCaller<any> {
-    protected readonly params: {pageStart:any; pageSize:number, params:any};
+    protected get params(): {pageStart:any; pageSize:number, params:any} {return this._params};
     protected get entity(): Query {return this._entity as Query};
     get path():string {return `query-page/${this.entity.name}`;}
     buildParams() {

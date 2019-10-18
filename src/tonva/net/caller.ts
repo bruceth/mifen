@@ -1,8 +1,9 @@
 export abstract class Caller<T> {
-    protected readonly params: T;
+    protected readonly _params: T;
     constructor(params: T) {
-        this.params = params;
+        this._params = params;
     }
+    protected get params():any {return this._params;}
     buildParams():any {return this.params;}
     method: string  = 'POST';
     abstract get path(): string;
