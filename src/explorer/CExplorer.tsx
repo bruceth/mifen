@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { PageItems } from 'tonva';
 import { CUqBase } from '../CUqBase';
+import { CMiApp } from '../CMiApp';
 import { CStockInfo, NStockInfo } from '../stockinfo';
 import { VSiteHeader } from './VSiteHeader';
 import { VExplorer } from './VExplorer';
@@ -19,6 +20,7 @@ class HomePageItems<T> extends PageItems<T> {
             pageStart:pageStart,
             pageSize:pageSize,
             user:this.ce.user.id,
+            blackID:this.ce.cApp.blackListTagID,
             yearlen: 1,
         };
         let result = await this.ce.cApp.miApi.process(query, []);
@@ -32,6 +34,7 @@ class HomePageItems<T> extends PageItems<T> {
 
 export class CExplorer extends CUqBase {
     PageItems: PageItems<any> = new HomePageItems<any>(this);
+    get cApp(): CMiApp { return this._cApp as CMiApp };
 
     onPage = () => {
         this.PageItems.more();

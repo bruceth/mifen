@@ -34,6 +34,17 @@ export class CMiApp extends CAppBase {
     return -1;
   }
 
+  get blackListTagID(): number {
+    if (this.tags !== undefined) {
+      let name = this.config.tagName;
+      let i = this.tags.findIndex(v => v.name === defaultBlackListTagName);
+      if (i >= 0) {
+        return this.tags[i].id as number;
+      }
+    }
+    return -1;
+  }
+
   protected async internalStart() {
     if (this.isLogined) {
     }
