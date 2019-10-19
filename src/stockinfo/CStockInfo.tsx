@@ -188,11 +188,17 @@ export class CStockInfo extends CUqBase {
         }
       }
       this.stockTags.push(newTag);
+      if (tag.id === this.cApp.blackListTagID) {
+        this.cApp.AddBlackID(this.baseItem.id);
+      }
     }
     else {
       let ret = await this.uqs.mi.TagStock.del(param);
       let i = this.stockTags.findIndex(v => v.tag.id === tag.id);
       this.stockTags.splice(i, 1);
+      if (tag.id === this.cApp.blackListTagID) {
+        this.cApp.RemoveBlackID(this.baseItem.id);
+      }
     }
   }
 }

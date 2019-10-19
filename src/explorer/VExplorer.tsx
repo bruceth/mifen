@@ -47,17 +47,22 @@ export class VExplorer extends View<CExplorer> {
   });
 
   renderRow = (item: any, index: number): JSX.Element => <this.rowContent {...item} />;
-  protected rowContent = (row: any): JSX.Element => {
+  protected rowContent = observer((row: any): JSX.Element => {
     let { id, name, code, pe, roe, price, order } = row as NStockInfo;
     let left = <div className="c6"><span className="text-primary">{name}</span><br/>{code}</div>
-    return <LMR className="px-3 py-2" left={left} right = {order.toString()} onClick={()=>this.onClickName(row)}>
+    let blackList = this.controller.cApp.blackList;
+    let fInBlack = blackList.findIndex(v=>v===id);
+    if (fInBlack >= 0)
+      return <></>;
+    else
+      return <LMR className="px-3 py-2" left={left} right = {order.toString()} onClick={()=>this.onClickName(row)}>
       <div className="d-flex flex-wrap">
         <div className="px-3 c8 d-flex">{pe.toFixed(2)}</div>
         <div className="px-3 c8"> {roe===undefined?'':(roe * 100).toFixed(2)}</div>
         <div className="px-3 c8"> {price.toFixed(2)}</div>
       </div>
     </LMR>
-  }
+  });
 
   private rowKey = (item: any) => {
     let { id } = item;

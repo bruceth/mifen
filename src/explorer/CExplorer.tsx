@@ -20,7 +20,7 @@ class HomePageItems<T> extends PageItems<T> {
             pageStart:pageStart,
             pageSize:pageSize,
             user:this.ce.user.id,
-            blackID:this.ce.cApp.blackListTagID,
+            //blackID:this.ce.cApp.blackListTagID,
             yearlen: 1,
         };
         let result = await this.ce.cApp.miApi.process(query, []);

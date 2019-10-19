@@ -20,6 +20,7 @@ export class CMiApp extends CAppBase {
   miApi: MiApi;
   @observable config: MiConfigs = { tagName: defaultTagName };
   @observable tags: any[] = undefined;
+  @observable blackList: any[] = [];
 
   get uqs(): UQs { return this._uqs as UQs };
 
@@ -101,6 +102,7 @@ export class CMiApp extends CAppBase {
         this.config = c;
       }
     }
+    await this.loadBlackList();
   }
 
   selectTag = async (item:any) => {
@@ -152,6 +154,40 @@ export class CMiApp extends CAppBase {
     }
 
     return br;
+  }
+
+  protected async loadBlackList(): Promise<void> {
+    let blackid = this.blackListTagID;
+    if (blackid <= 0) {
+      this.blackList = [];
+      return;
+    }
+
+    let param = { user:this.user.id, tag:blackid};
+    try {
+      let ret = await this.uqs.mi.TagStock.query(param);
+      let r = ret.ret.map(item=> {
+        return item.stock.id;
+      });
+      this.blackList = r;
+    }
+    catch (error) {
+      let e = error;
+    }
+  }
+
+  public AddBlackID(id:number) {
+    let i = this.blackList.findIndex(v=> v===id);
+    if (i < 0) {
+      this.blackList.push(id);
+    }
+  }
+
+  public RemoveBlackID(id:number) {
+    let i = this.blackList.findIndex(v=> v===id);
+    if (i >= 0) {
+      this.blackList.splice(i, 1);
+    }
   }
 
   protected newC<T extends CUqBase>(type: IConstructor<T>): T {
