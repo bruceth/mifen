@@ -10,7 +10,8 @@ export interface NStockInfo extends BaseStockInfo {
   pe?:number,
   roe?:number,
   price?:number,
-  order?:number
+  order?:number,
+  divyield?:number
 };
 
 export interface StockPrice {

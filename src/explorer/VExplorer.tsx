@@ -35,6 +35,7 @@ export class VExplorer extends View<CExplorer> {
       <div className="px-3 c6"/>
       <div className="px-3 c8">PE</div>
       <div className="px-3 c8">ROE</div>
+      <div className="px-3 c8">分红率</div>
       <div className="px-3 c8">PRICE</div>
     </div>;
     return <>
@@ -48,7 +49,7 @@ export class VExplorer extends View<CExplorer> {
 
   renderRow = (item: any, index: number): JSX.Element => <this.rowContent {...item} />;
   protected rowContent = observer((row: any): JSX.Element => {
-    let { id, name, code, pe, roe, price, order } = row as NStockInfo;
+    let { id, name, code, pe, roe, price, order, divyield } = row as NStockInfo;
     let left = <div className="c6"><span className="text-primary">{name}</span><br/>{code}</div>
     let blackList = this.controller.cApp.blackList;
     let fInBlack = blackList.findIndex(v=>v===id);
@@ -59,6 +60,7 @@ export class VExplorer extends View<CExplorer> {
       <div className="d-flex flex-wrap">
         <div className="px-3 c8 d-flex">{pe.toFixed(2)}</div>
         <div className="px-3 c8"> {roe===undefined?'':(roe * 100).toFixed(2)}</div>
+        <div className="px-3 c8"> {divyield===undefined?'':(divyield * 100).toFixed(2)}</div>
         <div className="px-3 c8"> {price.toFixed(2)}</div>
       </div>
     </LMR>

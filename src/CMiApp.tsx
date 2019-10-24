@@ -1,9 +1,8 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
+import { observable, computed } from 'mobx';
 import { CApp, CUq, Controller, VPage, CAppBase, IConstructor } from 'tonva';
 import { CHome } from './home';
 import { consts } from './consts';
-import { observable, computed } from 'mobx';
-import { nav } from 'tonva';
 import { MiApi } from './net';
 import { VHome } from './ui';
 import { CUqBase } from './CUqBase';
@@ -35,7 +34,7 @@ export class CMiApp extends CAppBase {
     return -1;
   }
 
-  get blackListTagID(): number {
+  @computed get blackListTagID(): number {
     if (this.tags !== undefined) {
       let name = this.config.tagName;
       let i = this.tags.findIndex(v => v.name === defaultBlackListTagName);
