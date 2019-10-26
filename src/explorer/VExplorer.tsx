@@ -38,8 +38,8 @@ export class VExplorer extends View<CExplorer> {
     let header = <div className="px-3">
       <div className="px-3 c6"/>
       <div className="px-3 c8">PE</div>
-      <div className="px-3 c8">ROE</div>
       <div className="px-3 c8">分红率</div>
+      <div className="px-3 c8">ROE</div>
       <div className="px-3 c8">PRICE</div>
     </div>;
     return <>
@@ -63,8 +63,8 @@ export class VExplorer extends View<CExplorer> {
       return <LMR className="px-3 py-2" left={left} right = {order.toString()} onClick={()=>this.onClickName(row)}>
       <div className="d-flex flex-wrap">
         <div className="px-3 c8 d-flex">{pe.toFixed(2)}</div>
-        <div className="px-3 c8"> {roe===undefined?'':(roe * 100).toFixed(2)}</div>
         <div className="px-3 c8"> {divyield===undefined?'':(divyield * 100).toFixed(2)}</div>
+        <div className="px-3 c8"> {roe===undefined?'':(roe * 100).toFixed(2)}</div>
         <div className="px-3 c8"> {price.toFixed(2)}</div>
       </div>
     </LMR>

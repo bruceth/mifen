@@ -4,10 +4,15 @@ export interface UserTag {
 }
 
 export interface StockFindConfig {
-  sortType?: string;
+  sortType: string;
+}
+
+export interface UserStockConfig {
+  sortType: string;
 }
 
 export interface MiConfigs {
   tagName: string;
   stockFind: StockFindConfig;
+  userStock: UserStockConfig;
 }

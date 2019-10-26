@@ -24,23 +24,30 @@ export class VHome extends View<CHome> {
     </button>;
 
 
-    return <Page header={title} right={right} onScrollBottom={onPage} 
+    return <Page header={title} right={right} onScrollBottom={onPage}
       headerClassName='bg-primary py-1 px-3'>
       <this.content />
     </Page>;
   })
 
-  private onSelect = (item:any, isSelected:boolean, anySelected:boolean) => {
+  private onSelect = (item: any, isSelected: boolean, anySelected: boolean) => {
+  }
 
+  private setSortTypeTagpe = () => {
+    this.controller.cApp.setUserSortType('tagpe');
+  }
+
+  private setSortTypeTagdp = () => {
+    this.controller.cApp.setUserSortType('tagdp');
   }
 
   private content = observer(() => {
-    let {PageItems} = this.controller;
+    let { PageItems } = this.controller;
     let header = <div className="px-3">
-      <div className="px-3 c6"/>
-      <div className="px-3 c8">PE</div>
+      <div className="px-3 c6" />
+      <div className="px-3 c8" onClick={this.setSortTypeTagpe}>PE</div>
+      <div className="px-3 c8" onClick={this.setSortTypeTagdp}>分红率</div>
       <div className="px-3 c8">ROE</div>
-      <div className="px-3 c8">分红率</div>
       <div className="px-3 c8">PRICE</div>
     </div>;
     return <>
@@ -53,16 +60,24 @@ export class VHome extends View<CHome> {
     </>
   });
 
+  private numberToFixString(n:number) {
+    return n === undefined ? '' : n.toFixed(2);
+  }
+
+  private numberToFixString100(n:number) {
+    return n === undefined ? '' : (n*100).toFixed(2);
+  }
+
   renderRow = (item: any, index: number): JSX.Element => <this.rowContent {...item} />;
   protected rowContent = (row: any): JSX.Element => {
-    let { id, name, code, pe, roe, price, order, divyield  } = row as NStockInfo;
-    let left = <div className="c6"><span className="text-primary">{name}</span><br/>{code}</div>
-    return <LMR className="px-3 py-2" left={left} right = {order.toString()} onClick={()=>this.onClickName(row)}>
+    let { id, name, code, pe, roe, price, order, divyield } = row as NStockInfo;
+    let left = <div className="c6"><span className="text-primary">{name}</span><br />{code}</div>
+    return <LMR className="px-3 py-2" left={left} right={order.toString()} onClick={() => this.onClickName(row)}>
       <div className="d-flex flex-wrap">
-        <div className="px-3 c8 d-flex">{pe.toFixed(2)}</div>
-        <div className="px-3 c8"> {roe===undefined?'':(roe * 100).toFixed(2)}</div>
-        <div className="px-3 c8"> {divyield===undefined?'':(divyield * 100).toFixed(2)}</div>
-        <div className="px-3 c8"> {price.toFixed(2)}</div>
+        <div className="px-3 c8 d-flex">{this.numberToFixString(pe)}</div>
+        <div className="px-3 c8"> {this.numberToFixString100(divyield)}</div>
+        <div className="px-3 c8"> {this.numberToFixString100(roe)}</div>
+        <div className="px-3 c8"> {this.numberToFixString(price)}</div>
       </div>
     </LMR>
   }

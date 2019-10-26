@@ -52,6 +52,10 @@ export class CExplorer extends CUqBase {
     let newSortType = this.cApp.config.stockFind.sortType;
     if (newSortType === this.oldSortType)
       return;
+    if (this.oldSortType === undefined) {
+      this.oldSortType = newSortType;
+      return;
+    }
     this.oldSortType = newSortType;
     this.PageItems.reset();
     this.PageItems.resetStart();

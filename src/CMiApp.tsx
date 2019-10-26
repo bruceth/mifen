@@ -17,7 +17,11 @@ export class CMiApp extends CAppBase {
   cExporer: CExplorer;
   cHome: CHome;
   miApi: MiApi;
-  @observable config: MiConfigs = { tagName: defaultTagName, stockFind: { sortType:"PE" } };
+  @observable config: MiConfigs = { 
+    tagName: defaultTagName, 
+    stockFind: { sortType:'pe' },
+    userStock: { sortType:'tagpe'}
+  };
   @observable tags: any[] = undefined;
   @observable blackList: any[] = [];
 
@@ -108,11 +112,23 @@ export class CMiApp extends CAppBase {
     if (this.config.stockFind === undefined) {
       this.config.stockFind = { sortType: 'pe' };
     }
+    if (this.config.userStock === undefined) {
+      this.config.userStock = { sortType: 'tagpe' };
+    }
     await this.loadBlackList();
   }
 
   setStockSortType = async (type:string)=> {
+    if (this.config.stockFind.sortType === type)
+      return;
     this.config.stockFind.sortType = type;
+    await this.saveConfig();
+  }
+
+  setUserSortType = async (type:string)=> {
+    if (this.config.userStock.sortType === type)
+      return;
+    this.config.userStock.sortType = type;
     await this.saveConfig();
   }
 

@@ -21,8 +21,13 @@ class HomePageItems<T> extends PageItems<T> {
   }
 
   protected async load(param: any, pageStart: any, pageSize: number): Promise<any[]> {
+    let queryName = 'tagpe';
+    if (this.cHome.cApp.config.userStock.sortType === 'tagdp') {
+      queryName = 'tagdp';
+    }
+
     let query = {
-      name: 'tagpe',
+      name: queryName,
       pageStart: pageStart,
       pageSize: pageSize,
       user: this.cHome.user.id,
@@ -47,11 +52,26 @@ export class CHome extends CUqBase {
   PageItems: HomePageItems<any> = new HomePageItems<any>(this);
   userTag: UserTag;
   get cApp(): CMiApp { return this._cApp as CMiApp };
+  protected oldSortType: string;
 
   disposeAutorun = autorun(async () => {
+    let needLoad = false;
     let oldID = this.userTag && this.userTag.tagID;
     this.userTag = { tagName: this.cApp.config.tagName, tagID: this.cApp.tagID };
     if (oldID !== this.userTag.tagID) {
+      needLoad = true;
+    }
+
+    let newSortType = this.cApp.config.userStock.sortType;
+    if (this.oldSortType === undefined) {
+      this.oldSortType = newSortType;
+    }
+    else if (this.oldSortType !== newSortType) {
+      this.oldSortType = newSortType;
+      needLoad = true;
+    }
+
+    if (needLoad) {
       await this.load();
     }
   });
