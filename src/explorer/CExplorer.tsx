@@ -1,72 +1,98 @@
 import * as React from 'react';
 import { PageItems } from 'tonva';
+import { autorun } from 'mobx';
 import { CUqBase } from '../CUqBase';
 import { CMiApp } from '../CMiApp';
 import { CStockInfo, NStockInfo } from '../stockinfo';
 import { VSiteHeader } from './VSiteHeader';
 import { VExplorer } from './VExplorer';
+import { VExplorerCfg } from './VExplorerCfg';
 
 class HomePageItems<T> extends PageItems<T> {
-    ce: CExplorer;
-    constructor(cHome: CExplorer) {
-        super(true);
-        this.ce = cHome;
-        this.pageSize = 30;
-        this.firstSize = 30;
+  ce: CExplorer;
+  constructor(cHome: CExplorer) {
+    super(true);
+    this.ce = cHome;
+    this.pageSize = 30;
+    this.firstSize = 30;
+  }
+  protected async load(param: any, pageStart: any, pageSize: number): Promise<any[]> {
+    let queryName = 'pe';
+    if (this.ce.cApp.config.stockFind.sortType === 'dp') {
+      queryName = 'dp';
     }
-    protected async load(param: any, pageStart: any, pageSize: number): Promise<any[]> {
-        let query = {
-            name:'pe',
-            pageStart:pageStart,
-            pageSize:pageSize,
-            user:this.ce.user.id,
-            //blackID:this.ce.cApp.blackListTagID,
-            yearlen: 1,
-        };
-        let result = await this.ce.cApp.miApi.process(query, []);
-        if (Array.isArray(result) === false) return [];
-        return result as any[];
-    }
-    protected setPageStart(item: any) {
-        this.pageStart = item === undefined ? 0 : item.order;
-    }
+    let query = {
+      name: queryName,
+      pageStart: pageStart,
+      pageSize: pageSize,
+      user: this.ce.user.id,
+      //blackID:this.ce.cApp.blackListTagID,
+      yearlen: 1,
+    };
+    let result = await this.ce.cApp.miApi.process(query, []);
+    if (Array.isArray(result) === false) return [];
+    return result as any[];
+  }
+  protected setPageStart(item: any) {
+    this.pageStart = item === undefined ? 0 : item.order;
+  }
+  
+  resetStart() {
+    this.pageStart = 0;
+  }
+
 }
 
 export class CExplorer extends CUqBase {
-    PageItems: PageItems<any> = new HomePageItems<any>(this);
-    get cApp(): CMiApp { return this._cApp as CMiApp };
+  PageItems: HomePageItems<any> = new HomePageItems<any>(this);
+  get cApp(): CMiApp { return this._cApp as CMiApp };
+  protected oldSortType: string;
 
-    onPage = () => {
-        this.PageItems.more();
-    }
+  disposeAutorun = autorun(async () => {
+    let newSortType = this.cApp.config.stockFind.sortType;
+    if (newSortType === this.oldSortType)
+      return;
+    this.oldSortType = newSortType;
+    this.PageItems.reset();
+    this.PageItems.resetStart();
+    await this.load();
+  });
 
-    async searchMain(key: string) {
-        if (key !== undefined) await this.PageItems.first(key);
-    }
+  onPage = () => {
+    this.PageItems.more();
+  }
 
-    async internalStart(param: any) {
-    }
+  onConfig = async () => {
+    this.openVPage(VExplorerCfg);
+  }
 
-    async load() {
-      this.searchMain('');
-    }
+  async searchMain(key: string) {
+    if (key !== undefined) await this.PageItems.first(key);
+  }
 
-    renderSiteHeader = () => {
-        return this.renderView(VSiteHeader);
-    }
-   
-    renderHome = () => {
-        return this.renderView(VExplorer);
-    }
-    
+  async internalStart(param: any) {
+  }
 
-    openMetaView = () => {
-    }
+  async load() {
+    this.searchMain('');
+  }
 
-    tab = () => <this.renderHome />;
+  renderSiteHeader = () => {
+    return this.renderView(VSiteHeader);
+  }
 
-    openStockInfo = (item:NStockInfo) => {
-        let cStockInfo = this.newC(CStockInfo);
-        cStockInfo.start(item);
-    }
+  renderHome = () => {
+    return this.renderView(VExplorer);
+  }
+
+
+  openMetaView = () => {
+  }
+
+  tab = () => <this.renderHome />;
+
+  openStockInfo = (item: NStockInfo) => {
+    let cStockInfo = this.newC(CStockInfo);
+    cStockInfo.start(item);
+  }
 }

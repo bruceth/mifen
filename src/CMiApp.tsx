@@ -8,7 +8,7 @@ import { VHome } from './ui';
 import { CUqBase } from './CUqBase';
 import { CExplorer } from './explorer';
 import { UQs } from './uqs';
-import { MiConfigs } from './types';
+import { MiConfigs, StockFindConfig } from './types';
 
 export const defaultTagName = '自选股';
 export const defaultBlackListTagName = '黑名单';
@@ -17,7 +17,7 @@ export class CMiApp extends CAppBase {
   cExporer: CExplorer;
   cHome: CHome;
   miApi: MiApi;
-  @observable config: MiConfigs = { tagName: defaultTagName };
+  @observable config: MiConfigs = { tagName: defaultTagName, stockFind: { sortType:"PE" } };
   @observable tags: any[] = undefined;
   @observable blackList: any[] = [];
 
@@ -32,6 +32,10 @@ export class CMiApp extends CAppBase {
       }
     }
     return -1;
+  }
+
+  get findStockConfg(): StockFindConfig {
+    return this.config.stockFind;
   }
 
   @computed get blackListTagID(): number {
@@ -101,7 +105,15 @@ export class CMiApp extends CAppBase {
         this.config = c;
       }
     }
+    if (this.config.stockFind === undefined) {
+      this.config.stockFind = { sortType: 'pe' };
+    }
     await this.loadBlackList();
+  }
+
+  setStockSortType = async (type:string)=> {
+    this.config.stockFind.sortType = type;
+    await this.saveConfig();
   }
 
   selectTag = async (item:any) => {

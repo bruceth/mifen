@@ -3,6 +3,11 @@ export interface UserTag {
   tagID?: number;
 }
 
+export interface StockFindConfig {
+  sortType?: string;
+}
+
 export interface MiConfigs {
   tagName: string;
+  stockFind: StockFindConfig;
 }
