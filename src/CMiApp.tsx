@@ -144,14 +144,25 @@ export class CMiApp extends CAppBase {
   protected async loadTags(): Promise<void> {
     if (this.tags === undefined) {
       let r = await this.uqs.mi.AllTags.query(undefined);
-      let ret = r.ret;
+      let ret = r.ret as any[];
       let bc = await this.checkDefaultTags(ret);
       if (bc) {
-
         r = await this.uqs.mi.AllTags.query(undefined);
-        ret = r.ret;
+        ret = r.ret as any[];
       }
-      this.tags = ret;
+      let r1 = [];
+      let i = ret.findIndex(v=>v.name === defaultTagName);
+      if (i >= 0) {
+        r1.push(ret[i]);
+        ret.splice(i, 1);
+      }
+      i = ret.findIndex(v=> v.name === defaultBlackListTagName);
+      if (i >= 0) {
+        r1.push(ret[i]);
+        ret.splice(i, 1);
+      }
+      r1.push(...ret);
+      this.tags = r1;
     }
   }
 

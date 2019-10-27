@@ -3,6 +3,7 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { VPage, Page, View, List, LMR, FA } from 'tonva';
 import { NStockInfo } from '../stockinfo';
+import { GFunc } from '../GFunc';
 import { CExplorer } from './CExplorer';
 
 export class VExplorer extends View<CExplorer> {
@@ -62,10 +63,10 @@ export class VExplorer extends View<CExplorer> {
     else
       return <LMR className="px-3 py-2" left={left} right = {order.toString()} onClick={()=>this.onClickName(row)}>
       <div className="d-flex flex-wrap">
-        <div className="px-3 c8 d-flex">{pe.toFixed(2)}</div>
-        <div className="px-3 c8"> {divyield===undefined?'':(divyield * 100).toFixed(2)}</div>
-        <div className="px-3 c8"> {roe===undefined?'':(roe * 100).toFixed(2)}</div>
-        <div className="px-3 c8"> {price.toFixed(2)}</div>
+        <div className="px-3 c8 d-flex">{GFunc.numberToFixString(pe)}</div>
+        <div className="px-3 c8"> {GFunc.number100ToFixString(divyield)}</div>
+        <div className="px-3 c8"> {GFunc.number100ToFixString(roe)}</div>
+        <div className="px-3 c8"> {GFunc.number100ToFixString(price)}</div>
       </div>
     </LMR>
   });

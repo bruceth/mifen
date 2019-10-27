@@ -3,6 +3,7 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { VPage, Page, View, List, LMR, FA } from 'tonva';
 import { NStockInfo } from '../stockinfo';
+import { GFunc } from '../GFunc';
 import { CHome } from './CHome';
 
 export class VHome extends View<CHome> {
@@ -60,24 +61,16 @@ export class VHome extends View<CHome> {
     </>
   });
 
-  private numberToFixString(n:number) {
-    return n === undefined ? '' : n.toFixed(2);
-  }
-
-  private numberToFixString100(n:number) {
-    return n === undefined ? '' : (n*100).toFixed(2);
-  }
-
   renderRow = (item: any, index: number): JSX.Element => <this.rowContent {...item} />;
   protected rowContent = (row: any): JSX.Element => {
     let { id, name, code, pe, roe, price, order, divyield } = row as NStockInfo;
     let left = <div className="c6"><span className="text-primary">{name}</span><br />{code}</div>
     return <LMR className="px-3 py-2" left={left} right={order.toString()} onClick={() => this.onClickName(row)}>
       <div className="d-flex flex-wrap">
-        <div className="px-3 c8 d-flex">{this.numberToFixString(pe)}</div>
-        <div className="px-3 c8"> {this.numberToFixString100(divyield)}</div>
-        <div className="px-3 c8"> {this.numberToFixString100(roe)}</div>
-        <div className="px-3 c8"> {this.numberToFixString(price)}</div>
+        <div className="px-3 c8 d-flex">{GFunc.numberToFixString(pe)}</div>
+        <div className="px-3 c8"> {GFunc.number100ToFixString(divyield)}</div>
+        <div className="px-3 c8"> {GFunc.number100ToFixString(roe)}</div>
+        <div className="px-3 c8"> {GFunc.numberToFixString(price)}</div>
       </div>
     </LMR>
   }
