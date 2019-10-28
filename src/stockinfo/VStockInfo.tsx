@@ -47,9 +47,9 @@ export class VStockInfo extends VPage<CStockInfo> {
     return <div className="px-3 py-2 bg-white" onClick={() => this.onClickName(this.controller.baseItem)}>
       <div className="d-flex flex-wrap">
         <div className="px-3 c8">{this.caption('PE')}{GFunc.numberToFixString(pe)}</div>
-        <div className="px-3 c8">{this.caption('分红率')}{GFunc.number100ToFixString(divyield)}</div>
-        <div className="px-3 c8">{this.caption('ROE')}{GFunc.number100ToFixString(roe)}</div>
-        <div className="px-3 c8">{this.caption('Price')}{GFunc.numberToFixString(price)}</div>
+        <div className="px-3 c8">{this.caption('股息率')}{GFunc.percentToFixString(divyield)}</div>
+        <div className="px-3 c8">{this.caption('ROE')}{GFunc.percentToFixString(roe)}</div>
+        <div className="px-3 c8">{this.caption('价格')}{GFunc.numberToFixString(price)}</div>
       </div>    
     </div>;
   }

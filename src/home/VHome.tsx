@@ -46,10 +46,10 @@ export class VHome extends View<CHome> {
     let { PageItems } = this.controller;
     let header = <div className="px-3">
       <div className="px-3 c6" />
-      <div className="px-3 c8" onClick={this.setSortTypeTagpe}>PE</div>
-      <div className="px-3 c8" onClick={this.setSortTypeTagdp}>分红率</div>
-      <div className="px-3 c8">ROE</div>
-      <div className="px-3 c8">PRICE</div>
+      <div className="px-3 c6 cursor-pointer" onClick={this.setSortTypeTagpe}>PE</div>
+      <div className="px-3 c6 cursor-pointer" onClick={this.setSortTypeTagdp}>股息率</div>
+      <div className="px-3 c6">ROE</div>
+      <div className="px-3 c6">价格</div>
     </div>;
     return <>
       <List header={header}
@@ -67,10 +67,10 @@ export class VHome extends View<CHome> {
     let left = <div className="c6"><span className="text-primary">{name}</span><br />{code}</div>
     return <LMR className="px-3 py-2" left={left} right={order.toString()} onClick={() => this.onClickName(row)}>
       <div className="d-flex flex-wrap">
-        <div className="px-3 c8 d-flex">{GFunc.numberToFixString(pe)}</div>
-        <div className="px-3 c8"> {GFunc.number100ToFixString(divyield)}</div>
-        <div className="px-3 c8"> {GFunc.number100ToFixString(roe)}</div>
-        <div className="px-3 c8"> {GFunc.numberToFixString(price)}</div>
+        <div className="px-3 c6 d-flex">{GFunc.numberToFixString(pe)}</div>
+        <div className="px-3 c6"> {GFunc.percentToFixString(divyield)}</div>
+        <div className="px-3 c6"> {GFunc.percentToFixString(roe)}</div>
+        <div className="px-3 c6"> {GFunc.numberToFixString(price)}</div>
       </div>
     </LMR>
   }

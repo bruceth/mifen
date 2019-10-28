@@ -20,7 +20,7 @@ export class VExplorer extends View<CExplorer> {
     }
     let { onConfig } = this.controller;
     let right = 
-    <div className="btn" onClick={onConfig}><FA name="cog" size="lg" inverse={true} />
+    <div className="btn cursor-pointer" onClick={onConfig}><FA name="cog" size="lg" inverse={true} />
     </div>;
 
     return <Page header="股票发现"  onScrollBottom={onPage} right={right}
@@ -38,10 +38,10 @@ export class VExplorer extends View<CExplorer> {
     let {PageItems} = this.controller;
     let header = <div className="px-3">
       <div className="px-3 c6"/>
-      <div className="px-3 c8">PE</div>
-      <div className="px-3 c8">分红率</div>
-      <div className="px-3 c8">ROE</div>
-      <div className="px-3 c8">PRICE</div>
+      <div className="px-3 c6">PE</div>
+      <div className="px-3 c6">股息率</div>
+      <div className="px-3 c6">ROE</div>
+      <div className="px-3 c6">价格</div>
     </div>;
     return <>
       <List header={header}
@@ -63,10 +63,10 @@ export class VExplorer extends View<CExplorer> {
     else
       return <LMR className="px-3 py-2" left={left} right = {order.toString()} onClick={()=>this.onClickName(row)}>
       <div className="d-flex flex-wrap">
-        <div className="px-3 c8 d-flex">{GFunc.numberToFixString(pe)}</div>
-        <div className="px-3 c8"> {GFunc.number100ToFixString(divyield)}</div>
-        <div className="px-3 c8"> {GFunc.number100ToFixString(roe)}</div>
-        <div className="px-3 c8"> {GFunc.number100ToFixString(price)}</div>
+        <div className="px-3 c6 d-flex">{GFunc.numberToFixString(pe)}</div>
+        <div className="px-3 c6"> {GFunc.percentToFixString(divyield)}</div>
+        <div className="px-3 c6"> {GFunc.percentToFixString(roe)}</div>
+        <div className="px-3 c6"> {GFunc.numberToFixString(price)}</div>
       </div>
     </LMR>
   });

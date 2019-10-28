@@ -23,10 +23,10 @@ export class VExplorerCfg extends VPage<CExplorer> {
 
     return <Page header="发现设置" headerClassName="bg-primary">
       <div className="px-3 py-2">排序</div>
-      <div className="px-3 py-2">
-        <label > <input type="radio" name="sortType" value="pe" checked={findType==="pe"}
+      <div className="px-3 py-2 d-flex flex-wrap">
+        <label className="px-3 c8"> <input type="radio" name="sortType" value="pe" checked={findType==="pe"}
           onChange={this.sortChage} />PE</label><br />
-        <label > <input type="radio" name="sortType" value="dp" checked={findType==="dp"}
+        <label className="px-3 c8"> <input type="radio" name="sortType" value="dp" checked={findType==="dp"}
           onChange={this.sortChage} />分红率</label>
       </div>
     </Page>;
