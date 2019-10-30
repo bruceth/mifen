@@ -19,9 +19,7 @@ export class VExplorer extends View<CExplorer> {
       viewMetaButton = <button type="button" className="btn w-100" onClick={openMetaView}>view</button>
     }
     let { onConfig } = this.controller;
-    let right = 
-    <div className="btn cursor-pointer" onClick={onConfig}><FA name="cog" size="lg" inverse={true} />
-    </div>;
+    let right = <div className="btn cursor-pointer" onClick={onConfig}><FA name="cog" size="lg" inverse={true} /></div>;
 
     return <Page header="股票发现"  onScrollBottom={onPage} right={right}
       headerClassName='bg-primary py-1 px-3'>

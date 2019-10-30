@@ -9,6 +9,8 @@ import { CUqBase } from './CUqBase';
 import { CExplorer } from './explorer';
 import { UQs } from './uqs';
 import { MiConfigs, StockFindConfig } from './types';
+import { CWarning } from './warning';
+import { CStock } from './stock';
 
 export const defaultTagName = '自选股';
 export const defaultBlackListTagName = '黑名单';
@@ -16,6 +18,7 @@ export const defaultBlackListTagName = '黑名单';
 export class CMiApp extends CAppBase {
   cExporer: CExplorer;
   cHome: CHome;
+  cWarning: CWarning;
   miApi: MiApi;
   @observable config: MiConfigs = { 
     tagName: defaultTagName, 
@@ -63,6 +66,7 @@ export class CMiApp extends CAppBase {
     this.miApi = new MiApi(miHost, 'fsjs/', 'miapi', token, false);
     this.cExporer = this.newC(CExplorer);
     this.cHome = this.newC(CHome);
+    this.cWarning = this.newC(CWarning);
 
     //some test code
     //let params = [];

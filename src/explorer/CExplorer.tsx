@@ -40,7 +40,6 @@ class HomePageItems<T> extends PageItems<T> {
   resetStart() {
     this.pageStart = 0;
   }
-
 }
 
 export class CExplorer extends CUqBase {

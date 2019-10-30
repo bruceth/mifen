@@ -79,3 +79,24 @@ RETURNS ret (
     group by a.tag as id;
 };
 
+MAP StockWarning (
+  key user ID $user,
+  key stock ID 股票,
+  key type char(2) not null,
+  price dec(11,4),
+  index stock_tag (user, stock, type),
+);
+
+QUERY StockWarningAll()
+RETURNS ret (
+  id ID,
+  name char(10),
+  code char(10),
+  type char(2),
+  price dec(11,4)
+) {
+  into ret select a.stock as id, b.name, b.code, a.type, a.price
+    from StockWarning as a left join 股票 as b on a.stock=b.id
+    where a.user=$user
+    order by a.stock;
+};

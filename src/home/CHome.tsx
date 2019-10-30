@@ -90,6 +90,11 @@ export class CHome extends CUqBase {
     this.PageItems.more();
   }
 
+  onWarningConfg = () => {
+    this.cApp.cWarning.onWarningConfg();
+  }
+
+
   async searchMain(key: any) {
     if (key !== undefined) await this.PageItems.first(key);
   }

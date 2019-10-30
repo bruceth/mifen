@@ -5,6 +5,7 @@ import { VPage, Page, View, List, LMR, FA } from 'tonva';
 import { NStockInfo } from '../stockinfo';
 import { GFunc } from '../GFunc';
 import { CHome } from './CHome';
+import { thisExpression } from '@babel/types';
 
 export class VHome extends View<CHome> {
 
@@ -14,44 +15,75 @@ export class VHome extends View<CHome> {
 
   private page = observer(() => {
     let { openMetaView, onPage } = this.controller;
-    let viewMetaButton = <></>;
-    if (this.controller.isLogined) {
-      viewMetaButton = <button type="button" className="btn w-100" onClick={openMetaView}>view</button>
-    }
-    let title = this.controller.cApp.config.tagName;
-    let { onTags } = this.controller;
+    // let viewMetaButton = <></>;
+    // if (this.controller.isLogined) {
+    //   viewMetaButton = <button type="button" className="btn w-100" onClick={openMetaView}>view</button>
+    // }
 
-    let right = <button className="btn btn-outline-success bg-light" onClick={onTags}>...
-    </button>;
+    // let { onTags } = this.controller;
+    // let right = <button className="btn btn-outline-success bg-light" onClick={onTags}>...
+    // </button>;
 
-
-    return <Page header={title} right={right} onScrollBottom={onPage}
+    return <Page header="首页" onScrollBottom={onPage}
       headerClassName='bg-primary py-1 px-3'>
+      <this.warningContent />
       <this.content />
     </Page>;
   })
 
-  private onSelect = (item: any, isSelected: boolean, anySelected: boolean) => {
+  private setSortType = (type:string) => {
+    this.controller.cApp.setUserSortType(type);
   }
 
-  private setSortTypeTagpe = () => {
-    this.controller.cApp.setUserSortType('tagpe');
-  }
+  private warningContent = observer(() => {
+    let header = <div className="px-3">
+      <div className="px-3 c6" />
+      <div className="px-3 c6">预警价</div>
+      <div className="px-3 c6">价格</div>
+    </div>;
+    let { onWarningConfg } = this.controller;
+    let right = <div className="btn cursor-pointer" onClick={onWarningConfg}><FA name="cog" inverse={false} /></div>;
+    let items = [];
+    return <>
+      <LMR className="px-3 py-1" left="预警" right={right}></LMR>
+      <List header={header}
+        items={items}
+        item={{ render: this.renderWarningRow, key: this.rowKey }}
+        before={'搜索'}
+        none={'----'}
+      />
+    </>;
+  });
 
-  private setSortTypeTagdp = () => {
-    this.controller.cApp.setUserSortType('tagdp');
+  renderWarningRow = (item: any, index: number): JSX.Element => <this.rowWarningContent {...item} />;
+  protected rowWarningContent = (row: any): JSX.Element => {
+    let { id, name, code, pe, roe, price, order, divyield } = row as NStockInfo;
+    let left = <div className="c6"><span className="text-primary">{name}</span><br />{code}</div>
+    return <LMR className="px-3 py-2" left={left} right={order.toString()} onClick={() => this.onClickName(row)}>
+      <div className="d-flex flex-wrap">
+        <div className="px-3 c6 d-flex">{GFunc.numberToFixString(pe)}</div>
+        <div className="px-3 c6"> {GFunc.percentToFixString(divyield)}</div>
+        <div className="px-3 c6"> {GFunc.percentToFixString(roe)}</div>
+        <div className="px-3 c6"> {GFunc.numberToFixString(price)}</div>
+      </div>
+    </LMR>
   }
 
   private content = observer(() => {
+    let title = this.controller.cApp.config.tagName;
     let { PageItems } = this.controller;
+    let { onTags } = this.controller;
     let header = <div className="px-3">
       <div className="px-3 c6" />
-      <div className="px-3 c6 cursor-pointer" onClick={this.setSortTypeTagpe}>PE</div>
-      <div className="px-3 c6 cursor-pointer" onClick={this.setSortTypeTagdp}>股息率</div>
+      <div className="px-3 c6 cursor-pointer" onClick={(e)=>this.setSortType('tagpe')}>PE</div>
+      <div className="px-3 c6 cursor-pointer" onClick={(e)=>this.setSortType('tagdp')}>股息率</div>
       <div className="px-3 c6">ROE</div>
       <div className="px-3 c6">价格</div>
     </div>;
+    let right = <button className="btn btn-outline-success bg-light" onClick={onTags}>...
+    </button>;
     return <>
+      <LMR className="px-3 py-1" left={title} right={right}></LMR>
       <List header={header}
         items={PageItems}
         item={{ render: this.renderRow, onClick: this.onSelected, key: this.rowKey }}

@@ -1,11 +1,11 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import { observable, IObservableArray, computed } from 'mobx';
+import { nav } from 'tonva';
 import { CUqBase } from '../CUqBase';
 import { CMiApp } from '../CMiApp';
 import { VStockInfo } from './VStockInfo'
 import { NStockInfo, StockPrice, StockEarning, StockRoe, StockCapitalearning, StockBonus, StockDivideInfo } from './StockInfoType';
 import { VTags, VNewTag, VEditTag } from './VTags';
-import { nav } from 'tonva';
 
 export class CStockInfo extends CUqBase {
   get cApp(): CMiApp { return this._cApp as CMiApp };
