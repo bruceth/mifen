@@ -18,7 +18,6 @@ export class CWarning extends CUqBase {
   }
 
   async loadWarnings() {
-    
     let r = await this.uqs.mi.StockWarningAll.query(undefined);
     let ret = r.ret as any[];
     this.warnings = ret;

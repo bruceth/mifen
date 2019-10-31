@@ -2,6 +2,7 @@ import * as React from 'react';
 import { observer } from 'mobx-react-lite';
 import { VPage, Page, FA, List, Form, ItemSchema, StringSchema, UiInputItem, UiSchema, Context, IdSchema, UiIdItem, LMR, UiSelect, UiTextItem } from 'tonva';
 import { CWarning } from './CWarning';
+import { GFunc } from 'GFunc';
 
 export class VWarningConfig extends VPage<CWarning> {
   async open(param?: any) {
@@ -25,11 +26,15 @@ export class VWarningConfig extends VPage<CWarning> {
   })
 
   private renderWarning = (witem: any) => {
-    let {name, code} = witem;
-    let left = <div className="px-3 py-2 cursor-pointer">
+    let {name, code, type, price} = witem;
+    let left = <div className="px-3 cursor-pointer">
       {name}
       <small className=" mx-3" >{code}</small></div>;
     return <LMR className="mx-3 my-2" left={left} >
+      <div className="d-flex flex-wrap">
+        <div className="px-3 c6">{GFunc.warningTypeString(type)}</div>
+        <div className="px-3 c6">{GFunc.numberToFixString(price)}</div>
+      </div>
     </LMR>;
   }
 }
@@ -88,7 +93,7 @@ export class VNewWarning extends VPage<CWarning> {
   }
 
   private page = () => {
-    let fData = {type:'gt'};
+    let fData = {type:'lt'};
     return <Page header="新建预警" headerClassName="bg-primary">
       <div className="px-3 py-3">
         <Form schema={schema}
