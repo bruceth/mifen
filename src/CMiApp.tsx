@@ -74,6 +74,7 @@ export class CMiApp extends CAppBase {
     let env = process.env;
     //
     await this.loadConfig();
+    this.cHome.loadWarning();
     this.openVPage(VHome);
   }
 

@@ -41,13 +41,12 @@ export class VHome extends View<CHome> {
       <div className="px-3 c6">预警价</div>
       <div className="px-3 c6">价格</div>
     </div>;
-    let { onWarningConfg } = this.controller;
+    let { onWarningConfg, warnings } = this.controller;
     let right = <div className="btn cursor-pointer" onClick={onWarningConfg}><FA name="cog" inverse={false} /></div>;
-    let items = [];
     return <>
       <LMR className="px-3 py-1" left="预警" right={right}></LMR>
       <List header={header}
-        items={items}
+        items={warnings}
         item={{ render: this.renderWarningRow, key: this.rowKey }}
         before={'搜索'}
         none={'----'}
@@ -57,13 +56,11 @@ export class VHome extends View<CHome> {
 
   renderWarningRow = (item: any, index: number): JSX.Element => <this.rowWarningContent {...item} />;
   protected rowWarningContent = (row: any): JSX.Element => {
-    let { id, name, code, pe, roe, price, order, divyield } = row as NStockInfo;
+    let { id, name, code, wprice, price} = row;
     let left = <div className="c6"><span className="text-primary">{name}</span><br />{code}</div>
-    return <LMR className="px-3 py-2" left={left} right={order.toString()} onClick={() => this.onClickName(row)}>
+    return <LMR className="px-3 py-2" left={left} onClick={() => this.onClickName(row)}>
       <div className="d-flex flex-wrap">
-        <div className="px-3 c6 d-flex">{GFunc.numberToFixString(pe)}</div>
-        <div className="px-3 c6"> {GFunc.percentToFixString(divyield)}</div>
-        <div className="px-3 c6"> {GFunc.percentToFixString(roe)}</div>
+        <div className="px-3 c6 d-flex">{GFunc.numberToFixString(wprice)}</div>
         <div className="px-3 c6"> {GFunc.numberToFixString(price)}</div>
       </div>
     </LMR>

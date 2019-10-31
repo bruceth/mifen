@@ -1,7 +1,7 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import * as React from 'react';
 import { PageItems } from 'tonva';
-import { autorun } from 'mobx';
+import { observable, IObservableArray, autorun } from 'mobx';
 import { UserTag } from '../types';
 import { CMiApp } from '../CMiApp';
 import { CUqBase } from '../CUqBase';
@@ -53,6 +53,7 @@ export class CHome extends CUqBase {
   userTag: UserTag;
   get cApp(): CMiApp { return this._cApp as CMiApp };
   protected oldSortType: string;
+  @observable warnings: any[] = [];
 
   disposeAutorun = autorun(async () => {
     let needLoad = false;
@@ -109,6 +110,18 @@ export class CHome extends CUqBase {
       this.PageItems.reset();
       this.PageItems.resetStart();
       this.searchMain({ tag: tagID });
+    }
+  }
+
+  async loadWarning() {
+    let r = await this.cApp.miApi.query('q_warnings', [this.cApp.user.id]);
+    if (r !== undefined && Array.isArray(r)) {
+      this.warnings = r;
+    }
+    else {
+      if (this.warnings.length > 0) {
+        this.warnings = [];
+      }
     }
   }
 
