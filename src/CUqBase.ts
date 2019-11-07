@@ -9,5 +9,5 @@ export abstract class CUqBase extends CBase {
 
 export abstract class CUqSub extends CSub {
   protected get uqs() : UQs {return this._uqs as UQs};
-  protected readonly owner: any;
+  get cApp(): CMiApp { return this._cApp as CMiApp };
 }

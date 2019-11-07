@@ -1,10 +1,15 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { VPage, Page, View, List, LMR, FA } from 'tonva';
-import { CAccountHome } from './CAccountHome';
+import { VPage, Page, FA, List, Form, ItemSchema, StringSchema, UiInputItem, UiSchema, Context, IdSchema, UiIdItem, LMR, NumSchema } from 'tonva';
+import { CAccountInit } from './CAccountInit';
 
-export class VInitAccount extends View<CAccountHome> {
+const schema: ItemSchema[] = [
+  { name: 'marketvalue', type: 'number', required: true } as NumSchema,
+  { name: 'share', type: 'number', required: true } as NumSchema,
+];
+
+export class VInitAccount extends VPage<CAccountInit> {
   async open(param?: any) {
     this.openPage(this.page);
   }
@@ -20,6 +25,13 @@ export class VInitAccount extends View<CAccountHome> {
     </Page>;
   })
 
+  uiSchema: UiSchema = {
+    items: {
+      marketvalue: { widget: 'text', label: '市值', placeholder: '0.00' } as UiInputItem,
+      share: { widget: 'text', label: '份额', placeholder: '0.00' } as UiInputItem,
+    }
+  };
+ 
   private accountContent = observer(() => {
     let { accountInit } = this.controller;
     let accountName = this.controller.cApp.config.accountName;
@@ -37,17 +49,22 @@ export class VInitAccount extends View<CAccountHome> {
       </>;
     }
 
+    let fData = { marketvalue:0, share:0};
+
     if (accountInit === undefined) {
-      return <>
-        <LMR className="px-3 py-1" left={title}></LMR>
-        <div className="px-3 py-2 bg-white">
-        </div>
-      </>;
+      fData = { marketvalue:undefined, share:undefined};
     }
     else {
+      fData = { marketvalue: accountInit.marketvalue, share:accountInit.share };
     }
     return <>
       <LMR className="px-3 py-1" left={title}></LMR>
+      <div className="flex-fill px-3 py-2">
+        <Form schema={schema}
+            uiSchema={this.uiSchema}
+            formData={fData}
+          />
+      </div>
     </>;
   });
 }

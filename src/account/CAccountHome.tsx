@@ -7,11 +7,13 @@ import { IdName } from '../types';
 import { VAccountHome } from './VAccountHome';
 import { VNewAccount, VEditAccount, VSelectAccounts } from './VSelectAccount';
 import { VInitAccount } from './VInitAccount';
+import { CAccountInit } from './CAccountInit';
 
 export class CAccountHome extends CUqBase {
   protected account: IdName;
   @observable accountInit: any;
   @observable accountLast: any;
+  protected initController: CAccountInit;
 
   disposeAutorun = autorun(async () => {
     let needLoad = false;
@@ -124,6 +126,10 @@ export class CAccountHome extends CUqBase {
   }
 
   onClickInit = () => {
-    this.openVPage(VInitAccount);
+    if (this.initController === undefined) {
+      this.initController = new CAccountInit(this);
+      this.initController.InitData(this.account, this.accountInit);
+    }
+    this.initController.open();
   }
 }

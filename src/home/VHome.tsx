@@ -70,7 +70,6 @@ export class VHome extends View<CHome> {
       <div className="px-3 c6 cursor-pointer" onClick={(e)=>this.setSortType('tagpe')}>PE</div>
       <div className="px-3 c6 cursor-pointer" onClick={(e)=>this.setSortType('tagdp')}>股息率</div>
       <div className="px-3 c6">ROE</div>
-      <div className="px-3 c6">价格</div>
     </div>;
     let right = <button className="btn btn-outline-success bg-light" onClick={onSelectTag}>...
     </button>;
@@ -94,7 +93,6 @@ export class VHome extends View<CHome> {
         <div className="px-3 c6 d-flex">{GFunc.numberToFixString(pe)}</div>
         <div className="px-3 c6"> {GFunc.percentToFixString(divyield)}</div>
         <div className="px-3 c6"> {GFunc.percentToFixString(roe)}</div>
-        <div className="px-3 c6"> {GFunc.numberToFixString(price)}</div>
       </div>
     </LMR>
   }

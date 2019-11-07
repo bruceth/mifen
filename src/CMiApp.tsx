@@ -264,7 +264,7 @@ export class CMiApp extends CAppBase {
     }
   }
 
-  protected newC<T extends CUqBase>(type: IConstructor<T>): T {
+  newC<T extends CUqBase>(type: IConstructor<T>): T {
     return new type(this);
   }
 
