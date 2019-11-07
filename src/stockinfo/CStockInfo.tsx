@@ -8,7 +8,6 @@ import { NStockInfo, StockPrice, StockEarning, StockRoe, StockCapitalearning, St
 import { VTags, VNewTag, VEditTag } from './VTags';
 
 export class CStockInfo extends CUqBase {
-  get cApp(): CMiApp { return this._cApp as CMiApp };
   baseItem: NStockInfo;
   @observable protected loaded: boolean = false;
 
@@ -120,7 +119,7 @@ export class CStockInfo extends CUqBase {
   openMetaView = () => {
   }
 
-  onTags = async () => {
+  onSelectTag = async () => {
     //await this.loadTags();
     this.selectedTags = this.cApp.tags.filter(v => {
       let i = this.stockTags.findIndex(st => st.tag.id === v.id);
@@ -145,10 +144,10 @@ export class CStockInfo extends CUqBase {
     let { retId } = ret;
     if (retId < 0) {
       alert(name + ' 已经被使用了');
-      return;
+      return false;
     }
     this.cApp.tags.push({ id: retId, name: name });
-    this.closePage();
+    return true;
   }
 
   onSaveTag = async (data: any) => {
@@ -157,22 +156,22 @@ export class CStockInfo extends CUqBase {
     let i = this.cApp.tags.findIndex(v => v.id !== id && v.name === name);
     if (i >= 0) {
       alert(name + ' 已经被使用了');
-      return;
+      return false;
     }
     let ret = await this.uqs.mi.SaveTag.submit(param);
     let { retId } = ret;
     if (retId === undefined || retId < 0) {
       alert(name + ' 已经被使用了');
-      return;
+      return false;
     }
     i = this.cApp.tags.findIndex(v => v.id === id);
     if (i >= 0) {
       this.cApp.tags[i].name = name;
     }
-    this.closePage();
+    return true;
   }
 
-  onTaged = async (tag: any, isSelected: boolean) => {
+  onClickSelectTag = async (tag: any, isSelected: boolean) => {
     let param = {
       user: nav.user.id,
       tag: tag.id,

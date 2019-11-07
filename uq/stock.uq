@@ -12,7 +12,6 @@ TUID Tag (
   id,
   main name char(10) not null,
   user ID $user,
-
   unique (user, name),
 );
 

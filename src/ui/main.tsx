@@ -10,10 +10,11 @@ export class VHome extends VPage<CMiApp> {
         this.openPage(this.render);
     }
     render = (param?: any): JSX.Element => {
-        let { cHome, cExporer } = this.controller;
+        let { cHome, cExporer, cAccountHome } = this.controller;
         let faceTabs = [
             { name: 'home', label: '首页', icon: 'home', content: cHome.tab, notify: undefined, load:async()=>{await cHome.load()} },
             { name: 'explorer', label: '发现', icon: 'search', content: cExporer.tab, load: async()=>{await cExporer.load()} },
+            { name: 'account', label: '记账', icon: 'list', content: cAccountHome.tab, load: async()=>{await cAccountHome.load()} },
             { name: 'me', label: '我的', icon: 'user', content: meTab }
         ].map(v => {
             let { name, label, icon, content, notify, load } = v;

@@ -42,6 +42,11 @@ export class MiApi {
     this.channel = new MiApiChannel(url, basePath, apiName, uqToken, showWaiting);
   }
 
+  async call(name: string, params: any[]): Promise<any> {
+    let pbody = { call: name, params: params };
+    return await this.channel.post('sql/call', pbody);
+  }
+
   async query(name: string, params: any[]): Promise<any> {
     let pbody = { call: name, params: params };
     return await this.channel.post('sql/call', pbody);

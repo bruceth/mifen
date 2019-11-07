@@ -26,7 +26,7 @@ class HomePageItems<T> extends PageItems<T> {
       pageStart: pageStart,
       pageSize: pageSize,
       user: this.ce.user.id,
-      //blackID:this.ce.cApp.blackListTagID,
+      blackID:this.ce.cApp.blackListTagID,
       yearlen: 1,
     };
     let result = await this.ce.cApp.miApi.process(query, []);
@@ -38,13 +38,13 @@ class HomePageItems<T> extends PageItems<T> {
   }
   
   resetStart() {
+    this.reset();
     this.pageStart = 0;
   }
 }
 
 export class CExplorer extends CUqBase {
   PageItems: HomePageItems<any> = new HomePageItems<any>(this);
-  get cApp(): CMiApp { return this._cApp as CMiApp };
   protected oldSortType: string;
 
   disposeAutorun = autorun(async () => {
@@ -56,7 +56,6 @@ export class CExplorer extends CUqBase {
       return;
     }
     this.oldSortType = newSortType;
-    this.PageItems.reset();
     this.PageItems.resetStart();
     await this.load();
   });
@@ -70,7 +69,10 @@ export class CExplorer extends CUqBase {
   }
 
   async searchMain(key: string) {
-    if (key !== undefined) await this.PageItems.first(key);
+    if (key !== undefined) {
+      this.PageItems.resetStart();
+      await this.PageItems.first(key);
+    }
   }
 
   async internalStart(param: any) {

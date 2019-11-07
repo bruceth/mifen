@@ -2,7 +2,6 @@
 import * as React from 'react';
 import { PageItems, Context } from 'tonva';
 import { observable, autorun } from 'mobx';
-import { UserTag } from '../types';
 import { CMiApp } from '../CMiApp';
 import { CUqBase } from '../CUqBase';
 import { CStockInfo, NStockInfo } from '../stockinfo';

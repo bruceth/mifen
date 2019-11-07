@@ -8,9 +8,9 @@ import { VHome } from './ui';
 import { CUqBase } from './CUqBase';
 import { CExplorer } from './explorer';
 import { UQs } from './uqs';
-import { MiConfigs, StockFindConfig } from './types';
+import { MiConfigs, StockFindConfig, IdName } from './types';
 import { CWarning } from './warning';
-import { CStock } from './stock';
+import { CAccountHome } from './account';
 
 export const defaultTagName = '自选股';
 export const defaultBlackListTagName = '黑名单';
@@ -19,14 +19,16 @@ export class CMiApp extends CAppBase {
   cExporer: CExplorer;
   cHome: CHome;
   cWarning: CWarning;
+  cAccountHome: CAccountHome;
   miApi: MiApi;
   @observable config: MiConfigs = { 
     tagName: defaultTagName, 
     stockFind: { sortType:'pe' },
     userStock: { sortType:'tagpe'}
   };
-  @observable tags: any[] = undefined;
+  @observable tags: IdName[] = undefined;
   @observable blackList: any[] = [];
+  @observable accounts: IdName[] = undefined;
 
   get uqs(): UQs { return this._uqs as UQs };
 
@@ -36,6 +38,17 @@ export class CMiApp extends CAppBase {
       let i = this.tags.findIndex(v => v.name === name);
       if (i >= 0) {
         return this.tags[i].id as number;
+      }
+    }
+    return -1;
+  }
+
+  @computed get accountID(): number {
+    let name = this.config.accountName;
+    if (name !== undefined && this.accounts !== undefined) {
+      let i = this.accounts.findIndex(v => v.name === name);
+      if (i >= 0) {
+        return this.accounts[i].id as number;
       }
     }
     return -1;
@@ -66,6 +79,7 @@ export class CMiApp extends CAppBase {
     this.miApi = new MiApi(miHost, 'fsjs/', 'miapi', token, false);
     this.cExporer = this.newC(CExplorer);
     this.cHome = this.newC(CHome);
+    this.cAccountHome = this.newC(CAccountHome);
     this.cWarning = this.newC(CWarning);
 
     //some test code
@@ -90,9 +104,10 @@ export class CMiApp extends CAppBase {
   }
 
   protected async loadConfig() {
-    let rets = await Promise.all([this.loadTags(),
-        this.uqs.mi.UserSettings.query({ user: this.user.id, name: 'config' })]);
-    let r = rets[1];
+    let rets = await Promise.all([this.uqs.mi.UserSettings.query({ user: this.user.id, name: 'config' }),
+        this.loadTags(),
+        this.loadAccounts()]);
+    let r = rets[0];
     if (r !== undefined) {
       let ret = r.ret;
       if (ret !== undefined && ret.length > 0) {
@@ -142,6 +157,15 @@ export class CMiApp extends CAppBase {
     let i = this.tags.findIndex(v => v.name === name);
     if (i >= 0) {
       this.config.tagName = name;
+      this.saveConfig();
+    }
+  }
+
+  selectAccount = async (item:any) => {
+    let {name, id} = item as {name:string, id:number};
+    let i = this.accounts.findIndex(v => v.name === name);
+    if (i >= 0) {
+      this.config.accountName = name;
       this.saveConfig();
     }
   }
@@ -197,6 +221,13 @@ export class CMiApp extends CAppBase {
     }
 
     return br;
+  }
+
+  protected async loadAccounts(): Promise<void> {
+    let r = await this.miApi.query('t_allaccounts', [this.user.id]);
+    if (Array.isArray(r)) {
+      this.accounts = r;
+    }
   }
 
   protected async loadBlackList(): Promise<void> {

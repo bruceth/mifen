@@ -1,0 +1,1 @@
+export { CAccountHome } from './CAccountHome';

@@ -14,9 +14,9 @@ export class VSelectTag extends VPage<CHome> {
 
     private page = observer(() => {
         let {tags} = this.controller.cApp;
-        let { onTaged } = this.controller;
+        let { onClickTag } = this.controller;
         return <Page header="选择分组" headerClassName="bg-primary">
-            <List items={tags} item={{onClick:onTaged, render:this.renderTag}} />
+            <List items={tags} item={{onClick:onClickTag, render:this.renderTag}} />
         </Page>;
     })
 }

@@ -10,7 +10,7 @@ export class VTags extends VPage<CStockInfo> {
   }
 
   private onSelect = (item: any, isSelected: boolean, anySelected: boolean) => {
-    this.controller.onTaged(item, isSelected);
+    this.controller.onClickSelectTag(item, isSelected);
   }
 
   private onEditTag = (tag:any, e:React.MouseEvent) => {
@@ -57,7 +57,9 @@ export class VNewTag extends VPage<CStockInfo> {
   }
 
   private onFormButtonClick = async (name: string, context: Context) => {
-    await this.controller.onSaveNewTag(context.data);
+    if (await this.controller.onSaveNewTag(context.data)) {
+      this.controller.closePage();
+    }
   }
 
   private page = () => {
@@ -79,7 +81,9 @@ export class VEditTag extends VPage<CStockInfo> {
   }
 
   private onFormButtonClick = async (name: string, context: Context) => {
-    await this.controller.onSaveTag(context.data);
+    if (await this.controller.onSaveTag(context.data)) {
+      this.controller.closePage();
+    }
   }
 
   private page = (param?: any) => {

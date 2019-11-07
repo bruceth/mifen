@@ -51,7 +51,6 @@ class HomePageItems<T> extends PageItems<T> {
 export class CHome extends CUqBase {
   PageItems: HomePageItems<any> = new HomePageItems<any>(this);
   userTag: UserTag;
-  get cApp(): CMiApp { return this._cApp as CMiApp };
   protected oldSortType: string;
   @observable warnings: any[] = [];
 
@@ -77,12 +76,12 @@ export class CHome extends CUqBase {
     }
   });
 
-  onTags = async () => {
+  onSelectTag = async () => {
     this.openVPage(VSelectTag);
   }
 
 
-  onTaged = async (item:any) => {
+  onClickTag = async (item:any) => {
     await this.cApp.selectTag(item);
     this.closePage();
   }

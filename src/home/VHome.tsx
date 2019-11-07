@@ -5,7 +5,6 @@ import { VPage, Page, View, List, LMR, FA } from 'tonva';
 import { NStockInfo } from '../stockinfo';
 import { GFunc } from '../GFunc';
 import { CHome } from './CHome';
-import { thisExpression } from '@babel/types';
 
 export class VHome extends View<CHome> {
 
@@ -19,10 +18,6 @@ export class VHome extends View<CHome> {
     // if (this.controller.isLogined) {
     //   viewMetaButton = <button type="button" className="btn w-100" onClick={openMetaView}>view</button>
     // }
-
-    // let { onTags } = this.controller;
-    // let right = <button className="btn btn-outline-success bg-light" onClick={onTags}>...
-    // </button>;
 
     return <Page header="首页" onScrollBottom={onPage}
       headerClassName='bg-primary py-1 px-3'>
@@ -69,7 +64,7 @@ export class VHome extends View<CHome> {
   private content = observer(() => {
     let title = this.controller.cApp.config.tagName;
     let { PageItems } = this.controller;
-    let { onTags } = this.controller;
+    let { onSelectTag } = this.controller;
     let header = <div className="px-3">
       <div className="px-3 c6" />
       <div className="px-3 c6 cursor-pointer" onClick={(e)=>this.setSortType('tagpe')}>PE</div>
@@ -77,7 +72,7 @@ export class VHome extends View<CHome> {
       <div className="px-3 c6">ROE</div>
       <div className="px-3 c6">价格</div>
     </div>;
-    let right = <button className="btn btn-outline-success bg-light" onClick={onTags}>...
+    let right = <button className="btn btn-outline-success bg-light" onClick={onSelectTag}>...
     </button>;
     return <>
       <LMR className="px-3 py-1" left={title} right={right}></LMR>
