@@ -4,7 +4,7 @@ export class GFunc {
   }
 
   public static percentToFixString(n: number) {
-    return n === undefined ? '' : (n * 100).toFixed(2);
+    return n === undefined ? '' : (n * 100).toFixed(2) + '%';
   }
 
   public static warningTypeString(t: string) {

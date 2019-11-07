@@ -66,7 +66,7 @@ export class VHome extends View<CHome> {
     let { PageItems } = this.controller;
     let { onSelectTag } = this.controller;
     let header = <div className="px-3">
-      <div className="px-3 c6" />
+      <div className="px-3 c5" />
       <div className="px-3 c6 cursor-pointer" onClick={(e)=>this.setSortType('tagpe')}>PE</div>
       <div className="px-3 c6 cursor-pointer" onClick={(e)=>this.setSortType('tagdp')}>股息率</div>
       <div className="px-3 c6">ROE</div>
@@ -87,10 +87,10 @@ export class VHome extends View<CHome> {
   renderRow = (item: any, index: number): JSX.Element => <this.rowContent {...item} />;
   protected rowContent = (row: any): JSX.Element => {
     let { id, name, code, pe, roe, price, order, divyield } = row as NStockInfo;
-    let left = <div className="c6"><span className="text-primary">{name}</span><br />{code}</div>
+    let left = <div className="c5"><span className="text-primary">{name}</span><br />{code}</div>
     return <LMR className="px-3 py-2" left={left} right={order.toString()} onClick={() => this.onClickName(row)}>
       <div className="d-flex flex-wrap">
-        <div className="px-3 c6 d-flex">{GFunc.numberToFixString(pe)}</div>
+        <div className="px-3 c6">{GFunc.numberToFixString(pe)}</div>
         <div className="px-3 c6"> {GFunc.percentToFixString(divyield)}</div>
         <div className="px-3 c6"> {GFunc.percentToFixString(roe)}</div>
       </div>
