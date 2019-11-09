@@ -44,9 +44,10 @@ export class VAccountHome extends View<CAccountHome> {
           </>;
           }
           else {
+            let rightEdit = <div className="btn cursor-pointer" onClick={onClickInit}>编辑</div>;
             return <>
             <LMR className="px-3 py-2" left={title} right={right}></LMR>
-            <LMR className="px-3 py-1 bg-white" left="--初值--"></LMR>
+            <LMR className="px-3 py-1 bg-white" left="--初值--" right={rightEdit}></LMR>
             <div className="d-flex flex-wrap bg-white">
               <div className="px-3 c10">{this.caption('市值')}{accountInit.marketvalue}</div>
               <div className="px-3 c10">{this.caption('份额')}{accountInit.share}</div>
