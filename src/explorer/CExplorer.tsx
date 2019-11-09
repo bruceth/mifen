@@ -1,3 +1,4 @@
+/*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import * as React from 'react';
 import { PageItems } from 'tonva';
 import { autorun } from 'mobx';

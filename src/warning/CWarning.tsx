@@ -5,8 +5,8 @@ import { observable, autorun } from 'mobx';
 import { CMiApp } from '../CMiApp';
 import { CUqBase } from '../CUqBase';
 import { CStockInfo, NStockInfo } from '../stockinfo';
+import { CStock } from '../stock';
 import { VWarningConfig, VNewWarning } from './VWarningConfig';
-import { CStock } from 'stock';
 
 export class CWarning extends CUqBase {
   get cApp(): CMiApp { return this._cApp as CMiApp };

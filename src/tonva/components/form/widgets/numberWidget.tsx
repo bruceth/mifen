@@ -13,8 +13,8 @@ export class NumberWidget extends TextWidget {
         let {min, max} = this.itemSchema;
         this.rules.push(
             this.itemSchema.type === 'integer'?
-                new RuleNum(res, min, max) :
-                new RuleInt(res, min, max)
+                new RuleInt(res, min, max) :
+                new RuleNum(res, min, max)
         );
         /*
         if (this.itemSchema.type === 'integer') {

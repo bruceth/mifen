@@ -36,19 +36,30 @@ export class CAccountHome extends CUqBase {
     let ainit = r[0] as any[];
     let alast = r[1] as any[];
     if (ainit.length <= 0) {
-      this.accountInit = undefined;
+      let dt = new Date();
+      this.accountInit = {
+        id: this.account.id as number, 
+        marketvalue: 0,
+        money: 0, 
+        share: undefined, 
+        lock: 0,
+        detail: [],
+        datetime: Math.floor(dt.getTime() / 1000)
+      }
     }
     else {
       let rd = ainit[0];
       let initData = { id: rd.id as number, 
-        marketvalue:rd.marketvalue as number, 
-        share:rd.share as number, 
-        lock:rd.lock as number,
-        detail:JSON.parse(rd.detail),
-        datetime:rd.datetime
+        marketvalue: rd.marketvalue as number,
+        money: rd.money as number,
+        share: rd.share as number, 
+        lock: rd.lock as number,
+        detail: JSON.parse(rd.detail),
+        datetime: rd.datetime
       }
       this.accountInit = initData;
     }
+
     if (alast.length <= 0) {
       this.accountLast = undefined;
     }

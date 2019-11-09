@@ -60,7 +60,7 @@ export class VExplorer extends View<CExplorer> {
       return <></>;
     else
       return <LMR className="px-3 py-2" left={left} right = {order.toString()} onClick={()=>this.onClickName(row)}>
-      <div className="d-flex flex-wrap">
+      <div className="d-flex">
         <div className="px-3 c6">{GFunc.numberToFixString(pe)}</div>
         <div className="px-3 c6"> {GFunc.percentToFixString(divyield)}</div>
         <div className="px-3 c6"> {GFunc.percentToFixString(roe)}</div>
