@@ -70,8 +70,7 @@ export class VHome extends View<CHome> {
       <div className="px-3 c5 cursor-pointer" onClick={(e)=>this.setSortType('tagpe')}>PE</div>
       <div className="px-3 c6 cursor-pointer" onClick={(e)=>this.setSortType('tagdp')}>股息率</div>
     </div>;
-    let right = <button className="btn btn-outline-success bg-light" onClick={onSelectTag}>...
-    </button>;
+    let right = <div className="btn cursor-pointer" onClick={onSelectTag}><FA name="bars" inverse={false} /></div>;
     return <>
       <LMR className="px-3 py-1" left={title} right={right}></LMR>
       <List header={header}

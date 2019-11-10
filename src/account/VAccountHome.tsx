@@ -18,7 +18,7 @@ export class VAccountHome extends View<CAccountHome> {
   });
 
   private rightSelectAccount = () => {
-    return <div className="btn cursor-pointer" onClick={this.controller.onSelectAccount}><FA name="cog" inverse={false} /></div>;
+    return <div className="btn cursor-pointer" onClick={this.controller.onSelectAccount}><FA name="bars" inverse={false} /></div>;
   }
 
   private inputInitContent = () => {

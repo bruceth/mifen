@@ -28,6 +28,7 @@ export class VStockSelect extends VPage<CStock> {
       return <Page header="选择股票" headerClassName='bg-primary' onScrollBottom={onPage}>
           <SearchBox className="px-1 w-100  mt-2 mr-2"
               size='md'
+              allowEmptySearch={true}
               onSearch={(key: string) => this.controller.searchByKey(key)}
               placeholder="搜索股票" />
           <List before={''} none={none} items={PageItems} item={{ render: this.renderStock, onClick: this.onClickStock }} />
