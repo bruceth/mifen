@@ -88,7 +88,7 @@ export class VHome extends View<CHome> {
     let { id, name, code, pe, roe, price, order, divyield } = row as NStockInfo;
     let left = <div className="c5"><span className="text-primary">{name}</span><br />{code}</div>
     return <LMR className="px-3 py-2" left={left} right={order.toString()} onClick={() => this.onClickName(row)}>
-      <div className="d-flex">
+      <div className="d-flex flex-wrap">
         <div className="px-3 c6">{GFunc.caption('PE')}<br />{GFunc.numberToFixString(pe)}</div>
         <div className="px-3 c6">{GFunc.caption('股息率')}<br />{GFunc.percentToFixString(divyield)}</div>
         <div className="px-3 c6">{GFunc.caption('ROE')}<br />{GFunc.percentToFixString(roe)}</div>
