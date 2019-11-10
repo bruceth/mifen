@@ -39,17 +39,15 @@ export class VStockInfo extends VPage<CStockInfo> {
     </>
   });
 
-  private caption = (value:string) => <span className="text-muted small">{value}: </span>;
-
   private baseInfo = () => {
     let {baseItem} = this.controller;
     let { name, code, pe, roe, price, order, divyield } = baseItem;
     return <div className="px-3 py-2 bg-white" onClick={() => this.onClickName(this.controller.baseItem)}>
       <div className="d-flex flex-wrap">
-        <div className="px-3 c8">{this.caption('PE')}{GFunc.numberToFixString(pe)}</div>
-        <div className="px-3 c8">{this.caption('股息率')}{GFunc.percentToFixString(divyield)}</div>
-        <div className="px-3 c8">{this.caption('ROE')}{GFunc.percentToFixString(roe)}</div>
-        <div className="px-3 c8">{this.caption('价格')}{GFunc.numberToFixString(price)}</div>
+        <div className="px-3 c8">{GFunc.caption('PE')}{GFunc.numberToFixString(pe)}</div>
+        <div className="px-3 c8">{GFunc.caption('股息率')}{GFunc.percentToFixString(divyield)}</div>
+        <div className="px-3 c8">{GFunc.caption('ROE')}{GFunc.percentToFixString(roe)}</div>
+        <div className="px-3 c8">{GFunc.caption('价格')}{GFunc.numberToFixString(price)}</div>
       </div>    
     </div>;
   }

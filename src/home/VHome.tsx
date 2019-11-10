@@ -40,7 +40,7 @@ export class VHome extends View<CHome> {
     let right = <div className="btn cursor-pointer" onClick={onWarningConfg}><FA name="cog" inverse={false} /></div>;
     return <>
       <LMR className="px-3 py-1" left="预警" right={right}></LMR>
-      <List header={header}
+      <List 
         items={warnings}
         item={{ render: this.renderWarningRow, key: this.rowKey }}
         before={'搜索'}
@@ -55,8 +55,8 @@ export class VHome extends View<CHome> {
     let left = <div className="c6"><span className="text-primary">{name}</span><br />{code}</div>
     return <LMR className="px-3 py-2" left={left} onClick={() => this.onClickName(row)}>
       <div className="d-flex flex-wrap">
-        <div className="px-3 c6 d-flex">{GFunc.numberToFixString(wprice)}</div>
-        <div className="px-3 c6"> {GFunc.numberToFixString(price)}</div>
+        <div className="px-3 c6">{GFunc.caption('预警价')}<br />{GFunc.numberToFixString(wprice)}</div>
+        <div className="px-3 c6">{GFunc.caption('价格')}<br />{GFunc.numberToFixString(price)}</div>
       </div>
     </LMR>
   }
@@ -69,7 +69,6 @@ export class VHome extends View<CHome> {
       <div className="px-3 c5" />
       <div className="px-3 c6 cursor-pointer" onClick={(e)=>this.setSortType('tagpe')}>PE</div>
       <div className="px-3 c6 cursor-pointer" onClick={(e)=>this.setSortType('tagdp')}>股息率</div>
-      <div className="px-3 c6">ROE</div>
     </div>;
     let right = <button className="btn btn-outline-success bg-light" onClick={onSelectTag}>...
     </button>;
@@ -90,9 +89,10 @@ export class VHome extends View<CHome> {
     let left = <div className="c5"><span className="text-primary">{name}</span><br />{code}</div>
     return <LMR className="px-3 py-2" left={left} right={order.toString()} onClick={() => this.onClickName(row)}>
       <div className="d-flex">
-        <div className="px-3 c6">{GFunc.numberToFixString(pe)}</div>
-        <div className="px-3 c6"> {GFunc.percentToFixString(divyield)}</div>
-        <div className="px-3 c6"> {GFunc.percentToFixString(roe)}</div>
+        <div className="px-3 c6">{GFunc.caption('PE')}<br />{GFunc.numberToFixString(pe)}</div>
+        <div className="px-3 c6">{GFunc.caption('股息率')}<br />{GFunc.percentToFixString(divyield)}</div>
+        <div className="px-3 c6">{GFunc.caption('ROE')}<br />{GFunc.percentToFixString(roe)}</div>
+        <div className="px-3 c6">{GFunc.caption('价格')}<br />{GFunc.numberToFixString(price)}</div>
       </div>
     </LMR>
   }
