@@ -73,6 +73,7 @@ export class CAccountHome extends CUqBase {
     let r = await this.cApp.miApi.query('t_accountlast$queryall', [this.account.id]);
     let r1 = r[0][0];
     if (r1 === undefined) {
+      this.accountLast = undefined;
       return;
     }
     let lastData = {

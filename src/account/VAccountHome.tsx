@@ -47,6 +47,7 @@ export class VAccountHome extends View<CAccountHome> {
         <div className="px-3 c10">{GFunc.caption('市值')}{accountInit.marketvalue}</div>
         <div className="px-3 c10">{GFunc.caption('份额')}{accountInit.share}</div>
         <div className="px-3 c10">{GFunc.caption('余额')}{accountInit.money}</div>
+        <div className="px-3 c18">{GFunc.caption('净值')}{GFunc.numberToFixString(accountInit.marketvalue/accountInit.share, 3)}</div>
       </div> 
       <LMR className="px-3 py-1" left="--明细--"></LMR>
       <List items={accountInit.detail} 
@@ -59,12 +60,19 @@ export class VAccountHome extends View<CAccountHome> {
   private lastContent = observer(() => {
     let { accountLast } = this.controller;
     let title = this.controller.cApp.config.accountName;
+    if (accountLast === undefined || accountLast.marketvalue === undefined) {
+      return <>
+        <LMR className="px-3 py-2" left={title} right={this.rightSelectAccount()}></LMR>
+        <LMR className="px-3 py-1" left="--明细--"></LMR>
+      </>;
+    }
     return <>
       <LMR className="px-3 py-2" left={title} right={this.rightSelectAccount()}></LMR>
       <div className="d-flex flex-wrap bg-white">
         <div className="px-3 c10">{GFunc.caption('市值')}{accountLast.marketvalue}</div>
         <div className="px-3 c10">{GFunc.caption('份额')}{accountLast.share}</div>
         <div className="px-3 c10">{GFunc.caption('余额')}{accountLast.money}</div>
+        <div className="px-3 c18">{GFunc.caption('净值')}{GFunc.numberToFixString(accountLast.marketvalue/accountLast.share, 3)}</div>
       </div> 
       <LMR className="px-3 py-1" left="--明细--"></LMR>
       <List items={accountLast.detail} 
@@ -156,6 +164,7 @@ export class VLockAccountConfirm extends VPage<CAccountHome> {
         <div className="px-3 c10">{GFunc.caption('市值')}{accountInit.marketvalue}</div>
         <div className="px-3 c10">{GFunc.caption('份额')}{accountInit.share}</div>
         <div className="px-3 c10">{GFunc.caption('余额')}{accountInit.money}</div>
+        <div className="px-3 c18">{GFunc.caption('净值')}{GFunc.numberToFixString(accountInit.marketvalue/accountInit.share, 3)}</div>
       </div> 
       <LMR className="px-3 py-1" left="--明细--"></LMR>
       <List items={accountInit.detail} 
