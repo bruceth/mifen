@@ -48,16 +48,15 @@ export class VInitAccount extends VPage<CAccountInit> {
     return id;
   }
 
-  private caption = (value:string) => <span className="text-muted small">{value}: </span>;
-
   renderDetailRow = (item: any, index: number): JSX.Element => <this.rowDetailContent {...item} />;
   protected rowDetailContent = (row: any): JSX.Element => {
     let { id, volume, price } = row;
     let left = <div className="c6"><span className="text-primary">{id.name}</span><br />{id.code}</div>
     return <LMR className="px-3 py-2" left={left} >
       <div className="d-flex flex-wrap">
-        <div className="px-3 c12">{this.caption('数量')}{volume}</div>
-        <div className="px-3 c8">{this.caption('价格')}{GFunc.numberToFixString(price)}</div>
+        <div className="px-3 c12">{GFunc.caption('数量')}{volume}</div>
+        <div className="px-3 c8">{GFunc.caption('价格')}{GFunc.numberToFixString(price)}</div>
+        <div className="px-3 c12">{GFunc.caption('市值')}{GFunc.numberToFixString(volume*price)}</div>
       </div>  
     </LMR>
   }

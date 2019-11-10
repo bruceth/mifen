@@ -1,6 +1,8 @@
+import * as React from 'react';
+
 export class GFunc {
-  public static numberToFixString(n: number) {
-    return n === undefined ? '' : n.toFixed(2);
+  public static numberToFixString(n: number, w = 2) {
+    return n === undefined ? '' : n.toFixed(w);
   }
 
   public static percentToFixString(n: number) {
@@ -14,4 +16,6 @@ export class GFunc {
       default: return t;
     }
   }
+
+  public static caption = (value:string) => <span className="text-muted small">{value}: </span>;
 }

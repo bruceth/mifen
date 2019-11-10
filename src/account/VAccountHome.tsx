@@ -17,7 +17,6 @@ export class VAccountHome extends View<CAccountHome> {
     </Page>;
   });
 
-  private caption = (value:string) => <span className="text-muted small">{value}: </span>;
   private rightSelectAccount = () => {
     return <div className="btn cursor-pointer" onClick={this.controller.onSelectAccount}><FA name="cog" inverse={false} /></div>;
   }
@@ -45,9 +44,9 @@ export class VAccountHome extends View<CAccountHome> {
       <LMR className="px-3 py-2" left={title} right={this.rightSelectAccount()}></LMR>
       <LMR className="px-3 py-1 bg-white" left="--初值--" right={rightEdit}></LMR>
       <div className="d-flex flex-wrap bg-white">
-        <div className="px-3 c10">{this.caption('市值')}{accountInit.marketvalue}</div>
-        <div className="px-3 c10">{this.caption('份额')}{accountInit.share}</div>
-        <div className="px-3 c10">{this.caption('余额')}{accountInit.money}</div>
+        <div className="px-3 c10">{GFunc.caption('市值')}{accountInit.marketvalue}</div>
+        <div className="px-3 c10">{GFunc.caption('份额')}{accountInit.share}</div>
+        <div className="px-3 c10">{GFunc.caption('余额')}{accountInit.money}</div>
       </div> 
       <LMR className="px-3 py-1" left="--明细--"></LMR>
       <List items={accountInit.detail} 
@@ -63,9 +62,9 @@ export class VAccountHome extends View<CAccountHome> {
     return <>
       <LMR className="px-3 py-2" left={title} right={this.rightSelectAccount()}></LMR>
       <div className="d-flex flex-wrap bg-white">
-        <div className="px-3 c10">{this.caption('市值')}{accountLast.marketvalue}</div>
-        <div className="px-3 c10">{this.caption('份额')}{accountLast.share}</div>
-        <div className="px-3 c10">{this.caption('余额')}{accountLast.money}</div>
+        <div className="px-3 c10">{GFunc.caption('市值')}{accountLast.marketvalue}</div>
+        <div className="px-3 c10">{GFunc.caption('份额')}{accountLast.share}</div>
+        <div className="px-3 c10">{GFunc.caption('余额')}{accountLast.money}</div>
       </div> 
       <LMR className="px-3 py-1" left="--明细--"></LMR>
       <List items={accountLast.detail} 
@@ -114,8 +113,9 @@ export class VAccountHome extends View<CAccountHome> {
     let left = <div className="c6"><span className="text-primary">{name || id.name}</span><br />{code || id.code}</div>
     return <LMR className="px-3 py-2" left={left} >
       <div className="d-flex flex-wrap">
-        <div className="px-3 c12">{this.caption('数量')}{volume}</div>
-        <div className="px-3 c8">{this.caption('价格')}{GFunc.numberToFixString(price)}</div>
+        <div className="px-3 c10">{GFunc.caption('数量')}{volume}</div>
+        <div className="px-3 c8">{GFunc.caption('价格')}{GFunc.numberToFixString(price)}</div>
+        <div className="px-3 c10">{GFunc.caption('市值')}{GFunc.numberToFixString(volume*price)}</div>
       </div>  
     </LMR>
   }
@@ -135,16 +135,15 @@ export class VLockAccountConfirm extends VPage<CAccountHome> {
     return id;
   }
 
-  private caption = (value:string) => <span className="text-muted small">{value}: </span>;
-
   renderDetailRow = (item: any, index: number): JSX.Element => <this.rowDetailContent {...item} />;
   protected rowDetailContent = (row: any): JSX.Element => {
     let { id, volume, price, name, code } = row;
     let left = <div className="c6"><span className="text-primary">{name || id.name}</span><br />{code || id.code}</div>
     return <LMR className="px-3 py-2" left={left} >
       <div className="d-flex flex-wrap">
-        <div className="px-3 c12">{this.caption('数量')}{volume}</div>
-        <div className="px-3 c8">{this.caption('价格')}{GFunc.numberToFixString(price)}</div>
+        <div className="px-3 c10">{GFunc.caption('数量')}{volume}</div>
+        <div className="px-3 c8">{GFunc.caption('价格')}{GFunc.numberToFixString(price)}</div>
+        <div className="px-3 c10">{GFunc.caption('市值')}{GFunc.numberToFixString(volume*price)}</div>
       </div>  
     </LMR>
   }
@@ -154,9 +153,9 @@ export class VLockAccountConfirm extends VPage<CAccountHome> {
     return <>
       <LMR className="px-3 py-1 bg-white" left="--初值--"></LMR>
       <div className="d-flex flex-wrap bg-white">
-        <div className="px-3 c10">{this.caption('市值')}{accountInit.marketvalue}</div>
-        <div className="px-3 c10">{this.caption('份额')}{accountInit.share}</div>
-        <div className="px-3 c10">{this.caption('余额')}{accountInit.money}</div>
+        <div className="px-3 c10">{GFunc.caption('市值')}{accountInit.marketvalue}</div>
+        <div className="px-3 c10">{GFunc.caption('份额')}{accountInit.share}</div>
+        <div className="px-3 c10">{GFunc.caption('余额')}{accountInit.money}</div>
       </div> 
       <LMR className="px-3 py-1" left="--明细--"></LMR>
       <List items={accountInit.detail} 
