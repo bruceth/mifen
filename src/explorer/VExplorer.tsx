@@ -36,13 +36,11 @@ export class VExplorer extends View<CExplorer> {
     let {PageItems} = this.controller;
     let header = <div className="px-3">
       <div className="px-3 c5"/>
-      <div className="px-3 c6">PE</div>
+      <div className="px-3 c5">PE</div>
       <div className="px-3 c6">股息率</div>
-      <div className="px-3 c6">ROE</div>
-      <div className="px-3 c6">价格</div>
     </div>;
     return <>
-      <List
+      <List header={header}
         items={PageItems}
         item={{ render: this.renderRow, onClick: this.onSelected, key: this.rowKey }}
         before={'搜索 资料'}
