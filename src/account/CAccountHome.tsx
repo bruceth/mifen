@@ -4,7 +4,7 @@ import { PageItems } from 'tonva';
 import { observable, IObservableArray, autorun } from 'mobx';
 import { CUqBase } from '../CUqBase';
 import { IdName } from '../types';
-import { VAccountHome } from './VAccountHome';
+import { VAccountHome, VLockAccountConfirm } from './VAccountHome';
 import { VNewAccount, VEditAccount, VSelectAccounts } from './VSelectAccount';
 import { VInitAccount } from './VInitAccount';
 import { CAccountInit } from './CAccountInit';
@@ -32,9 +32,15 @@ export class CAccountHome extends CUqBase {
     if (this.account === undefined || this.account.id <= 0)
       return;
     
-    let r = await this.cApp.miApi.query('q_accountinfo', [this.account.id]);
-    let ainit = r[0] as any[];
-    let alast = r[1] as any[];
+    await Promise.all([this.loadAccountInit(),
+      this.loadAccountLast()]);
+  }
+
+  protected async loadAccountInit() {
+    if (this.account === undefined || this.account.id <= 0)
+      return;
+    let r = await this.cApp.miApi.query('t_accountinitial$query', [this.account.id]);
+    let ainit = r as any[];
     if (ainit.length <= 0) {
       let dt = new Date();
       this.accountInit = {
@@ -59,20 +65,32 @@ export class CAccountHome extends CUqBase {
       }
       this.accountInit = initData;
     }
+  }
 
-    if (alast.length <= 0) {
-      this.accountLast = undefined;
+  protected async loadAccountLast() {
+    if (this.account === undefined || this.account.id <= 0)
+      return;
+    let r = await this.cApp.miApi.query('t_accountlast$queryall', [this.account.id]);
+    let r1 = r[0][0];
+    if (r1 === undefined) {
+      return;
     }
-    else {
-      let ld = alast[0];
-      let lastData = { id: ld.id as number,
-        marketvalue:ld.marketvalue as number, 
-        share:ld.share as number, 
-        detail:JSON.parse(ld.detail),
-        update:ld.update
-      };
-      this.accountLast = lastData;
+    let lastData = {
+      id: this.account.id,
+      marketvalue: r1.marketvalue,
+      money: r1.money,
+      share: r1.share,
+      update: r1.update,
+      detail: r[1]
     }
+
+    let mv = lastData.money;
+    lastData.detail.forEach(e => {
+      mv += e.volume * e.price;
+    });
+    lastData.marketvalue = mv;
+
+    this.accountLast = lastData;
   }
 
   //作为tabs中的首页，internalStart不会被调用
@@ -142,5 +160,30 @@ export class CAccountHome extends CUqBase {
       this.initController.InitData(this.account, this.accountInit);
     }
     this.initController.open();
+  }
+
+  onClickLockInit = () => {
+    this.openVPage(VLockAccountConfirm);
+  }
+
+  onClickLockInitConfirm = async () => {
+    let details = [];
+    let dt = new Date();
+    this.accountInit.detail.forEach(e => {
+      let item = [e.id.id, e.volume, e.price];
+      details.push(item);
+    });
+    let param = [this.account.id,
+      this.accountInit.marketvalue,
+      this.accountInit.money,
+      this.accountInit.share,
+      Math.floor(dt.getTime() / 1000),
+      JSON.stringify(details),
+      1
+      ];
+    let r = await this.cApp.miApi.call('t_accountlast$savefull', param);
+    await this.loadAccountLast();
+    this.accountInit.lock = 1;
+    this.closePage();
   }
 }

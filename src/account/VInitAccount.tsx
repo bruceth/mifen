@@ -119,7 +119,6 @@ const detailSchema: ItemSchema[] = [
   { name: 'submit', type: 'submit', },
 ];
 
-
 export class VInitAccountEditDetail extends VPage<CAccountInit> {
   async open(param?: any) {
     this.openPage(this.page, param);
