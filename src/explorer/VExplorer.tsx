@@ -61,10 +61,10 @@ export class VExplorer extends View<CExplorer> {
     else
       return <LMR className="px-3 py-2" left={left} right = {order.toString()} onClick={()=>this.onClickName(row)}>
       <div className="d-flex flex-wrap">
-        <div className="px-3 c6">{GFunc.caption('PE')}<br />{GFunc.numberToFixString(pe)}</div>
+        <div className="px-3 c5">{GFunc.caption('PE')}<br />{GFunc.numberToFixString(pe)}</div>
         <div className="px-3 c6">{GFunc.caption('股息率')}<br />{GFunc.percentToFixString(divyield)}</div>
         <div className="px-3 c6">{GFunc.caption('ROE')}<br />{GFunc.percentToFixString(roe)}</div>
-        <div className="px-3 c6">{GFunc.caption('价格')}<br />{GFunc.numberToFixString(price)}</div>
+        <div className="px-3 c5">{GFunc.caption('价格')}<br />{GFunc.numberToFixString(price)}</div>
       </div>
     </LMR>
   });
