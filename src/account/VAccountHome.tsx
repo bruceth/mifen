@@ -47,7 +47,7 @@ export class VAccountHome extends View<CAccountHome> {
         <div className="px-3 c10">{GFunc.caption('市值')}{accountInit.marketvalue}</div>
         <div className="px-3 c10">{GFunc.caption('份额')}{accountInit.share}</div>
         <div className="px-3 c10">{GFunc.caption('余额')}{accountInit.money}</div>
-        <div className="px-3 c18">{GFunc.caption('净值')}{GFunc.numberToFixString(accountInit.marketvalue/accountInit.share, 3)}</div>
+        <div className="px-3 c8">{GFunc.caption('净值')}{GFunc.numberToFixString(accountInit.marketvalue/accountInit.share, 3)}</div>
       </div> 
       <LMR className="px-3 py-1" left="--明细--"></LMR>
       <List items={accountInit.detail} 
@@ -72,7 +72,7 @@ export class VAccountHome extends View<CAccountHome> {
         <div className="px-3 c10">{GFunc.caption('市值')}{accountLast.marketvalue}</div>
         <div className="px-3 c10">{GFunc.caption('份额')}{accountLast.share}</div>
         <div className="px-3 c10">{GFunc.caption('余额')}{accountLast.money}</div>
-        <div className="px-3 c18">{GFunc.caption('净值')}{GFunc.numberToFixString(accountLast.marketvalue/accountLast.share, 3)}</div>
+        <div className="px-3 c8">{GFunc.caption('净值')}{GFunc.numberToFixString(accountLast.marketvalue/accountLast.share, 3)}</div>
       </div> 
       <LMR className="px-3 py-1" left="--明细--"></LMR>
       <List items={accountLast.detail} 
@@ -112,6 +112,8 @@ export class VAccountHome extends View<CAccountHome> {
 
   private rowKey = (item: any) => {
     let { id } = item;
+    if (id !== undefined && id.id !== undefined)
+      return id.id;
     return id;
   }
 
@@ -140,6 +142,8 @@ export class VLockAccountConfirm extends VPage<CAccountHome> {
 
   private rowKey = (item: any) => {
     let { id } = item;
+    if (id !== undefined && id.id !== undefined)
+      return id.id;
     return id;
   }
 

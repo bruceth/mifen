@@ -45,6 +45,8 @@ export class VInitAccount extends VPage<CAccountInit> {
 
   private rowKey = (item: any) => {
     let { id } = item;
+    if (id !== undefined && id.id !== undefined)
+      return id.id;
     return id;
   }
 
@@ -60,9 +62,9 @@ export class VInitAccount extends VPage<CAccountInit> {
       </div>  
     </LMR>
   }
- 
+
   private accountContent = observer(() => {
-    let { accountInit, onAddDetail } = this.controller;
+    let { accountInit, onAddDetail, onClickEditItem } = this.controller;
     let marketvalue = this.controller.MarketValue;
     let accountName = this.controller.cApp.config.accountName;
     let title = accountName === undefined ? '--' : accountName;
@@ -95,11 +97,11 @@ export class VInitAccount extends VPage<CAccountInit> {
       </div>
       <LMR className="px-3 py-1" left="明细" right={detailRight}></LMR>
       <List items={accountInit.detail} 
-        item={{ render: this.renderDetailRow, key: this.rowKey }}
+        item={{ render: this.renderDetailRow, key: this.rowKey, onClick: onClickEditItem }}
         none={'--'}>
       </List>
-      <div className='text-center'>
-        <button className="btn btn-link" color="link" style={{margin:'0px auto'}}
+      <div className='text-center px-3 py-1'>
+        <button className="btn btn-primary" style={{margin:'0px auto'}}
           onClick={this.clickSave}>保存</button>
       </div>
     </>;

@@ -46,6 +46,10 @@ export class CAccountInit extends CUqSub {
     this.openVPage(VInitAccountEditDetail)
   }
 
+  onClickEditItem = (item: any) => {
+    this.openVPage(VInitAccountEditDetail, item);
+  }
+
   onUpdateDetailItem = (item:any) => {
     let {id, volume, price} = item;
     let di = {
