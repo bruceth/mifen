@@ -15,6 +15,7 @@ export class VSelectAccounts extends VPage<CAccountHome> {
 
   private onEditAccount = (item:any, e:React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     this.controller.onEditAccount(item);
   }
 
