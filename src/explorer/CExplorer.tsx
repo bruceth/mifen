@@ -18,10 +18,10 @@ class HomePageItems<T> extends PageItems<T> {
     this.firstSize = 30;
   }
   protected async load(param: any, pageStart: any, pageSize: number): Promise<any[]> {
-    let queryName = 'pe';
-    if (this.ce.cApp.config.stockFind.sortType === 'dp') {
-      queryName = 'dp';
-    }
+    let queryName = 'dvperoe';
+    let sName = this.ce.cApp.config.stockFind.selectType;
+    if (sName !== undefined)
+      queryName = sName;
     let query = {
       name: queryName,
       pageStart: pageStart,
@@ -46,17 +46,17 @@ class HomePageItems<T> extends PageItems<T> {
 
 export class CExplorer extends CUqBase {
   PageItems: HomePageItems<any> = new HomePageItems<any>(this);
-  protected oldSortType: string;
+  protected oldSelectType: string;
 
   disposeAutorun = autorun(async () => {
-    let newSortType = this.cApp.config.stockFind.sortType;
-    if (newSortType === this.oldSortType)
+    let newSelectType = this.cApp.config.stockFind.selectType;
+    if (newSelectType === this.oldSelectType)
       return;
-    if (this.oldSortType === undefined) {
-      this.oldSortType = newSortType;
+    if (this.oldSelectType === undefined) {
+      this.oldSelectType = newSelectType;
       return;
     }
-    this.oldSortType = newSortType;
+    this.oldSelectType = newSelectType;
     this.PageItems.resetStart();
     await this.load();
   });

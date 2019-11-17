@@ -28,12 +28,10 @@ export class VExplorer extends View<CExplorer> {
     </Page>;
   })
 
-  private onSelect = (item:any, isSelected:boolean, anySelected:boolean) => {
-
-  }
-
   private content = observer(() => {
+    let sType = this.controller.cApp.findStockConfg.selectType;
     let {PageItems} = this.controller;
+    
     let header = <div className="px-3">
       <div className="px-3 c5"/>
       <div className="px-3 c5">PE</div>
@@ -50,22 +48,25 @@ export class VExplorer extends View<CExplorer> {
 
   renderRow = (item: any, index: number): JSX.Element => <this.rowContent {...item} />;
   protected rowContent = observer((row: any): JSX.Element => {
-    let { id, name, code, pe, roe, price, order, divyield } = row as NStockInfo;
+    let { id, name, code, pe, roe, price, divyield, ma } = row as NStockInfo;
     let left = <div className="c5"><span className="text-primary">{name}</span><br/>{code}</div>
     let blackList = this.controller.cApp.blackList;
     let fInBlack = blackList.findIndex(v=>v===id);
     if (fInBlack >= 0)
       return <></>;
-    else
-      return <LMR className="px-3 py-2" left={left} right = {order.toString()} onClick={()=>this.onClickName(row)}>
-      <div className="d-flex flex-wrap">
-        <div className="px-3 c5">{GFunc.caption('PE')}<br />{GFunc.numberToFixString(pe)}</div>
-        <div className="px-3 c6">{GFunc.caption('股息率')}<br />{GFunc.percentToFixString(divyield)}</div>
-        <div className="px-3 c6">{GFunc.caption('ROE')}<br />{GFunc.percentToFixString(roe)}</div>
-        <div className="px-3 c5">{GFunc.caption('价格')}<br />{GFunc.numberToFixString(price)}</div>
-      </div>
-    </LMR>
+    else {
+      let right = <div className="px-1"><span className="text-muted small">评分</span><br />{ma.toString()}</div>;
+      return <LMR className="px-3 py-2" left={left} right = {right} onClick={()=>this.onClickName(row)}>
+        <div className="d-flex flex-wrap">
+          <div className="px-3 c5">{GFunc.caption('PE')}<br />{GFunc.numberToFixString(pe)}</div>
+          <div className="px-3 c6">{GFunc.caption('股息率')}<br />{GFunc.percentToFixString(divyield)}</div>
+          <div className="px-3 c6">{GFunc.caption('ROE')}<br />{GFunc.percentToFixString(roe)}</div>
+          <div className="px-3 c5">{GFunc.caption('价格')}<br />{GFunc.numberToFixString(price)}</div>
+        </div>
+      </LMR>
+    }
   });
+
 
   private rowKey = (item: any) => {
     let { id } = item;

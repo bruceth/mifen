@@ -5,6 +5,7 @@ export interface UserTag {
 
 export interface StockFindConfig {
   sortType: string;
+  selectType?: string;
 }
 
 export interface UserStockConfig {

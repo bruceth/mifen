@@ -145,6 +145,13 @@ export class CMiApp extends CAppBase {
     await this.saveConfig();
   }
 
+  setStockSelectType = async (type:string) => {
+    if (this.config.stockFind.selectType === type)
+      return;
+    this.config.stockFind.selectType = type;
+    await this.saveConfig();
+  }
+
   setUserSortType = async (type:string)=> {
     if (this.config.userStock.sortType === type)
       return;
