@@ -34,7 +34,7 @@ export class VExplorerCfg extends VPage<CExplorer> {
       <div className="px-3 py-2">方法</div>
       <div className="px-3 py-2 d-flex flex-wrap">
         <label className="px-3 c8"> <input type="radio" name="selectType" value="dvperoe" checked={selectType==="dvperoe"}
-          onChange={this.selectChage} />综合一</label><br />
+          onChange={this.selectChage} />综合</label><br />
         <label className="px-3 c8"> <input type="radio" name="selectType" value="peroe" checked={selectType==="peroe"}
           onChange={this.selectChage} />神奇公式</label><br />
         <label className="px-3 c8"> <input type="radio" name="selectType" value="pe" checked={selectType==="pe"}
