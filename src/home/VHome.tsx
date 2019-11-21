@@ -86,7 +86,8 @@ export class VHome extends View<CHome> {
   protected rowContent = (row: any): JSX.Element => {
     let { id, name, code, pe, roe, price, order, divyield } = row as NStockInfo;
     let left = <div className="c5"><span className="text-primary">{name}</span><br />{code}</div>
-    return <LMR className="px-3 py-2" left={left} right={order.toString()} onClick={() => this.onClickName(row)}>
+    let right = <div className="px-1"><span className="text-muted small">评分</span><br />{order.toString()}</div>
+    return <LMR className="px-3 py-1" left={left} right={right} onClick={() => this.onClickName(row)}>
       <div className="d-flex flex-wrap">
         <div className="px-3 c5">{GFunc.caption('PE')}<br />{GFunc.numberToFixString(pe)}</div>
         <div className="px-3 c6">{GFunc.caption('股息率')}<br />{GFunc.percentToFixString(divyield)}</div>

@@ -47,6 +47,7 @@ class HomePageItems<T> extends PageItems<T> {
 export class CExplorer extends CUqBase {
   PageItems: HomePageItems<any> = new HomePageItems<any>(this);
   protected oldSelectType: string;
+  selectedItems: any[] = [];
 
   disposeAutorun = autorun(async () => {
     let newSelectType = this.cApp.config.stockFind.selectType;
@@ -80,6 +81,7 @@ export class CExplorer extends CUqBase {
   }
 
   async load() {
+    this.selectedItems = [];
     this.searchMain('');
   }
 

@@ -30,7 +30,7 @@ export class VExplorer extends View<CExplorer> {
 
   private content = observer(() => {
     let sType = this.controller.cApp.findStockConfg.selectType;
-    let {PageItems} = this.controller;
+    let {PageItems, selectedItems} = this.controller;
     
     let header = <div className="px-3">
       <div className="px-3 c5"/>
@@ -40,35 +40,50 @@ export class VExplorer extends View<CExplorer> {
     return <>
       <List header={header}
         items={PageItems}
-        item={{ render: this.renderRow, onClick: this.onSelected, key: this.rowKey }}
-        before={'搜索 资料'}
+        item={{ render: this.renderRow, key: this.rowKey }}
+        selectedItems={selectedItems}
+        before={'选股'}
       />
     </>
   });
 
   renderRow = (item: any, index: number): JSX.Element => <this.rowContent {...item} />;
   protected rowContent = observer((row: any): JSX.Element => {
-    let { id, name, code, pe, roe, price, divyield, ma } = row as NStockInfo;
-    let left = <div className="c5"><span className="text-primary">{name}</span><br/>{code}</div>
+    let { id, name, code, pe, roe, price, divyield, ma, symbol } = row as NStockInfo;
+    //let left = <div className="c5"><span className="text-primary">{name}</span><br/>{code}</div>
+    let labelId = 'vexl_' + id;
+    let left = <label htmlFor={labelId} className="d-inline-flex px-2" onClick={e=>{e.stopPropagation()}}>
+      <div className="px-2 align-self-center">
+      <input className="" type="checkbox" value="" id={labelId}
+        defaultChecked={false}
+        onChange={(e)=>{
+            this.onSelect(row, e.target.checked)} 
+        }/>
+        </div>
+      <div className="c5"><span className="text-primary">{name}</span><br/>{code}</div>
+    </label>
+
     let blackList = this.controller.cApp.blackList;
     let fInBlack = blackList.findIndex(v=>v===id);
     if (fInBlack >= 0)
       return <></>;
-    else {
+    else { //
       let right = <div className="px-1"><span className="text-muted small">评分</span><br />{ma.toString()}</div>;
-      return <LMR className="px-3 py-2" left={left} right = {right} onClick={()=>this.onClickName(row)}>
-        <div className="d-flex flex-wrap">
+      return <><LMR className="px-1 py-1" left={left} right = {right} >
+        <div className="d-flex flex-wrap" onClick={()=>this.onClickName(row)} >
           <div className="px-3 c5">{GFunc.caption('PE')}<br />{GFunc.numberToFixString(pe)}</div>
           <div className="px-3 c6">{GFunc.caption('股息率')}<br />{GFunc.percentToFixString(divyield)}</div>
           <div className="px-3 c6">{GFunc.caption('ROE')}<br />{GFunc.percentToFixString(roe)}</div>
           <div className="px-3 c5">{GFunc.caption('价格')}<br />{GFunc.numberToFixString(price)}</div>
         </div>
-      </LMR>
+      </LMR></>
     }
   });
 
-
   private rowKey = (item: any) => {
+    if (item.item !== undefined) {
+      return item.item.id;
+    }
     let { id } = item;
     return id;
   }
@@ -77,18 +92,28 @@ export class VExplorer extends View<CExplorer> {
     this.controller.openStockInfo(item);
   }
 
-  protected onSelected = async (item: any): Promise<void> => {
+  protected onSelect = async (item: any, isSelected:boolean): Promise<void> => {
+    let {selectedItems} = this.controller;
     let a = 0;
   }
 
-  private callOnSelected(item: any) {
-    if (this.onSelected === undefined) {
-      alert('onSelect is undefined');
-      return;
-    }
-    this.onSelected(item);
+  protected onClickItem = async (item: any): Promise<void> => {
+    this.controller.openStockInfo(item);
   }
-  clickRow = (item: any) => {
-    this.callOnSelected(item);
+
+  protected onSelected = async (item: any, isSelected:boolean, anySelected:boolean): Promise<void> => {
+    let {selectedItems} = this.controller;
+    let a = 0;
   }
+
+  // private callOnSelected(item: any) {
+  //   if (this.onSelected === undefined) {
+  //     alert('onSelect is undefined');
+  //     return;
+  //   }
+  //   this.onSelected(item);
+  // }
+  // clickRow = (item: any) => {
+  //   this.callOnSelected(item);
+  // }
 }
