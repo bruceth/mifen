@@ -627,6 +627,7 @@ export class Nav {
             await nav.logined(user);
         }
         catch (err) {
+            console.log(err);
         }
         finally {
             this.endWait();

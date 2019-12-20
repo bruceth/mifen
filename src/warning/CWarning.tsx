@@ -17,8 +17,8 @@ export class CWarning extends CUqBase {
   }
 
   async loadWarnings() {
-    let r = await this.uqs.mi.StockWarningAll.query(undefined);
-    let ret = r.ret as any[];
+    let r = await this.cApp.miApi.call('t_stockwarning$all', [this.user.id]);//await this.uqs.mi.StockWarningAll.query(undefined);
+    let ret = r as any[];
     this.warnings = ret;
   }
 
@@ -33,13 +33,14 @@ export class CWarning extends CUqBase {
 
   onSaveNewWarning = async (data: any) => {
     let { id, type, price } = data;
-    let param = {
-      user: this.cApp.user.id,
-      stock: id,
-      arr1: [
-        { type: type, price: price }
-      ]};
-    let ret = await this.uqs.mi.StockWarning.add(param);
+    // let param = {
+    //   user: this.cApp.user.id,
+    //   stock: id,
+    //   arr1: [
+    //     { type: type, price: price }
+    //   ]};
+    //let ret = await this.uqs.mi.StockWarning.add(param);
+    await this.cApp.miApi.call('t_stockwarning$add', [this.cApp.user.id, id, type, price]);
     this.closePage();
   }
 

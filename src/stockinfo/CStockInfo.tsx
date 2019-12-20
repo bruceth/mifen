@@ -46,22 +46,15 @@ export class CStockInfo extends CUqBase {
     this.loading();
   }
 
-  // async loadTags(): Promise<void> {
-  //   if (this.tags === undefined) {
-  //     let ret = await this.uqs.mi.AllTags.query(undefined);
-  //     this.tags = ret.ret;
-  //   }
-  // }
-
   loading = async () => {
     if (!this.baseItem)
       return;
     let { id } = this.baseItem;
     let rets = await Promise.all([
       this.cApp.miApi.query('q_stockallinfo', [id]),
-      this.uqs.mi.TagStock.query({ user: nav.user.id, stock: id })
+      this.cApp.miApi.query('t_tagstock$query', [this.user.id, undefined, id]) //this.uqs.mi.TagStock.query({ user: nav.user.id, stock: id })
     ]);
-    this.stockTags = rets[1].ret;
+    this.stockTags = rets[1];
     let ret = rets[0];
     if (Array.isArray(ret[0])) {
       let arr1 = ret[1];
@@ -122,7 +115,7 @@ export class CStockInfo extends CUqBase {
   onSelectTag = async () => {
     //await this.loadTags();
     this.selectedTags = this.cApp.tags.filter(v => {
-      let i = this.stockTags.findIndex(st => st.tag.id === v.id);
+      let i = this.stockTags.findIndex(st => st.tag === v.id);
       return i >= 0;
     });
     //await this.loadTags();
@@ -139,8 +132,8 @@ export class CStockInfo extends CUqBase {
 
   onSaveNewTag = async (data: any) => {
     let { name } = data;
-    let param = { id: undefined, name: name };
-    let ret = await this.uqs.mi.SaveTag.submit(param);
+    //let param = { id: undefined, name: name };
+    let ret = await this.cApp.miApi.call('t_tag$save', [this.user.id, undefined, name]);
     let { retId } = ret;
     if (retId < 0) {
       alert(name + ' 已经被使用了');
@@ -158,7 +151,7 @@ export class CStockInfo extends CUqBase {
       alert(name + ' 已经被使用了');
       return false;
     }
-    let ret = await this.uqs.mi.SaveTag.submit(param);
+    let ret = await this.cApp.miApi.call('t_tag$save', [this.user.id, undefined, name]);
     let { retId } = ret;
     if (retId === undefined || retId < 0) {
       alert(name + ' 已经被使用了');
@@ -180,7 +173,7 @@ export class CStockInfo extends CUqBase {
       ]
     };
     if (isSelected === true) {
-      let ret = await this.uqs.mi.TagStock.add(param);
+      let ret = await this.cApp.miApi.call('t_tagstock$add', [this.user.id, tag.id, this.baseItem.id]); //.uqs.mi.TagStock.add(param);
       let newTag = {
         tag: {
           id: tag.id,
@@ -192,7 +185,7 @@ export class CStockInfo extends CUqBase {
       }
     }
     else {
-      let ret = await this.uqs.mi.TagStock.del(param);
+      let ret = await this.cApp.miApi.call('t_tagstock$del', [this.user.id, tag.id, this.baseItem.id]); // //await this.uqs.mi.TagStock.del(param);
       let i = this.stockTags.findIndex(v => v.tag.id === tag.id);
       this.stockTags.splice(i, 1);
       if (tag.id === this.cApp.blackListTagID) {

@@ -7,21 +7,14 @@ const appConfig:AppConfig = {
   appName: 'bruce/mifen',
   version: '1.01',
   tvs: undefined, //TVs;
+  uqNameMap: {}
 };
 
 class App extends React.Component {
 
   private onLogined = async () => {
+    let a = 0;
     await start(CMiApp, appConfig);
-    /*
-    let page = <Page header={false}>
-      <Tabs tabs={faceTabs} />
-    </Page>
-    nav.push(page);
-    */
-    //let b = new B('b');
-    //await b.d();
-    //nav.push(<div>ddd</div>)
   }
   public render() {
     return <NavView onLogined={this.onLogined} />

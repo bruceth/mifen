@@ -7,7 +7,6 @@ import { MiApi } from './net';
 import { VHome } from './ui';
 import { CUqBase } from './CUqBase';
 import { CExplorer } from './explorer';
-import { UQs } from './uqs';
 import { MiConfigs, StockFindConfig, IdName } from './types';
 import { CWarning } from './warning';
 import { CAccountHome } from './account';
@@ -29,8 +28,6 @@ export class CMiApp extends CAppBase {
   @observable tags: IdName[] = undefined;
   @observable blackList: any[] = [];
   @observable accounts: IdName[] = undefined;
-
-  get uqs(): UQs { return this._uqs as UQs };
 
   @computed get tagID(): number {
     if (this.tags !== undefined) {
@@ -94,17 +91,11 @@ export class CMiApp extends CAppBase {
 
   async saveConfig() {
     let v = JSON.stringify(this.config);
-    let param = {
-      user: this.user.id,
-      arr1: [
-        { name: 'config', value: v }
-      ]
-    };
-    await this.uqs.mi.UserSettings.add(param);
+    await this.miApi.call('t_usersettings$save', [this.user.id, 'config', v]);
   }
 
   protected async loadConfig() {
-    let rets = await Promise.all([this.uqs.mi.UserSettings.query({ user: this.user.id, name: 'config' }),
+    let rets = await Promise.all([this.miApi.query('t_usersettings$query', [this.user.id, 'config']),
         this.loadTags(),
         this.loadAccounts()]);
     let r = rets[0];
@@ -179,12 +170,12 @@ export class CMiApp extends CAppBase {
 
   protected async loadTags(): Promise<void> {
     if (this.tags === undefined) {
-      let r = await this.uqs.mi.AllTags.query(undefined);
-      let ret = r.ret as any[];
+      let r = await this.miApi.query('t_tag$all', [this.user.id]);
+      let ret = r as any[];
       let bc = await this.checkDefaultTags(ret);
       if (bc) {
-        r = await this.uqs.mi.AllTags.query(undefined);
-        ret = r.ret as any[];
+        r = await this.miApi.query('t_tag$all', [this.user.id]);
+        ret = r as any[];
       }
       let r1 = [];
       let i = ret.findIndex(v=>v.name === defaultTagName);
@@ -205,24 +196,20 @@ export class CMiApp extends CAppBase {
   protected async checkDefaultTags(list:any[]): Promise<boolean> {
     let br = false;
     if (list === undefined) {
-      let param = {id: undefined, name: defaultTagName};
-      await this.uqs.mi.SaveTag.submit(param);
-      param = {id: undefined, name: defaultBlackListTagName};
-      await this.uqs.mi.SaveTag.submit(param);
+      await this.miApi.call('t_tag$save', [this.user.id, undefined, defaultTagName]);
+      await this.miApi.call('t_tag$save', [this.user.id, undefined, defaultBlackListTagName]);
       br = true;
     }
     else {
       let param;
       let i = list.findIndex(v => v.name === defaultTagName);
       if (i < 0) {
-        param = {id: undefined, name: defaultTagName};
-        await this.uqs.mi.SaveTag.submit(param);
+        await this.miApi.call('t_tag$save', [this.user.id, undefined, defaultTagName]);
         br = true;
       }
       i = list.findIndex(v => v.name === defaultBlackListTagName);
       if (i < 0) {
-        param = {id: undefined, name: defaultBlackListTagName};
-        await this.uqs.mi.SaveTag.submit(param);
+        await this.miApi.call('t_tag$save', [this.user.id, undefined, defaultBlackListTagName]);
         br = true;
       }
     }
@@ -246,9 +233,9 @@ export class CMiApp extends CAppBase {
 
     let param = { user:this.user.id, tag:blackid};
     try {
-      let ret = await this.uqs.mi.TagStock.query(param);
-      let r = ret.ret.map(item=> {
-        return item.stock.id;
+      let ret = await this.miApi.call('t_tagstock$query', [this.user.id, blackid, undefined]);//await this.uqs.mi.TagStock.query(param);
+      let r = ret.map(item=> {
+        return item.stock;
       });
       this.blackList = r;
     }

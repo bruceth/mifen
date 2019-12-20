@@ -14,8 +14,8 @@ class HomePageItems<T> extends PageItems<T> {
   constructor(cHome: CExplorer) {
     super(true);
     this.ce = cHome;
-    this.pageSize = 30;
-    this.firstSize = 30;
+    this.pageSize = 600;
+    this.firstSize = 600;
   }
   protected async load(param: any, pageStart: any, pageSize: number): Promise<any[]> {
     let queryName = 'dvperoe';
