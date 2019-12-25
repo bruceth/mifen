@@ -67,7 +67,7 @@ export class VHome extends View<CHome> {
     let { onSelectTag } = this.controller;
     let header = <div className="px-3">
       <div className="px-3 c5" />
-      <div className="px-3 c5 cursor-pointer" onClick={(e)=>this.setSortType('tagpe')}>PE</div>
+      <div className="px-3 c5 cursor-pointer" onClick={(e)=>this.setSortType('tagpe')}>TTM</div>
       <div className="px-3 c6 cursor-pointer" onClick={(e)=>this.setSortType('tagdp')}>股息率</div>
     </div>;
     let right = <div className="btn cursor-pointer" onClick={onSelectTag}><FA name="bars" inverse={false} /></div>;
@@ -89,7 +89,7 @@ export class VHome extends View<CHome> {
     let right = <div className="px-1"><span className="text-muted small">评分</span><br />{order.toString()}</div>
     return <LMR className="px-3 py-1" left={left} right={right} onClick={() => this.onClickName(row)}>
       <div className="d-flex flex-wrap">
-        <div className="px-3 c5">{GFunc.caption('PE')}<br />{GFunc.numberToFixString(pe)}</div>
+        <div className="px-3 c5">{GFunc.caption('TTM')}<br />{GFunc.numberToFixString(pe)}</div>
         <div className="px-3 c6">{GFunc.caption('股息率')}<br />{GFunc.percentToFixString(divyield)}</div>
         <div className="px-3 c6">{GFunc.caption('ROE')}<br />{GFunc.percentToFixString(roe)}</div>
         <div className="px-3 c5">{GFunc.caption('价格')}<br />{GFunc.numberToFixString(price)}</div>

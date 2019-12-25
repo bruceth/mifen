@@ -34,7 +34,7 @@ export class VExplorer extends View<CExplorer> {
     
     let header = <div className="px-3">
       <div className="px-3 c5"/>
-      <div className="px-3 c5">PE</div>
+      <div className="px-3 c5">TTM</div>
       <div className="px-3 c6">股息率</div>
     </div>;
     return <>
@@ -71,7 +71,7 @@ export class VExplorer extends View<CExplorer> {
       let right = <div className="px-1"><span className="text-muted small">评分</span><br />{ma.toString()}</div>;
       return <><LMR className="px-1 py-1" left={left} right = {right} >
         <div className="d-flex flex-wrap" onClick={()=>this.onClickName(row)} >
-          <div className="px-3 c5">{GFunc.caption('PE')}<br />{GFunc.numberToFixString(pe)}</div>
+          <div className="px-3 c5">{GFunc.caption('TTM')}<br />{GFunc.numberToFixString(pe)}</div>
           <div className="px-3 c6">{GFunc.caption('股息率')}<br />{GFunc.percentToFixString(divyield)}</div>
           <div className="px-3 c6">{GFunc.caption('ROE')}<br />{GFunc.percentToFixString(roe)}</div>
           <div className="px-3 c5">{GFunc.caption('价格')}<br />{GFunc.numberToFixString(price)}</div>

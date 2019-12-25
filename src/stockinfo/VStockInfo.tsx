@@ -44,7 +44,7 @@ export class VStockInfo extends VPage<CStockInfo> {
     let { name, code, pe, roe, price, order, divyield } = baseItem;
     return <div className="px-3 py-2 bg-white" onClick={() => this.onClickName(this.controller.baseItem)}>
       <div className="d-flex flex-wrap">
-        <div className="px-3 c8">{GFunc.caption('PE')}{GFunc.numberToFixString(pe)}</div>
+        <div className="px-3 c8">{GFunc.caption('TTM')}{GFunc.numberToFixString(pe)}</div>
         <div className="px-3 c8">{GFunc.caption('股息率')}{GFunc.percentToFixString(divyield)}</div>
         <div className="px-3 c8">{GFunc.caption('ROE')}{GFunc.percentToFixString(roe)}</div>
         <div className="px-3 c8">{GFunc.caption('价格')}{GFunc.numberToFixString(price)}</div>

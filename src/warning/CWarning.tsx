@@ -40,7 +40,7 @@ export class CWarning extends CUqBase {
     //     { type: type, price: price }
     //   ]};
     //let ret = await this.uqs.mi.StockWarning.add(param);
-    await this.cApp.miApi.call('t_stockwarning$add', [this.cApp.user.id, id, type, price]);
+    await this.cApp.miApi.call('t_stockwarning$add', [this.cApp.user.id, id.id, type, price]);
     this.closePage();
   }
 
