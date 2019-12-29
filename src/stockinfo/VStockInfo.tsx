@@ -34,6 +34,8 @@ export class VStockInfo extends VPage<CStockInfo> {
   private content = observer(() => {
     return <>
       <this.baseInfo />
+      <this.predictInfo />
+      <this.seasonEarning />
       <this.capitalEarning />
       <this.bonus />
     </>
@@ -57,6 +59,66 @@ export class VStockInfo extends VPage<CStockInfo> {
     let url = `http://finance.sina.com.cn/realstock/company/${symbol}/nc.shtml`;
     window.open(url, '_blank');
   }
+
+  protected predictInfo = observer(() => {
+    let {predictData} = this.controller;
+    if (predictData === undefined) 
+      return <></>;
+    let { e, b, r2, epre, l, lr2, lpre } = predictData;
+    return <><div className="px-3 py-2 bg-white">指数回归预测</div>
+      <div className="d-flex flex-wrap">
+        <div className="px-3 c8">{GFunc.caption('e')}{GFunc.numberToString(e, 4)}</div>
+        <div className="px-3 c8">{GFunc.caption('指数b')}{GFunc.numberToString(b, 4)}</div>
+        <div className="px-3 c8">{GFunc.caption('r2')}{GFunc.numberToString(r2, 4)}</div>
+        <div className="px-3 c8">{GFunc.caption('e预测')}{GFunc.numberToString(epre)}</div>
+      </div>    
+      <div className="px-3 py-2 bg-white">线性回归预测</div>
+      <div className="d-flex flex-wrap">
+      <div className="px-3 c8">{GFunc.caption('e')}{GFunc.numberToString(e, 4)}</div>
+        <div className="px-3 c8">{GFunc.caption('增长率')}{GFunc.numberToString(l, 4)}</div>
+        <div className="px-3 c8">{GFunc.caption('r2')}{GFunc.numberToString(lr2, 4)}</div>
+        <div className="px-3 c8">{GFunc.caption('e预测')}{GFunc.numberToString(lpre)}</div>
+      </div>
+    </>;
+  });
+
+  private seasonEarning = observer(() => {
+    let items = this.controller.seasonData;
+    let header = <div className="px-3">
+      <div className="px-3 c6">年月</div>
+      <div className="px-3 c6 text-right">股本</div>
+      <div className="px-3 c6 text-right">季收益</div>
+      <div className="px-3 c6 text-right">年收益</div>
+      <div className="px-3 c6 text-right">ROE</div>
+      <div className="px-3 c6 text-right">股本o</div>
+      <div className="px-3 c6 text-right">季收益o</div>
+      <div className="px-3 c6 text-right">年收益o</div>
+    </div>;
+    return <>
+      <div className="px-3 py-1">历年股本收益</div>
+      <List header={header} loading="..."
+        items={items}
+        item={{
+          render: (row: {season:number, c:number, e:number, esum:number, corg:number, eorg:number, esumorg:number}) => {
+            let {season, c, e, esum, corg, eorg, esumorg} = row;
+            let ym = GFunc.SeasonnoToYearMonth(season);
+            let a = 0;
+            return <div className="px-3 py-2 d-flex flex-wrap">
+              <div className="px-3 c6">{ym.toString()}</div>
+              <div className="px-3 c6 text-right">{GFunc.numberToFixString(c)}</div>
+              <div className="px-3 c6 text-right">{GFunc.numberToFixString(e)}</div>
+              <div className="px-3 c6 text-right">{GFunc.numberToFixString(esum)}</div>
+              <div className="px-3 c6 text-right">{GFunc.percentToFixString(esum/c)}</div>
+              <div className="px-3 c6 text-right">{GFunc.numberToFixString(corg)}</div>
+              <div className="px-3 c6 text-right">{GFunc.numberToFixString(eorg)}</div>
+              <div className="px-3 c6 text-right">{GFunc.numberToFixString(esumorg)}</div>
+            </div>
+          }
+        }}
+      />
+    </>
+  });
+
 
   private capitalEarning = observer(() => {
     let items = this.controller.capitalearning;

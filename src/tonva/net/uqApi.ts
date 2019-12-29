@@ -1,3 +1,4 @@
+/*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import _ from 'lodash';
 import {HttpChannel, CenterHttpChannel, UqHttpChannel} from './httpChannel';
 import {HttpChannelNavUI} from './httpChannelUI';

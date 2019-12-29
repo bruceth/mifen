@@ -3,9 +3,11 @@ import { observable, IObservableArray, computed } from 'mobx';
 import { nav } from 'tonva';
 import { CUqBase } from '../CUqBase';
 import { CMiApp } from '../CMiApp';
+import { GFunc } from '../GFunc';
 import { VStockInfo } from './VStockInfo'
 import { NStockInfo, StockPrice, StockEarning, StockRoe, StockCapitalearning, StockBonus, StockDivideInfo } from './StockInfoType';
 import { VTags, VNewTag, VEditTag } from './VTags';
+import { ErForEarning, SlrForEarning } from 'regression';
 
 export class CStockInfo extends CUqBase {
   baseItem: NStockInfo;
@@ -16,6 +18,10 @@ export class CStockInfo extends CUqBase {
   //@observable tags: any[] = undefined;
   @observable stockTags: any[];
   selectedTags: any[];
+
+  protected exrightForEarning: {day:number, factor:number}[] = [];
+  @observable seasonData:{season:number, c:number, e:number, esum:number, corg:number, eorg:number, esumorg:number}[] = [];
+  @observable predictData: { e:number, b: number, r2: number, epre:number, l:number, lr2:number, lpre:number};
 
   protected _earning: IObservableArray<StockEarning> = observable.array<StockEarning>([], { deep: true });
   protected _capitalearning: IObservableArray<StockCapitalearning> = observable.array<StockCapitalearning>([], { deep: true });
@@ -98,10 +104,89 @@ export class CStockInfo extends CUqBase {
       if (Array.isArray(arr6)) {
         this._divideInfo.push(...arr6);
       }
+
+      this.exrightForEarning = ret[7];
+      let arr8 = ret[8];
+      await this.loadTTMEarning(arr8);
     }
 
     this.loaded = true;
   }
+
+  protected async loadTTMEarning(list: {seasonno:number, capital:number, earning:number, es:number}[]) {
+    this.seasonData.splice(0);
+    let seasonlist: {[index:number]:{season:number, c:number, e:number, esum:number, corg:number, eorg:number, esumorg:number}} = {};
+    let len = list.length;
+    if (len <= 0)
+      return;
+    let minNo = list[len - 1].seasonno;
+    let maxNo = list[0].seasonno;
+    let {end} = GFunc.SeasonnoToBeginEnd(maxNo);
+    for (let item of list) {
+      let no = item.seasonno;
+      let sItem = {season:no, c: item.capital, e: item.es, esum: item.earning, corg: item.capital, eorg: item.es, esumorg: item.earning}
+      this.ExrightEarning(end, no, sItem);
+      seasonlist[no] = sItem;
+    }
+
+    let i = 0;
+    let esum = 0;
+    for (let seasonno = minNo; seasonno <= maxNo; ++seasonno, ++i) {
+      let si = seasonlist[seasonno];
+      if (si === undefined) {
+        continue;
+      }
+      esum += si.e;
+      if (i < 3) {
+        si.esum = undefined;
+      }
+      else {
+        si.esum = esum;
+        let pastitem = seasonlist[seasonno-3];
+        if (pastitem !== undefined) {
+          esum -= pastitem.e;
+        }
+      }
+      this.seasonData.splice(0,0, si);
+    }
+
+    let noBegin = maxNo - 19;
+    this.predictData = undefined;
+    if (noBegin < minNo)
+      return;
+    noBegin += 3;
+    let y:number[] = [];
+    for (let x = noBegin; x <= maxNo; x += 4) {
+      let item = seasonlist[x];
+      if (item === undefined)
+        break;
+      y.push(item.esum);
+    }
+    if (y.length === 5) {
+      let er = new ErForEarning(y);
+      let lr = new SlrForEarning(y);
+      this.predictData = {e:y[4], b: er.B, r2: er.r2, epre: er.predict(4), l: lr.slopeR, lr2: lr.r2, lpre: lr.predict(4)};
+    }
+  }
+
+  protected ExrightEarning(endDay:number, season:number, item:{c:number, e:number, esum:number}) {
+    let {end} = GFunc.SeasonnoToBeginEnd(season);
+    for (let i = 0; i < this.exrightForEarning.length; ++i) {
+      let exitem = this.exrightForEarning[i];
+      let day = exitem.day;
+      if (day > endDay)
+        break;
+      else if (day < end)
+        continue;
+      else {
+        let factor = exitem.factor;
+        item.c = item.c * factor;
+        item.e = item.e * factor;
+        item.esum = item.esum * factor;
+      }
+    }
+  }
+
 
   async internalStart(param: any) {
     this.baseItem = param as NStockInfo;

@@ -5,8 +5,12 @@ export class GFunc {
     return n === undefined ? '' : n.toFixed(w);
   }
 
+  public static numberToString(n: number, precision = 2) {
+    return n === undefined ? '' : n.toPrecision(precision).toString();;
+  }
+
   public static percentToFixString(n: number) {
-    return n === undefined ? '' : (n * 100).toFixed(2) + '%';
+    return n === undefined || isNaN(n) ? '' : (n * 100).toFixed(2) + '%';
   }
 
   public static warningTypeString(t: string) {
@@ -18,4 +22,43 @@ export class GFunc {
   }
 
   public static caption = (value:string) => <span className="text-muted small">{value}: </span>;
+
+  public static MonthnoFromDay(day:number) {
+    let year = Math.floor(day/10000);
+    let month = Math.floor((day%10000)/100) - 1;
+    return (year-1995)*12+month;
+  }
+  
+  public static SeasonnoFromDay(day:number) {
+    let year = Math.floor(day/10000);
+    let month = Math.floor((day%10000)/100) - 1;
+    let season = Math.floor(month / 3);
+    return (year-1995)*4 + season;
+  }
+  
+  public static SeasonnoFromYearMonth(year:number, month:number) {
+    let season = Math.floor((month-1) / 3);
+    return (year-1995)*4 + season;
+  }
+
+  public static SeasonnoToYearMonth(no: number) {
+    let year = Math.floor(no / 4) + 1995;
+    let month = (Math.floor(no % 4) + 1) * 3;
+    return year * 100 + month;
+  }
+  
+  public static SeasonnoToBeginEnd(season:number) {
+    let year = (1995 + Math.floor(season / 4)) * 10000;
+    let s = season % 4;
+    if (s === 0) {
+      return {begin: year + 101, end: year + 331};
+    } 
+    else if (s === 1) {
+      return {begin: year + 401, end: year + 630};
+    }
+    else if (s === 2) {
+      return {begin: year + 701, end: year + 930};
+    }
+    return {begin: year + 1001, end: year + 1231};
+  }
 }
