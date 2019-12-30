@@ -11,7 +11,7 @@ import { VSearchHeader } from './VSearchHeader';
 import { VHome } from './VHome';
 import { VSelectTag } from './VSelectTag';
 
-class HomePageItems<T> extends PageItems<T> {
+class HomePageItems extends PageItems<any> {
   cHome: CHome;
   constructor(cHome: CHome) {
     super(true);
@@ -46,10 +46,17 @@ class HomePageItems<T> extends PageItems<T> {
   resetStart() {
     this.pageStart = 0;
   }
+
+  RemoveStock(stockID:number) {
+    let i = this._items.findIndex(v=>{return v.id === stockID})
+    if (i >= 0) {
+      this._items.splice(i, 1);
+    }
+  }
 }
 
 export class CHome extends CUqBase {
-  PageItems: HomePageItems<any> = new HomePageItems<any>(this);
+  PageItems: HomePageItems = new HomePageItems(this);
   userTag: UserTag;
   protected oldSortType: string;
   @observable warnings: any[] = [];
@@ -75,6 +82,19 @@ export class CHome extends CUqBase {
       await this.load();
     }
   });
+
+  public AddTagStockID(tagid: number, stockID: number) {
+    if (this.userTag && this.userTag.tagID === tagid) {
+      this.load();
+    }
+  }
+
+  public RemoveTagStockID(tagid: number, stockID: number) {
+    if (this.userTag && this.userTag.tagID === tagid) {
+      this.PageItems.RemoveStock(stockID);
+    }
+  }
+
 
   onSelectTag = async () => {
     this.openVPage(VSelectTag);

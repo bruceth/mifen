@@ -271,17 +271,13 @@ export class CStockInfo extends CUqBase {
         }
       }
       this.stockTags.push(newTag);
-      if (tag.id === this.cApp.blackListTagID) {
-        this.cApp.AddBlackID(this.baseItem.id);
-      }
+      await this.cApp.AddTagStockID(tag.id, this.baseItem.id);
     }
     else {
       let ret = await this.cApp.miApi.call('t_tagstock$del', [this.user.id, tag.id, this.baseItem.id]); // //await this.uqs.mi.TagStock.del(param);
       let i = this.stockTags.findIndex(v => v.tag.id === tag.id);
       this.stockTags.splice(i, 1);
-      if (tag.id === this.cApp.blackListTagID) {
-        this.cApp.RemoveBlackID(this.baseItem.id);
-      }
+      await this.cApp.RemoveTagStockID(tag.id, this.baseItem.id);
     }
   }
 }

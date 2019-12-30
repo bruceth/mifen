@@ -244,14 +244,27 @@ export class CMiApp extends CAppBase {
     }
   }
 
-  public AddBlackID(id:number) {
+  async AddTagStockID(tagid: number, stockID: number) {
+    if (tagid === this.blackListTagID) {
+      this.AddBlackID(stockID);
+    }
+  }
+
+  async RemoveTagStockID(tagid: number, stockID: number) {
+    if (tagid === this.blackListTagID) {
+      this.RemoveBlackID(stockID);
+    }
+    this.cHome.RemoveTagStockID(tagid, stockID);
+  }
+
+  protected AddBlackID(id:number) {
     let i = this.blackList.findIndex(v=> v===id);
     if (i < 0) {
       this.blackList.push(id);
     }
   }
 
-  public RemoveBlackID(id:number) {
+  protected RemoveBlackID(id:number) {
     let i = this.blackList.findIndex(v=> v===id);
     if (i >= 0) {
       this.blackList.splice(i, 1);
