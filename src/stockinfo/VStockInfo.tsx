@@ -35,6 +35,7 @@ export class VStockInfo extends VPage<CStockInfo> {
     return <>
       <this.baseInfo />
       <this.predictInfo />
+      <this.predictSeasonEarning />
       <this.seasonEarning />
       <this.capitalEarning />
       <this.bonus />
@@ -81,6 +82,44 @@ export class VStockInfo extends VPage<CStockInfo> {
       </div>
     </>;
   });
+
+  private predictSeasonEarning = observer(() => {
+    let items = this.controller.predictSeasonData;
+    let header = <div className="px-3">
+      <div className="px-3 c6">年月</div>
+      <div className="px-3 c6 text-right">股本</div>
+      <div className="px-3 c6 text-right">季收益</div>
+      <div className="px-3 c6 text-right">年收益</div>
+      <div className="px-3 c6 text-right">ROE</div>
+      <div className="px-3 c6 text-right">股本o</div>
+      <div className="px-3 c6 text-right">季收益o</div>
+      <div className="px-3 c6 text-right">年收益o</div>
+    </div>;
+    return <>
+      <div className="px-3 py-1">历年股本收益-用于回归计算</div>
+      <List header={header} loading="..."
+        items={items}
+        item={{
+          render: (row: {season:number, c:number, e:number, esum:number, corg:number, eorg:number, esumorg:number}) => {
+            let {season, c, e, esum, corg, eorg, esumorg} = row;
+            let ym = GFunc.SeasonnoToYearMonth(season);
+            let a = 0;
+            return <div className="px-3 py-2 d-flex flex-wrap">
+              <div className="px-3 c6">{ym.toString()}</div>
+              <div className="px-3 c6 text-right">{GFunc.numberToFixString(c)}</div>
+              <div className="px-3 c6 text-right">{GFunc.numberToFixString(e)}</div>
+              <div className="px-3 c6 text-right">{GFunc.numberToFixString(esum)}</div>
+              <div className="px-3 c6 text-right">{GFunc.percentToFixString(esum/c)}</div>
+              <div className="px-3 c6 text-right">{GFunc.numberToFixString(corg)}</div>
+              <div className="px-3 c6 text-right">{GFunc.numberToFixString(eorg)}</div>
+              <div className="px-3 c6 text-right">{GFunc.numberToFixString(esumorg)}</div>
+            </div>
+          }
+        }}
+      />
+    </>
+  });
+
 
   private seasonEarning = observer(() => {
     let items = this.controller.seasonData;
