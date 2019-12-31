@@ -28,7 +28,12 @@ class HomePageItems<T> extends PageItems<T> {
       pageSize: pageSize,
       user: this.ce.user.id,
       blackID:this.ce.cApp.blackListTagID,
-      yearlen: 1,
+      bMin: 0,
+      bMax: 0.5,
+      r2: 0.6,
+      lMin: 0.01,
+      lMax: 0.5,
+      lr2: 0.6
     };
     let result = await this.ce.cApp.miApi.process(query, []);
     if (Array.isArray(result) === false) return [];
