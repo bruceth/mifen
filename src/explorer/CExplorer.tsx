@@ -33,7 +33,8 @@ class HomePageItems<T> extends PageItems<T> {
       r2: 0.6,
       lMin: 0.01,
       lMax: 0.5,
-      lr2: 0.6
+      lr2: 0.6,
+      mcount: 2
     };
     let result = await this.ce.cApp.miApi.process(query, []);
     if (Array.isArray(result) === false) return [];
