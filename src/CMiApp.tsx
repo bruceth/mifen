@@ -100,7 +100,7 @@ export class CMiApp extends CAppBase {
         this.loadAccounts()]);
     let r = rets[0];
     if (r !== undefined) {
-      let ret = r.ret;
+      let ret = r;
       if (ret !== undefined && ret.length > 0) {
         let cStr = ret[0].value;
         let c = JSON.parse(cStr);
