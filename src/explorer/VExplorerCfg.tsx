@@ -12,6 +12,7 @@ const schema: ItemSchema[] = [
   { name: 'lmax', type: 'number', required: true},
   { name: 'lr2', type: 'number', required: true},
   { name: 'mcount', type: 'integer', required: true},
+  { name: 'lr4', type: 'integer', required: true},
   { name: 'submit', type: 'submit', },
 ];
 
@@ -23,6 +24,7 @@ const uiSchema: UiSchema = {
     lmin: { widget: 'text', label: '线性回归最小值', placeholder: '0.00'} as UiTextItem,
     lmax: { widget: 'text', label: '线性回归最大值', placeholder: '0.00'} as UiTextItem,
     lr2: { widget: 'text', label: '线性回归R2', placeholder: '0.00'} as UiTextItem,
+    lr4: { widget: 'text', label: '末年与前4年均值最大比值', placeholder: '0.00'} as UiTextItem,
     mcount: { widget: 'text', label: '5年内单季亏损最多允许出现次数', placeholder: '0.00'} as UiTextItem,
     submit: { widget: 'button', label: '保存', className: 'btn btn-primary' },
   }
@@ -63,7 +65,7 @@ export class VExplorerCfg extends VPage<CExplorer> {
     if (selectType === undefined) {
       selectType = 'dvperoe';
     }
-    let fData = {bmin:0, bmax:0.5, r2:0.6, lmin:0.01, lmax:0.5, lr2:0.6, mcount:2};
+    let fData = {bmin:0, bmax:0.5, r2:0.6, lmin:0.01, lmax:0.5, lr2:0.6, mcount:2, lr4: 2};
 
     return <Page header="选股设置" headerClassName="bg-primary">
       <div className="px-3 py-2">方法</div>
