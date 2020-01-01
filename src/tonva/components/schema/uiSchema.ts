@@ -10,7 +10,7 @@ export type UiType =  'form' | 'arr' | 'group' | 'button' | 'submit' | 'custom' 
     | 'id'
     | 'text' | 'textarea' | 'password' 
     | 'date' | 'datetime' | 'select' | 'url' | 'email'
-    | 'updown' | 'color' | 'checkbox' | 'checkboxes' | 'radio' | 'range';
+    | 'updown' | 'color' | 'checkbox' | 'checkboxes' | 'radio' | 'range' | 'number';
 
 export type ChangingHandler = (context:Context, value:any, prev:any) => boolean;
 export type ChangedHandler = (context:Context, value:any, prev:any) => Promise<void>;

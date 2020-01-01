@@ -18,14 +18,14 @@ const schema: ItemSchema[] = [
 
 const uiSchema: UiSchema = {
   items: {
-    bmin: { widget: 'text', label: '指数回归最小值', placeholder: '0.00'} as UiTextItem,
-    bmax: { widget: 'text', label: '指数回归最大值', placeholder: '0.00'} as UiTextItem,
-    r2: { widget: 'text', label: '指数回归R2', placeholder: '0.00'} as UiTextItem,
-    lmin: { widget: 'text', label: '线性回归最小值', placeholder: '0.00'} as UiTextItem,
-    lmax: { widget: 'text', label: '线性回归最大值', placeholder: '0.00'} as UiTextItem,
-    lr2: { widget: 'text', label: '线性回归R2', placeholder: '0.00'} as UiTextItem,
-    lr4: { widget: 'text', label: '末年与前4年均值最大比值', placeholder: '0.00'} as UiTextItem,
-    mcount: { widget: 'text', label: '5年内单季亏损最多允许出现次数', placeholder: '0.00'} as UiTextItem,
+    bmin: { widget: 'number', label: '指数回归最小值', placeholder: '0.00'} as UiInputItem,
+    bmax: { widget: 'number', label: '指数回归最大值', placeholder: '0.00'} as UiInputItem,
+    r2: { widget: 'number', label: '指数回归R2', placeholder: '0.00'} as UiInputItem,
+    lmin: { widget: 'number', label: '线性回归最小值', placeholder: '0.00'} as UiInputItem,
+    lmax: { widget: 'number', label: '线性回归最大值', placeholder: '0.00'} as UiInputItem,
+    lr2: { widget: 'number', label: '线性回归R2', placeholder: '0.00'} as UiInputItem,
+    lr4: { widget: 'number', label: '末年与前4年均值最大比值', placeholder: '0.00'} as UiInputItem,
+    mcount: { widget: 'number', label: '5年内单季亏损最多允许出现次数', placeholder: '0.00'} as UiInputItem,
     submit: { widget: 'button', label: '保存', className: 'btn btn-primary' },
   }
 };
@@ -54,7 +54,9 @@ export class VExplorerCfg extends VPage<CExplorer> {
 
   private onFormButtonClick = async (name: string, context: Context) => {
     //await this.controller.onSaveNewWarning(context.data);
-    let data = context.data;
+    let {bmin, bmax, r2, lmin, lmax, lr2, mcount, lr4} = context.data;
+    let cfg = {bmin:bmin, bmax:bmax, r2:r2, lmin:lmin, lmax:lmax, lr2:lr2, mcount:mcount, lr4:lr4};
+    await this.controller.cApp.setRegressionConfig(cfg);
   }
 
 
@@ -65,7 +67,7 @@ export class VExplorerCfg extends VPage<CExplorer> {
     if (selectType === undefined) {
       selectType = 'dvperoe';
     }
-    let fData = {bmin:0, bmax:0.5, r2:0.6, lmin:0.01, lmax:0.5, lr2:0.6, mcount:2, lr4: 2};
+    let fData = this.controller.cApp.config.regression;
 
     return <Page header="选股设置" headerClassName="bg-primary">
       <div className="px-3 py-2">方法</div>

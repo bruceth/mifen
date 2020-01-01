@@ -12,10 +12,22 @@ export interface UserStockConfig {
   sortType: string;
 }
 
+export interface RegressionConfig {
+  bmin: number;
+  bmax: number;
+  r2: number;
+  lmin: number;
+  lmax: number;
+  lr2: number;
+  mcount: number;
+  lr4: number;
+}
+
 export interface MiConfigs {
   tagName: string;
   stockFind: StockFindConfig;
   userStock: UserStockConfig;
+  regression: RegressionConfig;
   accountName?: string;
 }
 

@@ -20,6 +20,7 @@ class HomePageItems<T> extends PageItems<T> {
   protected async load(param: any, pageStart: any, pageSize: number): Promise<any[]> {
     let queryName = 'dvperoe';
     let sName = this.ce.cApp.config.stockFind.selectType;
+    let {bmin, bmax, r2, lmin, lmax, lr2, mcount, lr4} = this.ce.cApp.config.regression;
     if (sName !== undefined)
       queryName = sName;
     let query = {
@@ -28,14 +29,14 @@ class HomePageItems<T> extends PageItems<T> {
       pageSize: pageSize,
       user: this.ce.user.id,
       blackID:this.ce.cApp.blackListTagID,
-      bMin: 0,
-      bMax: 0.5,
-      r2: 0.6,
-      lMin: 0.01,
-      lMax: 0.5,
-      lr2: 0.6,
-      mcount: 2,
-      lr4: 2
+      bMin: bmin,
+      bMax: bmax,
+      r2: r2,
+      lMin: lmin,
+      lMax: lmax,
+      lr2: lr2,
+      mcount: mcount,
+      lr4: lr4
     };
     let result = await this.ce.cApp.miApi.process(query, []);
     if (Array.isArray(result) === false) return [];

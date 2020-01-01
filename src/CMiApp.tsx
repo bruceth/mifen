@@ -7,7 +7,7 @@ import { MiApi } from './net';
 import { VHome } from './ui';
 import { CUqBase } from './CUqBase';
 import { CExplorer } from './explorer';
-import { MiConfigs, StockFindConfig, IdName } from './types';
+import { MiConfigs, StockFindConfig, IdName, RegressionConfig } from './types';
 import { CWarning } from './warning';
 import { CAccountHome } from './account';
 
@@ -23,7 +23,8 @@ export class CMiApp extends CAppBase {
   @observable config: MiConfigs = { 
     tagName: defaultTagName, 
     stockFind: { sortType:'pe' },
-    userStock: { sortType:'tagpe'}
+    userStock: { sortType:'tagpe'},
+    regression: {bmin:0, bmax:0.5, r2:0.6, lmin:0.01, lmax:0.5, lr2:0.6, mcount:2, lr4: 2}
   };
   @observable tags: IdName[] = undefined;
   @observable blackList: any[] = [];
@@ -126,6 +127,9 @@ export class CMiApp extends CAppBase {
     if (this.config.userStock === undefined) {
       this.config.userStock = { sortType: 'tagpe' };
     }
+    if (this.config.regression === undefined) {
+      this.config.regression = {bmin:0, bmax:0.5, r2:0.6, lmin:0.01, lmax:0.5, lr2:0.6, mcount:2, lr4: 2};
+    }
     await this.loadBlackList();
   }
 
@@ -166,6 +170,11 @@ export class CMiApp extends CAppBase {
       this.config.accountName = name;
       this.saveConfig();
     }
+  }
+
+  setRegressionConfig = async (cfg: RegressionConfig) => {
+    this.config.regression = cfg;
+    await this.saveConfig();
   }
 
   protected async loadTags(): Promise<void> {
