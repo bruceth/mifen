@@ -18,6 +18,13 @@ export interface NStockInfo extends BaseStockInfo {
   m3?:number,
   m4?:number,
   m5?:number,
+  b?:number,
+  r2?:number,
+  ep1?:number,
+  l?:number,
+  lr2?:number,
+  ep2?:number,
+  lr4?:number
 };
 
 export interface StockPrice {
