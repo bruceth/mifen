@@ -2,9 +2,37 @@
 import * as React from 'react';
 import { VPage, Page, View, List, LMR, left0, FA } from 'tonva';
 import { observer } from 'mobx-react';
+import RC2 from 'react-chartjs2'
 import { GFunc } from '../GFunc';
 import { CStockInfo } from './CStockInfo'
 import { NStockInfo, StockCapitalearning, StockBonus } from './StockInfoType';
+import { ErForEarning, SlrForEarning } from 'regression';
+
+const const_data = {
+  labels: ['红', '蓝', '黄', '绿', '紫', '橙'],
+        datasets: [
+       {
+            label: '示例1',
+            data: [12, 19, 3, 5, 0, 3],
+            borderColor:'blue',
+            backgroundColor:'skyBlue',
+            borderWidth: 1,
+            fill: false,
+ 
+        },
+       {
+            label: '示例2',
+            data: [182, 51, 133, 54, 105, 96],
+            borderColor:'red',
+            backgroundColor:'pink',
+            borderWidth: 1,
+            showLine: false,
+            pointStyle: "crossRot",
+            pointRadius: 5,
+            fill: false,
+        },
+      ]
+};
 
 export class VStockInfo extends VPage<CStockInfo> {
   async open(param?: any) {
@@ -62,17 +90,69 @@ export class VStockInfo extends VPage<CStockInfo> {
   }
 
   protected predictInfo = observer(() => {
-    let {predictData} = this.controller;
+    let {predictData, ypredict} = this.controller;
     if (predictData === undefined) 
       return <></>;
     let { e, b, r2, epre, l, lr2, lpre } = predictData;
+    let chart1 = <></>;
+    if (ypredict.length === 5) {
+      let er = new ErForEarning(ypredict);
+      let chartdata1 = {
+        labels: ['0', '1', '2', '3', '4'],
+        datasets: [
+          {
+            label: '原值',
+            data: ypredict,
+            borderColor:'black',
+            backgroundColor:'skyBlue',
+            showLine: false,
+            pointStyle: "crossRot",
+            borderWidth: 1,
+            pointRadius: 5,
+            fill: false,
+          } as any
+        ]
+      };
+      if (!(isNaN(er.B) || isNaN(er.A))) {
+        let per:number[] = [];
+        for (let i = 0; i < 5; ++i) {
+          per.push(Number.parseFloat(er.predict(i).toPrecision(4)));
+        }
+        chartdata1.datasets.push(
+          {
+            label: '指数回归',
+            data: per,
+            borderColor:'red',
+            backgroundColor:'pink',
+            borderWidth: 1,
+            fill: false,
+        });
+      }
+      let lr = new SlrForEarning(ypredict);
+      if (!(isNaN(lr.slope) || isNaN(lr.intercept))) {
+        let plr:number[] = [];
+        for (let i = 0; i < 5; ++i) {
+          plr.push(Number.parseFloat(lr.predict(i).toPrecision(4)));
+        }
+        chartdata1.datasets.push(
+          {
+            label: '线性回归',
+            data: plr,
+            borderColor:'blue',
+            backgroundColor:'pink',
+            borderWidth: 1,
+            fill: false,
+        });
+        chart1 = <RC2 data={chartdata1} type='line' />;
+      }
+    }
     return <><div className="px-3 py-2 bg-white">指数回归预测</div>
       <div className="d-flex flex-wrap">
         <div className="px-3 c8">{GFunc.caption('e')}{GFunc.numberToString(e, 4)}</div>
         <div className="px-3 c8">{GFunc.caption('指数b')}{GFunc.numberToString(b, 4)}</div>
         <div className="px-3 c8">{GFunc.caption('r2')}{GFunc.numberToString(r2, 4)}</div>
         <div className="px-3 c8">{GFunc.caption('e预测')}{GFunc.numberToString(epre)}</div>
-      </div>    
+      </div>
       <div className="px-3 py-2 bg-white">线性回归预测</div>
       <div className="d-flex flex-wrap">
       <div className="px-3 c8">{GFunc.caption('e')}{GFunc.numberToString(e, 4)}</div>
@@ -80,6 +160,7 @@ export class VStockInfo extends VPage<CStockInfo> {
         <div className="px-3 c8">{GFunc.caption('r2')}{GFunc.numberToString(lr2, 4)}</div>
         <div className="px-3 c8">{GFunc.caption('e预测')}{GFunc.numberToString(lpre)}</div>
       </div>
+      {chart1}
     </>;
   });
 

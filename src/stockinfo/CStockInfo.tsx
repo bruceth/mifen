@@ -23,6 +23,7 @@ export class CStockInfo extends CUqBase {
   @observable seasonData:{season:number, c:number, e:number, esum:number, corg:number, eorg:number, esumorg:number}[] = [];
   @observable predictSeasonData:{season:number, c:number, e:number, esum:number, corg:number, eorg:number, esumorg:number}[] = [];
   @observable predictData: { e:number, b: number, r2: number, epre:number, l:number, lr2:number, lpre:number};
+  @observable ypredict: number[] = [];
 
   protected _earning: IObservableArray<StockEarning> = observable.array<StockEarning>([], { deep: true });
   protected _capitalearning: IObservableArray<StockCapitalearning> = observable.array<StockCapitalearning>([], { deep: true });
@@ -157,18 +158,18 @@ export class CStockInfo extends CUqBase {
     if (noBegin < minNo)
       return;
     noBegin += 3;
-    let y:number[] = [];
+    this.ypredict = [];
     for (let x = noBegin; x <= maxNo; x += 4) {
       let item = seasonlist[x];
       this.predictSeasonData.splice(0, 0, item);
       if (item === undefined)
         break;
-      y.push(item.esum);
+      this.ypredict.push(item.esum);
     }
-    if (y.length === 5) {
-      let er = new ErForEarning(y);
-      let lr = new SlrForEarning(y);
-      this.predictData = {e:y[4], b: er.B, r2: er.r2, epre: er.predict(4), l: lr.slopeR, lr2: lr.r2, lpre: lr.predict(4)};
+    if (this.ypredict.length === 5) {
+      let er = new ErForEarning(this.ypredict);
+      let lr = new SlrForEarning(this.ypredict);
+      this.predictData = {e:this.ypredict[4], b: er.B, r2: er.r2, epre: er.predict(4), l: lr.slopeR, lr2: lr.r2, lpre: lr.predict(4)};
     }
     else {
       this.predictSeasonData.splice(0);
