@@ -14,7 +14,7 @@ export class CStockInfo extends CUqBase {
   @observable protected loaded: boolean = false;
 
   @observable price: StockPrice;
-  @observable roe: StockRoe;
+  //@observable roe: StockRoe;
   //@observable tags: any[] = undefined;
   @observable stockTags: any[];
   selectedTags: any[];
@@ -25,15 +25,15 @@ export class CStockInfo extends CUqBase {
   @observable predictData: { e:number, b: number, r2: number, epre:number, l:number, lr2:number, lpre:number};
   @observable ypredict: number[] = [];
 
-  protected _earning: IObservableArray<StockEarning> = observable.array<StockEarning>([], { deep: true });
+  //protected _earning: IObservableArray<StockEarning> = observable.array<StockEarning>([], { deep: true });
   protected _capitalearning: IObservableArray<StockCapitalearning> = observable.array<StockCapitalearning>([], { deep: true });
   protected _bonus: IObservableArray<StockBonus> = observable.array<StockBonus>([], { deep: true });
   protected _divideInfo: IObservableArray<StockDivideInfo> = observable.array<StockDivideInfo>([], { deep: true });
 
-  @computed get earning(): IObservableArray<StockEarning> {
-    if (this.loaded === false) return undefined;
-    return this._earning;
-  }
+  // @computed get earning(): IObservableArray<StockEarning> {
+  //   if (this.loaded === false) return undefined;
+  //   return this._earning;
+  // }
 
   @computed get capitalearning(): IObservableArray<StockCapitalearning> {
     if (this.loaded === false) return undefined;
@@ -70,46 +70,33 @@ export class CStockInfo extends CUqBase {
         this.price = arr1[0];
       }
 
-      let arr2 = ret[2];
-      if (Array.isArray(arr2)) {
-        this.roe = arr2[0];
-      }
-
-      if (this._earning.length > 0) {
-        this._earning.clear();
-      }
-      let arr3 = ret[3];
-      if (Array.isArray(arr3)) {
-        this._earning.push(...arr3);
-      }
-
       if (this._capitalearning.length > 0) {
         this._capitalearning.clear();
       }
-      let arr4 = ret[4];
-      if (Array.isArray(arr4)) {
-        this._capitalearning.push(...arr4);
+      let arr2 = ret[2];
+      if (Array.isArray(arr2)) {
+        this._capitalearning.push(...arr2);
       }
 
       if (this._bonus.length > 0) {
         this._bonus.clear();
       }
-      let arr5 = ret[5];
-      if (Array.isArray(arr5)) {
-        this._bonus.push(...arr5);
+      let arr3 = ret[3];
+      if (Array.isArray(arr3)) {
+        this._bonus.push(...arr3);
       }
 
       if (this._divideInfo.length > 0) {
         this._divideInfo.clear();
       }
-      let arr6 = ret[6];
-      if (Array.isArray(arr6)) {
-        this._divideInfo.push(...arr6);
+      let arr4 = ret[4];
+      if (Array.isArray(arr4)) {
+        this._divideInfo.push(...arr4);
       }
 
-      this.exrightForEarning = ret[7];
-      let arr8 = ret[8];
-      await this.loadTTMEarning(arr8);
+      this.exrightForEarning = ret[5];
+      let arr6 = ret[6];
+      await this.loadTTMEarning(arr6);
     }
 
     this.loaded = true;
