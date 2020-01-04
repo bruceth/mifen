@@ -8,32 +8,6 @@ import { CStockInfo } from './CStockInfo'
 import { NStockInfo, StockCapitalearning, StockBonus } from './StockInfoType';
 import { ErForEarning, SlrForEarning } from 'regression';
 
-const const_data = {
-  labels: ['红', '蓝', '黄', '绿', '紫', '橙'],
-        datasets: [
-       {
-            label: '示例1',
-            data: [12, 19, 3, 5, 0, 3],
-            borderColor:'blue',
-            backgroundColor:'skyBlue',
-            borderWidth: 1,
-            fill: false,
- 
-        },
-       {
-            label: '示例2',
-            data: [182, 51, 133, 54, 105, 96],
-            borderColor:'red',
-            backgroundColor:'pink',
-            borderWidth: 1,
-            showLine: false,
-            pointStyle: "crossRot",
-            pointRadius: 5,
-            fill: false,
-        },
-      ]
-};
-
 export class VStockInfo extends VPage<CStockInfo> {
   async open(param?: any) {
     this.openPage(this.page);
@@ -62,6 +36,7 @@ export class VStockInfo extends VPage<CStockInfo> {
   private content = observer(() => {
     return <>
       <this.baseInfo />
+      <this.historyChart />
       <this.predictInfo />
       <this.predictSeasonEarning />
       <this.seasonEarning />
@@ -88,6 +63,70 @@ export class VStockInfo extends VPage<CStockInfo> {
     let url = `http://finance.sina.com.cn/realstock/company/${symbol}/nc.shtml`;
     window.open(url, '_blank');
   }
+
+  protected historyChart = observer(() => {
+    let {historyData} = this.controller;
+    if (historyData === undefined) 
+      return <></>;
+    let chart1 = <></>;
+    let labelList:any[] = [];
+    let priceList:number[] = [];
+    let ttmList:number[] = [];
+    for (let item of historyData) {
+      let {day, price, ttm} = item;
+      labelList.push(day);
+      priceList.push(Number.parseFloat(price.toPrecision(4)));
+      if (ttm <= 0) 
+        ttmList.push(undefined);
+      else
+        ttmList.push(Number.parseFloat(ttm.toPrecision(4)));
+    }
+    let chartdata1 = {
+      labels: labelList,
+      datasets: [
+        {
+          label: '价格',
+          data: priceList,
+          borderColor:'blue',
+          backgroundColor:'skyBlue',
+          borderWidth: 1,
+          fill: false,
+          yAxisID: 'y-axis-1',
+        },
+        {
+          label: 'TTM',
+          data: ttmList,
+          borderColor:'red',
+          backgroundColor:'pink',
+          borderWidth: 1,
+          fill: false,
+          yAxisID: 'y-axis-2',
+        }
+      ]
+    };
+    let options = {
+      scales:{
+        yAxes: [{
+            type: 'linear',
+            display: true,
+            position: 'left',
+            id: 'y-axis-1',
+        }, {
+            type: 'linear',
+            display: true,
+            position: 'right',
+            id: 'y-axis-2',
+            gridLines: {
+                drawOnChartArea: false
+            }
+        }],       
+      }
+    }
+    chart1 = <RC2 data={chartdata1} type='line' options={options} />;
+    return <><div className="px-3 py-2 bg-white">历史走势</div>
+      {chart1}
+    </>;
+  });
 
   protected predictInfo = observer(() => {
     let {predictData, ypredict} = this.controller;

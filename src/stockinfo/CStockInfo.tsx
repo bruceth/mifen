@@ -20,10 +20,12 @@ export class CStockInfo extends CUqBase {
   selectedTags: any[];
 
   protected exrightForEarning: {day:number, factor:number}[] = [];
+  protected exrightInfo: {day:number, bonus:number, factor:number, factore:number}[] = [];
   @observable seasonData:{season:number, c:number, e:number, esum:number, corg:number, eorg:number, esumorg:number}[] = [];
   @observable predictSeasonData:{season:number, c:number, e:number, esum:number, corg:number, eorg:number, esumorg:number}[] = [];
   @observable predictData: { e:number, b: number, r2: number, epre:number, l:number, lr2:number, lpre:number};
   @observable ypredict: number[] = [];
+  @observable historyData:{day:number, price:number, ttm:number}[] =  [];
 
   //protected _earning: IObservableArray<StockEarning> = observable.array<StockEarning>([], { deep: true });
   protected _capitalearning: IObservableArray<StockCapitalearning> = observable.array<StockCapitalearning>([], { deep: true });
@@ -78,25 +80,23 @@ export class CStockInfo extends CUqBase {
         this._capitalearning.push(...arr2);
       }
 
-      if (this._bonus.length > 0) {
-        this._bonus.clear();
-      }
+      this._bonus.clear();
       let arr3 = ret[3];
       if (Array.isArray(arr3)) {
         this._bonus.push(...arr3);
       }
 
-      if (this._divideInfo.length > 0) {
-        this._divideInfo.clear();
-      }
+      this._divideInfo.clear();
       let arr4 = ret[4];
       if (Array.isArray(arr4)) {
         this._divideInfo.push(...arr4);
       }
 
       this.exrightForEarning = ret[5];
-      let arr6 = ret[6];
-      await this.loadTTMEarning(arr6);
+      await this.loadTTMEarning(ret[6]);
+      this.exrightInfo = ret[7];
+
+      this.LoadHistoryData(ret[8]);
     }
 
     this.loaded = true;
@@ -181,6 +181,73 @@ export class CStockInfo extends CUqBase {
     }
   }
 
+  protected LoadHistoryData(list:{day:number, price:number, dayno:number}[]) {
+    let length = list.length;
+    if (length <= 0)
+      return;
+    let lastItem = list[length - 1];
+    let lastdayno = lastItem.dayno;
+    let lastDay = lastItem.day;
+    let not = lastdayno % 5;
+    let historyList: any[] = [];
+    for (let i = 0; i < length; ++i) {
+      let {day, price, dayno} = list[i];
+      if ( dayno % 5 === not) {
+        historyList.push({day:day, price:this.RestorePrice(price, day, lastDay), ttm:this.CalculateHistoryPE(price, day)});
+      }
+    }
+    this.historyData = historyList;
+  }
+
+  RestorePrice(price:number, dayFrom:number, dayIndex:number) {
+    let bsum = 0;
+    let pricere = price;
+    if (dayFrom < dayIndex) {
+      for (let i = 0; i < this.exrightInfo.length; ++i) {
+        let {day, bonus, factor, factore} = this.exrightInfo[i];
+        if (day <= dayFrom)
+          continue;
+        if (day > dayIndex)
+          break;
+        pricere = pricere * factor;
+        bsum = (bsum + bonus) * factore;
+      }
+      pricere = pricere - bsum;
+    }
+    else {
+      for (let i = 0; i < this.exrightInfo.length; ++i) {
+        let {day, bonus, factor, factore} = this.exrightInfo[i];
+        if (day <= dayIndex)
+          continue;
+        if (day > dayFrom)
+          break;
+        pricere = pricere / factor;
+        bsum = bsum / factore + bonus;
+      }
+      pricere = pricere + bsum;
+    }
+    return pricere;
+  }
+
+  CalculateHistoryPE(price:number, day:number) {
+    let season = GFunc.SeasonnoFromDay(day);
+    let len = this.seasonData.length;
+    for (let i = 0; i < len; ++i) {
+      let item = this.seasonData[i];
+      if (item.season >= season) {
+        continue;
+      }
+
+      if (item.esumorg === undefined)
+        return undefined;
+
+      let {end} = GFunc.SeasonnoToBeginEnd(item.season);
+      let pricere = this.RestorePrice(price, day, end);
+      return pricere / item.esumorg;
+    }
+
+    return undefined;
+  }
 
   async internalStart(param: any) {
     this.baseItem = param as NStockInfo;
