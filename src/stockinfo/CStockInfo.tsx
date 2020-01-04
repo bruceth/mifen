@@ -23,6 +23,7 @@ export class CStockInfo extends CUqBase {
   protected exrightInfo: {day:number, bonus:number, factor:number, factore:number}[] = [];
   @observable seasonData:{season:number, c:number, e:number, esum:number, corg:number, eorg:number, esumorg:number}[] = [];
   @observable predictSeasonData:{season:number, c:number, e:number, esum:number, corg:number, eorg:number, esumorg:number}[] = [];
+  @observable predictSeasonDataFull:{season:number, c:number, e:number, esum:number, corg:number, eorg:number, esumorg:number}[] = [];
   @observable predictData: { e:number, b: number, r2: number, epre:number, l:number, lr2:number, lpre:number};
   @observable ypredict: number[] = [];
   @observable historyData:{day:number, price:number, ttm:number}[] =  [];
@@ -142,16 +143,24 @@ export class CStockInfo extends CUqBase {
     let noBegin = maxNo - 19;
     this.predictData = undefined;
     this.predictSeasonData.splice(0);
+    this.predictSeasonDataFull.splice(0);
     if (noBegin < minNo)
       return;
     noBegin += 3;
     this.ypredict = [];
     for (let x = noBegin; x <= maxNo; x += 4) {
       let item = seasonlist[x];
-      this.predictSeasonData.splice(0, 0, item);
       if (item === undefined)
         break;
+      this.predictSeasonData.splice(0, 0, item);
       this.ypredict.push(item.esum);
+    }
+
+    for (let x = maxNo; x >= minNo; x -= 4) {
+      let item = seasonlist[x];
+      if (item === undefined)
+        break;
+      this.predictSeasonDataFull.push(item);
     }
     if (this.ypredict.length === 5) {
       let er = new ErForEarning(this.ypredict);

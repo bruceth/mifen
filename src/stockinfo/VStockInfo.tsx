@@ -1,6 +1,7 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import * as React from 'react';
 import { VPage, Page, View, List, LMR, left0, FA } from 'tonva';
+import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import RC2 from 'react-chartjs2'
 import { GFunc } from '../GFunc';
@@ -13,8 +14,15 @@ export class VStockInfo extends VPage<CStockInfo> {
     this.openPage(this.page);
   }
 
+  @observable protected ttmLimit:boolean = false;
+
   render(param: any): JSX.Element {
     return <this.page />
+  }
+
+  checkLimitShow = (e)=> {
+    let check = e.target.checked as boolean;
+    this.ttmLimit = check;
   }
 
   private page = observer(() => {
@@ -68,7 +76,7 @@ export class VStockInfo extends VPage<CStockInfo> {
     let {historyData} = this.controller;
     if (historyData === undefined) 
       return <></>;
-    let chart1 = <></>;
+    let chartHistory = <></>;
     let labelList:any[] = [];
     let priceList:number[] = [];
     let ttmList:number[] = [];
@@ -78,8 +86,14 @@ export class VStockInfo extends VPage<CStockInfo> {
       priceList.push(Number.parseFloat(price.toPrecision(4)));
       if (ttm <= 0) 
         ttmList.push(undefined);
-      else
-        ttmList.push(Number.parseFloat(ttm.toPrecision(4)));
+      else {
+        if (this.ttmLimit && ttm >= 35) {
+          ttmList.push(35);
+        }
+        else {
+          ttmList.push(Number.parseFloat(ttm.toPrecision(4)));
+        }
+      }
     }
     let chartdata1 = {
       labels: labelList,
@@ -122,9 +136,11 @@ export class VStockInfo extends VPage<CStockInfo> {
         }],       
       }
     }
-    chart1 = <RC2 data={chartdata1} type='line' options={options} />;
-    return <><div className="px-3 py-2 bg-white">历史走势</div>
-      {chart1}
+    chartHistory = <RC2 data={chartdata1} type='line' options={options} />;
+    let right = <label className="px-3"> <input type="checkbox" name="selectType" defaultChecked={this.ttmLimit}
+      onChange={this.checkLimitShow} />限制TTM显示范围</label>;
+    return <><LMR className="px-3 py-2 bg-white" left={'历史走势'} right={right}></LMR>
+      <div className="px-3" >{chartHistory}</div>
     </>;
   });
 
@@ -182,26 +198,96 @@ export class VStockInfo extends VPage<CStockInfo> {
             borderWidth: 1,
             fill: false,
         });
-        chart1 = <RC2 data={chartdata1} type='line' />;
       }
+      chart1 = <RC2 data={chartdata1} type='line' />;
     }
+    let chart2 = this.predictChartFullInfo();
     return <><div className="px-3 py-2 bg-white">指数回归预测</div>
       <div className="d-flex flex-wrap">
-        <div className="px-3 c8">{GFunc.caption('e')}{GFunc.numberToString(e, 4)}</div>
-        <div className="px-3 c8">{GFunc.caption('指数b')}{GFunc.numberToString(b, 4)}</div>
-        <div className="px-3 c8">{GFunc.caption('r2')}{GFunc.numberToString(r2, 4)}</div>
-        <div className="px-3 c8">{GFunc.caption('e预测')}{GFunc.numberToString(epre)}</div>
+        <div className="px-3 c12">{GFunc.caption('e')}{GFunc.numberToString(e, 4)}</div>
+        <div className="px-3 c12">{GFunc.caption('指数b')}{GFunc.numberToString(b, 4)}</div>
+        <div className="px-3 c12">{GFunc.caption('r2')}{GFunc.numberToString(r2, 4)}</div>
+        <div className="px-3 c12">{GFunc.caption('e预测')}{GFunc.numberToString(epre)}</div>
       </div>
       <div className="px-3 py-2 bg-white">线性回归预测</div>
       <div className="d-flex flex-wrap">
-      <div className="px-3 c8">{GFunc.caption('e')}{GFunc.numberToString(e, 4)}</div>
-        <div className="px-3 c8">{GFunc.caption('增长率')}{GFunc.numberToString(l, 4)}</div>
-        <div className="px-3 c8">{GFunc.caption('r2')}{GFunc.numberToString(lr2, 4)}</div>
-        <div className="px-3 c8">{GFunc.caption('e预测')}{GFunc.numberToString(lpre)}</div>
+      <div className="px-3 c12">{GFunc.caption('e')}{GFunc.numberToString(e, 4)}</div>
+        <div className="px-3 c12">{GFunc.caption('增长率')}{GFunc.numberToString(l, 4)}</div>
+        <div className="px-3 c12">{GFunc.caption('r2')}{GFunc.numberToString(lr2, 4)}</div>
+        <div className="px-3 c12">{GFunc.caption('e预测')}{GFunc.numberToString(lpre)}</div>
       </div>
-      {chart1}
+      <div className="d-flex">
+        <div className="px-2" style={{width:'50%'}}>{chart1}</div>
+        <div className="px-2" style={{width:'50%'}}>{chart2}</div>
+      </div>
     </>;
   });
+
+  protected predictChartFullInfo = () => {
+    let { predictSeasonDataFull } = this.controller;
+    let len = predictSeasonDataFull.length;
+    if (len <= 0)
+      return <></>;
+    let label = [];
+    let y:number[] = [];
+    for (let i = len - 1; i >= 0; --i) {
+      let item = predictSeasonDataFull[i];
+      if (item.esum === undefined)
+        continue;
+      label.push(GFunc.SeasonnoToYearMonth(item.season));
+      y.push(item.esum);
+    }
+
+    let er = new ErForEarning(y);
+    let chartdataFull = {
+      labels: label,
+      datasets: [
+        {
+          label: '原值',
+          data: y,
+          borderColor:'black',
+          backgroundColor:'skyBlue',
+          showLine: false,
+          pointStyle: "crossRot",
+          borderWidth: 1,
+          pointRadius: 5,
+          fill: false,
+        } as any
+      ]
+    };
+    if (!(isNaN(er.B) || isNaN(er.A))) {
+      let per:number[] = [];
+      for (let i = 0; i < len; ++i) {
+        per.push(Number.parseFloat(er.predict(i).toPrecision(4)));
+      }
+      chartdataFull.datasets.push(
+        {
+          label: '指数 R2:' + GFunc.numberToString(er.r2, 4),
+          data: per,
+          borderColor:'red',
+          backgroundColor:'pink',
+          borderWidth: 1,
+          fill: false,
+      });
+    }
+    let lr = new SlrForEarning(y);
+    if (!(isNaN(lr.slope) || isNaN(lr.intercept))) {
+      let plr:number[] = [];
+      for (let i = 0; i < len; ++i) {
+        plr.push(Number.parseFloat(lr.predict(i).toPrecision(4)));
+      }
+      chartdataFull.datasets.push(
+        {
+          label: '线性 R2:' + GFunc.numberToString(lr.r2, 4),
+          data: plr,
+          borderColor:'blue',
+          backgroundColor:'pink',
+          borderWidth: 1,
+          fill: false,
+      });
+    }
+    return <RC2 data={chartdataFull} type='line' />;
+  };
 
   private predictSeasonEarning = observer(() => {
     let items = this.controller.predictSeasonData;

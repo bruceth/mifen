@@ -6,7 +6,11 @@ export class GFunc {
   }
 
   public static numberToString(n: number, precision = 2) {
-    return n === undefined ? '' : n.toPrecision(precision).toString();;
+    return n === undefined ? '' : n.toPrecision(precision);
+  }
+
+  public static numberToPrecision(n: number, precision = 4) {
+    return n === undefined ? undefined : Number.parseFloat(n.toPrecision(precision));
   }
 
   public static percentToFixString(n: number) {
