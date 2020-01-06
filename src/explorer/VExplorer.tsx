@@ -68,7 +68,12 @@ export class VExplorer extends View<CExplorer> {
     if (fInBlack >= 0)
       return <></>;
     else { //
-      let right = <div className="px-1"><span className="text-muted small">评分</span><br />{ma.toString()}</div>;
+      let defList = this.controller.cApp.defaultList;
+      let fInDef = defList.findIndex(v=>v===id);
+      let right = <div className="d-flex">
+          <div className="px-1"><span className="text-muted small">自选</span><br />{fInDef >= 0?'√' :''}</div>
+          <div className="px-1"><span className="text-muted small">评分</span><br />{ma.toString()}</div>
+        </div>;
       return <><LMR className="px-1 py-1" left={left} right = {right} >
         <div className="d-flex flex-wrap" onClick={()=>this.onClickName(row)} >
           <div className="px-3 c5">{GFunc.caption('TTM')}<br />{GFunc.numberToFixString(pe)}</div>

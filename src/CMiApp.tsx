@@ -28,6 +28,7 @@ export class CMiApp extends CAppBase {
   };
   @observable tags: IdName[] = undefined;
   @observable blackList: any[] = [];
+  @observable defaultList: any[] = [];
   @observable accounts: IdName[] = undefined;
 
   @computed get tagID(): number {
@@ -60,6 +61,17 @@ export class CMiApp extends CAppBase {
     if (this.tags !== undefined) {
       let name = this.config.tagName;
       let i = this.tags.findIndex(v => v.name === defaultBlackListTagName);
+      if (i >= 0) {
+        return this.tags[i].id as number;
+      }
+    }
+    return -1;
+  }
+
+  @computed get defaultListTagID(): number {
+    if (this.tags !== undefined) {
+      let name = this.config.tagName;
+      let i = this.tags.findIndex(v => v.name === defaultTagName);
       if (i >= 0) {
         return this.tags[i].id as number;
       }
@@ -131,6 +143,7 @@ export class CMiApp extends CAppBase {
       this.config.regression = {bmin:0, bmax:0.5, r2:0.6, lmin:0.01, lmax:0.5, lr2:0.6, mcount:2, lr4: 2};
     }
     await this.loadBlackList();
+    await this.loadDefaultList();
   }
 
   setStockSortType = async (type:string)=> {
@@ -253,15 +266,41 @@ export class CMiApp extends CAppBase {
     }
   }
 
+  protected async loadDefaultList(): Promise<void> {
+    let id = this.defaultListTagID;
+    if (id <= 0) {
+      this.defaultList = [];
+      return;
+    }
+
+    let param = { user:this.user.id, tag:id};
+    try {
+      let ret = await this.miApi.call('t_tagstock$query', [this.user.id, id, undefined]);//await this.uqs.mi.TagStock.query(param);
+      let r = ret.map(item=> {
+        return item.stock;
+      });
+      this.defaultList = r;
+    }
+    catch (error) {
+      let e = error;
+    }
+  }
+
   async AddTagStockID(tagid: number, stockID: number) {
     if (tagid === this.blackListTagID) {
       this.AddBlackID(stockID);
+    }
+    else if (tagid === this.defaultListTagID) {
+      this.AddDefaultID(stockID);
     }
   }
 
   async RemoveTagStockID(tagid: number, stockID: number) {
     if (tagid === this.blackListTagID) {
       this.RemoveBlackID(stockID);
+    }
+    else if (tagid === this.defaultListTagID) {
+      this.RemoveDefaultID(stockID);
     }
     this.cHome.RemoveTagStockID(tagid, stockID);
   }
@@ -277,6 +316,20 @@ export class CMiApp extends CAppBase {
     let i = this.blackList.findIndex(v=> v===id);
     if (i >= 0) {
       this.blackList.splice(i, 1);
+    }
+  }
+
+  protected AddDefaultID(id:number) {
+    let i = this.defaultList.findIndex(v=> v===id);
+    if (i < 0) {
+      this.defaultList.push(id);
+    }
+  }
+
+  protected RemoveDefaultID(id:number) {
+    let i = this.defaultList.findIndex(v=> v===id);
+    if (i >= 0) {
+      this.defaultList.splice(i, 1);
     }
   }
 
