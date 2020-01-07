@@ -344,4 +344,31 @@ export class CStockInfo extends CUqBase {
       await this.cApp.RemoveTagStockID(tag.id, this.baseItem.id);
     }
   }
+
+  onClickDefaultTag = async (isSelected: boolean) => {
+    let tagid = this.cApp.defaultListTagID;
+    let param = {
+      user: nav.user.id,
+      tag: tagid,
+      arr1: [
+        { stock: this.baseItem.id }
+      ]
+    };
+    if (isSelected === true) {
+      let ret = await this.cApp.miApi.call('t_tagstock$add', [this.user.id, tagid, this.baseItem.id]); //.uqs.mi.TagStock.add(param);
+      let newTag = {
+        tag: {
+          id: tagid,
+        }
+      }
+      this.stockTags.push(newTag);
+      await this.cApp.AddTagStockID(tagid, this.baseItem.id);
+    }
+    else {
+      let ret = await this.cApp.miApi.call('t_tagstock$del', [this.user.id, tagid, this.baseItem.id]); // //await this.uqs.mi.TagStock.del(param);
+      let i = this.stockTags.findIndex(v => v.tag.id === tagid);
+      this.stockTags.splice(i, 1);
+      await this.cApp.RemoveTagStockID(tagid, this.baseItem.id);
+    }
+  }
 }

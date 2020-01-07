@@ -34,7 +34,7 @@ body, body>div, ul.va, ul.va>li, article.page-container {
   }
   article.page-container {
     /*max-width: 1280px;*/
-    width: 98%;
+    width: 100%;
     align-self: center;
   }
   div.va-tab>div {

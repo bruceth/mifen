@@ -25,6 +25,11 @@ export class VStockInfo extends VPage<CStockInfo> {
     this.ttmLimit = check;
   }
 
+  checkDefaultTag = (e)=> {
+    let check = e.target.checked as boolean;
+    this.controller.onClickDefaultTag(check);
+  }
+
   private page = observer(() => {
     let { openMetaView, baseItem, onSelectTag, stockTags, isLogined } = this.controller;
     let { name, code } = baseItem;
@@ -55,15 +60,20 @@ export class VStockInfo extends VPage<CStockInfo> {
 
   private baseInfo = () => {
     let {baseItem} = this.controller;
-    let { name, code, pe, roe, price, order, divyield } = baseItem;
-    return <div className="px-3 py-2 bg-white" onClick={() => this.onClickName(this.controller.baseItem)}>
+    let { id, name, code, pe, roe, price, order, divyield } = baseItem;
+    let list = this.controller.cApp.defaultList;
+    let fInList = list.findIndex(v=>v===id) >= 0;
+    let right = <label className="align-self-center px-3"> <input type="checkbox" name="checkDefaultList" defaultChecked={fInList}
+      onChange={this.checkDefaultTag} />自选股</label>;
+    return <LMR className="bg-white" right={right}> <div className="px-3 py-2" onClick={() => this.onClickName(this.controller.baseItem)}>
       <div className="d-flex flex-wrap">
         <div className="px-3 c8">{GFunc.caption('TTM')}{GFunc.numberToFixString(pe)}</div>
         <div className="px-3 c8">{GFunc.caption('股息率')}{GFunc.percentToFixString(divyield)}</div>
         <div className="px-3 c8">{GFunc.caption('ROE')}{GFunc.percentToFixString(roe)}</div>
         <div className="px-3 c8">{GFunc.caption('价格')}{GFunc.numberToFixString(price)}</div>
       </div>    
-    </div>;
+    </div>
+    </LMR>;
   }
 
   protected onClickName = (item: NStockInfo) => {
