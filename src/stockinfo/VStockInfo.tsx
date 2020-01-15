@@ -93,7 +93,7 @@ export class VStockInfo extends VPage<CStockInfo> {
     for (let item of historyData) {
       let {day, price, ttm} = item;
       labelList.push(day);
-      priceList.push(Number.parseFloat(price.toPrecision(4)));
+      priceList.push(GFunc.numberToPrecision(price, 4));
       if (ttm <= 0) 
         ttmList.push(undefined);
       else {
@@ -101,7 +101,7 @@ export class VStockInfo extends VPage<CStockInfo> {
           ttmList.push(35);
         }
         else {
-          ttmList.push(Number.parseFloat(ttm.toPrecision(4)));
+          ttmList.push(GFunc.numberToPrecision(ttm, 4));
         }
       }
     }
@@ -167,7 +167,7 @@ export class VStockInfo extends VPage<CStockInfo> {
         datasets: [
           {
             label: '原值',
-            data: ypredict,
+            data: ypredict.map(v=>GFunc.numberToPrecision(v)),
             borderColor:'black',
             backgroundColor:'skyBlue',
             showLine: false,
@@ -181,7 +181,7 @@ export class VStockInfo extends VPage<CStockInfo> {
       if (!(isNaN(er.B) || isNaN(er.A))) {
         let per:number[] = [];
         for (let i = 0; i < 5; ++i) {
-          per.push(Number.parseFloat(er.predict(i).toPrecision(4)));
+          per.push(GFunc.numberToPrecision(er.predict(i), 4));
         }
         chartdata1.datasets.push(
           {
@@ -197,7 +197,7 @@ export class VStockInfo extends VPage<CStockInfo> {
       if (!(isNaN(lr.slope) || isNaN(lr.intercept))) {
         let plr:number[] = [];
         for (let i = 0; i < 5; ++i) {
-          plr.push(Number.parseFloat(lr.predict(i).toPrecision(4)));
+          plr.push(GFunc.numberToPrecision(lr.predict(i), 4));
         }
         chartdata1.datasets.push(
           {
@@ -212,6 +212,7 @@ export class VStockInfo extends VPage<CStockInfo> {
       chart1 = <RC2 data={chartdata1} type='line' />;
     }
     let chart2 = this.predictChartFullInfo();
+    let chart3 = this.predictChartROE();
     return <><div className="px-3 py-2 bg-white">指数回归预测</div>
       <div className="d-flex flex-wrap">
         <div className="px-3 c12">{GFunc.caption('e')}{GFunc.numberToString(e, 4)}</div>
@@ -229,6 +230,9 @@ export class VStockInfo extends VPage<CStockInfo> {
       <div className="d-flex">
         <div className="px-2" style={{width:'50%'}}>{chart1}</div>
         <div className="px-2" style={{width:'50%'}}>{chart2}</div>
+      </div>
+      <div className="d-flex">
+        <div className="px-2" style={{width:'50%'}}>{chart3}</div>
       </div>
     </>;
   });
@@ -254,7 +258,7 @@ export class VStockInfo extends VPage<CStockInfo> {
       datasets: [
         {
           label: '原值',
-          data: y,
+          data: y.map(v=>GFunc.numberToPrecision(v)),
           borderColor:'black',
           backgroundColor:'skyBlue',
           showLine: false,
@@ -268,7 +272,7 @@ export class VStockInfo extends VPage<CStockInfo> {
     if (!(isNaN(er.B) || isNaN(er.A))) {
       let per:number[] = [];
       for (let i = 0; i < len; ++i) {
-        per.push(Number.parseFloat(er.predict(i).toPrecision(4)));
+        per.push(GFunc.numberToPrecision(er.predict(i), 4));
       }
       chartdataFull.datasets.push(
         {
@@ -280,6 +284,56 @@ export class VStockInfo extends VPage<CStockInfo> {
           fill: false,
       });
     }
+    let lr = new SlrForEarning(y);
+    if (!(isNaN(lr.slope) || isNaN(lr.intercept))) {
+      let plr:number[] = [];
+      for (let i = 0; i < len; ++i) {
+        plr.push(GFunc.numberToPrecision(lr.predict(i), 4));
+      }
+      chartdataFull.datasets.push(
+        {
+          label: '线性 R2:' + GFunc.numberToString(lr.r2, 4),
+          data: plr,
+          borderColor:'blue',
+          backgroundColor:'pink',
+          borderWidth: 1,
+          fill: false,
+      });
+    }
+    return <RC2 data={chartdataFull} type='line' />;
+  };
+
+  protected predictChartROE = () => {
+    let { predictSeasonDataFull } = this.controller;
+    let len = predictSeasonDataFull.length;
+    if (len <= 0)
+      return <></>;
+    let label = [];
+    let y:number[] = [];
+    for (let i = len - 1; i >= 0; --i) {
+      let item = predictSeasonDataFull[i];
+      if (item.esum === undefined)
+        continue;
+      label.push(GFunc.SeasonnoToYearMonth(item.season));
+      y.push(item.esumorg / item.corg);
+    }
+
+    let chartdataFull = {
+      labels: label,
+      datasets: [
+        {
+          label: 'ROE原值',
+          data: y.map(v=>GFunc.numberToPrecision(v)),
+          borderColor:'black',
+          backgroundColor:'skyBlue',
+          showLine: false,
+          pointStyle: "crossRot",
+          borderWidth: 1,
+          pointRadius: 5,
+          fill: false,
+        } as any
+      ]
+    };
     let lr = new SlrForEarning(y);
     if (!(isNaN(lr.slope) || isNaN(lr.intercept))) {
       let plr:number[] = [];

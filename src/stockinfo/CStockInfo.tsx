@@ -192,10 +192,14 @@ export class CStockInfo extends CUqBase {
 
   protected LoadHistoryData(list:{day:number, price:number, dayno:number}[]) {
     let length = list.length;
-    if (length <= 0)
+    if (length <= 10)
       return;
     let lastItem = list[length - 1];
     let lastdayno = lastItem.dayno;
+    if (lastdayno === undefined) {
+      lastItem = list[length - 2];
+      lastdayno = lastItem.dayno;
+    }
     let lastDay = lastItem.day;
     let not = lastdayno % 5;
     let historyList: any[] = [];
