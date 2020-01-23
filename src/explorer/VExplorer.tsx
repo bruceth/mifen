@@ -30,7 +30,7 @@ export class VExplorer extends View<CExplorer> {
 
   private content = observer(() => {
     let sType = this.controller.cApp.findStockConfg.selectType;
-    let {PageItems, selectedItems} = this.controller;
+    let {items, selectedItems} = this.controller;
     
     let header = <div className="px-3">
       <div className="px-3 c5"/>
@@ -39,7 +39,7 @@ export class VExplorer extends View<CExplorer> {
     </div>;
     return <>
       <List header={header}
-        items={PageItems}
+        items={items}
         item={{ render: this.renderRow, key: this.rowKey }}
         selectedItems={selectedItems}
         before={'选股'}
@@ -49,7 +49,8 @@ export class VExplorer extends View<CExplorer> {
 
   renderRow = (item: any, index: number): JSX.Element => <this.rowContent {...item} />;
   protected rowContent = observer((row: any): JSX.Element => {
-    let { id, name, code, pe, roe, price, divyield, ma, symbol, b, r2, l, lr2, lr4 } = row as NStockInfo;
+    let sName = this.controller.cApp.config.stockFind.selectType;
+    let { id, name, code, pe, roe, price, divyield, ma, symbol, b, r2, l, lr2, lr4, predictep, predictepe, predicteps } = row as NStockInfo;
     //let left = <div className="c5"><span className="text-primary">{name}</span><br/>{code}</div>
     let labelId = 'vexl_' + id;
     let left = <label htmlFor={labelId} className="d-inline-flex px-2" onClick={e=>{e.stopPropagation()}}>
@@ -72,12 +73,13 @@ export class VExplorer extends View<CExplorer> {
       let fInDef = defList.findIndex(v=>v===id);
       let right = <div className="d-flex">
           <div className="px-1"><span className="text-muted small">自选</span><br />{fInDef >= 0?'√' :''}</div>
-          <div className="px-1"><span className="text-muted small">评分</span><br />{ma.toString()}</div>
+          <div className="px-1"><span className="text-muted small">{sName === 'all'?'序号': '评分'}</span><br />{ma.toString()}</div>
         </div>;
       return <><LMR className="px-1 py-1" left={left} right = {right} >
         <div className="d-flex flex-wrap" onClick={()=>this.onClickName(row)} >
           <div className="px-3 c5">{GFunc.caption('TTM')}<br />{GFunc.numberToFixString(pe)}</div>
           <div className="px-3 c6">{GFunc.caption('股息率')}<br />{GFunc.percentToFixString(divyield)}</div>
+          <div className="px-3 c6">{GFunc.caption('预期')}<br />{GFunc.percentToFixString(predictep)}</div>
           <div className="px-3 c6">{GFunc.caption('ROE')}<br />{GFunc.percentToFixString(roe)}</div>
           <div className="px-3 c5">{GFunc.caption('价格')}<br />{GFunc.numberToFixString(price)}</div>
           <div className="px-3 c5">{GFunc.caption('b')}<br />{GFunc.numberToString(b, 3)}</div>
@@ -85,6 +87,8 @@ export class VExplorer extends View<CExplorer> {
           <div className="px-3 c5">{GFunc.caption('l')}<br />{GFunc.numberToString(l, 3)}</div>
           <div className="px-3 c5">{GFunc.caption('lR2')}<br />{GFunc.numberToString(lr2, 3)}</div>
           <div className="px-3 c5">{GFunc.caption('l/4')}<br />{GFunc.numberToString(lr4, 3)}</div>
+          <div className="px-3 c6">{GFunc.caption('预期指数')}<br />{GFunc.percentToFixString(predictepe)}</div>
+          <div className="px-3 c6">{GFunc.caption('预期线性')}<br />{GFunc.percentToFixString(predicteps)}</div>
         </div>
       </LMR></>
     }

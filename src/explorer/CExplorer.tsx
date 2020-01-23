@@ -1,7 +1,7 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
-import * as React from 'react';
-import { PageItems } from 'tonva';
+import { observable, IObservableArray, computed } from 'mobx';import * as React from 'react';
 import { autorun } from 'mobx';
+import { ErForEarning, SlrForEarning } from 'regression';
 import { CUqBase } from '../CUqBase';
 import { CMiApp } from '../CMiApp';
 import { CStockInfo, NStockInfo } from '../stockinfo';
@@ -9,51 +9,8 @@ import { VSiteHeader } from './VSiteHeader';
 import { VExplorer } from './VExplorer';
 import { VExplorerCfg } from './VExplorerCfg';
 
-class HomePageItems<T> extends PageItems<T> {
-  ce: CExplorer;
-  constructor(cHome: CExplorer) {
-    super(true);
-    this.ce = cHome;
-    this.pageSize = 600;
-    this.firstSize = 600;
-  }
-  protected async load(param: any, pageStart: any, pageSize: number): Promise<any[]> {
-    let queryName = 'dvperoe';
-    let sName = this.ce.cApp.config.stockFind.selectType;
-    let {bmin, bmax, r2, lmin, lmax, lr2, mcount, lr4} = this.ce.cApp.config.regression;
-    if (sName !== undefined)
-      queryName = sName;
-    let query = {
-      name: queryName,
-      pageStart: pageStart,
-      pageSize: pageSize,
-      user: this.ce.user.id,
-      blackID:this.ce.cApp.blackListTagID,
-      bMin: bmin,
-      bMax: bmax,
-      r2: r2,
-      lMin: lmin,
-      lMax: lmax,
-      lr2: lr2,
-      mcount: mcount,
-      lr4: lr4
-    };
-    let result = await this.ce.cApp.miApi.process(query, []);
-    if (Array.isArray(result) === false) return [];
-    return result as any[];
-  }
-  protected setPageStart(item: any) {
-    this.pageStart = item === undefined ? 0 : item.order;
-  }
-  
-  resetStart() {
-    this.reset();
-    this.pageStart = 0;
-  }
-}
-
 export class CExplorer extends CUqBase {
-  PageItems: HomePageItems<any> = new HomePageItems<any>(this);
+  items: IObservableArray<any> = observable.array<any>([], { deep: true });
   protected oldSelectType: string;
   selectedItems: any[] = [];
 
@@ -66,23 +23,15 @@ export class CExplorer extends CUqBase {
       return;
     }
     this.oldSelectType = newSelectType;
-    this.PageItems.resetStart();
     await this.load();
   });
 
   onPage = () => {
-    this.PageItems.more();
+    //this.PageItems.more();
   }
 
   onConfig = async () => {
     this.openVPage(VExplorerCfg);
-  }
-
-  async searchMain(key: string) {
-    if (key !== undefined) {
-      this.PageItems.resetStart();
-      await this.PageItems.first(key);
-    }
   }
 
   async internalStart(param: any) {
@@ -90,7 +39,71 @@ export class CExplorer extends CUqBase {
 
   async load() {
     this.selectedItems = [];
-    this.searchMain('');
+    await this.loadItems();
+  }
+
+  async loadItems() {
+    let queryName = 'dvperoe';
+    let sName = this.cApp.config.stockFind.selectType;
+    let {bmin, bmax, r2, lmin, lmax, lr2, mcount, lr4, predictyear} = this.cApp.config.regression;
+    if (sName !== undefined)
+      queryName = sName;
+    let query = {
+      name: queryName,
+      pageStart: 0,
+      pageSize: 3000,
+      user: this.user.id,
+      blackID:this.cApp.blackListTagID,
+      bMin: bmin,
+      bMax: bmax,
+      r2: r2,
+      lMin: lmin,
+      lMax: lmax,
+      lr2: lr2,
+      mcount: mcount,
+      lr4: lr4,
+    };
+    let result = await this.cApp.miApi.process(query, []);
+    if (Array.isArray(result) === false) {
+      return;
+    };
+    let arr = result as {id:number, data?:string, e:number, price:number, r2:number, lr2:number, predictep?:number,predictepe?:number,predicteps?:number, ma:number}[];
+    for (let item of arr) {
+      let dataArray = JSON.parse(item.data) as number[];
+      try {
+        let esum = 0;
+        let er = new ErForEarning(dataArray);
+        let yearend = 4 + predictyear;
+        for (let i = 5; i <= yearend; ++i) {
+          esum += er.predict(i);
+        }
+        item.predictepe = (0.9 + Math.sqrt(er.r2) / 10) * esum / item.price;
+        let sl = new SlrForEarning(dataArray);
+        esum = 0;
+        for (let i = 5; i <= yearend; ++i) {
+          esum += sl.predict(i);
+        }
+        item.predicteps = (0.9 + Math.sqrt(sl.r2) / 10) * esum / item.price;
+        item.predictep = item.r2 > item.lr2?item.predictepe:item.predicteps;
+      }
+      catch {
+        item.predictep = item.e / item.price;
+        item.predictepe = item.e / item.price;
+        item.predicteps = item.e / item.price;
+      }
+    }
+    if (queryName === 'all') {
+      arr.sort((a, b) => {
+        return b.predictep - a.predictep;
+      })
+      let o = 1;
+      for (let item of arr) {
+        item.ma = o;
+        ++o;
+      }
+    }
+    this.items.clear();
+    this.items.push(...arr);
   }
 
   renderSiteHeader = () => {

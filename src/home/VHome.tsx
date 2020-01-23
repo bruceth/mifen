@@ -63,18 +63,19 @@ export class VHome extends View<CHome> {
 
   private content = observer(() => {
     let title = this.controller.cApp.config.tagName;
-    let { PageItems } = this.controller;
+    let { items } = this.controller;
     let { onSelectTag } = this.controller;
     let header = <div className="px-3">
       <div className="px-3 c5" />
       <div className="px-3 c5 cursor-pointer" onClick={(e)=>this.setSortType('tagpe')}>TTM</div>
       <div className="px-3 c6 cursor-pointer" onClick={(e)=>this.setSortType('tagdp')}>股息率</div>
+      <div className="px-3 c6 cursor-pointer" onClick={(e)=>this.setSortType('tagpredict')}>预期</div>
     </div>;
     let right = <div className="btn cursor-pointer" onClick={onSelectTag}><FA name="bars" inverse={false} /></div>;
     return <>
       <LMR className="px-3 py-1" left={title} right={right}></LMR>
       <List header={header}
-        items={PageItems}
+        items={items}
         item={{ render: this.renderRow, onClick: this.onSelected, key: this.rowKey }}
         before={'搜索'}
         none={'----'}
@@ -84,20 +85,23 @@ export class VHome extends View<CHome> {
 
   renderRow = (item: any, index: number): JSX.Element => <this.rowContent {...item} />;
   protected rowContent = (row: any): JSX.Element => {
-    let { id, name, code, pe, roe, price, order, divyield, b, r2, l, lr2, lr4 } = row as NStockInfo;
+    let { id, name, code, pe, roe, price, order, divyield, b, r2, l, lr2, lr4, predictep, predictepe, predicteps } = row as NStockInfo;
     let left = <div className="c5"><span className="text-primary">{name}</span><br />{code}</div>
     let right = <div className="px-1"><span className="text-muted small">序号</span><br />{order.toString()}</div>
     return <LMR className="px-3 py-1" left={left} right={right} onClick={() => this.onClickName(row)}>
       <div className="d-flex flex-wrap">
         <div className="px-3 c5">{GFunc.caption('TTM')}<br />{GFunc.numberToFixString(pe)}</div>
         <div className="px-3 c6">{GFunc.caption('股息率')}<br />{GFunc.percentToFixString(divyield)}</div>
+        <div className="px-3 c6">{GFunc.caption('预期')}<br />{GFunc.percentToFixString(predictep)}</div>
         <div className="px-3 c6">{GFunc.caption('ROE')}<br />{GFunc.percentToFixString(roe)}</div>
         <div className="px-3 c5">{GFunc.caption('价格')}<br />{GFunc.numberToFixString(price)}</div>
         <div className="px-3 c5">{GFunc.caption('b')}<br />{GFunc.numberToString(b, 3)}</div>
-          <div className="px-3 c5">{GFunc.caption('R2')}<br />{GFunc.numberToString(r2, 3)}</div>
-          <div className="px-3 c5">{GFunc.caption('l')}<br />{GFunc.numberToString(l, 3)}</div>
-          <div className="px-3 c5">{GFunc.caption('lR2')}<br />{GFunc.numberToString(lr2, 3)}</div>
-          <div className="px-3 c5">{GFunc.caption('l/4')}<br />{GFunc.numberToString(lr4, 3)}</div>
+        <div className="px-3 c5">{GFunc.caption('R2')}<br />{GFunc.numberToString(r2, 3)}</div>
+        <div className="px-3 c5">{GFunc.caption('l')}<br />{GFunc.numberToString(l, 3)}</div>
+        <div className="px-3 c5">{GFunc.caption('lR2')}<br />{GFunc.numberToString(lr2, 3)}</div>
+        <div className="px-3 c5">{GFunc.caption('l/4')}<br />{GFunc.numberToString(lr4, 3)}</div>
+        <div className="px-3 c6">{GFunc.caption('预期指数')}<br />{GFunc.percentToFixString(predictepe)}</div>
+        <div className="px-3 c6">{GFunc.caption('预期线性')}<br />{GFunc.percentToFixString(predicteps)}</div>
       </div>
     </LMR>
   }

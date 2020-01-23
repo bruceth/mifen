@@ -24,7 +24,10 @@ export interface NStockInfo extends BaseStockInfo {
   l?:number,
   lr2?:number,
   ep2?:number,
-  lr4?:number
+  lr4?:number,
+  predictep?:number,
+  predictepe?:number,
+  predicteps?:number,
 };
 
 export interface StockPrice {
