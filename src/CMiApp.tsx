@@ -24,7 +24,7 @@ export class CMiApp extends CAppBase {
     tagName: defaultTagName, 
     stockFind: { sortType:'pe' },
     userStock: { sortType:'tagpe'},
-    regression: {bmin:0, bmax:0.5, r2:0.6, lmin:0.01, lmax:0.5, lr2:0.6, mcount:2, lr4: 2}
+    regression: {bmin:0, bmax:0.5, r2:0.6, lmin:0.01, lmax:0.5, lr2:0.6, mcount:2, lr4: 2, predictyear:3}
   };
   @observable tags: IdName[] = undefined;
   @observable blackList: any[] = [];
@@ -140,7 +140,7 @@ export class CMiApp extends CAppBase {
       this.config.userStock = { sortType: 'tagpe' };
     }
     if (this.config.regression === undefined) {
-      this.config.regression = {bmin:0, bmax:0.5, r2:0.6, lmin:0.01, lmax:0.5, lr2:0.6, mcount:2, lr4: 2};
+      this.config.regression = {bmin:0, bmax:0.5, r2:0.6, lmin:0.01, lmax:0.5, lr2:0.6, mcount:2, lr4: 2, predictyear:3};
     }
     await this.loadBlackList();
     await this.loadDefaultList();

@@ -500,7 +500,8 @@ export class CenterAppApi extends CenterApiBase {
     //private local: LocalCache = env.localDb.item(appUqsName);
     //private cachedUqs: UqAppData;
     async uqs(appOwner:string, appName:string):Promise<UqAppData> {
-        let ret:UqAppData = await this.get('tie/app-uqs', {appOwner:appOwner, appName:appName});
+        //let ret:UqAppData = await this.get('tie/app-uqs', {appOwner:appOwner, appName:appName});
+        let ret = {appOwner:appOwner, appName:appName, id:0, version:'0.1',uqs:[]};
         return ret;
         /*
         let ret:UqAppData;

@@ -57,6 +57,7 @@ export abstract class CAppBase extends Controller {
             //this.id = id;
             let {user} = nav;
             if (user !== undefined && user.id > 0) {
+                return true;
                 this.appUnits = await centerApi.userAppUnits(this.uqsMan.id);
                 switch (this.appUnits.length) {
                     case 0:
