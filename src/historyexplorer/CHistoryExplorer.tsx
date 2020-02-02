@@ -79,6 +79,8 @@ export class CHistoryExplorer extends CUqBase {
 
   openStockInfo = (item: NStockInfo) => {
     let cStockInfo = this.newC(CStockInfo);
-    cStockInfo.start(item);
+    let bi = {...item};
+    bi.day = this.day;
+    cStockInfo.start(bi);
   }
 }

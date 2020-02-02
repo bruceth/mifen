@@ -27,6 +27,7 @@ export class CStockInfo extends CUqBase {
   @observable predictData: { e:number, b: number, r2: number, epre:number, l:number, lr2:number, lpre:number};
   @observable ypredict: number[] = [];
   @observable historyData:{day:number, price:number, ttm:number}[] =  [];
+  protected historyDataOrg:{day:number, price:number, dayno:number}[] = [];
 
   //protected _earning: IObservableArray<StockEarning> = observable.array<StockEarning>([], { deep: true });
   protected _capitalearning: IObservableArray<StockCapitalearning> = observable.array<StockCapitalearning>([], { deep: true });
@@ -97,7 +98,8 @@ export class CStockInfo extends CUqBase {
       await this.loadTTMEarning(ret[6]);
       this.exrightInfo = ret[7];
 
-      this.LoadHistoryData(ret[8]);
+      this.historyDataOrg = ret[8];
+      this.LoadHistoryData(false);
     }
 
     this.loaded = true;
@@ -190,10 +192,26 @@ export class CStockInfo extends CUqBase {
     }
   }
 
-  protected LoadHistoryData(list:{day:number, price:number, dayno:number}[]) {
+  LoadHistoryData(showAll:boolean) {
+    let list = this.historyDataOrg;
     let length = list.length;
-    if (length <= 10)
+    if (length <= 10) {
+      this.historyData = [];
       return;
+    }
+    if (!showAll) {
+      let day = this.baseItem.day;
+      if (day !== undefined) {
+        let i = length - 1;
+        for (; i >= 0; --i) {
+          let item = list[i];
+          if (item.day <= day) {
+            break;
+          }
+        }
+        length = i + 1;
+      }
+    }
     let lastItem = list[length - 1];
     let lastdayno = lastItem.dayno;
     if (lastdayno === undefined) {

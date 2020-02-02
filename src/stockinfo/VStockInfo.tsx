@@ -25,6 +25,11 @@ export class VStockInfo extends VPage<CStockInfo> {
     this.ttmLimit = check;
   }
 
+  checkShowLater = (e)=> {
+    let check = e.target.checked as boolean;
+    this.controller.LoadHistoryData(check);
+  }
+
   checkDefaultTag = (e)=> {
     let check = e.target.checked as boolean;
     this.controller.onClickDefaultTag(check);
@@ -32,7 +37,7 @@ export class VStockInfo extends VPage<CStockInfo> {
 
   private page = observer(() => {
     let { openMetaView, baseItem, onSelectTag, stockTags, isLogined } = this.controller;
-    let { name, code } = baseItem;
+    let { name, code, day } = baseItem;
     let viewMetaButton = <></>;
     if (isLogined) {
       viewMetaButton = <button type="button" className="btn w-100" onClick={openMetaView}>view</button>
@@ -40,7 +45,11 @@ export class VStockInfo extends VPage<CStockInfo> {
     let right = stockTags && <button className="btn btn-outline-success bg-light" onClick={onSelectTag}>
       {stockTags.length === 0? '加自选' : '设分组'}
       </button>;
-    return <Page header={name + ' ' + code} right={right}
+    let headStr = name + ' ' + code;
+    if (day !== undefined) {
+      headStr += ' - ' + day;
+    }
+    return <Page header={headStr} right={right}
       headerClassName='bg-primary'>
       <this.content />
     </Page>;
@@ -83,7 +92,7 @@ export class VStockInfo extends VPage<CStockInfo> {
   }
 
   protected historyChart = observer(() => {
-    let {historyData} = this.controller;
+    let {historyData, baseItem} = this.controller;
     if (historyData === undefined) 
       return <></>;
     let chartHistory = <></>;
@@ -147,8 +156,19 @@ export class VStockInfo extends VPage<CStockInfo> {
       }
     }
     chartHistory = <RC2 data={chartdata1} type='line' options={options} />;
-    let right = <label className="px-3"> <input type="checkbox" name="selectType" defaultChecked={this.ttmLimit}
-      onChange={this.checkLimitShow} />限制TTM显示范围</label>;
+    let right = <></>;
+    if (baseItem.day !== undefined) {
+      right = <><label className="px-3"> <input type="checkbox" name="showLater" defaultChecked={false}
+            onChange={this.checkShowLater} />显示后面数据</label>
+          <label className="px-3"> <input type="checkbox" name="selectType" defaultChecked={this.ttmLimit}
+          onChange={this.checkLimitShow} />限制TTM显示范围</label>
+        </>;
+
+    }
+    else {
+      right = <label className="px-3"> <input type="checkbox" name="selectType" defaultChecked={this.ttmLimit}
+        onChange={this.checkLimitShow} />限制TTM显示范围</label>;
+    }
     return <><LMR className="px-3 py-2 bg-white" left={'历史走势'} right={right}></LMR>
       <div className="px-3" >{chartHistory}</div>
     </>;
