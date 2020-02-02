@@ -58,30 +58,30 @@ export abstract class CAppBase extends Controller {
             let {user} = nav;
             if (user !== undefined && user.id > 0) {
                 return true;
-                this.appUnits = await centerApi.userAppUnits(this.uqsMan.id);
-                switch (this.appUnits.length) {
-                    case 0:
-                        this.showUnsupport(predefinedUnit);
-                        return false;
-                    case 1:
-                        let appUnit = this.appUnits[0].id;
-                        if (appUnit === undefined || appUnit < 0 || 
-                            (predefinedUnit !== undefined && appUnit !== predefinedUnit))
-                        {
-                            this.showUnsupport(predefinedUnit);
-                            return false;
-                        }
-                        appInFrame.unit = appUnit;
-                        break;
-                    default:
-                        if (predefinedUnit>0 && this.appUnits.find(v => v.id===predefinedUnit) !== undefined) {
-                            appInFrame.unit = predefinedUnit;
-                            break;
-                        }
-                        //nav.push(<this.selectUnitPage />)
-                        this.openVPage(VUnitSelect);
-                        return false;
-                }
+                // this.appUnits = await centerApi.userAppUnits(this.uqsMan.id);
+                // switch (this.appUnits.length) {
+                //     case 0:
+                //         this.showUnsupport(predefinedUnit);
+                //         return false;
+                //     case 1:
+                //         let appUnit = this.appUnits[0].id;
+                //         if (appUnit === undefined || appUnit < 0 || 
+                //             (predefinedUnit !== undefined && appUnit !== predefinedUnit))
+                //         {
+                //             this.showUnsupport(predefinedUnit);
+                //             return false;
+                //         }
+                //         appInFrame.unit = appUnit;
+                //         break;
+                //     default:
+                //         if (predefinedUnit>0 && this.appUnits.find(v => v.id===predefinedUnit) !== undefined) {
+                //             appInFrame.unit = predefinedUnit;
+                //             break;
+                //         }
+                //         //nav.push(<this.selectUnitPage />)
+                //         this.openVPage(VUnitSelect);
+                //         return false;
+                // }
             }
             if (retErrors !== undefined) {
                 this.openVPage(VErrorsPage);

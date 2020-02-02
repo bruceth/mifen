@@ -7,6 +7,7 @@ import { MiApi } from './net';
 import { VHome } from './ui';
 import { CUqBase } from './CUqBase';
 import { CExplorer } from './explorer';
+import { CHistoryExplorer } from './historyexplorer'
 import { MiConfigs, StockFindConfig, IdName, RegressionConfig } from './types';
 import { CWarning } from './warning';
 import { CAccountHome } from './account';
@@ -16,6 +17,7 @@ export const defaultBlackListTagName = '黑名单';
 
 export class CMiApp extends CAppBase {
   cExporer: CExplorer;
+  cHistoryExplorer: CHistoryExplorer;
   cHome: CHome;
   cWarning: CWarning;
   cAccountHome: CAccountHome;
@@ -88,6 +90,7 @@ export class CMiApp extends CAppBase {
     let miHost = consts.isDevelopment ? consts.miApiHostDebug : consts.miApiHost;
     this.miApi = new MiApi(miHost, 'fsjs/', 'miapi', token, false);
     this.cExporer = this.newC(CExplorer);
+    this.cHistoryExplorer = this.newC(CHistoryExplorer);
     this.cHome = this.newC(CHome);
     this.cAccountHome = this.newC(CAccountHome);
     this.cWarning = this.newC(CWarning);

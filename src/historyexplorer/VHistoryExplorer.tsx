@@ -1,35 +1,79 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import * as React from 'react';
 import { observer } from 'mobx-react';
+import classNames from 'classnames';
 import { VPage, Page, View, List, LMR, FA } from 'tonva';
 import { NStockInfo } from '../stockinfo';
 import { GFunc } from '../GFunc';
-import { CExplorer } from './CExplorer';
+import { CHistoryExplorer } from './CHistoryExplorer';
 
-export class VExplorer extends View<CExplorer> {
+export class VHistoryExplorer extends View<CHistoryExplorer> {
+  private input: HTMLInputElement;
+  private key: string = null;
 
   render(param: any): JSX.Element {
     return <this.page />
   }
 
   private page = observer(() => {
-    let { openMetaView, onPage } = this.controller;
-    let viewMetaButton = <></>;
-    if (this.controller.isLogined) {
-      viewMetaButton = <button type="button" className="btn w-100" onClick={openMetaView}>view</button>
-    }
-    let { onConfig } = this.controller;
-    let right = <div className="btn cursor-pointer" onClick={onConfig}><FA name="cog" size="lg" inverse={true} /></div>;
-
-    return <Page header="股票发现"  onScrollBottom={onPage} right={right}
+    return <Page header="股票历史选股"
       headerClassName='bg-primary py-1 px-3'>
-      
+      <this.searchHead />
       <this.content />
     </Page>;
   })
 
+  private onChange = (evt: React.ChangeEvent<any>) => {
+    let v = evt.target.value;
+    let n = Number(v);
+    if (isNaN(n) === true || !Number.isInteger(n)) {
+      if (this.input) {
+        this.input.value = this.key;
+      }
+      return;
+    }
+    this.key = evt.target.value;
+    if (this.key !== undefined) {
+        this.key = this.key.trim();
+        if (this.key === '') this.key = undefined;
+    }
+  }
+
+  private onSubmit = async (evt: React.FormEvent<any>) => {
+    evt.preventDefault();
+    if (this.key === null) this.key = '';
+    let n = Number(this.key);
+    if (!isNaN(n) && Number.isInteger((n))) {
+      if (n >= 20000101 && n < 30000101) {
+        this.controller.day = n;
+        await this.controller.load();
+      }
+    }
+  }
+
+  private searchHead = () => {
+    return <form className="mx-1 w-100 py-2" onSubmit={this.onSubmit} >
+    <div className={classNames("input-group", "input-group-sm")}>
+      <label className="input-group-addon px-2">{'日期'}</label>
+      <input ref={v=>this.input=v} onChange={this.onChange}
+            type="text"
+            name="key"
+            className="form-control border-primary px-2"
+            placeholder={'yyyymmdd'}
+            maxLength={8} />
+      <div className="input-group-append">
+            <button className="btn btn-primary px-2"
+                type="submit">
+                <i className='fa fa-search' />
+                <i className="fa"/>
+                {'查询'}
+            </button>
+      </div>
+    </div>
+</form>;
+  }
+
   private content = observer(() => {
-    let sType = this.controller.cApp.findStockConfg.selectType;
     let {items, selectedItems} = this.controller;
     
     let header = <div className="px-3">
@@ -42,7 +86,8 @@ export class VExplorer extends View<CExplorer> {
         items={items}
         item={{ render: this.renderRow, key: this.rowKey }}
         selectedItems={selectedItems}
-        before={'选股'}
+        before={'历史选股'}
+        none={'----'}
       />
     </>
   });
@@ -50,8 +95,11 @@ export class VExplorer extends View<CExplorer> {
   renderRow = (item: any, index: number): JSX.Element => <this.rowContent {...item} />;
   protected rowContent = observer((row: any): JSX.Element => {
     let sName = this.controller.cApp.config.stockFind.selectType;
-    let { id, name, code, pe, roe, price, divyield, ma, symbol, b, r2, l, lr2, lr4, predictep, predictepe, predicteps } = row as NStockInfo;
-    //let left = <div className="c5"><span className="text-primary">{name}</span><br/>{code}</div>
+    let { id, name, code, e, capital, bonus, price, ma, symbol, b, r2, l, lr2, lr4, predictep, predictepe, predicteps } = row as NStockInfo;
+    let pe = price / e;
+    let roe = e / capital;
+    let divyield = bonus / price;
+
     let labelId = 'vexl_' + id;
     let left = <label htmlFor={labelId} className="d-inline-flex px-2" onClick={e=>{e.stopPropagation()}}>
       <div className="px-2 align-self-center">
@@ -120,14 +168,4 @@ export class VExplorer extends View<CExplorer> {
     let a = 0;
   }
 
-  // private callOnSelected(item: any) {
-  //   if (this.onSelected === undefined) {
-  //     alert('onSelect is undefined');
-  //     return;
-  //   }
-  //   this.onSelected(item);
-  // }
-  // clickRow = (item: any) => {
-  //   this.callOnSelected(item);
-  // }
 }

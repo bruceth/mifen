@@ -60,9 +60,9 @@ export class CStockInfo extends CUqBase {
   loading = async () => {
     if (!this.baseItem)
       return;
-    let { id } = this.baseItem;
+    let { id, day } = this.baseItem;
     let rets = await Promise.all([
-      this.cApp.miApi.query('q_stockallinfo', [id]),
+      this.cApp.miApi.query('q_stockallinfo', [id, day]),
       this.cApp.miApi.query('t_tagstock$query', [this.user.id, undefined, id]) //this.uqs.mi.TagStock.query({ user: nav.user.id, stock: id })
     ]);
     this.stockTags = rets[1];
