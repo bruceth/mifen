@@ -45,7 +45,7 @@ export class CExplorer extends CUqBase {
   async loadItems() {
     let queryName = 'dvperoe';
     let sName = this.cApp.config.stockFind.selectType;
-    let {bmin, bmax, r2, lmin, lmax, lr2, mcount, lr4, predictyear} = this.cApp.config.regression;
+    let {bmin, bmax, r2, lmin, lmax, lr2, mcount, lr4, r210, predictyear} = this.cApp.config.regression;
     if (sName !== undefined)
       queryName = sName;
     let query = {
@@ -62,6 +62,7 @@ export class CExplorer extends CUqBase {
       lr2: lr2,
       mcount: mcount,
       lr4: lr4,
+      r210: r210,
     };
     let result = await this.cApp.miApi.process(query, []);
     if (Array.isArray(result) === false) {

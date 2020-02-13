@@ -21,6 +21,7 @@ export interface RegressionConfig {
   lr2: number;
   mcount: number;
   lr4: number;
+  r210: number;
   predictyear: number;
 }
 

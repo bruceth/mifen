@@ -14,6 +14,7 @@ const schema: ItemSchema[] = [
   { name: 'lr2', type: 'number', required: true},
   { name: 'mcount', type: 'integer', required: true},
   { name: 'lr4', type: 'integer', required: true},
+  { name: 'r210', type: 'number', required: true},
   { name: 'submit', type: 'submit', },
 ];
 
@@ -28,6 +29,7 @@ const uiSchema: UiSchema = {
     lr2: { widget: 'number', label: '线性回归R2', placeholder: '0.00'} as UiInputItem,
     lr4: { widget: 'number', label: '末年与前4年均值最大比值', placeholder: '0.00'} as UiInputItem,
     mcount: { widget: 'number', label: '5年内单季亏损最多允许出现次数', placeholder: '0.00'} as UiInputItem,
+    r210: { widget: 'number', label: '十年回归R2', placeholder: '0.00'} as UiInputItem,
     submit: { widget: 'button', label: '保存', className: 'btn btn-primary' },
   }
 };
@@ -56,8 +58,8 @@ export class VExplorerCfg extends VPage<CExplorer> {
 
   private onFormButtonClick = async (name: string, context: Context) => {
     //await this.controller.onSaveNewWarning(context.data);
-    let {bmin, bmax, r2, lmin, lmax, lr2, mcount, lr4, predictyear} = context.data;
-    let cfg = {bmin:bmin, bmax:bmax, r2:r2, lmin:lmin, lmax:lmax, lr2:lr2, mcount:mcount, lr4:lr4, predictyear:predictyear};
+    let {bmin, bmax, r2, lmin, lmax, lr2, mcount, lr4, r210, predictyear} = context.data;
+    let cfg = {bmin:bmin, bmax:bmax, r2:r2, lmin:lmin, lmax:lmax, lr2:lr2, mcount:mcount, lr4:lr4, r210:r210, predictyear:predictyear};
     await this.controller.cApp.setRegressionConfig(cfg);
     this.controller.closePage();
   }

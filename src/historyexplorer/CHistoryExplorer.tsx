@@ -24,8 +24,8 @@ export class CHistoryExplorer extends CUqBase {
   async loadItems() {
     if (this.day === undefined)
       return;
-    let {bmin, bmax, r2, lmin, lmax, lr2, mcount, lr4, predictyear} = this.cApp.config.regression;
-    let params = [this.day, bmin, bmax, r2, lmin, lmax, lr2, mcount, lr4];
+    let {bmin, bmax, r2, lmin, lmax, lr2, mcount, lr4, r210, predictyear} = this.cApp.config.regression;
+    let params = [this.day, bmin, bmax, r2, lmin, lmax, lr2, mcount, lr4, r210];
     let result = await this.cApp.miApi.call('t_predictep', params)
     if (Array.isArray(result) === false) {
       return;
