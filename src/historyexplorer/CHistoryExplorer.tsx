@@ -30,8 +30,11 @@ export class CHistoryExplorer extends CUqBase {
     if (Array.isArray(result) === false) {
       return;
     };
-    let arr = result as {id:number, data?:string, e:number, price:number, r2:number, lr2:number, predictep?:number,predictepe?:number,predicteps?:number, ma?:number}[];
+    let arr = result as {id:number, data?:string, e:number, price:number, capital:number, bonus:number, pe?:number, roe?:number, divyield?:number, r2:number, lr2:number, predictep?:number,predictepe?:number,predicteps?:number, ma?:number}[];
     for (let item of arr) {
+      item.pe = item.price / item.e;
+      item.roe = item.e / item.capital;
+      item.divyield = item.bonus / item.price;
       let dataArray = JSON.parse(item.data) as number[];
       try {
         let esum = 0;

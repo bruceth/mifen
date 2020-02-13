@@ -69,7 +69,8 @@ export class VStockInfo extends VPage<CStockInfo> {
 
   private baseInfo = () => {
     let {baseItem} = this.controller;
-    let { id, name, code, pe, roe, price, order, divyield } = baseItem;
+    let { id, name, code, pe, roe, price, order, divyield, e, capital, bonus } = baseItem;
+
     let list = this.controller.cApp.defaultList;
     let fInList = list.findIndex(v=>v===id) >= 0;
     let right = <label className="align-self-center px-3"> <input type="checkbox" name="checkDefaultList" defaultChecked={fInList}
