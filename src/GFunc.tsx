@@ -25,6 +25,10 @@ export class GFunc {
     }
   }
 
+  public static predictCutRatio(r2:number) {
+    return 0.9 + r2 / 10;
+  }
+
   public static caption = (value:string) => <span className="text-muted small">{value}: </span>;
 
   public static MonthnoFromDay(day:number) {

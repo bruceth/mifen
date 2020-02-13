@@ -6,9 +6,11 @@ import { CUqBase } from '../CUqBase';
 import { CMiApp } from '../CMiApp';
 import { CStockInfo, NStockInfo } from '../stockinfo';
 import { VHistoryExplorer } from './VHistoryExplorer';
+import { GFunc } from 'GFunc';
 
 export class CHistoryExplorer extends CUqBase {
   items: IObservableArray<any> = observable.array<any>([], { deep: true });
+  @observable predictAvg: number;
   protected oldSelectType: string;
   selectedItems: any[] = [];
   day: number;
@@ -43,13 +45,13 @@ export class CHistoryExplorer extends CUqBase {
         for (let i = 5; i <= yearend; ++i) {
           esum += er.predict(i);
         }
-        item.predictepe = (0.9 + Math.sqrt(er.r2) / 10) * esum / item.price;
+        item.predictepe = GFunc.predictCutRatio(er.r2) * esum / item.price;
         let sl = new SlrForEarning(dataArray);
         esum = 0;
         for (let i = 5; i <= yearend; ++i) {
           esum += sl.predict(i);
         }
-        item.predicteps = (0.9 + Math.sqrt(sl.r2) / 10) * esum / item.price;
+        item.predicteps = GFunc.predictCutRatio(sl.r2) * esum / item.price;
         item.predictep = item.r2 > item.lr2?item.predictepe:item.predicteps;
       }
       catch {
@@ -65,6 +67,21 @@ export class CHistoryExplorer extends CUqBase {
     for (let item of arr) {
       item.ma = o;
       ++o;
+    }
+    let count = arr.length;
+    if (count >= 53)
+      count = 50
+    else if (count >= 23)
+      count = count - 3;
+    if (count >= 10) {
+      let sum = 0;
+      for (let i = 3; i < count; ++i) {
+        sum += arr[i].predictep
+      }
+      this.predictAvg = sum / (count - 3);
+    }
+    else {
+      this.predictAvg = undefined;
     }
     this.items.clear();
     this.items.push(...arr);

@@ -8,6 +8,7 @@ import { CStockInfo, NStockInfo } from '../stockinfo';
 import { VSiteHeader } from './VSiteHeader';
 import { VExplorer } from './VExplorer';
 import { VExplorerCfg } from './VExplorerCfg';
+import { GFunc } from 'GFunc';
 
 export class CExplorer extends CUqBase {
   items: IObservableArray<any> = observable.array<any>([], { deep: true });
@@ -78,13 +79,13 @@ export class CExplorer extends CUqBase {
         for (let i = 5; i <= yearend; ++i) {
           esum += er.predict(i);
         }
-        item.predictepe = (0.9 + Math.sqrt(er.r2) / 10) * esum / item.price;
+        item.predictepe = GFunc.predictCutRatio(er.r2) * esum / item.price;
         let sl = new SlrForEarning(dataArray);
         esum = 0;
         for (let i = 5; i <= yearend; ++i) {
           esum += sl.predict(i);
         }
-        item.predicteps = (0.9 + Math.sqrt(sl.r2) / 10) * esum / item.price;
+        item.predicteps = GFunc.predictCutRatio(sl.r2) * esum / item.price;
         item.predictep = item.r2 > item.lr2?item.predictepe:item.predicteps;
       }
       catch {

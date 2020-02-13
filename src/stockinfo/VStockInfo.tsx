@@ -1,5 +1,6 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import * as React from 'react';
+import classNames from 'classnames';
 import { VPage, Page, View, List, LMR, left0, FA } from 'tonva';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
@@ -10,6 +11,9 @@ import { NStockInfo, StockCapitalearning, StockBonus } from './StockInfoType';
 import { ErForEarning, SlrForEarning } from 'regression';
 
 export class VStockInfo extends VPage<CStockInfo> {
+  private input: HTMLInputElement;
+  private key: string = undefined;
+
   async open(param?: any) {
     this.openPage(this.page);
   }
@@ -49,7 +53,8 @@ export class VStockInfo extends VPage<CStockInfo> {
     if (day !== undefined) {
       headStr += ' - ' + day;
     }
-    return <Page header={headStr} right={right}
+  let head = <div onClick={()=>this.controller.showSelectStock(day)}>{headStr}</div>
+    return <Page header={head} right={right}
       headerClassName='bg-primary'>
       <this.content />
     </Page>;
@@ -57,6 +62,7 @@ export class VStockInfo extends VPage<CStockInfo> {
 
   private content = observer(() => {
     return <>
+      <this.dateHead />
       <this.baseInfo />
       <this.historyChart />
       <this.predictInfo />
@@ -67,7 +73,61 @@ export class VStockInfo extends VPage<CStockInfo> {
     </>
   });
 
-  private baseInfo = () => {
+  private onChange = (evt: React.ChangeEvent<any>) => {
+    let v = evt.target.value;
+    let n = Number(v);
+    if (isNaN(n) === true || !Number.isInteger(n)) {
+      if (this.input) {
+        this.input.value = this.key;
+      }
+      return;
+    }
+    this.key = evt.target.value;
+    if (this.key !== undefined) {
+        this.key = this.key.trim();
+        if (this.key === '') this.key = undefined;
+    }
+  }
+
+  private onSubmit = async (evt: React.FormEvent<any>) => {
+    evt.preventDefault();
+    if (this.key === undefined) this.key = '';
+    let n = Number(this.key);
+    if (!isNaN(n) && Number.isInteger((n))) {
+      if (n ===0 || (n >= 20000101 && n < 30000101)) {
+        await this.controller.changeDay(n);
+      }
+    }
+  }
+
+
+  private dateHead = () => {
+    let {day} = this.controller.baseItem;
+    let dayString = day === undefined || isNaN(day) ? '' : day.toString();
+    return <form className="mx-1 w-100 py-2" onSubmit={this.onSubmit} >
+    <div className={classNames("input-group", "input-group-sm")}>
+      <label className="input-group-addon px-2">{'日期'}</label>
+      <input ref={v=>this.input=v} onChange={this.onChange}
+            type="text"
+            name="key"
+            defaultValue={dayString}
+            className="form-control border-primary px-2"
+            placeholder={'yyyymmdd'}
+            maxLength={8} />
+      <div className="input-group-append">
+            <button className="btn btn-primary px-2"
+                type="submit">
+                <i className='fa fa-search' />
+                <i className="fa"/>
+                {'跳转'}
+            </button>
+      </div>
+    </div>
+</form>;
+  }
+
+
+  private baseInfo = observer(() => {
     let {baseItem} = this.controller;
     let { id, name, code, pe, roe, price, order, divyield, e, capital, bonus } = baseItem;
 
@@ -84,7 +144,7 @@ export class VStockInfo extends VPage<CStockInfo> {
       </div>    
     </div>
     </LMR>;
-  }
+  });
 
   protected onClickName = (item: NStockInfo) => {
     let { symbol } = item;
@@ -171,7 +231,7 @@ export class VStockInfo extends VPage<CStockInfo> {
         onChange={this.checkLimitShow} />限制TTM显示范围</label>;
     }
     return <><LMR className="px-3 py-2 bg-white" left={'历史走势'} right={right}></LMR>
-      <div className="px-3" >{chartHistory}</div>
+      <div className="px-3" style={{width:'95%'}}>{chartHistory}</div>
     </>;
   });
 

@@ -8,9 +8,10 @@ import { VStockInfo } from './VStockInfo'
 import { NStockInfo, StockPrice, StockEarning, StockRoe, StockCapitalearning, StockBonus, StockDivideInfo } from './StockInfoType';
 import { VTags, VNewTag, VEditTag } from './VTags';
 import { ErForEarning, SlrForEarning } from 'regression';
+import { CStock } from 'stock/CStock';
 
 export class CStockInfo extends CUqBase {
-  baseItem: NStockInfo;
+  @observable baseItem: NStockInfo;
   @observable protected loaded: boolean = false;
 
   @observable price: StockPrice;
@@ -112,7 +113,9 @@ export class CStockInfo extends CUqBase {
     if (len <= 0)
       return;
     let minNo = list[len - 1].seasonno;
-    let maxNo = list[0].seasonno;
+    let lastItem = list[0];
+    let maxNo = lastItem.seasonno;
+
     let {end} = GFunc.SeasonnoToBeginEnd(maxNo);
     for (let item of list) {
       let no = item.seasonno;
@@ -392,5 +395,25 @@ export class CStockInfo extends CUqBase {
       this.stockTags.splice(i, 1);
       await this.cApp.RemoveTagStockID(tagid, this.baseItem.id);
     }
+  }
+
+  showSelectStock = async (day:number): Promise<any> => {
+    let cStock = new CStock(this.cApp);
+    let item = await cStock.call() as any;
+    let b = {...item}
+    b.day = day;
+    this.baseItem = b;
+    this.loaded = false;
+    await this.loading();
+  }
+
+  changeDay = async (day:number) => {
+    if (this.baseItem.day === day)
+      return;
+    let {id, name, code, symbol} = this.baseItem;
+    let ni = {id:id, name:name, code:code, symbol:symbol, day:day ===0 ? undefined : day};
+    this.baseItem = ni;
+    this.loaded = false;
+    await this.loading();
   }
 }

@@ -16,9 +16,11 @@ export class VHistoryExplorer extends View<CHistoryExplorer> {
   }
 
   private page = observer(() => {
+    let { predictAvg } = this.controller;
     return <Page header="股票历史选股"
       headerClassName='bg-primary py-1 px-3'>
       <this.searchHead />
+      <div className="px-3 bg-white">{GFunc.caption('预测收益比top50均值')}{GFunc.percentToFixString(predictAvg)}</div>
       <this.content />
     </Page>;
   })
