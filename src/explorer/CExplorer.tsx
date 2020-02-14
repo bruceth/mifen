@@ -44,9 +44,9 @@ export class CExplorer extends CUqBase {
   }
 
   async loadItems() {
-    let queryName = 'dvperoe';
+    let queryName = 'all';
     let sName = this.cApp.config.stockFind.selectType;
-    let {bmin, bmax, r2, lmin, lmax, lr2, mcount, lr4, r210, predictyear} = this.cApp.config.regression;
+    let {bmin, bmax, r2, lmin, lmax, lr2, mcount, lr4, r210, irate} = this.cApp.config.regression;
     if (sName !== undefined)
       queryName = sName;
     let query = {
@@ -69,34 +69,16 @@ export class CExplorer extends CUqBase {
     if (Array.isArray(result) === false) {
       return;
     };
-    let arr = result as {id:number, data?:string, e:number, price:number, r2:number, lr2:number, predictep?:number,predictepe?:number,predicteps?:number, ma:number}[];
+    let arr = result as {id:number, data?:string, e:number, price:number, r2:number, lr2:number, predictpp?:number, ma:number}[];
     for (let item of arr) {
       let dataArray = JSON.parse(item.data) as number[];
-      try {
-        let esum = 0;
-        let er = new ErForEarning(dataArray);
-        let yearend = 4 + predictyear;
-        for (let i = 5; i <= yearend; ++i) {
-          esum += er.predict(i);
-        }
-        item.predictepe = GFunc.predictCutRatio(er.r2) * esum / item.price;
-        let sl = new SlrForEarning(dataArray);
-        esum = 0;
-        for (let i = 5; i <= yearend; ++i) {
-          esum += sl.predict(i);
-        }
-        item.predicteps = GFunc.predictCutRatio(sl.r2) * esum / item.price;
-        item.predictep = item.r2 > item.lr2?item.predictepe:item.predicteps;
-      }
-      catch {
-        item.predictep = item.e / item.price;
-        item.predictepe = item.e / item.price;
-        item.predicteps = item.e / item.price;
-      }
+      let sl = new SlrForEarning(dataArray);
+      let ep = GFunc.evaluatePricePrice(irate, sl.predict(5), sl.predict(6), sl.predict(7));
+      item.predictpp = item.price / ep;
     }
     if (queryName === 'all') {
       arr.sort((a, b) => {
-        return b.predictep - a.predictep;
+        return a.predictpp - b.predictpp;
       })
       let o = 1;
       for (let item of arr) {

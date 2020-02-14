@@ -26,42 +26,24 @@ export class CHistoryExplorer extends CUqBase {
   async loadItems() {
     if (this.day === undefined)
       return;
-    let {bmin, bmax, r2, lmin, lmax, lr2, mcount, lr4, r210, predictyear} = this.cApp.config.regression;
+    let {bmin, bmax, r2, lmin, lmax, lr2, mcount, lr4, r210, irate} = this.cApp.config.regression;
     let params = [this.day, bmin, bmax, r2, lmin, lmax, lr2, mcount, lr4, r210];
     let result = await this.cApp.miApi.call('t_predictep', params)
     if (Array.isArray(result) === false) {
       return;
     };
-    let arr = result as {id:number, data?:string, e:number, price:number, capital:number, bonus:number, pe?:number, roe?:number, divyield?:number, r2:number, lr2:number, predictep?:number,predictepe?:number,predicteps?:number, ma?:number}[];
+    let arr = result as {id:number, data?:string, e:number, price:number, capital:number, bonus:number, pe?:number, roe?:number, divyield?:number, r2:number, lr2:number, predictpp?:number, ma?:number}[];
     for (let item of arr) {
       item.pe = item.price / item.e;
       item.roe = item.e / item.capital;
       item.divyield = item.bonus / item.price;
       let dataArray = JSON.parse(item.data) as number[];
-      try {
-        let esum = 0;
-        let er = new ErForEarning(dataArray);
-        let yearend = 4 + predictyear;
-        for (let i = 5; i <= yearend; ++i) {
-          esum += er.predict(i);
-        }
-        item.predictepe = GFunc.predictCutRatio(er.r2) * esum / item.price;
-        let sl = new SlrForEarning(dataArray);
-        esum = 0;
-        for (let i = 5; i <= yearend; ++i) {
-          esum += sl.predict(i);
-        }
-        item.predicteps = GFunc.predictCutRatio(sl.r2) * esum / item.price;
-        item.predictep = item.r2 > item.lr2?item.predictepe:item.predicteps;
-      }
-      catch {
-        item.predictep = item.e / item.price;
-        item.predictepe = item.e / item.price;
-        item.predicteps = item.e / item.price;
-      }
+      let sl = new SlrForEarning(dataArray);
+      let ep = GFunc.evaluatePricePrice(irate, sl.predict(5), sl.predict(6), sl.predict(7));
+      item.predictpp = item.price / ep;
     }
     arr.sort((a, b) => {
-      return b.predictep - a.predictep;
+      return a.predictpp - b.predictpp;
     })
     let o = 1;
     for (let item of arr) {
@@ -69,14 +51,12 @@ export class CHistoryExplorer extends CUqBase {
       ++o;
     }
     let count = arr.length;
-    if (count >= 53)
+    if (count > 50)
       count = 50
-    else if (count >= 23)
-      count = count - 3;
     if (count >= 10) {
       let sum = 0;
       for (let i = 3; i < count; ++i) {
-        sum += arr[i].predictep
+        sum += arr[i].predictpp
       }
       this.predictAvg = sum / (count - 3);
     }

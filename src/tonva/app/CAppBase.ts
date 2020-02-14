@@ -1,3 +1,4 @@
+/*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 //import _ from 'lodash';
 import { Controller, nav } from "../components";
 import { Tuid, Action, Sheet, Query, Map, UQsMan, TVs } from "../uq";

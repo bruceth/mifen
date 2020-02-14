@@ -97,7 +97,7 @@ export class VHistoryExplorer extends View<CHistoryExplorer> {
   renderRow = (item: any, index: number): JSX.Element => <this.rowContent {...item} />;
   protected rowContent = observer((row: any): JSX.Element => {
     let sName = this.controller.cApp.config.stockFind.selectType;
-    let { id, name, code, e, capital, bonus, price, ma, symbol, b, r2, l, lr2, lr4, predictep, predictepe, predicteps } = row as NStockInfo;
+    let { id, name, code, e, capital, bonus, price, ma, symbol, b, r2, l, lr2, lr4, predictpp } = row as NStockInfo;
     let pe = price / e;
     let roe = e / capital;
     let divyield = bonus / price;
@@ -129,7 +129,7 @@ export class VHistoryExplorer extends View<CHistoryExplorer> {
         <div className="d-flex flex-wrap" onClick={()=>this.onClickName(row)} >
           <div className="px-3 c5">{GFunc.caption('TTM')}<br />{GFunc.numberToFixString(pe)}</div>
           <div className="px-3 c6">{GFunc.caption('股息率')}<br />{GFunc.percentToFixString(divyield)}</div>
-          <div className="px-3 c6">{GFunc.caption('预期')}<br />{GFunc.percentToFixString(predictep)}</div>
+          <div className="px-3 c6">{GFunc.caption('价/预期')}<br />{GFunc.percentToFixString(predictpp)}</div>
           <div className="px-3 c6">{GFunc.caption('ROE')}<br />{GFunc.percentToFixString(roe)}</div>
           <div className="px-3 c5">{GFunc.caption('价格')}<br />{GFunc.numberToFixString(price)}</div>
           <div className="px-3 c5">{GFunc.caption('b')}<br />{GFunc.numberToString(b, 3)}</div>
@@ -137,8 +137,6 @@ export class VHistoryExplorer extends View<CHistoryExplorer> {
           <div className="px-3 c5">{GFunc.caption('l')}<br />{GFunc.numberToString(l, 3)}</div>
           <div className="px-3 c5">{GFunc.caption('lR2')}<br />{GFunc.numberToString(lr2, 3)}</div>
           <div className="px-3 c5">{GFunc.caption('l/4')}<br />{GFunc.numberToString(lr4, 3)}</div>
-          <div className="px-3 c6">{GFunc.caption('预期指数')}<br />{GFunc.percentToFixString(predictepe)}</div>
-          <div className="px-3 c6">{GFunc.caption('预期线性')}<br />{GFunc.percentToFixString(predicteps)}</div>
         </div>
       </LMR></>
     }

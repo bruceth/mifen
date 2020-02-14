@@ -22,7 +22,7 @@ export interface RegressionConfig {
   mcount: number;
   lr4: number;
   r210: number;
-  predictyear: number;
+  irate: number;
 }
 
 export interface MiConfigs {

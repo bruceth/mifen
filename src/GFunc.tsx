@@ -29,6 +29,13 @@ export class GFunc {
     return r2 * 2 - r2 * r2;
   }
 
+  public static evaluatePricePrice(iRate:number, e1:number, e2:number, e3:number) {
+    let r = 1 + iRate;
+    let r2 = r * r;
+    let r3 = r2 * r;
+    return (e1/r + e2 /r2 + e3 / r3 + e3 / iRate / r3) / 2;
+  }
+
   public static caption = (value:string) => <span className="text-muted small">{value}: </span>;
 
   public static MonthnoFromDay(day:number) {

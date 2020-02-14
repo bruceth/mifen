@@ -5,7 +5,7 @@ import { VPage, Page, FA, List, Form, ItemSchema, StringSchema, UiInputItem, UiS
 import { CExplorer } from './CExplorer';
 
 const schema: ItemSchema[] = [
-  { name: 'predictyear', type: 'integer', required: true},
+  { name: 'irate', type: 'number', required: true},
   { name: 'bmin', type: 'number', required: true},
   { name: 'bmax', type: 'number', required: true},
   { name: 'r2', type: 'number', required: true},
@@ -20,7 +20,7 @@ const schema: ItemSchema[] = [
 
 const uiSchema: UiSchema = {
   items: {
-    predictyear: { widget: 'number', label: '预期收益计算年数', placeholder: '1'} as UiInputItem,
+    irate: { widget: 'number', label: '无风险收益率', placeholder: '0.04'} as UiInputItem,
     bmin: { widget: 'number', label: '指数回归最小值', placeholder: '0.00'} as UiInputItem,
     bmax: { widget: 'number', label: '指数回归最大值', placeholder: '0.00'} as UiInputItem,
     r2: { widget: 'number', label: '指数回归R2', placeholder: '0.00'} as UiInputItem,
@@ -58,8 +58,8 @@ export class VExplorerCfg extends VPage<CExplorer> {
 
   private onFormButtonClick = async (name: string, context: Context) => {
     //await this.controller.onSaveNewWarning(context.data);
-    let {bmin, bmax, r2, lmin, lmax, lr2, mcount, lr4, r210, predictyear} = context.data;
-    let cfg = {bmin:bmin, bmax:bmax, r2:r2, lmin:lmin, lmax:lmax, lr2:lr2, mcount:mcount, lr4:lr4, r210:r210, predictyear:predictyear};
+    let {bmin, bmax, r2, lmin, lmax, lr2, mcount, lr4, r210, irate} = context.data;
+    let cfg = {bmin:bmin, bmax:bmax, r2:r2, lmin:lmin, lmax:lmax, lr2:lr2, mcount:mcount, lr4:lr4, r210:r210, irate:irate};
     await this.controller.cApp.setRegressionConfig(cfg);
     this.controller.closePage();
   }
@@ -70,21 +70,19 @@ export class VExplorerCfg extends VPage<CExplorer> {
     //let findType = scfg.sortType;
     let selectType = scfg.selectType;
     if (selectType === undefined) {
-      selectType = 'dvperoe';
+      selectType = 'all';
     }
     let fData = this.controller.cApp.config.regression;
-    if (fData.predictyear === undefined)
-      fData.predictyear = 3;
+    if (fData.irate === undefined)
+      fData.irate = 0.04;
 
     return <Page header="选股设置" headerClassName="bg-primary">
       <div className="px-3 py-2">方法</div>
       <div className="px-3 py-2 d-flex flex-wrap">
-        <label className="px-3 c8"> <input type="radio" name="selectType" value="dvperoe" checked={selectType==="dvperoe"}
-          onChange={this.selectChange} />综合</label><br />
+        <label className="px-3 c8"> <input type="radio" name="selectType" value="all" checked={selectType==="all"}
+          onChange={this.selectChange} />预期收益</label><br />
         <label className="px-3 c8"> <input type="radio" name="selectType" value="peroe" checked={selectType==="peroe"}
           onChange={this.selectChange} />神奇公式</label><br />
-        <label className="px-3 c8"> <input type="radio" name="selectType" value="all" checked={selectType==="all"}
-          onChange={this.selectChange} />预期收益率</label>
         <label className="px-3 c8"> <input type="radio" name="selectType" value="pe" checked={selectType==="pe"}
           onChange={this.selectChange} />PE</label><br />
         <label className="px-3 c8"> <input type="radio" name="selectType" value="dp" checked={selectType==="dp"}
