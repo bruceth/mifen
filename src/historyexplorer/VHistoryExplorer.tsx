@@ -16,11 +16,15 @@ export class VHistoryExplorer extends View<CHistoryExplorer> {
   }
 
   private page = observer(() => {
-    let { predictAvg } = this.controller;
+    let { day, predictAvg } = this.controller;
+    let avgStr = ' - ';
+    if (day !== undefined) {
+      avgStr = day + ' - ' + GFunc.percentToFixString(predictAvg);
+    }
     return <Page header="股票历史选股"
       headerClassName='bg-primary py-1 px-3'>
       <this.searchHead />
-      <div className="px-3 bg-white">{GFunc.caption('预测收益比top50均值')}{GFunc.percentToFixString(predictAvg)}</div>
+      <div className="px-3 bg-white">{GFunc.caption('预测收益比top50均值')}{avgStr}</div>
       <this.content />
     </Page>;
   })
