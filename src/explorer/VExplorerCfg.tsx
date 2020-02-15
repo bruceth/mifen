@@ -13,7 +13,7 @@ const schema: ItemSchema[] = [
   { name: 'lmax', type: 'number', required: true},
   { name: 'lr2', type: 'number', required: true},
   { name: 'mcount', type: 'integer', required: true},
-  { name: 'lr4', type: 'integer', required: true},
+  { name: 'lr4', type: 'number', required: true},
   { name: 'r210', type: 'number', required: true},
   { name: 'submit', type: 'submit', },
 ];
