@@ -85,7 +85,7 @@ export class VHome extends View<CHome> {
 
   renderRow = (item: any, index: number): JSX.Element => <this.rowContent {...item} />;
   protected rowContent = (row: any): JSX.Element => {
-    let { id, name, code, pe, roe, price, order, divyield, b, r2, l, lr2, lr4, predictpp } = row as NStockInfo;
+    let { id, name, code, pe, roe, price, order, divyield, b, r2, l, lr2, lr4, b10, r210, l10, lr210, predictpp } = row as NStockInfo;
     let left = <div className="c5"><span className="text-primary">{name}</span><br />{code}</div>
     let right = <div className="px-1"><span className="text-muted small">序号</span><br />{order.toString()}</div>
     return <LMR className="px-3 py-1" left={left} right={right} onClick={() => this.onClickName(row)}>
@@ -100,6 +100,10 @@ export class VHome extends View<CHome> {
         <div className="px-3 c5">{GFunc.caption('l')}<br />{GFunc.numberToString(l, 3)}</div>
         <div className="px-3 c5">{GFunc.caption('lR2')}<br />{GFunc.numberToString(lr2, 3)}</div>
         <div className="px-3 c5">{GFunc.caption('l/4')}<br />{GFunc.numberToString(lr4, 3)}</div>
+        <div className="px-3 c5">{GFunc.caption('b10')}<br />{GFunc.numberToString(b10, 3)}</div>
+        <div className="px-3 c5">{GFunc.caption('R210')}<br />{GFunc.numberToString(r210, 3)}</div>
+        <div className="px-3 c5">{GFunc.caption('l10')}<br />{GFunc.numberToString(l10, 3)}</div>
+        <div className="px-3 c5">{GFunc.caption('lR210')}<br />{GFunc.numberToString(lr210, 3)}</div>
       </div>
     </LMR>
   }
