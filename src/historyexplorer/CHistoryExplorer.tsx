@@ -14,6 +14,7 @@ export class CHistoryExplorer extends CUqBase {
   protected oldSelectType: string;
   selectedItems: any[] = [];
   day: number;
+  resultday: number;
 
   async internalStart(param: any) {
   }
@@ -29,10 +30,12 @@ export class CHistoryExplorer extends CUqBase {
     let {bmin, bmax, r2, lmin, lmax, lr2, mcount, lr4, r210, irate} = this.cApp.config.regression;
     let params = [this.day, bmin, bmax, r2, lmin, lmax, lr2, mcount, lr4, r210];
     let result = await this.cApp.miApi.call('t_predictep', params)
-    if (Array.isArray(result) === false) {
+    if (Array.isArray(result) === false && Array.isArray(result[0])) {
       return;
     };
-    let arr = result as {id:number, data?:string, e:number, price:number, capital:number, bonus:number, pe?:number, roe?:number, divyield?:number, r2:number, lr2:number, predictpp?:number, ma?:number}[];
+    this.resultday = result[1][0].day;
+    let arr = result[0] as {id:number, data?:string, e:number, price:number, capital:number, bonus:number, pe?:number, roe?:number, divyield?:number, r2:number, lr2:number, predictpp?:number, ma?:number}[];
+
     for (let item of arr) {
       item.pe = item.price / item.e;
       item.roe = item.e / item.capital;

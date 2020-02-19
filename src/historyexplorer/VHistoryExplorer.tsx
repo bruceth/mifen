@@ -16,10 +16,10 @@ export class VHistoryExplorer extends View<CHistoryExplorer> {
   }
 
   private page = observer(() => {
-    let { day, predictAvg } = this.controller;
+    let { day, predictAvg, resultday } = this.controller;
     let avgStr = ' - ';
-    if (day !== undefined) {
-      avgStr = day + ' - ' + GFunc.percentToFixString(predictAvg);
+    if (resultday !== undefined) {
+      avgStr = resultday + ' - ' + GFunc.percentToFixString(predictAvg);
     }
     return <Page header="股票历史选股"
       headerClassName='bg-primary py-1 px-3'>
