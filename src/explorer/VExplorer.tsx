@@ -30,7 +30,12 @@ export class VExplorer extends View<CExplorer> {
 
   private content = observer(() => {
     let sType = this.controller.cApp.findStockConfg.selectType;
-    let {items, selectedItems} = this.controller;
+    let {items, selectedItems,predictAvg, predictAvg2} = this.controller;
+    let avgHead = <></>;
+    if (predictAvg !== undefined || predictAvg2 !== undefined) {
+      let avgStr = ' top20 : ' + GFunc.percentToFixString(predictAvg) + '  -  top50 : ' + GFunc.percentToFixString(predictAvg2);
+      avgHead = <div className="px-3 bg-white">{GFunc.caption('预测收益比均值')}{avgStr}</div>
+    }
     
     let header = <div className="px-3">
       <div className="px-3 c6"/>
@@ -38,6 +43,7 @@ export class VExplorer extends View<CExplorer> {
       <div className="px-3 c6">股息率</div>
     </div>;
     return <>
+      {avgHead}
       <List header={header}
         items={items}
         item={{ render: this.renderRow, key: this.rowKey }}

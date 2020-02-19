@@ -215,16 +215,22 @@ export class CStockInfo extends CUqBase {
         length = i + 1;
       }
     }
-    let lastItem = list[length - 1];
+    let endIndex = length - 1;
+    let lastItem = list[endIndex];
     let lastdayno = lastItem.dayno;
     if (lastdayno === undefined) {
-      lastItem = list[length - 2];
-      lastdayno = lastItem.dayno;
+      while (endIndex > 0) {
+        --endIndex;
+        lastItem = list[endIndex];
+        lastdayno = lastItem.dayno;
+        if (lastdayno !== undefined)
+          break;
+      }
     }
     let lastDay = lastItem.day;
     let not = lastdayno % 5;
     let historyList: any[] = [];
-    for (let i = 0; i < length; ++i) {
+    for (let i = 0; i <= endIndex; ++i) {
       let {day, price, dayno} = list[i];
       if ( dayno % 5 === not) {
         historyList.push({day:day, price:this.RestorePrice(price, day, lastDay), ttm:this.CalculateHistoryPE(price, day)});

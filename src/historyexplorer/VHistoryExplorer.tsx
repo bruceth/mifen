@@ -16,15 +16,15 @@ export class VHistoryExplorer extends View<CHistoryExplorer> {
   }
 
   private page = observer(() => {
-    let { day, predictAvg, resultday } = this.controller;
+    let { predictAvg, predictAvg2, resultday } = this.controller;
     let avgStr = ' - ';
     if (resultday !== undefined) {
-      avgStr = resultday + ' - ' + GFunc.percentToFixString(predictAvg);
+      avgStr = resultday + ' -  top20 : ' + GFunc.percentToFixString(predictAvg) + '  -  top50 : ' + GFunc.percentToFixString(predictAvg2);
     }
     return <Page header="股票历史选股"
       headerClassName='bg-primary py-1 px-3'>
       <this.searchHead />
-      <div className="px-3 bg-white">{GFunc.caption('预测收益比top50均值')}{avgStr}</div>
+      <div className="px-3 bg-white">{GFunc.caption('预测收益比均值')}{avgStr}</div>
       <this.content />
     </Page>;
   })

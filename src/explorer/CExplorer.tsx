@@ -12,6 +12,8 @@ import { GFunc } from 'GFunc';
 
 export class CExplorer extends CUqBase {
   items: IObservableArray<any> = observable.array<any>([], { deep: true });
+  @observable predictAvg: number;
+  @observable predictAvg2: number;
   protected oldSelectType: string;
   selectedItems: any[] = [];
 
@@ -76,6 +78,8 @@ export class CExplorer extends CUqBase {
       let ep = GFunc.evaluatePricePrice(irate, sl.predict(5), sl.predict(6), sl.predict(7));
       item.predictpp = item.price / ep;
     }
+    this.predictAvg = undefined;
+    this.predictAvg2 = undefined;
     if (queryName === 'all') {
       arr.sort((a, b) => {
         return a.predictpp - b.predictpp;
@@ -84,6 +88,27 @@ export class CExplorer extends CUqBase {
       for (let item of arr) {
         item.ma = o;
         ++o;
+      }
+      let count = arr.length;
+      let count2 = count;
+      if (count > 20)
+        count = 20
+      if (count >= 10) {
+        let sum = 0;
+        for (let i = 3; i < count; ++i) {
+          sum += arr[i].predictpp
+        }
+        this.predictAvg = sum / (count - 3);
+      }
+      if (count2 > 50) {
+        count2 = 50;
+      }
+      if (count2 >= 10) {
+        let sum = 0;
+        for (let i = 3; i < count2; ++i) {
+          sum += arr[i].predictpp
+        }
+        this.predictAvg2 = sum / (count2 - 3);
       }
     }
     this.items.clear();

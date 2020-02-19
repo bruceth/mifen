@@ -11,6 +11,7 @@ import { GFunc } from 'GFunc';
 export class CHistoryExplorer extends CUqBase {
   items: IObservableArray<any> = observable.array<any>([], { deep: true });
   @observable predictAvg: number;
+  @observable predictAvg2: number;
   protected oldSelectType: string;
   selectedItems: any[] = [];
   day: number;
@@ -54,8 +55,9 @@ export class CHistoryExplorer extends CUqBase {
       ++o;
     }
     let count = arr.length;
-    if (count > 50)
-      count = 50
+    let count2 = count;
+    if (count > 20)
+      count = 20
     if (count >= 10) {
       let sum = 0;
       for (let i = 3; i < count; ++i) {
@@ -65,6 +67,19 @@ export class CHistoryExplorer extends CUqBase {
     }
     else {
       this.predictAvg = undefined;
+    }
+    if (count2 > 50) {
+      count2 = 50;
+    }
+    if (count2 >= 10) {
+      let sum = 0;
+      for (let i = 3; i < count2; ++i) {
+        sum += arr[i].predictpp
+      }
+      this.predictAvg2 = sum / (count2 - 3);
+    }
+    else {
+      this.predictAvg2 = undefined;
     }
     this.items.clear();
     this.items.push(...arr);
