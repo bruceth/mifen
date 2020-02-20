@@ -1,5 +1,6 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
-import { observable, IObservableArray, computed } from 'mobx';import * as React from 'react';
+import { observable, IObservableArray, computed } from 'mobx';
+import * as React from 'react';
 import { autorun } from 'mobx';
 import { ErForEarning, SlrForEarning } from 'regression';
 import { CUqBase } from '../CUqBase';
@@ -12,8 +13,8 @@ import { GFunc } from 'GFunc';
 
 export class CExplorer extends CUqBase {
   items: IObservableArray<any> = observable.array<any>([], { deep: true });
-  @observable predictAvg: number;
-  @observable predictAvg2: number;
+  @observable avgs : {avg20?:number, avg50?:number, avg100?:number} = {};
+  lastTradeDay: number;
   protected oldSelectType: string;
   selectedItems: any[] = [];
 
@@ -67,19 +68,27 @@ export class CExplorer extends CUqBase {
       lr4: lr4,
       r210: r210,
     };
-    let result = await this.cApp.miApi.process(query, []);
+    let rets = await Promise.all([this.cApp.miApi.process(query, []),
+                                  this.cApp.miApi.call('q_getlasttradeday', [])
+      ]);
+    let lastDayRet = rets[1] as {day:number}[];
+    if (Array.isArray(lastDayRet) && lastDayRet.length > 0) {
+      this.lastTradeDay = lastDayRet[0].day;
+    }
+    else {
+      this.lastTradeDay = undefined;
+    }
+    let result = rets[0];
     if (Array.isArray(result) === false) {
       return;
     };
-    let arr = result as {id:number, data?:string, e:number, price:number, r2:number, lr2:number, predictpp?:number, ma:number}[];
+    let arr = result as {id:number, data?:string, e:number, price:number, r2:number, lr2:number, predictpp:number, ma:number}[];
     for (let item of arr) {
       let dataArray = JSON.parse(item.data) as number[];
       let sl = new SlrForEarning(dataArray);
       let ep = GFunc.evaluatePricePrice(irate, sl.predict(5), sl.predict(6), sl.predict(7));
       item.predictpp = item.price / ep;
     }
-    this.predictAvg = undefined;
-    this.predictAvg2 = undefined;
     if (queryName === 'all') {
       arr.sort((a, b) => {
         return a.predictpp - b.predictpp;
@@ -89,27 +98,10 @@ export class CExplorer extends CUqBase {
         item.ma = o;
         ++o;
       }
-      let count = arr.length;
-      let count2 = count;
-      if (count > 20)
-        count = 20
-      if (count >= 10) {
-        let sum = 0;
-        for (let i = 3; i < count; ++i) {
-          sum += arr[i].predictpp
-        }
-        this.predictAvg = sum / (count - 3);
-      }
-      if (count2 > 50) {
-        count2 = 50;
-      }
-      if (count2 >= 10) {
-        let sum = 0;
-        for (let i = 3; i < count2; ++i) {
-          sum += arr[i].predictpp
-        }
-        this.predictAvg2 = sum / (count2 - 3);
-      }
+      this.avgs = GFunc.CalculatePredictAvg(arr);
+    }
+    else {
+      this.avgs = {};
     }
     this.items.clear();
     this.items.push(...arr);

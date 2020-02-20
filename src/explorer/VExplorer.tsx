@@ -5,6 +5,7 @@ import { VPage, Page, View, List, LMR, FA } from 'tonva';
 import { NStockInfo } from '../stockinfo';
 import { GFunc } from '../GFunc';
 import { CExplorer } from './CExplorer';
+import { PredictHistoryParam } from 'predicthistory/CPredictHistory';
 
 export class VExplorer extends View<CExplorer> {
 
@@ -28,13 +29,25 @@ export class VExplorer extends View<CExplorer> {
     </Page>;
   })
 
+  private onClickPredictAVG = () => {
+    let {avgs, lastTradeDay} = this.controller;
+    let param: PredictHistoryParam = {
+      day:undefined,
+      priceDay:lastTradeDay,
+      avg20:avgs.avg20,
+      avg50:avgs.avg50,
+      avg100:avgs.avg100
+    }
+    this.controller.cApp.openPredictAVG(param);
+  }
+
   private content = observer(() => {
     let sType = this.controller.cApp.findStockConfg.selectType;
-    let {items, selectedItems,predictAvg, predictAvg2} = this.controller;
+    let {items, selectedItems,avgs} = this.controller;
     let avgHead = <></>;
-    if (predictAvg !== undefined || predictAvg2 !== undefined) {
-      let avgStr = ' top20 : ' + GFunc.percentToFixString(predictAvg) + '  -  top50 : ' + GFunc.percentToFixString(predictAvg2);
-      avgHead = <div className="px-3 bg-white">{GFunc.caption('预测收益比均值')}{avgStr}</div>
+    if (avgs.avg20 !== undefined || avgs.avg50 !== undefined || avgs.avg100 !== undefined) {
+      let avgStr = ' top20 : ' + GFunc.percentToFixString(avgs.avg20) + '  -  top50 : ' + GFunc.percentToFixString(avgs.avg50) + '  -  top100 : ' + GFunc.percentToFixString(avgs.avg100);
+      avgHead = <div className="px-3 bg-white cursor-pointer" onClick={this.onClickPredictAVG}>{GFunc.caption('预测收益比均值')}{avgStr}</div>
     }
     
     let header = <div className="px-3">

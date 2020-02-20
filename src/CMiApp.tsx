@@ -11,6 +11,7 @@ import { CHistoryExplorer } from './historyexplorer'
 import { MiConfigs, StockFindConfig, IdName, RegressionConfig } from './types';
 import { CWarning } from './warning';
 import { CAccountHome } from './account';
+import { CPredictHistory } from './predicthistory';
 
 export const defaultTagName = '自选股';
 export const defaultBlackListTagName = '黑名单';
@@ -26,7 +27,7 @@ export class CMiApp extends CAppBase {
     tagName: defaultTagName, 
     stockFind: { sortType:'pe' },
     userStock: { sortType:'tagpe'},
-    regression: {bmin:0, bmax:0.5, r2:0.6, lmin:0.01, lmax:0.5, lr2:0.6, mcount:2, lr4: 3, r210:0.5, irate:0.04}
+    regression: {bmin:0, bmax:0.5, r2:0.7, lmin:0.01, lmax:0.5, lr2:0.7, mcount:2, lr4: 3, r210:0.6, irate:0.04}
   };
   @observable tags: IdName[] = undefined;
   @observable blackList: any[] = [];
@@ -154,11 +155,11 @@ export class CMiApp extends CAppBase {
       this.config.userStock = { sortType: 'tagpe' };
     }
     if (this.config.regression === undefined) {
-      this.config.regression = {bmin:0, bmax:0.5, r2:0.6, lmin:0.01, lmax:0.5, lr2:0.6, mcount:2, lr4: 3, r210:0.5, irate:0.04};
+      this.config.regression = {bmin:0, bmax:0.5, r2:0.7, lmin:0.01, lmax:0.5, lr2:0.7, mcount:2, lr4: 3, r210:0.6, irate:0.04};
     }
     else {
       if (this.config.regression.r210 === undefined) {
-        this.config.regression.r210 = 0.5;
+        this.config.regression.r210 = 0.6;
       }
       if (this.config.regression.irate === undefined) {
         this.config.regression.irate = 0.04;
@@ -364,5 +365,10 @@ export class CMiApp extends CAppBase {
   }
 
   protected onDispose() {
+  }
+
+  openPredictAVG(param:any) {
+    let pc = this.newC(CPredictHistory);
+    pc.start(param);
   }
 }

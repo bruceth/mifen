@@ -76,4 +76,30 @@ export class GFunc {
     }
     return {begin: year + 1001, end: year + 1231};
   }
+
+  public static CalculatePredictAvg(arr: {predictpp:number}[]) {
+    let ret : {avg20:number, avg50:number, avg100:number} = {avg20:undefined, avg50:undefined, avg100:undefined};
+
+    let length = arr.length;
+    let calcuOne = (count:number) : number => {
+      let endIndex = count;
+      if (endIndex > length)
+        endIndex = length;
+      if (endIndex >= 10) {
+        let sum = 0;
+        for (let i = 3; i < endIndex; ++i) {
+          sum += arr[i].predictpp
+        }
+        return sum / (endIndex - 3);
+      }
+      else {
+        return undefined;
+      }
+    }
+
+    ret.avg20 = calcuOne(20);
+    ret.avg50 = calcuOne(50);
+    ret.avg100 = calcuOne(100);
+    return ret;
+  }
 }

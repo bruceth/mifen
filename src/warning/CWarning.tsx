@@ -4,7 +4,6 @@ import { PageItems, Context } from 'tonva';
 import { observable, autorun } from 'mobx';
 import { CMiApp } from '../CMiApp';
 import { CUqBase } from '../CUqBase';
-import { CStockInfo, NStockInfo } from '../stockinfo';
 import { CStock } from '../stock';
 import { VWarningConfig, VNewWarning } from './VWarningConfig';
 

@@ -10,8 +10,7 @@ import { GFunc } from 'GFunc';
 
 export class CHistoryExplorer extends CUqBase {
   items: IObservableArray<any> = observable.array<any>([], { deep: true });
-  @observable predictAvg: number;
-  @observable predictAvg2: number;
+  @observable avgs : {avg20?:number, avg50?:number, avg100?:number} = {};
   protected oldSelectType: string;
   selectedItems: any[] = [];
   day: number;
@@ -35,7 +34,7 @@ export class CHistoryExplorer extends CUqBase {
       return;
     };
     this.resultday = result[1][0].day;
-    let arr = result[0] as {id:number, data?:string, e:number, price:number, capital:number, bonus:number, pe?:number, roe?:number, divyield?:number, r2:number, lr2:number, predictpp?:number, ma?:number}[];
+    let arr = result[0] as {id:number, data?:string, e:number, price:number, capital:number, bonus:number, pe?:number, roe?:number, divyield?:number, r2:number, lr2:number, predictpp:number, ma?:number}[];
 
     for (let item of arr) {
       item.pe = item.price / item.e;
@@ -54,33 +53,7 @@ export class CHistoryExplorer extends CUqBase {
       item.ma = o;
       ++o;
     }
-    let count = arr.length;
-    let count2 = count;
-    if (count > 20)
-      count = 20
-    if (count >= 10) {
-      let sum = 0;
-      for (let i = 3; i < count; ++i) {
-        sum += arr[i].predictpp
-      }
-      this.predictAvg = sum / (count - 3);
-    }
-    else {
-      this.predictAvg = undefined;
-    }
-    if (count2 > 50) {
-      count2 = 50;
-    }
-    if (count2 >= 10) {
-      let sum = 0;
-      for (let i = 3; i < count2; ++i) {
-        sum += arr[i].predictpp
-      }
-      this.predictAvg2 = sum / (count2 - 3);
-    }
-    else {
-      this.predictAvg2 = undefined;
-    }
+    this.avgs = GFunc.CalculatePredictAvg(arr);
     this.items.clear();
     this.items.push(...arr);
   }
