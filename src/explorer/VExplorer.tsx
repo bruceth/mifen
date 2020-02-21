@@ -72,7 +72,7 @@ export class VExplorer extends View<CExplorer> {
   renderRow = (item: any, index: number): JSX.Element => <this.rowContent {...item} />;
   protected rowContent = observer((row: any): JSX.Element => {
     let sName = this.controller.cApp.config.stockFind.selectType;
-    let { id, name, code, pe, roe, price, divyield, ma, symbol, b, r2, l, lr2, lr4, predictpp, b10, r210, l10, lr210 } = row as NStockInfo;
+    let { id, name, code, pe, roe, price, divyield, ma, order, symbol, b, r2, l, lr2, lr4, predictpp, b10, r210, l10, lr210 } = row as NStockInfo;
     //let left = <div className="c5"><span className="text-primary">{name}</span><br/>{code}</div>
     let labelId = 'vexl_' + id;
     let left = <label htmlFor={labelId} className="d-inline-flex px-2" onClick={e=>{e.stopPropagation()}}>
@@ -95,7 +95,7 @@ export class VExplorer extends View<CExplorer> {
       let fInDef = defList.findIndex(v=>v===id);
       let right = <div className="d-flex">
           <div className="px-1"><span className="text-muted small">自选</span><br />{fInDef >= 0?'√' :''}</div>
-          <div className="px-1"><span className="text-muted small">{sName === 'all'?'序号': '评分'}</span><br />{ma.toString()}</div>
+          <div className="px-1"><span className="text-muted small">{'序号'}</span><br />{order.toString()}</div>
         </div>;
       return <><LMR className="px-1 py-1" left={left} right = {right} >
         <div className="d-flex flex-wrap" onClick={()=>this.onClickName(row)} >

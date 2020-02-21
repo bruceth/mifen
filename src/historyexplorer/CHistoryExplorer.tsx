@@ -34,7 +34,7 @@ export class CHistoryExplorer extends CUqBase {
       return;
     };
     this.resultday = result[1][0].day;
-    let arr = result[0] as {id:number, data?:string, e:number, price:number, capital:number, bonus:number, pe?:number, roe?:number, divyield?:number, r2:number, lr2:number, predictpp:number, ma?:number}[];
+    let arr = result[0] as {id:number, data?:string, e:number, price:number, capital:number, bonus:number, pe?:number, roe?:number, divyield?:number, r2:number, lr2:number, predictpp:number, order?:number, ma?:number}[];
 
     for (let item of arr) {
       item.pe = item.price / item.e;
@@ -50,6 +50,7 @@ export class CHistoryExplorer extends CUqBase {
     })
     let o = 1;
     for (let item of arr) {
+      item.order = o;
       item.ma = o;
       ++o;
     }

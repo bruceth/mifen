@@ -101,7 +101,7 @@ export class VHistoryExplorer extends View<CHistoryExplorer> {
   renderRow = (item: any, index: number): JSX.Element => <this.rowContent {...item} />;
   protected rowContent = observer((row: any): JSX.Element => {
     let sName = this.controller.cApp.config.stockFind.selectType;
-    let { id, name, code, e, capital, bonus, price, ma, symbol, b, r2, l, lr2, lr4, b10, r210, l10, lr210, predictpp } = row as NStockInfo;
+    let { id, name, code, e, capital, bonus, price, order, symbol, b, r2, l, lr2, lr4, b10, r210, l10, lr210, predictpp } = row as NStockInfo;
     let pe = price / e;
     let roe = e / capital;
     let divyield = bonus / price;
@@ -127,7 +127,7 @@ export class VHistoryExplorer extends View<CHistoryExplorer> {
       let fInDef = defList.findIndex(v=>v===id);
       let right = <div className="d-flex">
           <div className="px-1"><span className="text-muted small">自选</span><br />{fInDef >= 0?'√' :''}</div>
-          <div className="px-1"><span className="text-muted small">{sName === 'all'?'序号': '评分'}</span><br />{ma.toString()}</div>
+          <div className="px-1"><span className="text-muted small">{'序号'}</span><br />{order.toString()}</div>
         </div>;
       return <><LMR className="px-1 py-1" left={left} right = {right} >
         <div className="d-flex flex-wrap" onClick={()=>this.onClickName(row)} >

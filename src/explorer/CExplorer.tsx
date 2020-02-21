@@ -86,7 +86,7 @@ export class CExplorer extends CUqBase {
     if (Array.isArray(result) === false) {
       return;
     };
-    let arr = result as {id:number, data?:string, e:number, price:number, r2:number, lr2:number, predictpp:number, ma:number}[];
+    let arr = result as {id:number, data?:string, e:number, price:number, r2:number, lr2:number, predictpp:number, order:number, ma:number}[];
     for (let item of arr) {
       let dataArray = JSON.parse(item.data) as number[];
       let sl = new SlrForEarning(dataArray);
@@ -99,6 +99,7 @@ export class CExplorer extends CUqBase {
       })
       let o = 1;
       for (let item of arr) {
+        item.order = o;
         item.ma = o;
         ++o;
       }
