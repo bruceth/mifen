@@ -41,6 +41,10 @@ export class CExplorer extends CUqBase {
   async internalStart(param: any) {
   }
 
+  reload = async () => {
+    await this.load();
+  }
+
   async load() {
     this.selectedItems = [];
     await this.loadItems();

@@ -19,9 +19,8 @@ export class VExplorer extends View<CExplorer> {
     if (this.controller.isLogined) {
       viewMetaButton = <button type="button" className="btn w-100" onClick={openMetaView}>view</button>
     }
-    let { onConfig } = this.controller;
-    let right = <div className="btn cursor-pointer" onClick={onConfig}><FA name="cog" size="lg" inverse={true} /></div>;
-
+    let { onConfig, reload } = this.controller;
+    let right = <div className="btn align-self-center cursor-pointer " onClick={onConfig}><FA name="cog" size="lg" inverse={true} /></div>
     return <Page header="股票发现"  onScrollBottom={onPage} right={right}
       headerClassName='bg-primary py-1 px-3'>
       
@@ -43,11 +42,15 @@ export class VExplorer extends View<CExplorer> {
 
   private content = observer(() => {
     let sType = this.controller.cApp.findStockConfg.selectType;
-    let {items, selectedItems,avgs} = this.controller;
-    let avgHead = <></>;
+    let {items, selectedItems,avgs, reload} = this.controller;
+    let avgHead: JSX.Element;
+    let right = <div className="btn cursor-pointer py-3" onClick={reload}>刷新</div>
     if (avgs.avg20 !== undefined || avgs.avg50 !== undefined || avgs.avg100 !== undefined) {
       let avgStr = ' top20 : ' + GFunc.percentToFixString(avgs.avg20) + '  -  top50 : ' + GFunc.percentToFixString(avgs.avg50) + '  -  top100 : ' + GFunc.percentToFixString(avgs.avg100);
-      avgHead = <div className="px-3 bg-white cursor-pointer" onClick={this.onClickPredictAVG}>{GFunc.caption('预测收益比均值')}{avgStr}</div>
+      avgHead = <LMR right={right}><div className="px-3 cursor-pointer" onClick={this.onClickPredictAVG}>{GFunc.caption('预测收益比均值')}{avgStr}</div></LMR>
+    }
+    else {
+      avgHead = <LMR right={right}></LMR>
     }
     
     let header = <div className="px-3">
