@@ -318,6 +318,15 @@ export class CMiApp extends CAppBase {
     }
   }
 
+  async AddTagStockIDs(tagid: number, stockIDs: number[]) {
+    if (tagid === this.blackListTagID) {
+      stockIDs.map(v=>this.AddBlackID(v));
+    }
+    else if (tagid === this.defaultListTagID) {
+      stockIDs.map(v=>this.AddDefaultID(v));
+    }
+  }
+
   async RemoveTagStockID(tagid: number, stockID: number) {
     if (tagid === this.blackListTagID) {
       this.RemoveBlackID(stockID);

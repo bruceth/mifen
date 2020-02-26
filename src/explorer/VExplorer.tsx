@@ -42,9 +42,12 @@ export class VExplorer extends View<CExplorer> {
 
   private content = observer(() => {
     let sType = this.controller.cApp.findStockConfg.selectType;
-    let {items, selectedItems,avgs, reload} = this.controller;
+    let {items, selectedItems,avgs, reload, onAddSelectedItemsToTag} = this.controller;
     let avgHead: JSX.Element;
-    let right = <div className="btn cursor-pointer py-3" onClick={reload}>刷新</div>
+    let right = <div>
+      <div className="btn cursor-pointer py-3" onClick={onAddSelectedItemsToTag}>加自选</div>
+      <div className="btn cursor-pointer py-3" onClick={reload}>刷新</div>
+    </div>
     if (avgs.avg20 !== undefined || avgs.avg50 !== undefined || avgs.avg100 !== undefined) {
       let avgStr = ' top20 : ' + GFunc.percentToFixString(avgs.avg20) + '  -  top50 : ' + GFunc.percentToFixString(avgs.avg50) + '  -  top100 : ' + GFunc.percentToFixString(avgs.avg100);
       avgHead = <LMR right={right}><div className="px-3 cursor-pointer" onClick={this.onClickPredictAVG}>{GFunc.caption('预测收益比均值')}{avgStr}</div></LMR>
@@ -63,7 +66,6 @@ export class VExplorer extends View<CExplorer> {
       <List header={header}
         items={items}
         item={{ render: this.renderRow, key: this.rowKey }}
-        selectedItems={selectedItems}
         before={'选股'}
       />
     </>
@@ -131,27 +133,10 @@ export class VExplorer extends View<CExplorer> {
   }
 
   protected onSelect = async (item: any, isSelected:boolean): Promise<void> => {
-    let {selectedItems} = this.controller;
-    let a = 0;
+    this.controller.onSelectItem(item, isSelected);
   }
 
   protected onClickItem = async (item: any): Promise<void> => {
     this.controller.openStockInfo(item);
   }
-
-  protected onSelected = async (item: any, isSelected:boolean, anySelected:boolean): Promise<void> => {
-    let {selectedItems} = this.controller;
-    let a = 0;
-  }
-
-  // private callOnSelected(item: any) {
-  //   if (this.onSelected === undefined) {
-  //     alert('onSelect is undefined');
-  //     return;
-  //   }
-  //   this.onSelected(item);
-  // }
-  // clickRow = (item: any) => {
-  //   this.callOnSelected(item);
-  // }
 }

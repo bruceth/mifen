@@ -112,6 +112,28 @@ export class CExplorer extends CUqBase {
     this.items.push(...arr);
   }
 
+  onSelectItem = (item:any, isSelected:boolean) => {
+    let index = this.selectedItems.findIndex(v=>v === item.id);
+    if (index >= 0) {
+      if (!isSelected) {
+        this.selectedItems.splice(index, 1);
+      }
+    }
+    else {
+      if (isSelected) {
+        this.selectedItems.push(item.id);
+      }
+    }
+  }
+
+  onAddSelectedItemsToTag = async () => {
+    if (this.selectedItems.length <= 0)
+      return;
+    let tagid = this.cApp.defaultListTagID;
+    let ret = await this.cApp.miApi.call('t_tagstock$addgroup', [this.user.id, tagid, JSON.stringify(this.selectedItems)]);
+    await this.cApp.AddTagStockIDs(tagid, this.selectedItems);
+  }
+
   renderSiteHeader = () => {
     return this.renderView(VSiteHeader);
   }

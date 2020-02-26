@@ -378,13 +378,6 @@ export class CStockInfo extends CUqBase {
 
   onClickDefaultTag = async (isSelected: boolean) => {
     let tagid = this.cApp.defaultListTagID;
-    let param = {
-      user: nav.user.id,
-      tag: tagid,
-      arr1: [
-        { stock: this.baseItem.id }
-      ]
-    };
     if (isSelected === true) {
       let ret = await this.cApp.miApi.call('t_tagstock$add', [this.user.id, tagid, this.baseItem.id]); //.uqs.mi.TagStock.add(param);
       let newTag = {
