@@ -49,7 +49,7 @@ export class VExplorer extends View<CExplorer> {
       <div className="btn cursor-pointer py-3" onClick={reload}>刷新</div>
     </div>
     if (avgs.avg20 !== undefined || avgs.avg50 !== undefined || avgs.avg100 !== undefined) {
-      let avgStr = ' top20 : ' + GFunc.percentToFixString(avgs.avg20) + '  -  top50 : ' + GFunc.percentToFixString(avgs.avg50) + '  -  top100 : ' + GFunc.percentToFixString(avgs.avg100);
+      let avgStr = ' top20 : ' + GFunc.percentToFixString(avgs.avg20) + '  -  top50 : ' + GFunc.percentToFixString(avgs.avg50) + '  -  top100 : ' + GFunc.percentToFixString(avgs.avg100) + '  ...查看历史走势';
       avgHead = <LMR right={right}><div className="px-3 cursor-pointer" onClick={this.onClickPredictAVG}>{GFunc.caption('预测收益比均值')}{avgStr}</div></LMR>
     }
     else {
