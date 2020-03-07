@@ -136,7 +136,7 @@ export class VHistoryExplorer extends View<CHistoryExplorer> {
           <div className="px-3 c6">{GFunc.caption('价/预期')}<br />{GFunc.percentToFixString(predictpp)}</div>
           <div className="px-3 c6">{GFunc.caption('ROE')}<br />{GFunc.percentToFixString(roe)}</div>
           <div className="px-3 c5">{GFunc.caption('价格')}<br />{GFunc.numberToFixString(price)}</div>
-          <div className="px-3 c6">{GFunc.caption('年涨幅')}<br />{GFunc.percentToFixString(nprice/exprice-1)}</div>
+          <div className="px-3 c6">{GFunc.caption('1年涨幅')}<br />{GFunc.percentToFixString(nprice/exprice-1)}</div>
           <div className="px-3 c6">{GFunc.caption('2年涨幅')}<br />{GFunc.percentToFixString(nprice2/exprice-1)}</div>
           <div className="px-3 c5">{GFunc.caption('b')}<br />{GFunc.numberToString(b, 3)}</div>
           <div className="px-3 c5">{GFunc.caption('R2')}<br />{GFunc.numberToString(r2, 3)}</div>
