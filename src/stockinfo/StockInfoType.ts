@@ -34,7 +34,9 @@ export interface NStockInfo extends BaseStockInfo {
   capital?:number,
   bonus?:number,
   day?:number,
+  exprice?:number,
   nprice?:number,
+  nprice2?:number,
 };
 
 export interface StockPrice {
