@@ -18,13 +18,16 @@ export class VHistoryExplorer extends View<CHistoryExplorer> {
   private page = observer(() => {
     let { avgs, resultday } = this.controller;
     let avgStr = ' - ';
+    let zfStr = ' - ';
     if (resultday !== undefined) {
       avgStr = resultday + ' -  top20 : ' + GFunc.percentToFixString(avgs.avg20) + '  -  top50 : ' + GFunc.percentToFixString(avgs.avg50) + '  -  top100 : ' + GFunc.percentToFixString(avgs.avg100);
+      zfStr = '1年：' + GFunc.percentToFixString(avgs.zf1) + ' - 2年：' + GFunc.percentToFixString(avgs.zf2) + ' - 3年：' + GFunc.percentToFixString(avgs.zf3);
     }
     return <Page header="股票历史选股"
       headerClassName='bg-primary py-1 px-3'>
       <this.searchHead />
       <div className="px-3 bg-white">{GFunc.caption('预测收益比均值')}{avgStr}</div>
+      <div className="px-3 bg-white">{GFunc.caption('涨幅均值')}{zfStr}</div>
       <this.content />
     </Page>;
   })

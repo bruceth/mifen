@@ -10,7 +10,7 @@ import { GFunc } from 'GFunc';
 
 export class CHistoryExplorer extends CUqBase {
   items: IObservableArray<any> = observable.array<any>([], { deep: true });
-  @observable avgs : {avg20?:number, avg50?:number, avg100?:number} = {};
+  @observable avgs : {avg20?:number, avg50?:number, avg100?:number, zf1?:number, zf2?:number, zf3?:number} = {};
   protected oldSelectType: string;
   selectedItems: any[] = [];
   day: number;
@@ -34,7 +34,7 @@ export class CHistoryExplorer extends CUqBase {
       return;
     };
     this.resultday = result[1][0].day;
-    let arr = result[0] as {id:number, data?:string, e:number, price:number, capital:number, bonus:number, pe?:number, roe?:number, divyield?:number, r2:number, lr2:number, predictpp:number, order?:number, ma?:number}[];
+    let arr = result[0] as {id:number, data?:string, e:number, price:number, capital:number, bonus:number, pe?:number, roe?:number, zf1?:number, zf2?:number, zf3?:number, divyield?:number, r2:number, lr2:number, predictpp:number, order?:number, ma?:number}[];
 
     for (let item of arr) {
       item.pe = item.price / item.e;
@@ -49,12 +49,39 @@ export class CHistoryExplorer extends CUqBase {
       return a.predictpp - b.predictpp;
     })
     let o = 1;
+    let zf1 = 0;
+    let zf2 = 0;
+    let zf3 = 0;
+    let count1 =0;
+    let count2 = 0;
+    let count3 = 0;
+
     for (let item of arr) {
       item.order = o;
       item.ma = o;
       ++o;
+      let zf = item.zf1;
+      if (zf !== undefined) {
+        zf1 += zf;
+        count1++;
+      }
+      zf = item.zf2;
+      if (zf !== undefined) {
+        zf2 += zf;
+        count2++;
+      }
+      zf = item.zf3;
+      if (zf !== undefined) {
+        zf3 += zf;
+        count3++;
+      }
     }
-    this.avgs = GFunc.CalculatePredictAvg(arr);
+
+    let avgs = GFunc.CalculatePredictAvg(arr);
+    avgs.zf1 = count1 > 0 ? zf1/count1 : undefined;;
+    avgs.zf2 = count2 > 0 ? zf2/count2 : undefined;;
+    avgs.zf3 = count3 > 0 ? zf3/count3 : undefined;;
+    this.avgs = avgs;
     this.items.clear();
     this.items.push(...arr);
   }
