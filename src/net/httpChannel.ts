@@ -25,7 +25,7 @@ export class HttpChannel {
         this.hostUrl = hostUrl;
         this.apiToken = apiToken;
         this.ui = ui;
-        this.timeout = consts.isDevelopment === true? 500000:5000;
+        this.timeout = consts.isDevelopment === true? 500000:20000;
     }
 
     private startWait = () => {

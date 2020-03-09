@@ -185,7 +185,7 @@ export const host:Host = new Host();
 
 // 实际上，一秒钟不够。web服务器会自动停。重启的时候，可能会比较长时间。也许两秒甚至更多。
 //const timeout = 2000;
-const timeout = 200;
+const timeout = 2000;
 
 function fetchLocalCheck(url:string):Promise<any> {
     return new Promise((resolve, reject) => {
