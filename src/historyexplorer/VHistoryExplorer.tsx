@@ -16,52 +16,24 @@ export class VHistoryExplorer extends View<CHistoryExplorer> {
   }
 
   private page = observer(() => {
-    let { avgs, resultday, zfsummary, avgs20, avgs50, avgs100 } = this.controller;
+    let { avgs, resultday, summaryItems } = this.controller;
     let avgStr = ' - ';
     let zfStr = <></>;
     if (resultday !== undefined) {
       avgStr = resultday + ' -  top20 : ' + GFunc.percentToFixString(avgs.avg20) + '  -  top50 : ' + GFunc.percentToFixString(avgs.avg50) + '  -  top100 : ' + GFunc.percentToFixString(avgs.avg100);
-      let sum20 = this.oneSummary('前20小结', avgs20);
-      let sum50 = this.oneSummary('前50小结', avgs50);
-      let sum100 = this.oneSummary('前100小结', avgs100);
-      zfStr = <>
-      {sum20}
-      {sum50}
-      {sum100}
-      <LMR className="px-3 py-2" left={'选股小结'}>
-      <div className="d-flex flex-wrap">
-        <div className="px-3 c6">{GFunc.caption('1年均涨幅')}<br />{GFunc.percentToFixString(avgs.zf1)}</div>
-        <div className="px-3 c6">{GFunc.caption('上涨比例')}<br />{GFunc.percentToFixString(avgs.zr1)}</div>
-        <div className="px-3 c6">{GFunc.caption('2年均涨幅')}<br />{GFunc.percentToFixString(avgs.zf2)}</div>
-        <div className="px-3 c6">{GFunc.caption('上涨比例')}<br />{GFunc.percentToFixString(avgs.zr2)}</div>
-        <div className="px-3 c6">{GFunc.caption('3年均涨幅')}<br />{GFunc.percentToFixString(avgs.zf3)}</div>
-        <div className="px-3 c6">{GFunc.caption('上涨比例')}<br />{GFunc.percentToFixString(avgs.zr3)}</div>
-      </div>
-      </LMR>
-      </>
-    }
-    let summary = <></>;
-    if (zfsummary !== undefined) {
-      let zr1 = zfsummary.gt1 / (zfsummary.gt1 + zfsummary.lt1);
-      let zr2 = zfsummary.gt2 / (zfsummary.gt3 + zfsummary.lt3);
-      let zr3 = zfsummary.gt3 / (zfsummary.gt3 + zfsummary.lt3);
-      summary = <LMR className="px-3 py-2" left={'市场小结'}>
-      <div className="d-flex flex-wrap">
-        <div className="px-3 c6">{GFunc.caption('1年均涨幅')}<br />{GFunc.percentToFixString(zfsummary.avg1)}</div>
-        <div className="px-3 c6">{GFunc.caption('上涨比例')}<br />{GFunc.percentToFixString(zr1)}</div>
-        <div className="px-3 c6">{GFunc.caption('2年均涨幅')}<br />{GFunc.percentToFixString(zfsummary.avg2)}</div>
-        <div className="px-3 c6">{GFunc.caption('上涨比例')}<br />{GFunc.percentToFixString(zr2)}</div>
-        <div className="px-3 c6">{GFunc.caption('3年均涨幅')}<br />{GFunc.percentToFixString(zfsummary.avg3)}</div>
-        <div className="px-3 c6">{GFunc.caption('上涨比例')}<br />{GFunc.percentToFixString(zr3)}</div>
-      </div>
-    </LMR>
+      zfStr = <List 
+      items={summaryItems}
+      item={{ render: this.renderSummaryRow }}
+      before={'-----'}
+      none={'----'}
+    />
+
     }
     return <Page header="股票历史选股"
       headerClassName='bg-primary py-1 px-3'>
       <this.searchHead />
       <div className="px-3 bg-white">{GFunc.caption('预测收益比均值')}{avgStr}</div>
       {zfStr}
-      {summary}
       <this.content />
     </Page>;
   })
@@ -146,6 +118,20 @@ export class VHistoryExplorer extends View<CHistoryExplorer> {
         none={'----'}
       />
     </>
+  });
+
+  renderSummaryRow = (item: any, index: number): JSX.Element => <this.rowSummaryContent {...item} />;
+  protected rowSummaryContent = observer((row: any): JSX.Element => {
+    let {type, zf1, zf2, zf3, zr1, zr2, zr3} = row as {type:string, zf1?:number, zf2?:number, zf3?:number, zr1?:number, zr2?:number, zr3?:number}
+    return <div className="d-flex flex-wrap">
+      <div className="px-3 c8">{type}</div>
+      <div className="px-3 c6">{GFunc.caption('1年均涨幅')}<br />{GFunc.percentToFixString(zf1)}</div>
+      <div className="px-3 c6">{GFunc.caption('上涨比例')}<br />{GFunc.percentToFixString(zr1)}</div>
+      <div className="px-3 c6">{GFunc.caption('2年均涨幅')}<br />{GFunc.percentToFixString(zf2)}</div>
+      <div className="px-3 c6">{GFunc.caption('上涨比例')}<br />{GFunc.percentToFixString(zr2)}</div>
+      <div className="px-3 c6">{GFunc.caption('3年均涨幅')}<br />{GFunc.percentToFixString(zf3)}</div>
+      <div className="px-3 c6">{GFunc.caption('上涨比例')}<br />{GFunc.percentToFixString(zr3)}</div>
+    </div>
   });
 
   renderRow = (item: any, index: number): JSX.Element => <this.rowContent {...item} />;

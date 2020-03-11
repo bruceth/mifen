@@ -78,7 +78,7 @@ export class GFunc {
   }
 
   public static CalculatePredictAvg(arr: {predictpp:number}[]) {
-    let ret : {avg20:number, avg50:number, avg100:number, zf1?:number, zf2?:number, zf3?:number} = {avg20:undefined, avg50:undefined, avg100:undefined};
+    let ret : {avg20:number, avg50:number, avg100:number} = {avg20:undefined, avg50:undefined, avg100:undefined};
 
     let length = arr.length;
     let calcuOne = (count:number) : number => {

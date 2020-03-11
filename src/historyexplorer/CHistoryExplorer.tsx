@@ -10,11 +10,8 @@ import { GFunc } from 'GFunc';
 
 export class CHistoryExplorer extends CUqBase {
   items: IObservableArray<any> = observable.array<any>([], { deep: true });
-  @observable avgs : {avg20?:number, avg50?:number, avg100?:number, zf1?:number, zf2?:number, zf3?:number, zr1?:number, zr2?:number, zr3?:number} = {};
-  @observable avgs20 : {zf1?:number, zf2?:number, zf3?:number, zr1?:number, zr2?:number, zr3?:number} = {};
-  @observable avgs50 : {zf1?:number, zf2?:number, zf3?:number, zr1?:number, zr2?:number, zr3?:number} = {};
-  @observable avgs100 : {zf1?:number, zf2?:number, zf3?:number, zr1?:number, zr2?:number, zr3?:number} = {};
-  @observable zfsummary: {avg1?:number, avg2?:number, avg3?:number, gt1?:number, lt1?:number, gt2?:number, lt2?:number, gt3?:number, lt3?:number} = undefined;
+  summaryItems: IObservableArray<any> = observable.array<any>([], { deep: true });
+  @observable avgs : {avg20?:number, avg50?:number, avg100?:number} = {};
   protected oldSelectType: string;
   selectedItems: any[] = [];
   day: number;
@@ -90,24 +87,31 @@ export class CHistoryExplorer extends CUqBase {
       }
     }
 
-    let avgs = GFunc.CalculatePredictAvg(arr) as {avg20?:number, avg50?:number, avg100?:number, zf1?:number, zf2?:number, zf3?:number, zr1?:number, zr2?:number, zr3?:number};
-    avgs.zf1 = count1 > 0 ? zf1/count1 : undefined;
-    avgs.zf2 = count2 > 0 ? zf2/count2 : undefined;
-    avgs.zf3 = count3 > 0 ? zf3/count3 : undefined;
-    avgs.zr1 = count1 > 0 ? zc1/count1 : undefined;
-    avgs.zr2 = count2 > 0 ? zc2/count2 : undefined;
-    avgs.zr3 = count3 > 0 ? zc3/count3 : undefined;
+    let avgs = GFunc.CalculatePredictAvg(arr) as {avg20?:number, avg50?:number, avg100?:number};
     this.avgs = avgs;
     this.items.clear();
     this.items.push(...arr);
-    this.avgs20 = this.countAvgs(this.items, 20);
-    this.avgs50 = this.countAvgs(this.items, 50);
-    this.avgs100 = this.countAvgs(this.items, 100);
-    await this.loadZFavg();
+    this.summaryItems.clear();
+    let sc = await this.loadZFavg();
+    if (sc !== undefined) {
+      this.summaryItems.push(sc);
+    }
+    this.summaryItems.push({
+      type:'选股小结',
+      zf1 : count1 > 0 ? zf1/count1 : undefined,
+      zf2 : count2 > 0 ? zf2/count2 : undefined,
+      zf3 : count3 > 0 ? zf3/count3 : undefined,
+      zr1 : count1 > 0 ? zc1/count1 : undefined,
+      zr2 : count2 > 0 ? zc2/count2 : undefined,
+      zr3 : count3 > 0 ? zc3/count3 : undefined,
+      })
+    this.summaryItems.push(this.countAvgs('前20小结', this.items, 20));
+    this.summaryItems.push(this.countAvgs('前50小结', this.items, 50));
+    this.summaryItems.push(this.countAvgs('前100小结', this.items, 100));
   }
 
-  protected countAvgs(list:{zf1?:number, zf2?:number, zf3?:number}[], count:number) {
-    let ret : {zf1?:number, zf2?:number, zf3?:number, zr1?:number, zr2?:number, zr3?:number} = {};
+  protected countAvgs(type:string, list:{zf1?:number, zf2?:number, zf3?:number}[], count:number) {
+    let ret : {type:string, zf1?:number, zf2?:number, zf3?:number, zr1?:number, zr2?:number, zr3?:number} = {type:type};
     let len = list.length;
     if (len > count) {
       len = count;
@@ -157,22 +161,28 @@ export class CHistoryExplorer extends CUqBase {
 
   async loadZFavg() {
     if (this.resultday === undefined) {
-      this.zfsummary = undefined;
-      return;
+      return undefined;
     }
     let rets = await this.cApp.miApi.call('t_stockzf$summary', [this.resultday]) as any[][];
     let avgs = rets[0][0];
-    let zfs: {avg1?:number, avg2?:number, avg3?:number, gt1?:number, lt1?:number, gt2?:number, lt2?:number, gt3?:number, lt3?:number} = {
-      avg1:avgs.avg1, avg2:avgs.avg2, avg3:avgs.avg3,
-      gt1:rets[1][0].gt1,
-      lt1:rets[2][0].lt1,
-      gt2:rets[3][0].gt2,
-      lt2:rets[4][0].lt2,
-      gt3:rets[5][0].gt3,
-      lt3:rets[6][0].lt3,
+    let gt1 = rets[1][0].gt1 as number;
+    let lt1 = rets[2][0].lt1 as number;
+    let gt2 = rets[3][0].gt2 as number;
+    let lt2 = rets[4][0].lt2 as number;
+    let gt3 = rets[5][0].gt3 as number;
+    let lt3 = rets[6][0].lt3 as number;
+    
+    let zfs = {
+      type:'市场小结',
+      zf1:avgs.avg1,
+      zf2:avgs.avg2,
+      zf3:avgs.avg3,
+      zr1:gt1/(gt1+lt1),
+      zr2:gt2/(gt2+lt2),
+      zr3:gt3/(gt3+lt3),
     }
 
-    this.zfsummary = zfs;
+    return zfs;
   }
 
   renderHome = () => {
