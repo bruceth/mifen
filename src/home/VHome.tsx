@@ -21,6 +21,7 @@ export class VHome extends View<CHome> {
 
     return <Page header="首页" onScrollBottom={onPage}
       headerClassName='bg-primary py-1 px-3'>
+      <div className="px-3 py-1" onClick={()=>{this.controller.openMarketPE()}}>显示市场平均PE</div>
       <this.warningContent />
       <this.content />
     </Page>;

@@ -12,6 +12,7 @@ import { VSearchHeader } from './VSearchHeader';
 import { VHome } from './VHome';
 import { VSelectTag } from './VSelectTag';
 import { GFunc } from 'GFunc';
+import { CMarketPE } from './CMarketPE';
 
 // class HomePageItems extends PageItems<any> {
 //   cHome: CHome;
@@ -212,5 +213,10 @@ export class CHome extends CUqBase {
   openStockInfo = (item: NStockInfo) => {
     let cStockInfo = this.newC(CStockInfo);
     cStockInfo.start(item);
+  }
+
+  openMarketPE = () => {
+    let cm = this.newC(CMarketPE);
+    cm.start();
   }
 }
