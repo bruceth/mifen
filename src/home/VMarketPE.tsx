@@ -47,10 +47,12 @@ export class VMarketPE extends VPage<CMarketPE> {
     let chartHistory = <></>;
     let labelList:any[] = [];
     let peList:number[] = [];
+    let eList:number[] = [];
     for (let item of historyData) {
-      let {day, pe} = item;
+      let {day, pe, e} = item;
       labelList.push(day);
       peList.push(GFunc.numberToPrecision(pe, 4));
+      eList.push(e);
     }
     let chartdata1 = {
       labels: labelList,
@@ -64,16 +66,33 @@ export class VMarketPE extends VPage<CMarketPE> {
           fill: false,
           yAxisID: 'y-axis-1',
         },
+        {
+          label: 'e',
+          data: eList,
+          borderColor:'red',
+          backgroundColor:'pink',
+          borderWidth: 1,
+          fill: false,
+          yAxisID: 'y-axis-2',
+        }
       ]
     };
     let options = {
       scales:{
         yAxes: [{
-            type: 'linear',
-            display: true,
-            position: 'right',
-            id: 'y-axis-1',
-        }],       
+          type: 'linear',
+          display: true,
+          position: 'right',
+          id: 'y-axis-1',
+        }, {
+          type: 'linear',
+          display: true,
+          position: 'left',
+          id: 'y-axis-2',
+          gridLines: {
+              drawOnChartArea: false
+          }
+        }],    
       }
     }
     chartHistory = <RC2 data={chartdata1} type='line' options={options} />;

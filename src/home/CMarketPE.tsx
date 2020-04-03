@@ -10,7 +10,7 @@ import { GFunc } from 'GFunc';
 import { VMarketPE } from './VMarketPE';
 
 export class CMarketPE extends CUqBase {
-    @observable historyData:{day:number, pe:number}[] =  [];
+    @observable historyData:{day:number, pe:number, e:number}[] =  [];
     private longshortFlag:number = 0;
 
     async internalStart(param: any) {
@@ -21,7 +21,7 @@ export class CMarketPE extends CUqBase {
     loadData = async () => {
         let dt = new Date();
         let param = [dt.getFullYear()*10000+(dt.getMonth()+1)*100+dt.getDate(), 750, this.longshortFlag];
-        let rets = await this.cApp.miApi.query('q_marketpe', param) as {day:number, pe:number}[];
+        let rets = await this.cApp.miApi.query('q_marketpe', param) as {day:number, pe:number, e:number}[];
         this.historyData = rets.reverse();
     }
 
