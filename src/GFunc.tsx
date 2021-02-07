@@ -29,6 +29,14 @@ export class GFunc {
     return r2 * 2 - r2 * r2;
   }
 
+  public static evaluateE3(slop: number, e: number) {
+    let s = 1 + slop;
+    if (slop > 1.3) {
+      s = 1.3;
+    }
+    return e * s * s * s;
+  }
+
   public static evaluatePricePrice(iRate:number, e1:number, e2:number, e3:number) {
     let r = 1 + iRate;
     let r2 = r * r;

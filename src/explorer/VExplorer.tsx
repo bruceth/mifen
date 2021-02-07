@@ -74,7 +74,7 @@ export class VExplorer extends View<CExplorer> {
   renderRow = (item: any, index: number): JSX.Element => <this.rowContent {...item} />;
   protected rowContent = observer((row: any): JSX.Element => {
     let sName = this.controller.cApp.config.stockFind.selectType;
-    let { id, name, code, pe, roe, price, divyield, ma, order, symbol, b, r2, l, lr2, lr4, predictpp, b10, r210, l10, lr210 } = row as NStockInfo;
+    let { id, name, code, pe, roe, price, exprice, divyield, ma, order, symbol, l, predictpp, e, ep1, e3 } = row as NStockInfo;
     //let left = <div className="c5"><span className="text-primary">{name}</span><br/>{code}</div>
     let labelId = 'vexl_' + id;
     let left = <label htmlFor={labelId} className="d-inline-flex px-2" onClick={e=>{e.stopPropagation()}}>
@@ -103,18 +103,14 @@ export class VExplorer extends View<CExplorer> {
         <div className="d-flex flex-wrap" onClick={()=>this.onClickName(row)} >
           <div className="px-3 c5">{GFunc.caption('TTM')}<br />{GFunc.numberToFixString(pe)}</div>
           <div className="px-3 c6">{GFunc.caption('股息率')}<br />{GFunc.percentToFixString(divyield)}</div>
-          <div className="px-3 c6">{GFunc.caption('价/预期')}<br />{GFunc.percentToFixString(predictpp)}</div>
+          <div className="px-3 c5">{GFunc.caption('PE3')}<br />{GFunc.numberToFixString(predictpp)}</div>
           <div className="px-3 c6">{GFunc.caption('ROE')}<br />{GFunc.percentToFixString(roe)}</div>
           <div className="px-3 c5">{GFunc.caption('价格')}<br />{GFunc.numberToFixString(price)}</div>
-          <div className="px-3 c5">{GFunc.caption('b')}<br />{GFunc.numberToString(b, 3)}</div>
-          <div className="px-3 c5">{GFunc.caption('R2')}<br />{GFunc.numberToString(r2, 3)}</div>
-          <div className="px-3 c5">{GFunc.caption('l')}<br />{GFunc.numberToString(l, 3)}</div>
-          <div className="px-3 c5">{GFunc.caption('lR2')}<br />{GFunc.numberToString(lr2, 3)}</div>
-          <div className="px-3 c5">{GFunc.caption('l/4')}<br />{GFunc.numberToString(lr4, 3)}</div>
-          <div className="px-3 c5">{GFunc.caption('b10')}<br />{GFunc.numberToString(b10, 3)}</div>
-          <div className="px-3 c5">{GFunc.caption('R210')}<br />{GFunc.numberToString(r210, 3)}</div>
-          <div className="px-3 c5">{GFunc.caption('l10')}<br />{GFunc.numberToString(l10, 3)}</div>
-          <div className="px-3 c5">{GFunc.caption('lR210')}<br />{GFunc.numberToString(lr210, 3)}</div>
+          <div className="px-3 c5">{GFunc.caption('复权')}<br />{GFunc.numberToFixString(exprice)}</div>
+          <div className="px-3 c5">{GFunc.caption('e')}<br />{GFunc.numberToString(e, 3)}</div>
+          <div className="px-3 c5">{GFunc.caption('e1')}<br />{GFunc.numberToString(ep1, 3)}</div>
+          <div className="px-3 c5">{GFunc.caption('e3')}<br />{GFunc.numberToString(e3, 3)}</div>
+          <div className="px-3 c5">{GFunc.caption('增率')}<br />{GFunc.numberToString(l, 3)}</div>
         </div>
       </LMR></>
     }
