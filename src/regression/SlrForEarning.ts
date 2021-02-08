@@ -32,7 +32,7 @@ export class SlrForEarning {
     this.slope = numerator / (n * xSquared - xSum * xSum);
     this.intercept = (1 / n) * ySum - this.slope * (1 / n) * xSum;
 
-    let ym = this.slope > 0 ? this.predict(n-1) : this.predict(0);
+    let ym = this.slope > 0 ? this.predict(n-2) : this.predict(1);
     this.slopeR = ym < 0.01 ? undefined : this.slope / ym;
   }
 
