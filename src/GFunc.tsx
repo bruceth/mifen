@@ -5,6 +5,10 @@ export class GFunc {
     return n === undefined ? '' : n.toFixed(w);
   }
 
+  public static numberToMarketValue(n: number) {
+    return n === undefined || isNaN(n) ? '' : Math.round(n/10000).toString() + '亿';
+  }
+
   public static numberToString(n: number, precision = 2) {
     return n === undefined ? '' : n.toPrecision(precision);
   }

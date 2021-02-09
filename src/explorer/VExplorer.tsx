@@ -41,11 +41,9 @@ export class VExplorer extends View<CExplorer> {
   }
 
   private content = observer(() => {
-    let sType = this.controller.cApp.findStockConfg.selectType;
-    let {items, selectedItems,avgs, reload, onAddSelectedItemsToTag} = this.controller;
+    let {items, avgs, reload} = this.controller;
     let avgHead: JSX.Element;
     let right = <div>
-      <div className="btn cursor-pointer py-3" onClick={onAddSelectedItemsToTag}>加自选</div>
       <div className="btn cursor-pointer py-3" onClick={reload}>刷新</div>
     </div>
     if (avgs.avg20 !== undefined || avgs.avg50 !== undefined || avgs.avg100 !== undefined) {
@@ -60,8 +58,8 @@ export class VExplorer extends View<CExplorer> {
       <div className="px-3 c6"/>
       <div className="px-3 c5 cursor-pointer" onClick={(e)=>this.setSortType('tagpe')}>TTM</div>
       <div className="px-3 c6 cursor-pointer" onClick={(e)=>this.setSortType('tagdp')}>股息率</div>
+      <div className="px-3 c5 cursor-pointer" onClick={(e)=>this.setSortType('tagv')}>性价</div>
       <div className="px-3 c5 cursor-pointer" onClick={(e)=>this.setSortType('tagpredict')}>预期</div>
-      <div className="px-3 c5 cursor-pointer" onClick={(e)=>this.setSortType('tagv')}>价值</div>
     </div>;
     return <>
       {avgHead}
@@ -76,18 +74,14 @@ export class VExplorer extends View<CExplorer> {
   renderRow = (item: any, index: number): JSX.Element => <this.rowContent {...item} />;
   protected rowContent = observer((row: any): JSX.Element => {
     let sName = this.controller.cApp.config.stockFind.selectType;
-    let { id, name, code, pe, roe, price, exprice, divyield, v, order, symbol, l, predictpe, e, ep2, e3 } = row as NStockInfo;
+    let { id, name, code, pe, roe, price, exprice, divyield, v, order, symbol, l, predictpe, e, ep, e3, total } = row as NStockInfo;
     //let left = <div className="c5"><span className="text-primary">{name}</span><br/>{code}</div>
     let labelId = 'vexl_' + id;
     let left = <label htmlFor={labelId} className="d-inline-flex px-2" onClick={e=>{e.stopPropagation()}}>
-      <div className="px-2 align-self-center">
-      <input className="" type="checkbox" value="" id={labelId}
-        defaultChecked={false}
-        onChange={(e)=>{
-            this.onSelect(row, e.target.checked)} 
-        }/>
+      <div className="px-1 align-self-center">
+      <div className="pr-1"><span className="text-muted small">{''}</span><br />{order.toString()}</div>
         </div>
-      <div className="c5"><span className="text-primary">{name}</span><br/>{code}</div>
+      <div className="c5 cursor-pointer" onClick={()=>this.onClickName(row)} ><span className="text-primary">{name}</span><br/>{code}</div>
     </label>
 
     let blackList = this.controller.cApp.blackList;
@@ -98,23 +92,29 @@ export class VExplorer extends View<CExplorer> {
       let defList = this.controller.cApp.defaultList;
       let fInDef = defList.findIndex(v=>v===id);
       let right = <div className="d-flex">
-          <div className="px-1"><span className="text-muted small">自选</span><br />{fInDef >= 0?'√' :''}</div>
-          <div className="px-1"><span className="text-muted small">{'序号'}</span><br />{order.toString()}</div>
+          <a className="px-3 text-info" href={`https://finance.sina.com.cn/realstock/company/${symbol}/nc.shtml`} target="_blank" rel="noopener noreferrer" onClick={(e)=>{e.stopPropagation();}}>新浪财经</a>
+          <div className="px-1"><span className="text-muted small">自选</span><br />
+          <input className="" type="checkbox" value="" id={labelId}
+            defaultChecked={fInDef >= 0}
+            onChange={(e)=>{
+                this.onSelect(row, e.target.checked)} 
+            }/>
+          </div>
         </div>;
       return <><LMR className="px-1 py-1" left={left} right = {right} >
-        <div className="d-flex flex-wrap" onClick={()=>this.onClickName(row)} >
+        <div className="d-flex flex-wrap" >
           <div className="px-3 c5">{GFunc.caption('TTM')}<br />{GFunc.numberToFixString(pe)}</div>
           <div className="px-3 c6">{GFunc.caption('股息率')}<br />{GFunc.percentToFixString(divyield)}</div>
+          <div className="px-3 c5">{GFunc.caption('性价')}<br />{GFunc.numberToFixString(v)}</div>
           <div className="px-3 c5">{GFunc.caption('PE3')}<br />{GFunc.numberToFixString(predictpe)}</div>
-          <div className="px-3 c5">{GFunc.caption('价值')}<br />{GFunc.numberToFixString(v)}</div>
-          <div className="px-3 c6">{GFunc.caption('ROE')}<br />{GFunc.percentToFixString(roe)}</div>
           <div className="px-3 c5">{GFunc.caption('价格')}<br />{GFunc.numberToFixString(price)}</div>
           <div className="px-3 c5">{GFunc.caption('复权')}<br />{GFunc.numberToFixString(exprice)}</div>
           <div className="px-3 c5">{GFunc.caption('e')}<br />{GFunc.numberToString(e, 3)}</div>
-          <div className="px-3 c5">{GFunc.caption('e1')}<br />{GFunc.numberToString(ep2, 3)}</div>
+          <div className="px-3 c5">{GFunc.caption('e1')}<br />{GFunc.numberToString(ep, 3)}</div>
           <div className="px-3 c5">{GFunc.caption('e3')}<br />{GFunc.numberToString(e3, 3)}</div>
-          <div className="px-3 c5">{GFunc.caption('增率')}<br />{GFunc.numberToString(l, 3)}</div>
-          <a className="px-3 text-info" href={`https://finance.sina.com.cn/realstock/company/${symbol}/nc.shtml`} target="_blank" rel="noopener noreferrer" onClick={(e)=>{e.stopPropagation();}}>新浪财经</a>
+          <div className="px-3 c6">{GFunc.caption('ROE')}<br />{GFunc.percentToFixString(roe)}</div>
+          <div className="px-3 c6">{GFunc.caption('增率')}<br />{GFunc.percentToFixString(l)}</div>
+          <div className="px-3 c8">{GFunc.caption('市值')}<br />{GFunc.numberToMarketValue(total*price)}</div>
         </div>
       </LMR></>
     }

@@ -22,44 +22,12 @@ export class VHome extends View<CHome> {
     return <Page header="首页" onScrollBottom={onPage}
       headerClassName='bg-primary py-1 px-3'>
       <div className="px-3 py-1" onClick={()=>{this.controller.openMarketPE()}}>显示市场平均PE</div>
-      <this.warningContent />
       <this.content />
     </Page>;
   })
 
   private setSortType = (type:string) => {
-    this.controller.cApp.setUserSortType(type);
-  }
-
-  private warningContent = observer(() => {
-    let header = <div className="px-3">
-      <div className="px-3 c6" />
-      <div className="px-3 c6">预警价</div>
-      <div className="px-3 c6">价格</div>
-    </div>;
-    let { onWarningConfg, warnings } = this.controller;
-    let right = <div className="btn cursor-pointer" onClick={onWarningConfg}><FA name="cog" inverse={false} /></div>;
-    return <>
-      <LMR className="px-3 py-1" left="预警" right={right}></LMR>
-      <List 
-        items={warnings}
-        item={{ render: this.renderWarningRow, key: this.rowKey }}
-        before={'搜索'}
-        none={'----'}
-      />
-    </>;
-  });
-
-  renderWarningRow = (item: any, index: number): JSX.Element => <this.rowWarningContent {...item} />;
-  protected rowWarningContent = (row: any): JSX.Element => {
-    let { id, name, code, wprice, price} = row;
-    let left = <div className="c6"><span className="text-primary">{name}</span><br />{code}</div>
-    return <LMR className="px-3 py-2" left={left} onClick={() => this.onClickName(row)}>
-      <div className="d-flex flex-wrap">
-        <div className="px-3 c6">{GFunc.caption('预警价')}<br />{GFunc.numberToFixString(wprice)}</div>
-        <div className="px-3 c6">{GFunc.caption('价格')}<br />{GFunc.numberToFixString(price)}</div>
-      </div>
-    </LMR>
+    this.controller.setSortType(type);
   }
 
   private content = observer(() => {
@@ -67,18 +35,18 @@ export class VHome extends View<CHome> {
     let { items } = this.controller;
     let { onSelectTag } = this.controller;
     let header = <div className="px-3">
-      <div className="px-3 c5" />
+      <div className="px-3 c6" />
       <div className="px-3 c5 cursor-pointer" onClick={(e)=>this.setSortType('tagpe')}>TTM</div>
       <div className="px-3 c6 cursor-pointer" onClick={(e)=>this.setSortType('tagdp')}>股息率</div>
-      <div className="px-3 c6 cursor-pointer" onClick={(e)=>this.setSortType('tagpredict')}>预期</div>
-      <div className="px-3 c6 cursor-pointer" onClick={(e)=>this.setSortType('tagv')}>价值</div>
+      <div className="px-3 c5 cursor-pointer" onClick={(e)=>this.setSortType('tagv')}>性价</div>
+      <div className="px-3 c5 cursor-pointer" onClick={(e)=>this.setSortType('tagpredict')}>预期</div>
     </div>;
     let right = <div className="btn cursor-pointer" onClick={onSelectTag}><FA name="bars" inverse={false} /></div>;
     return <>
       <LMR className="px-3 py-1" left={title} right={right}></LMR>
       <List header={header}
         items={items}
-        item={{ render: this.renderRow, onClick: this.onSelected, key: this.rowKey }}
+        item={{ render: this.renderRow, key: this.rowKey }}
         before={'搜索'}
         none={'----'}
       />
@@ -87,25 +55,30 @@ export class VHome extends View<CHome> {
 
   renderRow = (item: any, index: number): JSX.Element => <this.rowContent {...item} />;
   protected rowContent = (row: any): JSX.Element => {
-    let { id, name, code, pe, roe, price, order, divyield, b, r2, l, lr2, lr4, b10, r210, l10, lr210, predictpe } = row as NStockInfo;
-    let left = <div className="c5"><span className="text-primary">{name}</span><br />{code}</div>
-    let right = <div className="px-1"><span className="text-muted small">序号</span><br />{order.toString()}</div>
-    return <LMR className="px-3 py-1" left={left} right={right} onClick={() => this.onClickName(row)}>
+    let { id, name, code, symbol, pe, roe, price, exprice, ep, v, e, e3, order, divyield, l, predictpe, total } = row as NStockInfo;
+    let left = <><div className="px-1 align-self-center">
+        <div className="pr-1"><span className="text-muted small">{''}</span><br />{order.toString()}</div>
+      </div>
+      <div className="c5 cursor-pointer" onClick={()=>this.onClickName(row)} ><span className="text-primary">{name}</span><br/>{code}</div>
+    </>
+
+    let right = <div className="d-flex">
+        <a className="px-3 text-info" href={`https://finance.sina.com.cn/realstock/company/${symbol}/nc.shtml`} target="_blank" rel="noopener noreferrer" onClick={(e)=>{e.stopPropagation();}}>新浪财经</a>
+      </div>;
+    return <LMR className="px-3 py-1" left={left} right={right} >
       <div className="d-flex flex-wrap">
         <div className="px-3 c5">{GFunc.caption('TTM')}<br />{GFunc.numberToFixString(pe)}</div>
         <div className="px-3 c6">{GFunc.caption('股息率')}<br />{GFunc.percentToFixString(divyield)}</div>
-        <div className="px-3 c6">{GFunc.caption('PE3')}<br />{GFunc.percentToFixString(predictpe)}</div>
-        <div className="px-3 c6">{GFunc.caption('ROE')}<br />{GFunc.percentToFixString(roe)}</div>
+        <div className="px-3 c5">{GFunc.caption('性价')}<br />{GFunc.numberToFixString(v)}</div>
+        <div className="px-3 c5">{GFunc.caption('PE3')}<br />{GFunc.numberToFixString(predictpe)}</div>
         <div className="px-3 c5">{GFunc.caption('价格')}<br />{GFunc.numberToFixString(price)}</div>
-        <div className="px-3 c5">{GFunc.caption('b')}<br />{GFunc.numberToString(b, 3)}</div>
-        <div className="px-3 c5">{GFunc.caption('R2')}<br />{GFunc.numberToString(r2, 3)}</div>
-        <div className="px-3 c5">{GFunc.caption('l')}<br />{GFunc.numberToString(l, 3)}</div>
-        <div className="px-3 c5">{GFunc.caption('lR2')}<br />{GFunc.numberToString(lr2, 3)}</div>
-        <div className="px-3 c5">{GFunc.caption('l/4')}<br />{GFunc.numberToString(lr4, 3)}</div>
-        <div className="px-3 c5">{GFunc.caption('b10')}<br />{GFunc.numberToString(b10, 3)}</div>
-        <div className="px-3 c5">{GFunc.caption('R210')}<br />{GFunc.numberToString(r210, 3)}</div>
-        <div className="px-3 c5">{GFunc.caption('l10')}<br />{GFunc.numberToString(l10, 3)}</div>
-        <div className="px-3 c5">{GFunc.caption('lR210')}<br />{GFunc.numberToString(lr210, 3)}</div>
+        <div className="px-3 c5">{GFunc.caption('复权')}<br />{GFunc.numberToFixString(exprice)}</div>
+        <div className="px-3 c5">{GFunc.caption('e')}<br />{GFunc.numberToString(e, 3)}</div>
+        <div className="px-3 c5">{GFunc.caption('e1')}<br />{GFunc.numberToString(ep, 3)}</div>
+        <div className="px-3 c5">{GFunc.caption('e3')}<br />{GFunc.numberToString(e3, 3)}</div>
+        <div className="px-3 c6">{GFunc.caption('ROE')}<br />{GFunc.percentToFixString(roe)}</div>
+        <div className="px-3 c6">{GFunc.caption('增率')}<br />{GFunc.percentToFixString(l)}</div>
+        <div className="px-3 c8">{GFunc.caption('市值')}<br />{GFunc.numberToMarketValue(total*price)}</div>
       </div>
     </LMR>
   }
@@ -117,10 +90,6 @@ export class VHome extends View<CHome> {
 
   protected onClickName = (item: NStockInfo) => {
     this.controller.openStockInfo(item);
-    /* let {symbol} = item;
-    event.preventDefault();
-    let url = `http://finance.sina.com.cn/realstock/company/${symbol}/nc.shtml`;
-    window.open(url, '_blank'); */
   }
 
   protected onSelected = async (item: any): Promise<void> => {

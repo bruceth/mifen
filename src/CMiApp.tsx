@@ -7,10 +7,8 @@ import { MiApi } from './net';
 import { VHome } from './ui';
 import { CUqBase } from './CUqBase';
 import { CExplorer } from './explorer';
-import { CHistoryExplorer } from './historyexplorer'
 import { MiConfigs, StockFindConfig, IdName, RegressionConfig } from './types';
 import { CWarning } from './warning';
-import { CAccountHome } from './account';
 import { CPredictHistory } from './predicthistory';
 
 export const defaultTagName = '自选股';
@@ -18,10 +16,8 @@ export const defaultBlackListTagName = '黑名单';
 
 export class CMiApp extends CAppBase {
   cExporer: CExplorer;
-  cHistoryExplorer: CHistoryExplorer;
   cHome: CHome;
   cWarning: CWarning;
-  cAccountHome: CAccountHome;
   miApi: MiApi;
   @observable config: MiConfigs = { 
     tagName: defaultTagName, 
@@ -91,9 +87,7 @@ export class CMiApp extends CAppBase {
     let miHost = consts.isDevelopment ? consts.miApiHostDebug : consts.miApiHost;
     this.miApi = new MiApi(miHost, 'fsjs/', 'miapi', token, false);
     this.cExporer = this.newC(CExplorer);
-    this.cHistoryExplorer = this.newC(CHistoryExplorer);
     this.cHome = this.newC(CHome);
-    this.cAccountHome = this.newC(CAccountHome);
     this.cWarning = this.newC(CWarning);
 
     //some test code
@@ -168,6 +162,40 @@ export class CMiApp extends CAppBase {
     await this.loadBlackList();
     await this.loadDefaultList();
   }
+
+  getsortFunc = () => {
+    let sortType = this.config.userStock.sortType;
+    if (sortType === 'tagpe') {
+      return (a, b) => {
+        return a.pe - b.pe;
+      }
+    }
+    else if (sortType === 'tagdp') {
+      return (a, b) => {
+        return b.divyield - a.divyield;
+      }
+    }
+    else if (sortType === 'tagv') {
+      return (a, b) => {
+        return b.v - a.v;
+      }
+    }
+    else {
+      return (a, b) => {
+        return a.predictpe - b.predictpe;
+      }
+    }
+  }
+
+  sortStocks = (arr:any[]) => {
+    arr.sort(this.getsortFunc());
+    let o = 1;
+    for (let item of arr) {
+      item.order = o;
+      ++o;
+    }
+  }
+
 
   setStockSortType = async (type:string)=> {
     if (this.config.stockFind.sortType === type)

@@ -86,24 +86,18 @@ export class CExplorer extends CUqBase {
     if (Array.isArray(result) === false) {
       return;
     };
-    let arr = result as {id:number, data?:string, v:number, pe:number, e:number, ep2:number, price:number, exprice:number, divyield:number, r2:number, lr2:number, e3:number, predictpe:number, order:number, ma:number}[];
+    let arr = result as {id:number, data?:string, v:number, pe:number, e:number, ep:number, price:number, exprice:number, divyield:number, r2:number, lr2:number, e3:number, predictpe:number, order:number, ma:number}[];
     for (let item of arr) {
       let dataArray = JSON.parse(item.data) as number[];
       let sl = new SlrForEarning(dataArray);
       //let ep = GFunc.evaluatePricePrice(irate, sl.predict(5), sl.predict(6), sl.predict(7));
-      item.v = GFunc.calculateV(sl.slopeR, item.divyield, item.exprice / item.e);
-      item.ep2 = sl.predict(4);
+      item.ep = sl.predict(4);
+      item.v = GFunc.calculateV(sl.slopeR, item.divyield, item.exprice / item.ep);
       item.e3 = sl.predict(7);
       item.predictpe = item.exprice / item.e3;
     }
     if (queryName === 'all') {
-      arr.sort(this.getsortFunc());
-      let o = 1;
-      for (let item of arr) {
-        item.order = o;
-        item.ma = o;
-        ++o;
-      }
+      this.cApp.sortStocks(arr);
       this.avgs = GFunc.CalculatePredictAvg(arr);
     }
     else {
@@ -113,55 +107,24 @@ export class CExplorer extends CUqBase {
     this.items.push(...arr);
   }
 
-  onSelectItem = (item:any, isSelected:boolean) => {
-    let index = this.selectedItems.findIndex(v=>v === item.id);
-    if (index >= 0) {
-      if (!isSelected) {
-        this.selectedItems.splice(index, 1);
-      }
+  onSelectItem = async (item:any, isSelected:boolean) => {
+    let tagid = this.cApp.defaultListTagID;
+    if (isSelected === true) {
+      await this.cApp.miApi.call('t_tagstock$add', [this.user.id, tagid, item.id]);
+      await this.cApp.AddTagStockID(tagid, item.id);
     }
     else {
-      if (isSelected) {
-        this.selectedItems.push(item.id);
-      }
-    }
-  }
-
-  getsortFunc = () => {
-    let sortType = this.cApp.config.userStock.sortType;
-    if (sortType === 'tagpe') {
-      return (a, b) => {
-        return a.pe - b.pe;
-      }
-    }
-    else if (sortType === 'tagdp') {
-      return (a, b) => {
-        return b.divyield - a.divyield;
-      }
-    }
-    else if (sortType === 'tagv') {
-      return (a, b) => {
-        return b.v - a.v;
-      }
-    }
-    else {
-      return (a, b) => {
-        return a.predictpe - b.predictpe;
-      }
+      await this.cApp.miApi.call('t_tagstock$del', [this.user.id, tagid, item.id]);
+      await this.cApp.RemoveTagStockID(tagid, item.id);
     }
   }
 
   setSortType = (type:string) => {
     this.cApp.setUserSortType(type);
-    this.items.replace(this.items.slice().sort(this.getsortFunc()));
-  }
+    let arr = this.items.slice();
+    this.cApp.sortStocks(arr);
 
-  onAddSelectedItemsToTag = async () => {
-    if (this.selectedItems.length <= 0)
-      return;
-    let tagid = this.cApp.defaultListTagID;
-    let ret = await this.cApp.miApi.call('t_tagstock$addgroup', [this.user.id, tagid, JSON.stringify(this.selectedItems)]);
-    await this.cApp.AddTagStockIDs(tagid, this.selectedItems);
+    this.items.replace(arr);
   }
 
   renderSiteHeader = () => {

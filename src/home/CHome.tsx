@@ -14,50 +14,6 @@ import { VSelectTag } from './VSelectTag';
 import { GFunc } from 'GFunc';
 import { CMarketPE } from './CMarketPE';
 
-// class HomePageItems extends PageItems<any> {
-//   cHome: CHome;
-//   constructor(cHome: CHome) {
-//     super(true);
-//     this.cHome = cHome;
-//     this.pageSize = 30;
-//     this.firstSize = 30;
-//   }
-
-//   protected async load(param: any, pageStart: any, pageSize: number): Promise<any[]> {
-//     let queryName = 'tagpe';
-//     if (this.cHome.cApp.config.userStock.sortType === 'tagdp') {
-//       queryName = 'tagdp';
-//     }
-
-//     let query = {
-//       name: queryName,
-//       pageStart: pageStart,
-//       pageSize: pageSize,
-//       user: this.cHome.user.id,
-//       tag: param.tag,
-//       yearlen: 1,
-//     };
-//     let result = await this.cHome.cApp.miApi.process(query, []);
-//     if (Array.isArray(result) === false) return [];
-//     return result as any[];
-//   }
-
-//   protected setPageStart(item: any) {
-//     this.pageStart = item === undefined ? 0 : item.order;
-//   }
-
-//   resetStart() {
-//     this.pageStart = 0;
-//   }
-
-//   RemoveStock(stockID:number) {
-//     let i = this._items.findIndex(v=>{return v.id === stockID})
-//     if (i >= 0) {
-//       this._items.splice(i, 1);
-//     }
-//   }
-// }
-
 export class CHome extends CUqBase {
   //PageItems: HomePageItems = new HomePageItems(this);
   items: IObservableArray<any> = observable.array<any>([], { deep: true });
@@ -139,11 +95,7 @@ export class CHome extends CUqBase {
   }
 
   async loadItems() {
-    let queryName = 'tagpe';
-    let sortType = this.cApp.config.userStock.sortType;
-    if (sortType === 'tagdp') {
-      queryName = 'tagdp';
-    }
+    let queryName = 'taguser';
 
     let query = {
       name: queryName,
@@ -157,28 +109,31 @@ export class CHome extends CUqBase {
     if (Array.isArray(result) === false) {
       return;
     };
-    let {irate} = this.cApp.config.regression;
-    let arr = result as {id:number, order:number, data?:string, e:number, e3:number, ep2:number, price:number, r2:number, lr2:number, predictpe?:number, ma:number}[];
+    let arr = result as {id:number, order:number, data?:string, v?:number, e:number, e3:number, ep:number, price:number, exprice:number, divyield:number, r2:number, lr2:number, predictpe?:number}[];
     for (let item of arr) {
       let dataArray = JSON.parse(item.data) as number[];
       let sl = new SlrForEarning(dataArray);
-      item.ep2 = sl.predict(4);
+      item.v = GFunc.calculateV(sl.slopeR, item.divyield, item.exprice / item.e);
+      item.ep = sl.predict(4);
       item.e3 = sl.predict(7);
       item.predictpe = item.price / item.e3;
     }
-    if (sortType === 'tagpredict') {
-      arr.sort((a, b) => {
-        return a.predictpe - b.predictpe;
-      })
-      let o = 1;
-      for (let item of arr) {
-        item.order = o;
-        ++o;
-      }
-
+    this.cApp.sortStocks(arr);
+    let o = 1;
+    for (let item of arr) {
+      item.order = o;
+      ++o;
     }
     this.items.clear();
     this.items.push(...arr);
+  }
+
+  setSortType = (type:string) => {
+    this.cApp.setUserSortType(type);
+    let arr = this.items.slice();
+    this.cApp.sortStocks(arr);
+
+    this.items.replace(arr);
   }
 
   async loadWarning() {
