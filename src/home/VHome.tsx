@@ -21,7 +21,7 @@ export class VHome extends View<CHome> {
 
     return <Page header="首页" onScrollBottom={onPage}
       headerClassName='bg-primary py-1 px-3'>
-      <div className="px-3 py-1" onClick={()=>{this.controller.openMarketPE()}}>显示市场平均PE</div>
+      <div className="px-3 py-1 c8 cursor-pointer" onClick={()=>{this.controller.openMarketPE()}}>市场平均PE</div>
       <this.content />
     </Page>;
   })
@@ -33,7 +33,7 @@ export class VHome extends View<CHome> {
   private content = observer(() => {
     let title = this.controller.cApp.config.tagName;
     let { items } = this.controller;
-    let { onSelectTag } = this.controller;
+    let { onSelectTag, onAddStock } = this.controller;
     let header = <div className="px-3">
       <div className="px-3 c6" />
       <div className="px-3 c5 cursor-pointer" onClick={(e)=>this.setSortType('tagpe')}>TTM</div>
@@ -41,7 +41,11 @@ export class VHome extends View<CHome> {
       <div className="px-3 c5 cursor-pointer" onClick={(e)=>this.setSortType('tagv')}>性价</div>
       <div className="px-3 c5 cursor-pointer" onClick={(e)=>this.setSortType('tagpredict')}>预期</div>
     </div>;
-    let right = <div className="btn cursor-pointer" onClick={onSelectTag}><FA name="bars" inverse={false} /></div>;
+    let right = <div className="d-flex">
+        <div className="btn cursor-pointer" onClick={onAddStock}><FA name="plus" inverse={false} /></div>
+        <div className="px-1"></div>
+        <div className="btn cursor-pointer" onClick={onSelectTag}><FA name="bars" inverse={false} /></div>
+    </div>;
     return <>
       <LMR className="px-3 py-1" left={title} right={right}></LMR>
       <List header={header}

@@ -13,6 +13,7 @@ import { VHome } from './VHome';
 import { VSelectTag } from './VSelectTag';
 import { GFunc } from 'GFunc';
 import { CMarketPE } from './CMarketPE';
+import { CStock } from 'stock';
 
 export class CHome extends CUqBase {
   //PageItems: HomePageItems = new HomePageItems(this);
@@ -64,6 +65,20 @@ export class CHome extends CUqBase {
     this.openVPage(VSelectTag);
   }
 
+  onAddStock = async () => {
+    let cStock = new CStock(this.cApp);
+    let r = await cStock.call() as {id:number};
+
+    if (r !== undefined) {
+      let id = r.id;
+      if (id > 0) {
+        let tagid = this.cApp.defaultListTagID;
+        await this.cApp.miApi.call('t_tagstock$add', [this.user.id, tagid, id]);
+        await this.cApp.AddTagStockID(tagid, id);
+        await this.load();
+      }
+    }
+  }
 
   onClickTag = async (item:any) => {
     await this.cApp.selectTag(item);
@@ -113,7 +128,12 @@ export class CHome extends CUqBase {
     for (let item of arr) {
       let dataArray = JSON.parse(item.data) as number[];
       let sl = new SlrForEarning(dataArray);
-      item.v = GFunc.calculateV(sl.slopeR, item.divyield, item.exprice / item.e);
+      if (item.e > 0) {
+        item.v = GFunc.calculateV(sl.slopeR, item.divyield, item.exprice / item.e);
+      }
+      else {
+        item.v = 0;
+      }
       item.ep = sl.predict(4);
       item.e3 = sl.predict(7);
       item.predictpe = item.price / item.e3;
