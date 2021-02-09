@@ -47,6 +47,9 @@ export class GFunc {
 
     let r = 0;
     if (z !== undefined) {
+      if (z > 0.25) {
+        z = 0.25;
+      }
       r += z * 100;
     }
     if (divyield !== undefined) {
