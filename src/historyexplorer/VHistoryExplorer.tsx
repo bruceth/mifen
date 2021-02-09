@@ -137,7 +137,7 @@ export class VHistoryExplorer extends View<CHistoryExplorer> {
   renderRow = (item: any, index: number): JSX.Element => <this.rowContent {...item} />;
   protected rowContent = observer((row: any): JSX.Element => {
     let sName = this.controller.cApp.config.stockFind.selectType;
-    let { id, name, code, e, capital, bonus, price, zf1, zf2, zf3, order, b, r2, l, lr2, lr4, b10, r210, l10, lr210, predictpp } = row as NStockInfo;
+    let { id, name, code, e, capital, bonus, price, zf1, zf2, zf3, order, b, r2, l, lr2, lr4, b10, r210, l10, lr210, predictpe } = row as NStockInfo;
     let pe = price / e;
     let roe = e / capital;
     let divyield = bonus / price;
@@ -169,7 +169,7 @@ export class VHistoryExplorer extends View<CHistoryExplorer> {
         <div className="d-flex flex-wrap" onClick={()=>this.onClickName(row)} >
           <div className="px-3 c5">{GFunc.caption('TTM')}<br />{GFunc.numberToFixString(pe)}</div>
           <div className="px-3 c6">{GFunc.caption('股息率')}<br />{GFunc.percentToFixString(divyield)}</div>
-          <div className="px-3 c6">{GFunc.caption('价/预期')}<br />{GFunc.percentToFixString(predictpp)}</div>
+          <div className="px-3 c6">{GFunc.caption('价/预期')}<br />{GFunc.percentToFixString(predictpe)}</div>
           <div className="px-3 c6">{GFunc.caption('ROE')}<br />{GFunc.percentToFixString(roe)}</div>
           <div className="px-3 c5">{GFunc.caption('价格')}<br />{GFunc.numberToFixString(price)}</div>
           <div className="px-3 c6">{GFunc.caption('1年涨幅')}<br />{GFunc.percentToFixString(zf1)}</div>

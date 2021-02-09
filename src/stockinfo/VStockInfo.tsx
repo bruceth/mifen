@@ -129,27 +129,29 @@ export class VStockInfo extends VPage<CStockInfo> {
 
   private baseInfo = observer(() => {
     let {baseItem} = this.controller;
-    let { id, name, code, pe, roe, price, order, divyield, e, capital, bonus } = baseItem;
+    let { id, name, code, symbol, pe, roe, price, order, divyield, e, capital, bonus } = baseItem;
 
     let list = this.controller.cApp.defaultList;
     let fInList = list.findIndex(v=>v===id) >= 0;
     let right = <label className="align-self-center px-3"> <input type="checkbox" name="checkDefaultList" defaultChecked={fInList}
       onChange={this.checkDefaultTag} />自选股</label>;
-    return <LMR className="bg-white" right={right}> <div className="px-3 py-2" onClick={() => this.onClickName(this.controller.baseItem)}>
+    return <LMR className="bg-white" right={right}> <div className="px-3 py-2" >
       <div className="d-flex flex-wrap">
         <div className="px-3 c8">{GFunc.caption('TTM')}{GFunc.numberToFixString(pe)}</div>
         <div className="px-3 c8">{GFunc.caption('股息率')}{GFunc.percentToFixString(divyield)}</div>
         <div className="px-3 c8">{GFunc.caption('ROE')}{GFunc.percentToFixString(roe)}</div>
         <div className="px-3 c8">{GFunc.caption('价格')}{GFunc.numberToFixString(price)}</div>
+        <a className="px-3 text-info" href={`https://finance.sina.com.cn/realstock/company/${symbol}/nc.shtml`} target="_blank" rel="noopener noreferrer" onClick={(e) =>{e.stopPropagation() }}>新浪财经</a>
       </div>    
     </div>
     </LMR>;
   });
 
-  protected onClickName = (item: NStockInfo) => {
+  protected onClickName = async (item: NStockInfo) => {
     let { symbol } = item;
     let url = `http://finance.sina.com.cn/realstock/company/${symbol}/nc.shtml`;
-    window.open(url, '_blank');
+    let w = window.open(url, '');
+    w.opener = undefined;
   }
 
   protected historyChart = observer(() => {

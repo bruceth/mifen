@@ -52,10 +52,10 @@ export class CExplorer extends CUqBase {
 
   async loadItems() {
     let queryName = 'all';
-    let sName = this.cApp.config.stockFind.selectType;
+    //let sName = this.cApp.config.stockFind.selectType;
     let {bmin, bmax, r2, lmin, lmax, lr2, mcount, lr4, r210, irate} = this.cApp.config.regression;
-    if (sName !== undefined)
-      queryName = sName;
+    //if (sName !== undefined)
+    //  queryName = sName;
     let query = {
       name: queryName,
       pageStart: 0,
@@ -86,20 +86,18 @@ export class CExplorer extends CUqBase {
     if (Array.isArray(result) === false) {
       return;
     };
-    let arr = result as {id:number, data?:string, e:number, ep1:number, price:number, exprice:number, r2:number, lr2:number, e3:number, predictpp:number, order:number, ma:number}[];
+    let arr = result as {id:number, data?:string, v:number, pe:number, e:number, ep2:number, price:number, exprice:number, divyield:number, r2:number, lr2:number, e3:number, predictpe:number, order:number, ma:number}[];
     for (let item of arr) {
       let dataArray = JSON.parse(item.data) as number[];
       let sl = new SlrForEarning(dataArray);
       //let ep = GFunc.evaluatePricePrice(irate, sl.predict(5), sl.predict(6), sl.predict(7));
-      //let ep = GFunc.evaluateE3(sl.slope, sl.predict(4));
-      item.ep1 = sl.predict(4);
+      item.v = GFunc.calculateV(sl.slopeR, item.divyield, item.exprice / item.e);
+      item.ep2 = sl.predict(4);
       item.e3 = sl.predict(7);
-      item.predictpp = item.exprice / item.e3;
+      item.predictpe = item.exprice / item.e3;
     }
     if (queryName === 'all') {
-      arr.sort((a, b) => {
-        return a.predictpp - b.predictpp;
-      })
+      arr.sort(this.getsortFunc());
       let o = 1;
       for (let item of arr) {
         item.order = o;
@@ -127,6 +125,35 @@ export class CExplorer extends CUqBase {
         this.selectedItems.push(item.id);
       }
     }
+  }
+
+  getsortFunc = () => {
+    let sortType = this.cApp.config.userStock.sortType;
+    if (sortType === 'tagpe') {
+      return (a, b) => {
+        return a.pe - b.pe;
+      }
+    }
+    else if (sortType === 'tagdp') {
+      return (a, b) => {
+        return b.divyield - a.divyield;
+      }
+    }
+    else if (sortType === 'tagv') {
+      return (a, b) => {
+        return b.v - a.v;
+      }
+    }
+    else {
+      return (a, b) => {
+        return a.predictpe - b.predictpe;
+      }
+    }
+  }
+
+  setSortType = (type:string) => {
+    this.cApp.setUserSortType(type);
+    this.items.replace(this.items.slice().sort(this.getsortFunc()));
   }
 
   onAddSelectedItemsToTag = async () => {

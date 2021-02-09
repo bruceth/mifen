@@ -68,26 +68,22 @@ export class VExplorerCfg extends VPage<CExplorer> {
   private page = observer(() => {
     let scfg = this.controller.cApp.findStockConfg;
     //let findType = scfg.sortType;
-    let selectType = scfg.selectType;
-    if (selectType === undefined) {
-      selectType = 'all';
-    }
+    // let selectType = scfg.selectType;
+    // if (selectType === undefined) {
+    //   selectType = 'all';
+    // }
     let fData = this.controller.cApp.config.regression;
     if (fData.irate === undefined)
       fData.irate = 0.04;
 
     return <Page header="选股设置" headerClassName="bg-primary">
-      <div className="px-3 py-2">方法</div>
+      {/* <div className="px-3 py-2">方法</div>
       <div className="px-3 py-2 d-flex flex-wrap">
         <label className="px-3 c8"> <input type="radio" name="selectType" value="all" checked={selectType==="all"}
-          onChange={this.selectChange} />预期收益</label><br />
-        <label className="px-3 c8"> <input type="radio" name="selectType" value="peroe" checked={selectType==="peroe"}
-          onChange={this.selectChange} />神奇公式</label><br />
-        <label className="px-3 c8"> <input type="radio" name="selectType" value="pe" checked={selectType==="pe"}
-          onChange={this.selectChange} />PE</label><br />
-        <label className="px-3 c8"> <input type="radio" name="selectType" value="dp" checked={selectType==="dp"}
-          onChange={this.selectChange} />股息率</label>
-      </div>
+          onChange={this.selectChange} />预期PE</label><br />
+        <label className="px-3 c8"> <input type="radio" name="selectType" value="value" checked={selectType==="value"}
+          onChange={this.selectChange} />价值指数</label><br />
+      </div> */}
       <div className="px-3 py-2">回归参数</div>
       <Form schema={schema}
           uiSchema={uiSchema}

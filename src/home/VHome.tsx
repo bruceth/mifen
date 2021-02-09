@@ -71,6 +71,7 @@ export class VHome extends View<CHome> {
       <div className="px-3 c5 cursor-pointer" onClick={(e)=>this.setSortType('tagpe')}>TTM</div>
       <div className="px-3 c6 cursor-pointer" onClick={(e)=>this.setSortType('tagdp')}>股息率</div>
       <div className="px-3 c6 cursor-pointer" onClick={(e)=>this.setSortType('tagpredict')}>预期</div>
+      <div className="px-3 c6 cursor-pointer" onClick={(e)=>this.setSortType('tagv')}>价值</div>
     </div>;
     let right = <div className="btn cursor-pointer" onClick={onSelectTag}><FA name="bars" inverse={false} /></div>;
     return <>
@@ -86,14 +87,14 @@ export class VHome extends View<CHome> {
 
   renderRow = (item: any, index: number): JSX.Element => <this.rowContent {...item} />;
   protected rowContent = (row: any): JSX.Element => {
-    let { id, name, code, pe, roe, price, order, divyield, b, r2, l, lr2, lr4, b10, r210, l10, lr210, predictpp } = row as NStockInfo;
+    let { id, name, code, pe, roe, price, order, divyield, b, r2, l, lr2, lr4, b10, r210, l10, lr210, predictpe } = row as NStockInfo;
     let left = <div className="c5"><span className="text-primary">{name}</span><br />{code}</div>
     let right = <div className="px-1"><span className="text-muted small">序号</span><br />{order.toString()}</div>
     return <LMR className="px-3 py-1" left={left} right={right} onClick={() => this.onClickName(row)}>
       <div className="d-flex flex-wrap">
         <div className="px-3 c5">{GFunc.caption('TTM')}<br />{GFunc.numberToFixString(pe)}</div>
         <div className="px-3 c6">{GFunc.caption('股息率')}<br />{GFunc.percentToFixString(divyield)}</div>
-        <div className="px-3 c6">{GFunc.caption('价/预期')}<br />{GFunc.percentToFixString(predictpp)}</div>
+        <div className="px-3 c6">{GFunc.caption('PE3')}<br />{GFunc.percentToFixString(predictpe)}</div>
         <div className="px-3 c6">{GFunc.caption('ROE')}<br />{GFunc.percentToFixString(roe)}</div>
         <div className="px-3 c5">{GFunc.caption('价格')}<br />{GFunc.numberToFixString(price)}</div>
         <div className="px-3 c5">{GFunc.caption('b')}<br />{GFunc.numberToString(b, 3)}</div>

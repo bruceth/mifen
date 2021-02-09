@@ -158,16 +158,17 @@ export class CHome extends CUqBase {
       return;
     };
     let {irate} = this.cApp.config.regression;
-    let arr = result as {id:number, order:number, data?:string, e:number, price:number, r2:number, lr2:number, predictpp?:number, ma:number}[];
+    let arr = result as {id:number, order:number, data?:string, e:number, e3:number, ep2:number, price:number, r2:number, lr2:number, predictpe?:number, ma:number}[];
     for (let item of arr) {
       let dataArray = JSON.parse(item.data) as number[];
       let sl = new SlrForEarning(dataArray);
-      let ep = GFunc.evaluatePricePrice(irate, sl.predict(5), sl.predict(6), sl.predict(7));
-      item.predictpp = item.price / ep;
+      item.ep2 = sl.predict(4);
+      item.e3 = sl.predict(7);
+      item.predictpe = item.price / item.e3;
     }
     if (sortType === 'tagpredict') {
       arr.sort((a, b) => {
-        return a.predictpp - b.predictpp;
+        return a.predictpe - b.predictpe;
       })
       let o = 1;
       for (let item of arr) {

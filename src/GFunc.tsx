@@ -29,19 +29,26 @@ export class GFunc {
     return r2 * 2 - r2 * r2;
   }
 
-  public static evaluateE3(slop: number, e: number) {
-    let s = 1 + slop;
-    if (slop > 1.3) {
-      s = 1.3;
-    }
-    return e * s * s * s;
-  }
-
   public static evaluatePricePrice(iRate:number, e1:number, e2:number, e3:number) {
     let r = 1 + iRate;
     let r2 = r * r;
     let r3 = r2 * r;
     return (e1/r + e2 /r2 + e3 / r3 + e3 / iRate / r3) / 2;
+  }
+
+  public static calculateV(z:number, divyield:number, pe:number) {
+    if (pe === undefined || isNaN(pe)) {
+      return undefined;
+    }
+
+    let r = 0;
+    if (z !== undefined) {
+      r += z * 100;
+    }
+    if (divyield !== undefined) {
+      r += divyield * 100;
+    }
+    return r / pe;
   }
 
   public static caption = (value:string) => <span className="text-muted small">{value}: </span>;
@@ -85,7 +92,7 @@ export class GFunc {
     return {begin: year + 1001, end: year + 1231};
   }
 
-  public static CalculatePredictAvg(arr: {predictpp:number}[]) {
+  public static CalculatePredictAvg(arr: {predictpe:number}[]) {
     let ret : {avg20:number, avg50:number, avg100:number} = {avg20:undefined, avg50:undefined, avg100:undefined};
 
     let length = arr.length;
@@ -96,7 +103,7 @@ export class GFunc {
       if (endIndex >= 10) {
         let sum = 0;
         for (let i = 3; i < endIndex; ++i) {
-          sum += arr[i].predictpp
+          sum += arr[i].predictpe
         }
         return sum / (endIndex - 3);
       }

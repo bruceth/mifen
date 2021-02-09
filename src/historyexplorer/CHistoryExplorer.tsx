@@ -35,7 +35,7 @@ export class CHistoryExplorer extends CUqBase {
       return;
     };
     this.resultday = result[1][0].day;
-    let arr = result[0] as {id:number, data?:string, e:number, price:number, capital:number, bonus:number, pe?:number, roe?:number, zf1?:number, zf2?:number, zf3?:number, divyield?:number, r2:number, lr2:number, predictpp:number, order?:number, ma?:number}[];
+    let arr = result[0] as {id:number, data?:string, e:number, e3:number, price:number, ep2:number, capital:number, bonus:number, pe?:number, roe?:number, zf1?:number, zf2?:number, zf3?:number, divyield?:number, r2:number, lr2:number, predictpe:number, order?:number, ma?:number}[];
 
     for (let item of arr) {
       item.pe = item.price / item.e;
@@ -43,11 +43,12 @@ export class CHistoryExplorer extends CUqBase {
       item.divyield = item.bonus / item.price;
       let dataArray = JSON.parse(item.data) as number[];
       let sl = new SlrForEarning(dataArray);
-      let ep = GFunc.evaluatePricePrice(irate, sl.predict(5), sl.predict(6), sl.predict(7));
-      item.predictpp = item.price / ep;
+      item.ep2 = sl.predict(4);
+      item.e3 = sl.predict(7);
+      item.predictpe = item.price / item.e3;
     }
     arr.sort((a, b) => {
-      return a.predictpp - b.predictpp;
+      return a.predictpe - b.predictpe;
     })
     let o = 1;
     let zf1 = 0;
