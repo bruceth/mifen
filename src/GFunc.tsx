@@ -58,6 +58,24 @@ export class GFunc {
     return r / pe;
   }
 
+  public static calculateVN(z:number, e:number, bonus:number, price:number) {
+    if (price === undefined || isNaN(price) || e === undefined || isNaN(e)) {
+      return undefined;
+    }
+
+    let r = 0;
+    if (z !== undefined) {
+      if (z > 0.25) {
+        z = 0.25;
+      }
+      r += z * e * 100;
+    }
+    if (bonus !== undefined && !isNaN(bonus)) {
+      r += bonus * 100;
+    }
+    return r / price;
+  }
+
   public static caption = (value:string) => <span className="text-muted small">{value}: </span>;
 
   public static MonthnoFromDay(day:number) {
@@ -122,6 +140,33 @@ export class GFunc {
     ret.avg20 = calcuOne(20);
     ret.avg50 = calcuOne(50);
     ret.avg100 = calcuOne(100);
+    return ret;
+  }
+
+  public static CalculateValueAvg(arr: {v:number}[]) {
+    let ret : {avg20:number, avg50:number, avg100:number, avg:number} = {avg20:undefined, avg50:undefined, avg100:undefined, avg:undefined};
+
+    let length = arr.length;
+    let calcuOne = (count:number) : number => {
+      let endIndex = count;
+      if (count === 0 || endIndex > length)
+        endIndex = length;
+      if (endIndex >= 10) {
+        let sum = 0;
+        for (let i = 3; i < endIndex; ++i) {
+          sum += arr[i].v;
+        }
+        return sum / (endIndex - 3);
+      }
+      else {
+        return undefined;
+      }
+    }
+
+    ret.avg20 = calcuOne(20);
+    ret.avg50 = calcuOne(50);
+    ret.avg100 = calcuOne(100);
+    ret.avg = calcuOne(0);
     return ret;
   }
 }

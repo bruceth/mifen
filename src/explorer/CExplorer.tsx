@@ -13,7 +13,7 @@ import { GFunc } from 'GFunc';
 
 export class CExplorer extends CUqBase {
   items: IObservableArray<any> = observable.array<any>([], { deep: true });
-  @observable avgs : {avg20?:number, avg50?:number, avg100?:number} = {};
+  @observable avgs : {avg20?:number, avg50?:number, avg100?:number, avg?:number} = {};
   lastTradeDay: number;
   protected oldSelectType: string;
   selectedItems: any[] = [];
@@ -92,13 +92,13 @@ export class CExplorer extends CUqBase {
       let sl = new SlrForEarning(dataArray);
       //let ep = GFunc.evaluatePricePrice(irate, sl.predict(5), sl.predict(6), sl.predict(7));
       item.ep = sl.predict(4);
-      item.v = GFunc.calculateV(sl.slopeR, item.divyield, item.exprice / item.ep);
+      item.v = GFunc.calculateVN(sl.slopeR, item.ep, item.divyield * item.price, item.exprice);
       item.e3 = sl.predict(7);
       item.predictpe = item.exprice / item.e3;
     }
     if (queryName === 'all') {
       this.cApp.sortStocks(arr);
-      this.avgs = GFunc.CalculatePredictAvg(arr);
+      this.avgs = GFunc.CalculateValueAvg(arr);
     }
     else {
       this.avgs = {};

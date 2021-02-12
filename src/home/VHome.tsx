@@ -38,7 +38,7 @@ export class VHome extends View<CHome> {
       <div className="px-3 c6" />
       <div className="px-3 c5 cursor-pointer" onClick={(e)=>this.setSortType('tagpe')}>TTM</div>
       <div className="px-3 c6 cursor-pointer" onClick={(e)=>this.setSortType('tagdp')}>股息率</div>
-      <div className="px-3 c5 cursor-pointer" onClick={(e)=>this.setSortType('tagv')}>性价</div>
+      <div className="px-3 c5 cursor-pointer" onClick={(e)=>this.setSortType('tagv')}>价值</div>
       <div className="px-3 c5 cursor-pointer" onClick={(e)=>this.setSortType('tagpredict')}>预期</div>
     </div>;
     let right = <div className="d-flex">
@@ -73,7 +73,7 @@ export class VHome extends View<CHome> {
       <div className="d-flex flex-wrap">
         <div className="px-3 c5">{GFunc.caption('TTM')}<br />{GFunc.numberToFixString(pe)}</div>
         <div className="px-3 c6">{GFunc.caption('股息率')}<br />{GFunc.percentToFixString(divyield)}</div>
-        <div className="px-3 c5">{GFunc.caption('性价')}<br />{GFunc.numberToFixString(v)}</div>
+        <div className="px-3 c5">{GFunc.caption('价值')}<br />{GFunc.numberToFixString(v)}</div>
         <div className="px-3 c5">{GFunc.caption('PE3')}<br />{GFunc.numberToFixString(predictpe)}</div>
         <div className="px-3 c5">{GFunc.caption('价格')}<br />{GFunc.numberToFixString(price)}</div>
         <div className="px-3 c5">{GFunc.caption('复权')}<br />{GFunc.numberToFixString(exprice)}</div>

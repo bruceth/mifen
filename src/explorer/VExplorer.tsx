@@ -35,7 +35,8 @@ export class VExplorer extends View<CExplorer> {
       priceDay:lastTradeDay,
       avg20:avgs.avg20,
       avg50:avgs.avg50,
-      avg100:avgs.avg100
+      avg100:avgs.avg100,
+      avg:avgs.avg,
     }
     this.controller.cApp.openPredictAVG(param);
   }
@@ -47,8 +48,12 @@ export class VExplorer extends View<CExplorer> {
       <div className="btn cursor-pointer py-3" onClick={reload}>刷新</div>
     </div>
     if (avgs.avg20 !== undefined || avgs.avg50 !== undefined || avgs.avg100 !== undefined) {
-      let avgStr = ' top20 : ' + GFunc.numberToFixString(avgs.avg20) + '  -  top50 : ' + GFunc.numberToFixString(avgs.avg50) + '  -  top100 : ' + GFunc.numberToFixString(avgs.avg100) + '  ...查看历史走势';
-      avgHead = <LMR right={right}><div className="px-3 cursor-pointer" onClick={this.onClickPredictAVG}>{GFunc.caption('预测收益比均值')}{avgStr}</div></LMR>
+      let avgStr = ' top20 : ' + GFunc.numberToFixString(avgs.avg20) 
+          + '  -  top50 : ' + GFunc.numberToFixString(avgs.avg50)
+          + '  -  top100 : ' + GFunc.numberToFixString(avgs.avg100)
+          + '  -  all : ' + GFunc.numberToFixString(avgs.avg)
+          + '  ...查看历史走势';
+      avgHead = <LMR right={right}><div className="px-3 cursor-pointer" onClick={this.onClickPredictAVG}>{GFunc.caption('价值指数均值')}{avgStr}</div></LMR>
     }
     else {
       avgHead = <LMR right={right}></LMR>
@@ -58,7 +63,7 @@ export class VExplorer extends View<CExplorer> {
       <div className="px-3 c6"/>
       <div className="px-3 c5 cursor-pointer" onClick={(e)=>this.setSortType('tagpe')}>TTM</div>
       <div className="px-3 c6 cursor-pointer" onClick={(e)=>this.setSortType('tagdp')}>股息率</div>
-      <div className="px-3 c5 cursor-pointer" onClick={(e)=>this.setSortType('tagv')}>性价</div>
+      <div className="px-3 c5 cursor-pointer" onClick={(e)=>this.setSortType('tagv')}>价值</div>
       <div className="px-3 c5 cursor-pointer" onClick={(e)=>this.setSortType('tagpredict')}>预期</div>
     </div>;
     return <>
@@ -105,7 +110,7 @@ export class VExplorer extends View<CExplorer> {
         <div className="d-flex flex-wrap" >
           <div className="px-3 c5">{GFunc.caption('TTM')}<br />{GFunc.numberToFixString(pe)}</div>
           <div className="px-3 c6">{GFunc.caption('股息率')}<br />{GFunc.percentToFixString(divyield)}</div>
-          <div className="px-3 c5">{GFunc.caption('性价')}<br />{GFunc.numberToFixString(v)}</div>
+          <div className="px-3 c5">{GFunc.caption('价值')}<br />{GFunc.numberToFixString(v)}</div>
           <div className="px-3 c5">{GFunc.caption('PE3')}<br />{GFunc.numberToFixString(predictpe)}</div>
           <div className="px-3 c5">{GFunc.caption('价格')}<br />{GFunc.numberToFixString(price)}</div>
           <div className="px-3 c5">{GFunc.caption('复权')}<br />{GFunc.numberToFixString(exprice)}</div>

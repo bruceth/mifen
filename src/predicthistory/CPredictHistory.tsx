@@ -9,14 +9,16 @@ export interface PredictHistoryParam {
   priceDay?:number,
   avg20?:number,
   avg50?:number,
-  avg100?:number
+  avg100?:number,
+  avg?:number,
 }
 
 interface PredictItem {
   day:number, 
   avg20:number, 
   avg50:number,
-  avg100:number
+  avg100:number,
+  avg?:number
 }
 
 export class CPredictHistory extends CUqBase {
