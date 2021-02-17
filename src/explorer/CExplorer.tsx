@@ -91,10 +91,9 @@ export class CExplorer extends CUqBase {
       let dataArray = JSON.parse(item.data) as number[];
       let sl = new SlrForEarning(dataArray);
       //let ep = GFunc.evaluatePricePrice(irate, sl.predict(5), sl.predict(6), sl.predict(7));
-      item.ep = sl.predict(4);
+      item.ep = (sl.predict(4) + item.e) / 2;
       item.v = GFunc.calculateVN(sl.slopeR, item.ep, item.divyield * item.price, item.exprice);
       item.e3 = sl.predict(7);
-      item.predictpe = item.exprice / item.e3;
     }
     if (queryName === 'all') {
       this.cApp.sortStocks(arr);

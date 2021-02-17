@@ -175,14 +175,9 @@ export class CMiApp extends CAppBase {
         return b.divyield - a.divyield;
       }
     }
-    else if (sortType === 'tagv') {
-      return (a, b) => {
-        return b.v - a.v;
-      }
-    }
     else {
       return (a, b) => {
-        return a.predictpe - b.predictpe;
+        return b.v - a.v;
       }
     }
   }

@@ -64,10 +64,12 @@ export class GFunc {
     }
 
     let r = 0;
-    if (z !== undefined) {
+    if (z !== undefined && e > 0) {
       if (z > 0.25) {
-        z = 0.25;
+        z = 0.24 + Math.pow((z-0.24)*100, 0.6667) / 100;
       }
+      z = 1 + z;
+      z = z * z * z - 1;
       r += z * e * 100;
     }
     if (bonus !== undefined && !isNaN(bonus)) {

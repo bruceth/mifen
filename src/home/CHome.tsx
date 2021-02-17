@@ -128,7 +128,7 @@ export class CHome extends CUqBase {
     for (let item of arr) {
       let dataArray = JSON.parse(item.data) as number[];
       let sl = new SlrForEarning(dataArray);
-      item.ep = sl.predict(4);
+      item.ep = (sl.predict(4) + item.e) / 2;
       item.e3 = sl.predict(7);
       item.v = GFunc.calculateVN(sl.slopeR, item.ep, item.divyield * item.price, item.exprice);
       item.predictpe = item.price / item.e3;
