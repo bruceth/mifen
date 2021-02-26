@@ -78,6 +78,25 @@ export class GFunc {
     return r / price;
   }
 
+  public static calculateZZ3(data:number[]) {
+    let ret:number[] = [undefined, undefined, undefined] ;
+    if (data === undefined)
+      return ret;
+    let len = data.length;
+    if (len < 5)
+      return ret;
+    
+    let funcz = (n:number, p:number) => {
+      if (p <= 0 || n <= 0)
+        return undefined;
+      return ((n / p) - 1);
+    }
+    ret[0] = funcz(data[2], data[1]);
+    ret[1] = funcz(data[3], data[2]);
+    ret[2] = funcz(data[4], data[3]);
+    return ret;
+  }
+
   public static caption = (value:string) => <span className="text-muted small">{value}: </span>;
 
   public static MonthnoFromDay(day:number) {

@@ -124,9 +124,10 @@ export class CHome extends CUqBase {
     if (Array.isArray(result) === false) {
       return;
     };
-    let arr = result as {id:number, order:number, data?:string, v?:number, e:number, e3:number, ep:number, price:number, exprice:number, divyield:number, r2:number, lr2:number, predictpe?:number}[];
+    let arr = result as {id:number, order:number, data?:string, v?:number, e:number, e3:number, ep:number, price:number, exprice:number, divyield:number, r2:number, lr2:number, predictpe?:number, dataArr?:number[]}[];
     for (let item of arr) {
       let dataArray = JSON.parse(item.data) as number[];
+      item.dataArr = dataArray;
       let sl = new SlrForEarning(dataArray);
       item.ep = (sl.predict(4) + item.e) / 2;
       item.e3 = sl.predict(7);

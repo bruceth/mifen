@@ -86,9 +86,10 @@ export class CExplorer extends CUqBase {
     if (Array.isArray(result) === false) {
       return;
     };
-    let arr = result as {id:number, data?:string, v:number, pe:number, e:number, ep:number, price:number, exprice:number, divyield:number, r2:number, lr2:number, e3:number, predictpe:number, order:number, ma:number}[];
+    let arr = result as {id:number, data?:string, v:number, pe:number, e:number, ep:number, price:number, exprice:number, divyield:number, r2:number, lr2:number, e3:number, predictpe:number, order:number, ma:number, dataArr?:number[]}[];
     for (let item of arr) {
       let dataArray = JSON.parse(item.data) as number[];
+      item.dataArr = dataArray;
       let sl = new SlrForEarning(dataArray);
       //let ep = GFunc.evaluatePricePrice(irate, sl.predict(5), sl.predict(6), sl.predict(7));
       item.ep = (sl.predict(4) + item.e) / 2;
