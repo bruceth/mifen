@@ -79,6 +79,7 @@ export class VHome extends View<CHome> {
         <div className="px-3 c6">{GFunc.caption('增长1')}<br />{GFunc.percentToFixString(zzl[0])}</div>
         <div className="px-3 c6">{GFunc.caption('增长2')}<br />{GFunc.percentToFixString(zzl[1])}</div>
         <div className="px-3 c6">{GFunc.caption('增长3')}<br />{GFunc.percentToFixString(zzl[2])}</div>
+        <div className="px-3 c6">{GFunc.caption('增长4')}<br />{GFunc.percentToFixString(zzl[3])}</div>
         <div className="px-3 c6">{GFunc.caption('预计增长')}<br />{GFunc.percentToFixString(l)}</div>
         <div className="px-3 c8">{GFunc.caption('市值')}<br />{GFunc.numberToMarketValue(total*price)}</div>
       </div>
