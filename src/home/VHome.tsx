@@ -18,10 +18,13 @@ export class VHome extends View<CHome> {
     // if (this.controller.isLogined) {
     //   viewMetaButton = <button type="button" className="btn w-100" onClick={openMetaView}>view</button>
     // }
+	let right = <button className="btn btn-sm btn-info"
+		onClick={()=>{this.controller.openMarketPE()}}>
+		市场平均PE
+	</button>;
 
-    return <Page header="首页" onScrollBottom={onPage}
-      headerClassName='bg-primary py-1 px-3'>
-      <div className="px-3 py-1 c8 cursor-pointer" onClick={()=>{this.controller.openMarketPE()}}>市场平均PE</div>
+    return <Page header="首页" right={right} onScrollBottom={onPage}
+      headerClassName='bg-primary py-1 px-3'>      
       <this.content />
     </Page>;
   })
@@ -36,11 +39,11 @@ export class VHome extends View<CHome> {
     let { onSelectTag, onAddStock } = this.controller;
     let right = <div className="d-flex">
         <div className="btn cursor-pointer" onClick={onAddStock}><FA name="plus" inverse={false} /></div>
-        <div className="px-1"></div>
-        <div className="btn cursor-pointer" onClick={onSelectTag}><FA name="bars" inverse={false} /></div>
+        <div className="btn cursor-pointer ml-2" onClick={onSelectTag}><FA name="bars" inverse={false} /></div>
     </div>;
+	let left = <div className="align-self-center">{title}</div>
     return <>
-      <LMR className="px-3 py-1" left={title} right={right}></LMR>
+      <LMR className="px-3 py-1" left={left} right={right}></LMR>
       <List header={GFunc.renderSortHeaders(this.setSortType)}
         items={items}
         item={{ render: this.renderRow, key: this.rowKey }}
