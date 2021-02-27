@@ -59,15 +59,9 @@ export class VExplorer extends View<CExplorer> {
       avgHead = <LMR right={right}></LMR>
     }
     
-    let header = <div className="px-3">
-      <div className="px-5 c6"/>
-      <div className="px-3 c6 cursor-pointer" onClick={(e)=>this.setSortType('tagv')}>米息率</div>
-      <div className="px-3 c5 cursor-pointer" onClick={(e)=>this.setSortType('tagpe')}>TTM</div>
-      <div className="px-3 c6 cursor-pointer" onClick={(e)=>this.setSortType('tagdp')}>股息率</div>
-    </div>;
     return <>
       {avgHead}
-      <List header={header}
+      <List header={GFunc.renderSortHeaders(this.setSortType)}
         items={items}
         item={{ render: this.renderRow, key: this.rowKey }}
         before={'选股'}
@@ -77,50 +71,27 @@ export class VExplorer extends View<CExplorer> {
 
   renderRow = (item: any, index: number): JSX.Element => <this.rowContent {...item} />;
   protected rowContent = observer((row: any): JSX.Element => {
-    let { id, name, code, pe, roe, price, divyield, v, order, symbol, l, e, ep, e3, total } = row as NStockInfo;
-    //let left = <div className="c5"><span className="text-primary">{name}</span><br/>{code}</div>
-    let zzl = GFunc.calculateZZ3(row.dataArr);
-    let labelId = 'vexl_' + id;
-    let left = <label htmlFor={labelId} className="d-inline-flex px-2" onClick={e=>{e.stopPropagation()}}>
-      <div className="px-1 align-self-center">
-      <div className="pr-1"><span className="text-muted small">{''}</span><br />{order.toString()}</div>
-        </div>
-      <div className="c5 cursor-pointer" onClick={()=>this.onClickName(row)} ><span className="text-primary">{name}</span><br/>{code}</div>
-    </label>
-
     let blackList = this.controller.cApp.blackList;
     let fInBlack = blackList.findIndex(v=>v===id);
-    if (fInBlack >= 0)
-      return <></>;
-    else { //
-      let defList = this.controller.cApp.defaultList;
-      let fInDef = defList.findIndex(v=>v===id);
-      let right = <div className="d-flex">
-          <a className="px-3 text-info" href={`https://finance.sina.com.cn/realstock/company/${symbol}/nc.shtml`} target="_blank" rel="noopener noreferrer" onClick={(e)=>{e.stopPropagation();}}>新浪财经</a>
-          <div className="px-1"><span className="text-muted small">自选</span><br />
-          <input className="" type="checkbox" value="" id={labelId}
-            defaultChecked={fInDef >= 0}
-            onChange={(e)=>{
-                this.onSelect(row, e.target.checked)} 
-            }/>
-          </div>
-        </div>;
-      return <><LMR className="px-1 py-1" left={left} right = {right} >
-        <div className="d-flex flex-wrap" >
-          <div className="px-3 c6">{GFunc.caption('米息率')}<br />{GFunc.numberToFixString(v)}</div>
-          <div className="px-3 c5">{GFunc.caption('TTM')}<br />{GFunc.numberToFixString(pe)}</div>
-          <div className="px-3 c6">{GFunc.caption('股息率')}<br />{GFunc.percentToFixString(divyield)}</div>
-          <div className="px-3 c5">{GFunc.caption('价格')}<br />{GFunc.numberToFixString(price)}</div>
-          <div className="px-3 c6">{GFunc.caption('ROE')}<br />{GFunc.percentToFixString(roe)}</div>
-          <div className="px-3 c6">{GFunc.caption('增长1')}<br />{GFunc.percentToFixString(zzl[0])}</div>
-          <div className="px-3 c6">{GFunc.caption('增长2')}<br />{GFunc.percentToFixString(zzl[1])}</div>
-          <div className="px-3 c6">{GFunc.caption('增长3')}<br />{GFunc.percentToFixString(zzl[2])}</div>
-          <div className="px-3 c6">{GFunc.caption('增长4')}<br />{GFunc.percentToFixString(zzl[3])}</div>
-          <div className="px-3 c6">{GFunc.caption('预计增长')}<br />{GFunc.percentToFixString(l)}</div>
-          <div className="px-3 c8">{GFunc.caption('市值')}<br />{GFunc.numberToMarketValue(total*price)}</div>
-        </div>
-      </LMR></>
-    }
+    if (fInBlack >= 0) return null;
+
+    let { id, symbol } = row as NStockInfo;
+    let labelId = 'vexl_' + id;
+	let defList = this.controller.cApp.defaultList;
+	let fInDef = defList.findIndex(v=>v===id);
+	let right = <div className="d-flex">
+		<label className="px-2">
+			<input className="mr-1" type="checkbox" value="" id={labelId}
+			defaultChecked={fInDef >= 0}
+			onChange={e => this.onSelect(row, e.target.checked)}/>
+			<small className="text-muted">自选</small>
+		</label>
+		<a className="px-3 text-info" 
+			href={`https://finance.sina.com.cn/realstock/company/${symbol}/nc.shtml`} 
+			target="_blank" 
+			rel="noopener noreferrer" onClick={(e)=>{e.stopPropagation();}}>新浪财经</a>
+	</div>;
+	return GFunc.renderStockInfoRow(row, this.onClickName, right);
   });
 
   private rowKey = (item: any) => {
