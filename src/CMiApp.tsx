@@ -84,8 +84,8 @@ export class CMiApp extends CAppBase {
 
     let token = this.user.token;
 
-    //let miHost = consts.isDevelopment ? consts.miApiHostDebug : consts.miApiHost;
-	let miHost = consts.miApiHost;
+    let miHost = consts.isDevelopment ? consts.miApiHostDebug : consts.miApiHost;
+	//let miHost = consts.miApiHost;
     this.miApi = new MiApi(miHost, 'fsjs/', 'miapi', token, false);
     this.cExporer = this.newC(CExplorer);
     this.cHome = this.newC(CHome);
