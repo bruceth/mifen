@@ -1,7 +1,9 @@
 import React from 'react';
-import logo from './logo.svg';
+import { AppConfig, NavView, start } from 'tonva';
+//import logo from './logo.svg';
 import './App.css';
-
+import { CMiApp } from './UqApp';
+/*
 function App() {
   return (
     <div className="App">
@@ -24,3 +26,23 @@ function App() {
 }
 
 export default App;
+*/
+const appConfig:AppConfig = {
+	appName: 'bruce/mifen',
+	version: '1.01',
+	tvs: undefined, //TVs;
+	uqNameMap: {}
+  };
+  
+  class App extends React.Component {
+  
+	private onLogined = async () => {
+	  await start(CMiApp, appConfig);
+	}
+	public render() {
+	  return <NavView onLogined={this.onLogined} />
+	}
+  }
+  
+  export default App;
+  
