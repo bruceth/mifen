@@ -18,10 +18,13 @@ export class VHome extends View<CHome> {
     // if (this.controller.isLogined) {
     //   viewMetaButton = <button type="button" className="btn w-100" onClick={openMetaView}>view</button>
     // }
+	let right = <button className="btn btn-sm btn-info"
+		onClick={()=>{this.controller.openMarketPE()}}>
+		市场平均PE
+	</button>;
 
-    return <Page header="首页" onScrollBottom={onPage}
-      headerClassName='bg-primary py-1 px-3'>
-      <div className="px-3 py-1 c8 cursor-pointer" onClick={()=>{this.controller.openMarketPE()}}>市场平均PE</div>
+    return <Page header="首页" right={right} onScrollBottom={onPage}
+      headerClassName='bg-primary py-1 px-3'>      
       <this.content />
     </Page>;
   })
@@ -34,20 +37,14 @@ export class VHome extends View<CHome> {
     let title = this.controller.cApp.config.tagName;
     let { items } = this.controller;
     let { onSelectTag, onAddStock } = this.controller;
-    let header = <div className="px-3">
-      <div className="px-5 c6" />
-      <div className="px-3 c6 cursor-pointer" onClick={(e)=>this.setSortType('tagv')}>米息率</div>
-      <div className="px-3 c5 cursor-pointer" onClick={(e)=>this.setSortType('tagpe')}>TTM</div>
-      <div className="px-3 c6 cursor-pointer" onClick={(e)=>this.setSortType('tagdp')}>股息率</div>
-    </div>;
     let right = <div className="d-flex">
         <div className="btn cursor-pointer" onClick={onAddStock}><FA name="plus" inverse={false} /></div>
-        <div className="px-1"></div>
-        <div className="btn cursor-pointer" onClick={onSelectTag}><FA name="bars" inverse={false} /></div>
+        <div className="btn cursor-pointer ml-2" onClick={onSelectTag}><FA name="bars" inverse={false} /></div>
     </div>;
+	let left = <div className="align-self-center">{title}</div>
     return <>
-      <LMR className="px-3 py-1" left={title} right={right}></LMR>
-      <List header={header}
+      <LMR className="px-3 py-1" left={left} right={right}></LMR>
+      <List header={GFunc.renderSortHeaders(this.setSortType)}
         items={items}
         item={{ render: this.renderRow, key: this.rowKey }}
         before={'搜索'}
@@ -58,32 +55,11 @@ export class VHome extends View<CHome> {
 
   renderRow = (item: any, index: number): JSX.Element => <this.rowContent {...item} />;
   protected rowContent = (row: any): JSX.Element => {
-    let { id, name, code, symbol, pe, roe, price, exprice, ep, v, e, e3, order, divyield, l, predictpe, total } = row as NStockInfo;
-    let zzl = GFunc.calculateZZ3(row.dataArr);
-    let left = <><div className="px-1 align-self-center">
-        <div className="pr-1"><span className="text-muted small">{''}</span><br />{order.toString()}</div>
-      </div>
-      <div className="c5 cursor-pointer" onClick={()=>this.onClickName(row)} ><span className="text-primary">{name}</span><br/>{code}</div>
-    </>
-
+    let { symbol } = row as NStockInfo;
     let right = <div className="d-flex">
         <a className="px-3 text-info" href={`https://finance.sina.com.cn/realstock/company/${symbol}/nc.shtml`} target="_blank" rel="noopener noreferrer" onClick={(e)=>{e.stopPropagation();}}>新浪财经</a>
       </div>;
-    return <LMR className="px-3 py-1" left={left} right={right} >
-      <div className="d-flex flex-wrap">
-        <div className="px-3 c6">{GFunc.caption('米息率')}<br />{GFunc.numberToFixString(v)}</div>
-        <div className="px-3 c5">{GFunc.caption('TTM')}<br />{GFunc.numberToFixString(pe)}</div>
-        <div className="px-3 c6">{GFunc.caption('股息率')}<br />{GFunc.percentToFixString(divyield)}</div>
-        <div className="px-3 c5">{GFunc.caption('价格')}<br />{GFunc.numberToFixString(price)}</div>
-        <div className="px-3 c6">{GFunc.caption('ROE')}<br />{GFunc.percentToFixString(roe)}</div>
-        <div className="px-3 c6">{GFunc.caption('增长1')}<br />{GFunc.percentToFixString(zzl[0])}</div>
-        <div className="px-3 c6">{GFunc.caption('增长2')}<br />{GFunc.percentToFixString(zzl[1])}</div>
-        <div className="px-3 c6">{GFunc.caption('增长3')}<br />{GFunc.percentToFixString(zzl[2])}</div>
-        <div className="px-3 c6">{GFunc.caption('增长4')}<br />{GFunc.percentToFixString(zzl[3])}</div>
-        <div className="px-3 c6">{GFunc.caption('预计增长')}<br />{GFunc.percentToFixString(l)}</div>
-        <div className="px-3 c8">{GFunc.caption('市值')}<br />{GFunc.numberToMarketValue(total*price)}</div>
-      </div>
-    </LMR>
+	return GFunc.renderStockInfoRow(row, this.onClickName, right);
   }
 
   private rowKey = (item: any) => {

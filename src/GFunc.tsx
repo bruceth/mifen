@@ -1,12 +1,17 @@
 import * as React from 'react';
+import { FA, LMR } from 'tonva';
+import { NStockInfo } from './stockinfo';
 
 export class GFunc {
   public static numberToFixString(n: number, w = 2) {
     return n === undefined ? '' : n.toFixed(w);
   }
+  public static number(n: number, w=2) {
+    return n === undefined ? '' : n.toFixed(w);
+  }
 
   public static numberToMarketValue(n: number) {
-    return n === undefined || isNaN(n) ? '' : Math.round(n/10000).toString() + '亿';
+    return n === undefined || isNaN(n) ? '' : Math.round(n/10000).toString(); // + '亿';
   }
 
   public static numberToString(n: number, precision = 2) {
@@ -19,6 +24,13 @@ export class GFunc {
 
   public static percentToFixString(n: number) {
     return n === undefined || isNaN(n) ? '' : (n * 100).toFixed(2) + '%';
+  }
+
+  public static percent0(n: number) {
+    return n === undefined || isNaN(n) ? '' : (n * 100).toFixed(0) + '%';
+  }
+  public static percent1(n: number) {
+    return n === undefined || isNaN(n) ? '' : (n * 100).toFixed(1) + '%';
   }
 
   public static warningTypeString(t: string) {
@@ -97,7 +109,7 @@ export class GFunc {
     return ret;
   }
 
-  public static caption = (value:string) => <span className="text-muted small">{value}: </span>;
+  public static caption = (value:string) => <span className="text-muted small">{value}</span>;
 
   public static MonthnoFromDay(day:number) {
     let year = Math.floor(day/10000);
@@ -189,5 +201,70 @@ export class GFunc {
     ret.avg100 = calcuOne(100);
     ret.avg = calcuOne(0);
     return ret;
+  }
+
+  static renderSortCol(type:string, caption:string, sort: (sortType:string) => void) {
+	  let onClick = () => {
+		  sort(type);
+	  }
+	return <div className="c5 cursor-pointer text-center px-0" onClick={onClick}>
+		{caption}
+		<small><FA className="text-muted small ml-1" name="angle-down" /></small>
+	</div>
+  }
+  static renderSortHeaders(sort: (sortType:string) => void) {
+    return <div className="px-3 my-2">
+      	<div className="px-5 c6 mr-3" />
+		{GFunc.renderSortCol('tagv', '米息率', sort)}
+		{GFunc.renderSortCol('tagpe', 'TTM', sort)}
+		{GFunc.renderSortCol('tagdp', '股息率', sort)}
+    </div>;
+  }
+
+  static renderStockInfoRow(row: NStockInfo, onClickName: (row:NStockInfo) => void, right:JSX.Element):JSX.Element {
+    let { id, name, code, pe, roe, price, divyield, v, order, symbol, l, e, ep, e3, total } = row;
+    let zzl = GFunc.calculateZZ3((row as any).dataArr);
+    let left = <div className="ml-3 c6 cursor-pointer">
+        <div className="small">{order} &nbsp; {code}</div>
+      	<div className="text-primary" onClick={()=>onClickName(row)}>{name}</div>
+	</div>;
+	function renderValue(caption:string, value:number, valueType:'p0'|'p1'|'n1'|'n2'|'yi'):JSX.Element {
+		const _cn = 'px-2 mb-2 text-right '; 
+		let cn = _cn + 'c5';
+		let cnYI = _cn + 'c5'
+		let vStr:string;
+		switch (valueType) {
+			case 'p0': vStr = GFunc.percent0(value); break;
+			case 'p1': vStr = GFunc.percent1(value); break;
+			case 'n1': vStr = GFunc.number(value, 1); break;
+			case 'n2': vStr = GFunc.number(value, 2); break;
+			case 'yi': 
+				vStr = GFunc.numberToMarketValue(value);
+				cn = cnYI;
+				break;
+		}
+		return <div key={caption} className={cn}>
+			{GFunc.caption(caption)}<br />
+			{vStr}
+		</div>;
+	  }
+	  let rows:[string,number,'p0'|'p1'|'n1'|'n2'|'yi'][] = [
+		['米息率', v, 'n1'],
+		['TTM', pe, 'n1'],
+		['股息率', divyield*100, 'n1'],
+		['价格', price, 'n2'],
+		['ROE', roe*100, 'n1'],
+		['增1', zzl[0], 'p0'],
+		['增2', zzl[1], 'p0'],
+		['增3', zzl[2], 'p0'],
+		['增4', zzl[3], 'p0'],
+		['预增', l, 'p0'],
+		['市值', total*price, 'yi'],
+	];
+	return <LMR className="px-1 py-1" left={left} right = {right} >
+		<div className="d-flex flex-wrap" >
+			{rows.map(v => renderValue(v[0], v[1], v[2]))}
+		</div>
+	</LMR>;
   }
 }
