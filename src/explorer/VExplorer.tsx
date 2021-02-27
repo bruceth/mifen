@@ -61,7 +61,7 @@ export class VExplorer extends View<CExplorer> {
     
     let header = <div className="px-3">
       <div className="px-5 c6"/>
-      <div className="px-3 c5 cursor-pointer" onClick={(e)=>this.setSortType('tagv')}>米价</div>
+      <div className="px-3 c6 cursor-pointer" onClick={(e)=>this.setSortType('tagv')}>米息率</div>
       <div className="px-3 c5 cursor-pointer" onClick={(e)=>this.setSortType('tagpe')}>TTM</div>
       <div className="px-3 c6 cursor-pointer" onClick={(e)=>this.setSortType('tagdp')}>股息率</div>
     </div>;
@@ -107,7 +107,7 @@ export class VExplorer extends View<CExplorer> {
         </div>;
       return <><LMR className="px-1 py-1" left={left} right = {right} >
         <div className="d-flex flex-wrap" >
-          <div className="px-3 c5">{GFunc.caption('米价')}<br />{GFunc.numberToFixString(v)}</div>
+          <div className="px-3 c6">{GFunc.caption('米息率')}<br />{GFunc.numberToFixString(v)}</div>
           <div className="px-3 c5">{GFunc.caption('TTM')}<br />{GFunc.numberToFixString(pe)}</div>
           <div className="px-3 c6">{GFunc.caption('股息率')}<br />{GFunc.percentToFixString(divyield)}</div>
           <div className="px-3 c5">{GFunc.caption('价格')}<br />{GFunc.numberToFixString(price)}</div>
