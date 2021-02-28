@@ -47,7 +47,7 @@ function renderValue(caption:string, value:number, valueType:'p0'|'p1'|'n1'|'n2'
 export function renderStockInfoRow(row: NStockInfo, onClickName: (row:NStockInfo) => void, right:JSX.Element):JSX.Element {
   	let { id, name, code, pe, roe, price, divyield, v, order, symbol, l, e, ep, e3, total } = row;
   	let zzl = calculateZZ3((row as any).dataArr);
-  	let left = <div className="cursor-pointer" onClick={()=>onClickName(row)}>
+  	let left = <div className="ml-3 cursor-pointer" onClick={()=>onClickName(row)}>
 		<span className="text-primary">{name}</span>
 		&nbsp; 
 		<span className="text-info">{code}</span>

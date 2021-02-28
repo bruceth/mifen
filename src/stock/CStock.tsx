@@ -1,6 +1,6 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import { observable } from 'mobx';
-import { nav, PageItems } from 'tonva';
+import { PageItems } from 'tonva';
 import { CUqBase } from '../UqApp';
 import { VStockSelect } from './VSelectStock';
 
@@ -34,7 +34,7 @@ class PageStockItems<T> extends PageItems<T> {
 }
 
 export class CStock extends CUqBase {
-  @observable PageItems: PageStockItems<any> = new PageStockItems<any>(this);
+  @observable pageItems: PageStockItems<any> = new PageStockItems<any>(this);
 
   //get cApp(): CMiApp { return this._cApp as CMiApp };
 
@@ -43,8 +43,8 @@ export class CStock extends CUqBase {
 }
 
   searchByKey = async (key: string) => {
-    this.PageItems = new PageStockItems<any>(this);
-    this.PageItems.first({ key: key });
+    this.pageItems = new PageStockItems<any>(this);
+    this.pageItems.first({ key: key });
   }
 
   //给调用页面返回id
@@ -53,6 +53,6 @@ export class CStock extends CUqBase {
   }
 
   onPage = async () => {
-    await this.PageItems.more();
+    await this.pageItems.more();
   }
 }

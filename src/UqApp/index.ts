@@ -2,3 +2,4 @@
 export * from './CBase';
 export * from './consts';
 export * from './CMiApp';
+export * from './appConfig';

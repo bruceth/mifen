@@ -2,6 +2,7 @@
 import { observable, computed } from 'mobx';
 import { Controller, VPage } from 'tonva';
 import { CHome } from '../home';
+import { CMe } from '../me';
 import { consts } from './consts';
 import { MiApi } from '../net';
 import { VHome } from '../ui';
@@ -18,6 +19,7 @@ export class CMiApp extends CUqApp {
   cExporer: CExplorer;
   cHome: CHome;
   cWarning: CWarning;
+  cMe: CMe;
   miApi: MiApi;
   @observable config: MiConfigs = { 
     tagName: defaultTagName, 
@@ -89,6 +91,7 @@ export class CMiApp extends CUqApp {
     this.miApi = new MiApi(miHost, 'fsjs/', 'miapi', token, false);
     this.cExporer = this.newC(CExplorer);
     this.cHome = this.newC(CHome);
+	this.cMe = this.newC(CMe);
     this.cWarning = this.newC(CWarning);
 
     //some test code
@@ -97,7 +100,8 @@ export class CMiApp extends CUqApp {
     let env = process.env;
     //
     await this.loadConfig();
-    this.cHome.loadWarning();
+    await this.cHome.loadWarning();
+	await this.cHome.load();
     this.openVPage(VHome);
   }
 

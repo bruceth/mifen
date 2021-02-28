@@ -20,6 +20,7 @@ export class CHome extends CUqBase {
   protected oldSortType: string;
   @observable warnings: any[] = [];
 
+  /*
   disposeAutorun = autorun(async () => {
     let needLoad = false;
     let oldID = this.userTag && this.userTag.tagID;
@@ -41,6 +42,7 @@ export class CHome extends CUqBase {
       await this.load();
     }
   });
+  */
 
   public AddTagStockID(tagid: number, stockID: number) {
     if (this.userTag && this.userTag.tagID === tagid) {
@@ -100,7 +102,7 @@ export class CHome extends CUqBase {
   async internalStart(param: any) {
   }
 
-  async load() {
+  load = async () => {
     let tagID = this.cApp.tagID;
     if (tagID > 0) {
       await this.loadItems();
@@ -133,6 +135,11 @@ export class CHome extends CUqBase {
       item.predictpe = item.price / item.e3;
     }
     this.cApp.sortStocks(arr);
+    let o = 1;
+    for (let item of arr) {
+      item.order = o;
+      ++o;
+    }
     this.items.clear();
     this.items.push(...arr);
   }

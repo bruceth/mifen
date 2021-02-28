@@ -44,7 +44,7 @@ export class CExplorer extends CUqBase {
     await this.load();
   }
 
-  async load() {
+  load = async () => {
     this.selectedItems = [];
     await this.loadItems();
   }
@@ -71,9 +71,10 @@ export class CExplorer extends CUqBase {
       lr4: lr4,
       r210: r210,
     };
-    let rets = await Promise.all([this.cApp.miApi.process(query, []),
-                                  this.cApp.miApi.call('q_getlasttradeday', [])
-      ]);
+    let rets = await Promise.all([
+		this.cApp.miApi.process(query, []),
+        this.cApp.miApi.call('q_getlasttradeday', [])
+    ]);
     let lastDayRet = rets[1] as {day:number}[];
     if (Array.isArray(lastDayRet) && lastDayRet.length > 0) {
       this.lastTradeDay = lastDayRet[0].day;

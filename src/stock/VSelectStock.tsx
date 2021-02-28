@@ -1,7 +1,7 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import * as React from 'react';
 import { observer } from 'mobx-react-lite';
-import { VPage, Page, FA, List, Form, ItemSchema, StringSchema, UiInputItem, UiSchema, Context, IdSchema, UiIdItem, LMR, UiSelect, UiTextItem, PageItems, SearchBox } from 'tonva';
+import { VPage, Page, List, LMR, SearchBox } from 'tonva';
 import { CStock } from './CStock'
 
 export class VStockSelect extends VPage<CStock> {
@@ -23,7 +23,7 @@ export class VStockSelect extends VPage<CStock> {
   }
 
   private page = observer((customer: any) => {
-      let { PageItems, onPage } = this.controller;
+      let { pageItems, onPage } = this.controller;
       let none = <div className="my-3 mx-2 text-warning">请搜索股票！</div>;
       return <Page header="选择股票" headerClassName='bg-primary' onScrollBottom={onPage}>
           <SearchBox className="px-1 w-100  mt-2 mr-2"
@@ -31,7 +31,7 @@ export class VStockSelect extends VPage<CStock> {
               allowEmptySearch={true}
               onSearch={(key: string) => this.controller.searchByKey(key)}
               placeholder="搜索股票" />
-          <List before={''} none={none} items={PageItems} item={{ render: this.renderStock, onClick: this.onClickStock }} />
+          <List before={''} none={none} items={pageItems} item={{ render: this.renderStock, onClick: this.onClickStock }} />
       </Page>
   })
 }
