@@ -103,12 +103,11 @@ export class CHome extends CUqBase {
   }
 
   load = async () => {
-    console.log('cHome load Begin')
     let tagID = this.cApp.tagID;
     if (tagID > 0) {
       await this.loadItems();
     }
-    console.log('cHome load End')
+    console.log('cHome load end')
   }
 
   async loadItems() {
@@ -176,14 +175,16 @@ export class CHome extends CUqBase {
 
 
   renderHome = () => {
-    console.log('cHome renderHome')
     return this.renderView(VHome);
   }
 
   openMetaView = () => {
   }
 
-  tab = () => <this.renderHome />;
+  tab = () => {
+    console.log('cHome get tab')
+    return <this.renderHome />;
+  }
 
   openStockInfo = (item: NStockInfo) => {
     let cStockInfo = this.newC(CStockInfo);
