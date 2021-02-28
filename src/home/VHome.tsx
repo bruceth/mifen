@@ -45,6 +45,8 @@ export class VHome extends VPage<CHome> {
   }
 
   content() {
+    console.log('vhome content()')
+
 	  return React.createElement(observer(() => {
       let title = this.controller.cApp.config.tagName;
       let { items } = this.controller;
