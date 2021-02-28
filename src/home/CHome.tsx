@@ -183,7 +183,7 @@ export class CHome extends CUqBase {
 
   tab = () => {
     console.log('cHome get tab')
-    return React.createElement(this.renderHome);
+    return this.renderHome();
   }
 
   openStockInfo = (item: NStockInfo) => {
