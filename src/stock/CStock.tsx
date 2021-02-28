@@ -1,8 +1,7 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
-import { observable, IObservableArray, computed } from 'mobx';
+import { observable } from 'mobx';
 import { nav, PageItems } from 'tonva';
-import { CUqBase } from '../CUqBase';
-import { CMiApp } from '../CMiApp';
+import { CUqBase } from '../UqApp';
 import { VStockSelect } from './VSelectStock';
 
 class PageStockItems<T> extends PageItems<T> {
@@ -14,7 +13,9 @@ class PageStockItems<T> extends PageItems<T> {
       this.firstSize = this.pageSize = 30;
   }
 
-  protected async load(param: any, pageStart: any, pageSize: number): Promise<any[]> {
+  protected async loadResults(param: any, pageStart: any, pageSize: number): Promise<{
+	[name: string]: any[];
+	}> {
       if (pageStart === undefined) pageStart = 0;
       let p = ['%' + param.key + '%'];
       try {
@@ -35,7 +36,7 @@ class PageStockItems<T> extends PageItems<T> {
 export class CStock extends CUqBase {
   @observable PageItems: PageStockItems<any> = new PageStockItems<any>(this);
 
-  get cApp(): CMiApp { return this._cApp as CMiApp };
+  //get cApp(): CMiApp { return this._cApp as CMiApp };
 
   async internalStart(param: any) {
     this.openVPage(VStockSelect);
@@ -51,7 +52,7 @@ export class CStock extends CUqBase {
     this.returnCall(item);
   }
 
-  onPage = () => {
-    this.PageItems.more();
+  onPage = async () => {
+    await this.PageItems.more();
   }
 }

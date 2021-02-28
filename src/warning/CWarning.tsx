@@ -1,9 +1,7 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
-import * as React from 'react';
-import { PageItems, Context } from 'tonva';
-import { observable, autorun } from 'mobx';
-import { CMiApp } from '../CMiApp';
-import { CUqBase } from '../CUqBase';
+import { Context } from 'tonva';
+import { observable } from 'mobx';
+import { CMiApp, CUqBase } from '../UqApp';
 import { CStock } from '../stock';
 import { VWarningConfig, VNewWarning } from './VWarningConfig';
 

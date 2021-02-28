@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { VPage, TabCaptionComponent, Page, Tabs } from 'tonva';
-import { CMiApp } from '../CMiApp';
+import { VPage, TabCaptionComponent, Page, TabProp } from 'tonva';
+import { CMiApp } from '../UqApp';
 import { meTab } from '../me';
 
 const color = (selected: boolean) => selected === true ? 'text-primary' : 'text-muted';
@@ -11,7 +11,7 @@ export class VHome extends VPage<CMiApp> {
   }
   render = (param?: any): JSX.Element => {
     let { cHome, cExporer } = this.controller;
-    let faceTabs = [
+    let tabs: TabProp[] = [
       { name: 'home', label: '首页', icon: 'home', content: cHome.tab, notify: undefined, load: async () => { await cHome.load() }, onShown: async () => { await cHome.load() } },
       { name: 'explorer', label: '选股', icon: 'search', content: cExporer.tab, load: async () => { await cExporer.load() } },
       { name: 'me', label: '我的', icon: 'user', content: meTab, onShown: undefined }
@@ -26,8 +26,6 @@ export class VHome extends VPage<CMiApp> {
         onShown: onShown
       }
     });
-    return <Page header={false}>
-      <Tabs tabs={faceTabs} />
-    </Page>;
+    return <Page header={false} tabsProps={{tabs}} />
   }
 }

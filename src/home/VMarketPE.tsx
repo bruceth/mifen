@@ -5,7 +5,7 @@ import { VPage, Page, View, List, LMR, left0, FA } from 'tonva';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import RC2 from 'react-chartjs2'
-import { GFunc } from '../GFunc';
+import { GFunc } from '../tool/GFunc';
 import {CMarketPE } from './CMarketPE'
 
 export class VMarketPE extends VPage<CMarketPE> {
@@ -30,11 +30,11 @@ export class VMarketPE extends VPage<CMarketPE> {
   let head = <div >{''}</div>
     return <Page header={head}
       headerClassName='bg-primary'>
-      <this.content />
+      <this.pageContent />
     </Page>;
   })
 
-  private content = observer(() => {
+  private pageContent = observer(() => {
     return <>
       <this.historyChart />
     </>

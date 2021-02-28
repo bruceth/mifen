@@ -15,7 +15,7 @@ export abstract class ApiBase {
         this.showWaiting = showWaiting;
     }
 
-    protected abstract async getHttpChannel(): Promise<HttpChannel>;
+    protected abstract getHttpChannel(): Promise<HttpChannel>;
 
     public async call(url:string, method:string, body:any):Promise<any> {
         let channel = await this.getHttpChannel();

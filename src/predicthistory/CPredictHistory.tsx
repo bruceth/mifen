@@ -1,7 +1,6 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
-import { observable, IObservableArray, computed } from 'mobx';
-import * as React from 'react';
-import { CUqBase } from '../CUqBase';
+import { observable, IObservableArray } from 'mobx';
+import { CUqBase } from '../UqApp';
 import { VPredictHistory } from './VPredictHistory'
 
 export interface PredictHistoryParam {
@@ -42,7 +41,7 @@ export class CPredictHistory extends CUqBase {
       this.lastItem = undefined;
     }
     await this.load();
-    this.openVPage(VPredictHistory);
+    this.openVPage(VPredictHistory as any);
   }
 
   async load() {

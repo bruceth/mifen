@@ -1,7 +1,7 @@
 import {FetchError} from './fetchError';
 import {HttpChannelUI} from './httpChannelUI';
 import {nav} from 'tonva';
-import { consts } from '../consts';
+import { consts } from '../UqApp';
 
 export async function httpGet(url:string, params?:any):Promise<any> {
     let channel = new HttpChannel(url, undefined, undefined);

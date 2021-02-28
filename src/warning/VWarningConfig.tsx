@@ -3,7 +3,7 @@ import * as React from 'react';
 import { observer } from 'mobx-react-lite';
 import { VPage, Page, FA, List, Form, ItemSchema, StringSchema, UiInputItem, UiSchema, Context, IdSchema, UiIdItem, LMR, UiSelect, UiTextItem } from 'tonva';
 import { CWarning } from './CWarning';
-import { GFunc } from 'GFunc';
+import { GFunc } from 'tool/GFunc';
 
 export class VWarningConfig extends VPage<CWarning> {
   async open(param?: any) {

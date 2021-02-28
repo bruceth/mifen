@@ -3,8 +3,6 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import RC2 from 'react-chartjs2'
 import { VPage, Page, View, List, LMR, FA } from 'tonva';
-import { NStockInfo } from '../stockinfo';
-import { GFunc } from '../GFunc';
 import { CPredictHistory } from './CPredictHistory';
 
 export class VPredictHistory extends VPage<CPredictHistory> {
@@ -17,13 +15,12 @@ export class VPredictHistory extends VPage<CPredictHistory> {
   }
 
   private page = observer(() => {
-    return <Page header="预期收益比均值历史"
-      headerClassName='bg-primary py-1 px-3'>
-      <this.content />
+    return <Page header="预期收益比均值历史">
+      <this.pageContent />
     </Page>;
   })
 
-  private content = observer(() => {
+  private pageContent = observer(() => {
     return <>
     <this.historyChart />
     </>

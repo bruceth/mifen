@@ -5,7 +5,7 @@ import { VPage, Page, View, List, LMR, left0, FA } from 'tonva';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import RC2 from 'react-chartjs2'
-import { GFunc } from '../GFunc';
+import { GFunc } from '../tool/GFunc';
 import { CStockInfo } from './CStockInfo'
 import { NStockInfo, StockCapitalearning, StockBonus } from './StockInfoType';
 import { ErForEarning, SlrForEarning } from 'regression';
@@ -46,7 +46,9 @@ export class VStockInfo extends VPage<CStockInfo> {
     if (isLogined) {
       viewMetaButton = <button type="button" className="btn w-100" onClick={openMetaView}>view</button>
     }
-    let right = stockTags && <button className="btn btn-outline-success bg-light" onClick={onSelectTag}>
+    let right = stockTags && <button 
+		className="btn btn-sm mr-2 btn-outline-success bg-light align-self-center"
+		onClick={onSelectTag}>
       {stockTags.length === 0? '加自选' : '设分组'}
       </button>;
     let headStr = name + ' ' + code;
@@ -56,11 +58,11 @@ export class VStockInfo extends VPage<CStockInfo> {
   let head = <div onClick={()=>this.controller.showSelectStock(day)}>{headStr}</div>
     return <Page header={head} right={right}
       headerClassName='bg-primary'>
-      <this.content />
+      <this.pageContent />
     </Page>;
   })
 
-  private content = observer(() => {
+  private pageContent = observer(() => {
     return <>
       <this.dateHead />
       <this.baseInfo />
@@ -104,26 +106,28 @@ export class VStockInfo extends VPage<CStockInfo> {
   private dateHead = () => {
     let {day} = this.controller.baseItem;
     let dayString = day === undefined || isNaN(day) ? '' : day.toString();
-    return <form className="mx-1 w-100 py-2" onSubmit={this.onSubmit} >
-    <div className={classNames("input-group", "input-group-sm")}>
-      <label className="input-group-addon px-2">{'日期'}</label>
-      <input ref={v=>this.input=v} onChange={this.onChange}
-            type="text"
-            name="key"
-            defaultValue={dayString}
-            className="form-control border-primary px-2"
-            placeholder={'yyyymmdd'}
-            maxLength={8} />
-      <div className="input-group-append">
-            <button className="btn btn-primary px-2"
-                type="submit">
-                <i className='fa fa-search' />
-                <i className="fa"/>
-                {'跳转'}
-            </button>
-      </div>
-    </div>
-</form>;
+    return <div className="px-3 py-2">
+		<form className="w-100" onSubmit={this.onSubmit} >
+			<div className="input-group input-group-sm">
+				<label className="input-group-addon mr-2 mb-0 align-self-center">{'日期'}</label>
+				<input ref={v=>this.input=v} onChange={this.onChange}
+						type="text"
+						name="key"
+						defaultValue={dayString}
+						className="form-control border-primary px-2"
+						placeholder={'yyyymmdd'}
+						maxLength={8} />
+				<div className="input-group-append">
+						<button className="btn btn-primary px-2"
+							type="submit">
+							<i className='fa fa-search' />
+							<i className="fa"/>
+							{'跳转'}
+						</button>
+				</div>
+			</div>
+		</form>
+	</div>;
   }
 
 

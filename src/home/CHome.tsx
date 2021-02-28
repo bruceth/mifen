@@ -1,17 +1,15 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import * as React from 'react';
-import { PageItems } from 'tonva';
 import { observable, IObservableArray, autorun } from 'mobx';
 import { ErForEarning, SlrForEarning } from 'regression';
 import { UserTag } from '../types';
-import { CMiApp } from '../CMiApp';
-import { CUqBase } from '../CUqBase';
+import { CUqBase } from '../UqApp';
 import { CStockInfo, NStockInfo } from '../stockinfo';
 import { VSiteHeader } from './VSiteHeader';
 import { VSearchHeader } from './VSearchHeader';
 import { VHome } from './VHome';
 import { VSelectTag } from './VSelectTag';
-import { GFunc } from 'GFunc';
+import { GFunc } from 'tool/GFunc';
 import { CMarketPE } from './CMarketPE';
 import { CStock } from 'stock';
 
@@ -85,7 +83,7 @@ export class CHome extends CUqBase {
     this.closePage();
   }
 
-  onPage = () => {
+  onPage = async () => {
     //this.PageItems.more();
   }
 

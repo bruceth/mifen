@@ -1,12 +1,6 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
-import { observable, IObservableArray, computed } from 'mobx';
-import * as React from 'react';
-import { autorun } from 'mobx';
-import { ErForEarning, SlrForEarning } from 'regression';
-import { CUqBase } from '../CUqBase';
-import { CMiApp } from '../CMiApp';
-import { CStockInfo, NStockInfo } from '../stockinfo';
-import { GFunc } from 'GFunc';
+import { observable } from 'mobx';
+import { CUqBase } from '../UqApp';
 import { VMarketPE } from './VMarketPE';
 
 export class CMarketPE extends CUqBase {
@@ -15,7 +9,7 @@ export class CMarketPE extends CUqBase {
 
     async internalStart(param: any) {
         this.loadData();
-        this.openVPage(VMarketPE);
+        this.openVPage(VMarketPE as any);
     }
 
     loadData = async () => {

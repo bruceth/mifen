@@ -1,14 +1,15 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { VPage, Page, View, List, LMR, FA } from 'tonva';
+import { VPage, List, LMR, FA, Scroller } from 'tonva';
 import { NStockInfo } from '../stockinfo';
-import { GFunc } from '../GFunc';
+import { GFunc } from '../tool/GFunc';
 import { CExplorer } from './CExplorer';
 import { PredictHistoryParam } from 'predicthistory/CPredictHistory';
+import { renderSortHeaders, renderStockInfoRow } from '../tool';
 
-export class VExplorer extends View<CExplorer> {
-
+export class VExplorer extends VPage<CExplorer> {
+/*
   render(param: any): JSX.Element {
     return <this.page />
   }
@@ -27,6 +28,17 @@ export class VExplorer extends View<CExplorer> {
       <this.content />
     </Page>;
   })
+*/
+  header() {return '股票发现'}
+  protected onPageScrollBottom(scroller: Scroller): Promise<void> {
+	this.controller.onPage();
+	return;
+  }
+
+  right() {
+    let { onConfig } = this.controller;
+	return <div className="btn align-self-center cursor-pointer " onClick={onConfig}><FA name="cog" size="lg" inverse={true} /></div>
+  }
 
   private onClickPredictAVG = () => {
     let {avgs, lastTradeDay} = this.controller;
@@ -41,33 +53,36 @@ export class VExplorer extends View<CExplorer> {
     this.controller.cApp.openPredictAVG(param);
   }
 
-  private content = observer(() => {
-    let {items, avgs, reload} = this.controller;
-    let avgHead: JSX.Element;
-    let right = <div>
-      <div className="btn cursor-pointer py-3" onClick={reload}>刷新</div>
-    </div>
-    if (avgs.avg20 !== undefined || avgs.avg50 !== undefined || avgs.avg100 !== undefined) {
-      let avgStr = ' top20 : ' + GFunc.numberToFixString(avgs.avg20) 
-          + '  -  top50 : ' + GFunc.numberToFixString(avgs.avg50)
-          + '  -  top100 : ' + GFunc.numberToFixString(avgs.avg100)
-          + '  -  all : ' + GFunc.numberToFixString(avgs.avg)
-          + '  ...查看历史走势';
-      avgHead = <LMR right={right}><div className="px-3 cursor-pointer" onClick={this.onClickPredictAVG}>{GFunc.caption('价值指数均值')}{avgStr}</div></LMR>
-    }
-    else {
-      avgHead = <LMR right={right}></LMR>
-    }
-    
-    return <>
-      {avgHead}
-      <List header={GFunc.renderSortHeaders(this.setSortType)}
-        items={items}
-        item={{ render: this.renderRow, key: this.rowKey }}
-        before={'选股'}
-      />
-    </>
-  });
+  content() {
+	let V = observer(() => {
+		let {items, avgs, reload} = this.controller;
+		let avgHead: JSX.Element;
+		let right = <div>
+		<div className="btn cursor-pointer py-3" onClick={reload}>刷新</div>
+		</div>
+		if (avgs.avg20 !== undefined || avgs.avg50 !== undefined || avgs.avg100 !== undefined) {
+		let avgStr = ' top20 : ' + GFunc.numberToFixString(avgs.avg20) 
+			+ '  -  top50 : ' + GFunc.numberToFixString(avgs.avg50)
+			+ '  -  top100 : ' + GFunc.numberToFixString(avgs.avg100)
+			+ '  -  all : ' + GFunc.numberToFixString(avgs.avg)
+			+ '  ...查看历史走势';
+		avgHead = <LMR right={right}><div className="px-3 cursor-pointer" onClick={this.onClickPredictAVG}>{GFunc.caption('价值指数均值')}{avgStr}</div></LMR>
+		}
+		else {
+		avgHead = <LMR right={right}></LMR>
+		}
+		
+		return <>
+		{avgHead}
+		<List header={renderSortHeaders(this.setSortType)}
+			items={items}
+			item={{ render: this.renderRow, key: this.rowKey }}
+			before={'选股'}
+		/>
+		</>
+	});
+	return <V />;
+  }
 
   renderRow = (item: any, index: number): JSX.Element => <this.rowContent {...item} />;
   protected rowContent = observer((row: any): JSX.Element => {
@@ -91,7 +106,7 @@ export class VExplorer extends View<CExplorer> {
 			target="_blank" 
 			rel="noopener noreferrer" onClick={(e)=>{e.stopPropagation();}}>新浪财经</a>
 	</div>;
-	return GFunc.renderStockInfoRow(row, this.onClickName, right);
+	return renderStockInfoRow(row, this.onClickName, right);
   });
 
   private rowKey = (item: any) => {

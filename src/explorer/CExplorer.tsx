@@ -3,13 +3,12 @@ import { observable, IObservableArray, computed } from 'mobx';
 import * as React from 'react';
 import { autorun } from 'mobx';
 import { ErForEarning, SlrForEarning } from 'regression';
-import { CUqBase } from '../CUqBase';
-import { CMiApp } from '../CMiApp';
+import { CUqBase } from '../UqApp';
 import { CStockInfo, NStockInfo } from '../stockinfo';
 import { VSiteHeader } from './VSiteHeader';
 import { VExplorer } from './VExplorer';
 import { VExplorerCfg } from './VExplorerCfg';
-import { GFunc } from 'GFunc';
+import { GFunc } from 'tool/GFunc';
 
 export class CExplorer extends CUqBase {
   items: IObservableArray<any> = observable.array<any>([], { deep: true });
@@ -30,7 +29,7 @@ export class CExplorer extends CUqBase {
     await this.load();
   });
 
-  onPage = () => {
+  onPage = async () => {
     //this.PageItems.more();
   }
 
