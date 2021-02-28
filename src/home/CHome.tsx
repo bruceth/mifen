@@ -103,10 +103,12 @@ export class CHome extends CUqBase {
   }
 
   load = async () => {
+    console.log('cHome load Begin')
     let tagID = this.cApp.tagID;
     if (tagID > 0) {
       await this.loadItems();
     }
+    console.log('cHome load End')
   }
 
   async loadItems() {
@@ -174,6 +176,7 @@ export class CHome extends CUqBase {
 
 
   renderHome = () => {
+    console.log('cHome renderHome')
     return this.renderView(VHome);
   }
 

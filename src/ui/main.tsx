@@ -34,7 +34,6 @@ export class VHome extends VPage<CMiApp> {
 				onShown,
 			};
 		});
-		console.log('main_vhome_rander')
 		return <Page header={false} tabsProps={{tabs}} />
 	}
 }
