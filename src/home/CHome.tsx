@@ -133,11 +133,6 @@ export class CHome extends CUqBase {
       item.predictpe = item.price / item.e3;
     }
     this.cApp.sortStocks(arr);
-    let o = 1;
-    for (let item of arr) {
-      item.order = o;
-      ++o;
-    }
     this.items.clear();
     this.items.push(...arr);
   }
