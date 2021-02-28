@@ -71,7 +71,9 @@ export class VHome extends VPage<CHome> {
     }));
   }
 
-  renderRow = (item: any, index: number): JSX.Element => <this.rowContent {...item} />;
+  renderRow = (item: any, index: number): JSX.Element => {
+    return this.rowContent(item);
+  } //<this.rowContent {...item} />;
   protected rowContent = (row: any): JSX.Element => {
     let { symbol } = row as NStockInfo;
     let right = <div className="d-flex">
