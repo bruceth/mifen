@@ -74,11 +74,13 @@ export class VExplorer extends VPage<CExplorer> {
       
       return <>
       {avgHead}
-      <List header={renderSortHeaders(this.setSortType)}
+      {
+      React.createElement(() => { return <List header={renderSortHeaders(this.setSortType)}
         items={items}
         item={{ render: this.renderRow, key: this.rowKey }}
         before={'选股'}
-      />
+      />})
+      }
       </>
     }));
   }
