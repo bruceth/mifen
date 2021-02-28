@@ -54,34 +54,33 @@ export class VExplorer extends VPage<CExplorer> {
   }
 
   content() {
-	let V = observer(() => {
-		let {items, avgs, reload} = this.controller;
-		let avgHead: JSX.Element;
-		let right = <div>
-		<div className="btn cursor-pointer py-3" onClick={reload}>刷新</div>
-		</div>
-		if (avgs.avg20 !== undefined || avgs.avg50 !== undefined || avgs.avg100 !== undefined) {
-		let avgStr = ' top20 : ' + GFunc.numberToFixString(avgs.avg20) 
-			+ '  -  top50 : ' + GFunc.numberToFixString(avgs.avg50)
-			+ '  -  top100 : ' + GFunc.numberToFixString(avgs.avg100)
-			+ '  -  all : ' + GFunc.numberToFixString(avgs.avg)
-			+ '  ...查看历史走势';
-		avgHead = <LMR right={right}><div className="px-3 cursor-pointer" onClick={this.onClickPredictAVG}>{GFunc.caption('价值指数均值')}{avgStr}</div></LMR>
-		}
-		else {
-		avgHead = <LMR right={right}></LMR>
-		}
-		
-		return <>
-		{avgHead}
-		<List header={renderSortHeaders(this.setSortType)}
-			items={items}
-			item={{ render: this.renderRow, key: this.rowKey }}
-			before={'选股'}
-		/>
-		</>
-	});
-	return <V />;
+	  return React.createElement(observer(() => {
+      let {items, avgs, reload} = this.controller;
+      let avgHead: JSX.Element;
+      let right = <div>
+      <div className="btn cursor-pointer py-3" onClick={reload}>刷新</div>
+      </div>
+      if (avgs.avg20 !== undefined || avgs.avg50 !== undefined || avgs.avg100 !== undefined) {
+      let avgStr = ' top20 : ' + GFunc.numberToFixString(avgs.avg20) 
+        + '  -  top50 : ' + GFunc.numberToFixString(avgs.avg50)
+        + '  -  top100 : ' + GFunc.numberToFixString(avgs.avg100)
+        + '  -  all : ' + GFunc.numberToFixString(avgs.avg)
+        + '  ...查看历史走势';
+      avgHead = <LMR right={right}><div className="px-3 cursor-pointer" onClick={this.onClickPredictAVG}>{GFunc.caption('价值指数均值')}{avgStr}</div></LMR>
+      }
+      else {
+      avgHead = <LMR right={right}></LMR>
+      }
+      
+      return <>
+      {avgHead}
+      <List header={renderSortHeaders(this.setSortType)}
+        items={items}
+        item={{ render: this.renderRow, key: this.rowKey }}
+        before={'选股'}
+      />
+      </>
+    }));
   }
 
   renderRow = (item: any, index: number): JSX.Element => <this.rowContent {...item} />;

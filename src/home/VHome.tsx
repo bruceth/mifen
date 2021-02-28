@@ -45,26 +45,25 @@ export class VHome extends VPage<CHome> {
   }
 
   content() {
-	let V = observer(() => {
-		let title = this.controller.cApp.config.tagName;
-		let { items } = this.controller;
-		let { onSelectTag, onAddStock } = this.controller;
-		let right = <div className="d-flex">
-			<div className="btn cursor-pointer" onClick={onAddStock}><FA name="plus" inverse={false} /></div>
-			<div className="btn cursor-pointer ml-2" onClick={onSelectTag}><FA name="bars" inverse={false} /></div>
-		</div>;
-		let left = <div className="align-self-center">{title}</div>
-		return <div>
-		<LMR className="px-3 py-1" left={left} right={right}></LMR>
-		<List header={renderSortHeaders(this.setSortType)}
-			items={items}
-			item={{ render: this.renderRow, key: this.rowKey }}
-			before={'搜索'}
-			none={'----'}
-		/>
-		</div>;
-	});
-	return <V />;
+	  return React.createElement(observer(() => {
+      let title = this.controller.cApp.config.tagName;
+      let { items } = this.controller;
+      let { onSelectTag, onAddStock } = this.controller;
+      let right = <div className="d-flex">
+        <div className="btn cursor-pointer" onClick={onAddStock}><FA name="plus" inverse={false} /></div>
+        <div className="btn cursor-pointer ml-2" onClick={onSelectTag}><FA name="bars" inverse={false} /></div>
+      </div>;
+      let left = <div className="align-self-center">{title}</div>
+      return <div>
+      <LMR className="px-3 py-1" left={left} right={right}></LMR>
+      <List header={renderSortHeaders(this.setSortType)}
+        items={items}
+        item={{ render: this.renderRow, key: this.rowKey }}
+        before={'搜索'}
+        none={'----'}
+      />
+      </div>;
+    }));
   }
 
   renderRow = (item: any, index: number): JSX.Element => <this.rowContent {...item} />;
