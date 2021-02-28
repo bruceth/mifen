@@ -174,7 +174,7 @@ export class CHome extends CUqBase {
 
 
   renderHome = () => {
-    console.log('cHome renderHome1')
+    console.log('cHome renderHome2')
     return this.renderView(VHome);
   }
 
@@ -182,8 +182,8 @@ export class CHome extends CUqBase {
   }
 
   tab = () => {
-    console.log('cHome get tab1')
-    return <this.renderHome/>;
+    console.log('cHome get tab2')
+    return this.renderHome();
   }
 
   openStockInfo = (item: NStockInfo) => {
