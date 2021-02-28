@@ -175,6 +175,7 @@ export class CHome extends CUqBase {
 
 
   renderHome = () => {
+    console.log('renderHome')
     return this.renderView(VHome);
   }
 
