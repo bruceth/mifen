@@ -83,7 +83,9 @@ export class VExplorer extends VPage<CExplorer> {
     }));
   }
 
-  renderRow = (item: any, index: number): JSX.Element => <this.rowContent {...item} />;
+  renderRow = (item: any, index: number): JSX.Element => { //<this.rowContent {...item} />;
+    return this.rowContent(item);
+  } 
   protected rowContent = (row: any): JSX.Element => {
     let blackList = this.controller.cApp.blackList;
     let fInBlack = blackList.findIndex(v=>v===id);

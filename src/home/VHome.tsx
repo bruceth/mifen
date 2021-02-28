@@ -28,11 +28,9 @@ export class VHome extends VPage<CHome> {
   })
 */
   header() {
-    console.log('vHome headr');
     return '首页'
   }
   right() {
-    console.log('vHome right');
   	return <button className="btn btn-sm btn-info"
 	  	onClick={()=>{this.controller.openMarketPE()}}>
 		  市场平均PE
@@ -49,7 +47,6 @@ export class VHome extends VPage<CHome> {
   }
 
   content() {
-    console.log('vHome content')
 	  return React.createElement(observer(() => {
       let title = this.controller.cApp.config.tagName;
       let { items } = this.controller;
@@ -71,9 +68,9 @@ export class VHome extends VPage<CHome> {
     }));
   }
 
-  renderRow = (item: any, index: number): JSX.Element => {
+  renderRow = (item: any, index: number): JSX.Element => { //<this.rowContent {...item} />;
     return this.rowContent(item);
-  } //<this.rowContent {...item} />;
+  } 
   protected rowContent = (row: any): JSX.Element => {
     let { symbol } = row as NStockInfo;
     let right = <div className="d-flex">
