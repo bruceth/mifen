@@ -84,7 +84,7 @@ export class VExplorer extends VPage<CExplorer> {
   }
 
   renderRow = (item: any, index: number): JSX.Element => <this.rowContent {...item} />;
-  protected rowContent = observer((row: any): JSX.Element => {
+  protected rowContent = (row: any): JSX.Element => {
     let blackList = this.controller.cApp.blackList;
     let fInBlack = blackList.findIndex(v=>v===id);
     if (fInBlack >= 0) return null;
@@ -106,7 +106,7 @@ export class VExplorer extends VPage<CExplorer> {
 			rel="noopener noreferrer" onClick={(e)=>{e.stopPropagation();}}>新浪财经</a>
 	</div>;
 	return renderStockInfoRow(row, this.onClickName, right);
-  });
+  };
 
   private rowKey = (item: any) => {
     if (item.item !== undefined) {
