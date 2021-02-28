@@ -27,12 +27,16 @@ export class VHome extends VPage<CHome> {
     </Page>;
   })
 */
-  header() {return '首页'}
+  header() {
+    console.log('vHome headr');
+    return '首页'
+  }
   right() {
-	return <button className="btn btn-sm btn-info"
-		onClick={()=>{this.controller.openMarketPE()}}>
-		市场平均PE
-	</button>;
+    console.log('vHome right');
+  	return <button className="btn btn-sm btn-info"
+	  	onClick={()=>{this.controller.openMarketPE()}}>
+		  市场平均PE
+	  </button>;
   }
 
   protected onPageScrollBottom(scroller: Scroller): Promise<void> {
@@ -45,6 +49,7 @@ export class VHome extends VPage<CHome> {
   }
 
   content() {
+    console.log('vHome content')
 	  return React.createElement(observer(() => {
       let title = this.controller.cApp.config.tagName;
       let { items } = this.controller;
