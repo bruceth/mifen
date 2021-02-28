@@ -139,7 +139,9 @@ export class CExplorer extends CUqBase {
   openMetaView = () => {
   }
 
-  tab = () => <this.renderHome />;
+  tab = () => {
+    return this.renderHome()
+  }
 
   openStockInfo = (item: NStockInfo) => {
     let cStockInfo = this.newC(CStockInfo);
