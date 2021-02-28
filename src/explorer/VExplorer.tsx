@@ -29,18 +29,15 @@ export class VExplorer extends VPage<CExplorer> {
     </Page>;
   })
 */
-  header() {
-    console.log('vExplorer header')
-    return '股票发现'}
+  header() {return '股票发现'}
   protected onPageScrollBottom(scroller: Scroller): Promise<void> {
 	this.controller.onPage();
 	return;
   }
 
   right() {
-    console.log('vExplorer right')
     let { onConfig } = this.controller;
-	return <div className="btn align-self-center cursor-pointer " onClick={onConfig}><FA name="cog" size="lg" inverse={true} /></div>
+  	return <div className="btn align-self-center cursor-pointer " onClick={onConfig}><FA name="cog" size="lg" inverse={true} /></div>
   }
 
   private onClickPredictAVG = () => {
@@ -57,7 +54,6 @@ export class VExplorer extends VPage<CExplorer> {
   }
 
   content() {
-    console.log('vExplorer content')
 	  return React.createElement(observer(() => {
       let {items, avgs, reload} = this.controller;
       let avgHead: JSX.Element;
