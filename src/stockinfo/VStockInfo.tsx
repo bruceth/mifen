@@ -58,20 +58,20 @@ export class VStockInfo extends VPage<CStockInfo> {
   let head = <div onClick={()=>this.controller.showSelectStock(day)}>{headStr}</div>
     return <Page header={head} right={right}
       headerClassName='bg-primary'>
-      <this.pageContent />
+      {React.createElement(this.pageContent)}
     </Page>;
   })
 
   private pageContent = observer(() => {
     return <>
-      <this.dateHead />
-      <this.baseInfo />
-      <this.historyChart />
-      <this.predictInfo />
-      <this.predictSeasonEarning />
-      <this.seasonEarning />
-      <this.capitalEarning />
-      <this.bonus />
+      {this.dateHead()}
+      {React.createElement(this.baseInfo)}
+      {React.createElement(this.historyChart)}
+      {React.createElement(this.predictInfo)}
+      {React.createElement(this.predictSeasonEarning)}
+      {React.createElement(this.seasonEarning)}
+      {React.createElement(this.capitalEarning)}
+      {React.createElement(this.bonus)}
     </>
   });
 
