@@ -21,7 +21,7 @@ export class VStockInfo extends VPage<CStockInfo> {
   @observable protected ttmLimit:boolean = false;
 
   render(param: any): JSX.Element {
-    return <this.page />
+    return this.page();
   }
 
   checkLimitShow = (e)=> {
