@@ -42,7 +42,7 @@ export class VHome extends VPage<CHome> {
         items={items}
         item={{ render: this.renderRow, key: this.rowKey }}
         before={'搜索'}
-        none={'----'}
+        none={<small className="px-2 py-3 text-info">无自选股, 请选股</small>}
       />
       </div>;
     }));
