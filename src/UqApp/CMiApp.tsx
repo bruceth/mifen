@@ -11,6 +11,7 @@ import { MiConfigs, StockFindConfig, IdName, RegressionConfig } from '../types';
 import { CWarning } from '../warning';
 import { CPredictHistory } from '../predicthistory';
 import { CUqApp } from './CBase';
+import { res } from './res';
 
 export const defaultTagName = '自选股';
 export const defaultBlackListTagName = '黑名单';
@@ -81,6 +82,7 @@ export class CMiApp extends CUqApp {
   }
 
   protected async internalStart() {
+	this.setRes(res);
     if (this.isLogined) {
     }
 
