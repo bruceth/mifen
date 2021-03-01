@@ -18,7 +18,7 @@ export class CHome extends CUqBase {
   items: IObservableArray<any> = observable.array<any>([], { deep: true });
   userTag: UserTag;
   protected oldSortType: string;
-  @observable warnings: any[] = [];
+  //@observable warnings: any[] = [];
 
   /*
   disposeAutorun = autorun(async () => {
@@ -152,17 +152,17 @@ export class CHome extends CUqBase {
     this.items.replace(arr);
   }
 
-  async loadWarning() {
-    let r = await this.cApp.miApi.query('q_warnings', [this.cApp.user.id]);
-    if (r !== undefined && Array.isArray(r)) {
-      this.warnings = r;
-    }
-    else {
-      if (this.warnings.length > 0) {
-        this.warnings = [];
-      }
-    }
-  }
+  // async loadWarning() {
+  //   let r = await this.cApp.miApi.query('q_warnings', [this.cApp.user.id]);
+  //   if (r !== undefined && Array.isArray(r)) {
+  //     this.warnings = r;
+  //   }
+  //   else {
+  //     if (this.warnings.length > 0) {
+  //       this.warnings = [];
+  //     }
+  //   }
+  // }
 
   renderSiteHeader = () => {
     return this.renderView(VSiteHeader);
