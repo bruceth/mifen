@@ -1,37 +1,17 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { VPage, Page, View, List, LMR, FA, Scroller } from 'tonva';
+import { VPage, List, LMR, FA, Scroller } from 'tonva';
 import { NStockInfo } from '../stockinfo';
 import { CHome } from './CHome';
-import { renderSortHeaders, renderStockInfoRow } from '../tool';
+import { renderSortHeaders, renderStockInfoRow, renderStockUrl } from '../tool';
 
 export class VHome extends VPage<CHome> {
-
-/*
-  render(param: any): JSX.Element {
-    return <this.page />
-  }
-
-  private page = observer(() => {
-    let { openMetaView, onPage } = this.controller;
-    // let viewMetaButton = <></>;
-    // if (this.controller.isLogined) {
-    //   viewMetaButton = <button type="button" className="btn w-100" onClick={openMetaView}>view</button>
-    // }
-	let right = ;
-
-    return <Page header="首页" right={right} onScrollBottom={onPage}
-      headerClassName='bg-primary py-1 px-3'>      
-      <this.content />
-    </Page>;
-  })
-*/
   header() {
     return '首页'
   }
   right() {
-  	return <button className="btn btn-sm btn-info"
+  	return <button className="btn btn-sm btn-info mr-2"
 	  	onClick={()=>{this.controller.openMarketPE()}}>
 		  市场平均PE
 	  </button>;
@@ -57,7 +37,7 @@ export class VHome extends VPage<CHome> {
       </div>;
       let left = <div className="align-self-center">{title}</div>
       return <div>
-      <LMR className="px-3 py-1" left={left} right={right}></LMR>
+      <LMR className="px-2 py-1" left={left} right={right}></LMR>
       <List header={renderSortHeaders(this.setSortType)}
         items={items}
         item={{ render: this.renderRow, key: this.rowKey }}
@@ -72,11 +52,8 @@ export class VHome extends VPage<CHome> {
     return this.rowContent(item);
   } 
   protected rowContent = (row: any): JSX.Element => {
-    let { symbol } = row as NStockInfo;
-    let right = <div className="d-flex">
-        <a className="px-3 text-info" href={`https://finance.sina.com.cn/realstock/company/${symbol}/nc.shtml`} target="_blank" rel="noopener noreferrer" onClick={(e)=>{e.stopPropagation();}}>新浪财经</a>
-      </div>;
-	return renderStockInfoRow(row, this.onClickName, right);
+    let right = renderStockUrl(row);
+	return renderStockInfoRow(row, this.onClickName, null, right);
   }
 
   private rowKey = (item: any) => {

@@ -14,7 +14,7 @@ function renderSortCol(type:string, caption:string, sort: (sortType:string) => v
 }
 
 export function renderSortHeaders(sort: (sortType:string) => void) {
-	return <div className="my-1 justify-content-end mr-3">
+	return <div className="my-1 justify-content-end mr-2">
 		<div className="btn-group" role="group" aria-label="Basic radio toggle button group">
 			{renderSortCol('tagv', '米息率', sort, true)}
 			{renderSortCol('tagpe', 'TTM', sort)}
@@ -44,15 +44,15 @@ function renderValue(caption:string, value:number, valueType:'p0'|'p1'|'n1'|'n2'
 	</div>;
 }
 
-export function renderStockInfoRow(row: NStockInfo, onClickName: (row:NStockInfo) => void, right:JSX.Element):JSX.Element {
+export function renderStockInfoRow(row: NStockInfo, onClickName: (row:NStockInfo) => void, inputSelect:JSX.Element, right:JSX.Element):JSX.Element {
   	let { id, name, code, pe, roe, price, divyield, v, order, symbol, l, e, ep, e3, total } = row;
   	let zzl = calculateZZ3((row as any).dataArr);
-  	let left = <div className="ml-3 cursor-pointer" onClick={()=>onClickName(row)}>
+  	let left = <div className="cursor-pointer" onClick={()=>onClickName(row)}>
 		<span className="text-primary">{name}</span>
 		&nbsp; 
 		<span className="text-info">{code}</span>
 	  	&nbsp;
-		<span className="small ml-5">{order}</span>
+		<small className="small ml-1"><span className="text-danger">{order}</span></small>
   	</div>;
 	let rows:[string,number,'p0'|'p1'|'n1'|'n2'|'yi'][] = [
 		['米息率', v, 'n1'],
@@ -67,10 +67,21 @@ export function renderStockInfoRow(row: NStockInfo, onClickName: (row:NStockInfo
 		['预增', l, 'p0'],
 		['市值', total*price, 'yi'],
   	];
-  	return <div className="d-block">
-		<LMR className="px-1 py-1" left={left} right = {right} />
+	let inputSelectSpan:any;
+	if (inputSelect) {
+		inputSelectSpan = <span className="ml-4">{inputSelect}</span>
+	}
+  	return <div className="d-block border-top">
+		<LMR className="px-2 py-1 bg-light" left={left} right = {right}>{inputSelectSpan}</LMR>
 		<div className="d-flex flex-wrap" >
 			{rows.map(v => renderValue(v[0], v[1], v[2]))}
 	  	</div>
   	</div>;
+}
+
+export function renderStockUrl(row: NStockInfo) {
+    let { symbol } = row;
+	return <a className="text-info" href={`https://finance.sina.com.cn/realstock/company/${symbol}/nc.shtml`} target="_blank" rel="noopener noreferrer" onClick={(e)=>{e.stopPropagation();}}>
+		<FA name="angle-double-right" />
+	</a>;
 }

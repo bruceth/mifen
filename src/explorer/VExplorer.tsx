@@ -6,29 +6,9 @@ import { NStockInfo } from '../stockinfo';
 import { GFunc } from '../tool/GFunc';
 import { CExplorer } from './CExplorer';
 import { PredictHistoryParam } from 'predicthistory/CPredictHistory';
-import { renderSortHeaders, renderStockInfoRow } from '../tool';
+import { renderSortHeaders, renderStockInfoRow, renderStockUrl } from '../tool';
 
 export class VExplorer extends VPage<CExplorer> {
-/*
-  render(param: any): JSX.Element {
-    return <this.page />
-  }
-
-  private page = observer(() => {
-    let { openMetaView, onPage } = this.controller;
-    let viewMetaButton = <></>;
-    if (this.controller.isLogined) {
-      viewMetaButton = <button type="button" className="btn w-100" onClick={openMetaView}>view</button>
-    }
-    let { onConfig, reload } = this.controller;
-    let right = <div className="btn align-self-center cursor-pointer " onClick={onConfig}><FA name="cog" size="lg" inverse={true} /></div>
-    return <Page header="股票发现"  onScrollBottom={onPage} right={right}
-      headerClassName='bg-primary py-1 px-3'>
-      
-      <this.content />
-    </Page>;
-  })
-*/
   header() {return '股票发现'}
   protected onPageScrollBottom(scroller: Scroller): Promise<void> {
 	this.controller.onPage();
@@ -95,19 +75,17 @@ export class VExplorer extends VPage<CExplorer> {
     let labelId = 'vexl_' + id;
 	let defList = this.controller.cApp.defaultList;
 	let fInDef = defList.findIndex(v=>v===id);
+	let middle = <label className="mb-0 cursor-pointer">
+		<input className="mr-1" type="checkbox" value="" id={labelId}
+		defaultChecked={fInDef >= 0}
+		onChange={e => this.onSelect(row, e.target.checked)}/>
+		<small className="text-muted">自选</small>
+	</label>;
+
 	let right = <div className="d-flex">
-		<label className="px-2">
-			<input className="mr-1" type="checkbox" value="" id={labelId}
-			defaultChecked={fInDef >= 0}
-			onChange={e => this.onSelect(row, e.target.checked)}/>
-			<small className="text-muted">自选</small>
-		</label>
-		<a className="px-3 text-info" 
-			href={`https://finance.sina.com.cn/realstock/company/${symbol}/nc.shtml`} 
-			target="_blank" 
-			rel="noopener noreferrer" onClick={(e)=>{e.stopPropagation();}}>新浪财经</a>
+		{renderStockUrl(row)}
 	</div>;
-	return renderStockInfoRow(row, this.onClickName, right);
+	return renderStockInfoRow(row, this.onClickName, middle, right);
   };
 
   private rowKey = (item: any) => {
