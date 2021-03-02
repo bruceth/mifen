@@ -29,11 +29,7 @@ export class VAbout extends VPage<CMe> {
 			</ul>
 			<div className="mt-5 text-center">
 				<small className="text-muted mr-2">by</small>
-				Henry
-				<small className="text-warning mx-2">
-					<FA name="handshake-o" />
-				</small>
-				Bruce 
+				同花投顾
 			</div>
 		</div>;
 	}
