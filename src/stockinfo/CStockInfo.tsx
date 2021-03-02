@@ -15,10 +15,12 @@ export class CStockInfo extends CUqBase {
     super(cApp);
     makeObservable(this);
   }
-  baseItem: NStockInfo;
-  protected loaded: boolean = false;
+  @observable baseItem: NStockInfo;
+  @observable protected loaded: boolean = false;
 
   @observable price: StockPrice;
+  //@observable roe: StockRoe;
+  //@observable tags: any[] = undefined;
   @observable stockTags: any[];
   selectedTags: any[];
 
