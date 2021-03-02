@@ -1,5 +1,5 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
-import { observable, IObservableArray, computed } from 'mobx';
+import { observable, IObservableArray, computed, makeObservable } from 'mobx';
 import { nav } from 'tonva-react';
 import { CUqBase } from '../UqApp';
 import { GFunc } from '../tool/GFunc';
@@ -10,6 +10,11 @@ import { ErForEarning, SlrForEarning } from 'regression';
 import { CStock } from 'stock/CStock';
 
 export class CStockInfo extends CUqBase {
+
+  constructor(cApp: any) {
+    super(cApp);
+    makeObservable(this);
+  }
   @observable baseItem: NStockInfo;
   @observable protected loaded: boolean = false;
 
