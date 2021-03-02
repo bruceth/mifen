@@ -16,7 +16,7 @@
 			"type": "node",
 			"request": "launch",
 			"runtimeExecutable": "${workspaceRoot}/node_modules/.bin/react-scripts",
-			"args": ["test", "--runInBand", "--watchAll=false", "UqApp/build"], // "--no-cache", 
+			"args": ["test", "--runInBand", "--watchAll=false", "build"], // "--no-cache", 
 			"cwd": "${workspaceRoot}",
 			"protocol": "inspector",
 			"console": "integratedTerminal",
