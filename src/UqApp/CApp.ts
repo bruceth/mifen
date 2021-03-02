@@ -5,7 +5,6 @@ import { CHome } from '../home';
 import { CMe } from '../me';
 import { consts, defaultBlackListTagName, defaultTagName } from '../consts';
 import { MiApi } from '../net';
-import { VHome } from '../ui';
 import { CExplorer } from '../explorer';
 import { MiConfigs, StockFindConfig, IdName, RegressionConfig } from '../types';
 import { CWarning } from '../warning';
@@ -13,6 +12,7 @@ import { CPredictHistory } from '../predicthistory';
 import { CUqApp } from './CBase';
 import { res } from './res';
 import { CHolding } from 'holding';
+import { VMain } from './VMain';
 
 export class CApp extends CUqApp {
   cHome: CHome;
@@ -104,7 +104,7 @@ export class CApp extends CUqApp {
     await this.loadConfig();
     await this.cHome.loadWarning();
 	await this.cHome.load();
-    this.openVPage(VHome);
+    this.openVPage(VMain);
   }
 
   async saveConfig() {
