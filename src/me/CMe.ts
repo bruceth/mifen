@@ -1,6 +1,6 @@
-import { QueryPager, User } from "tonva";
+import { QueryPager, User } from "tonva-react";
 import { CUqBase } from "../UqApp";
-import { VAdmin } from "./VAdmin";
+//import { VAdmin } from "./VAdmin";
 import { VEditMe } from "./VEditMe";
 import { VMe } from "./VMe";
 
@@ -24,11 +24,11 @@ export class CMe extends CUqBase {
 	tab = () => this.renderView(VMe);
 
 	showEditMe = async () => {
-		let result = await this.uqs.Notes.GetSystemRole.query({});
-		this.role = result.ret[0]?.role;
+		//let result = await this.uqs.Notes.GetSystemRole.query({});
+		this.role = undefined; // result.ret[0]?.role;
 		this.openVPage(VEditMe);
 	}
-
+	/*
 	showAdmin = async () => {
 		this.rootUnits = new QueryPager<any>(this.uqs.Notes.GetRootUnits, undefined, undefined, true);
 		this.rootUnits.first({});
@@ -54,4 +54,5 @@ export class CMe extends CUqBase {
 		await this.uqs.Notes.ChangeRootUnitProp.submit({unit:item.id, prop:'x', value: x as any})
 		item.x = x;
 	}
+	*/
 }

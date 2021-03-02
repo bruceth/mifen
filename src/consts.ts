@@ -5,3 +5,7 @@ export const consts = {
     miApiHostDebug: 'http://localhost:6010/',
     isDevelopment: process.env.NODE_ENV === 'development',
 }
+
+export const defaultTagName = '自选股';
+export const defaultBlackListTagName = '黑名单';
+

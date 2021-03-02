@@ -1,8 +1,9 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import { Image, VPage, nav, IconText, PropGrid, LMR, FA, Prop } from 'tonva';
+import { Image, VPage, nav, IconText, PropGrid, LMR, FA, Prop } from 'tonva-react';
 import { CMe } from './CMe';
-import { appConfig } from '../UqApp';
+import { appConfig } from '../appConfig';
+import { VFaq } from './VFaq';
 
 export class VMe extends VPage<CMe> {
 	header() {return this.t('me')}
@@ -13,11 +14,18 @@ export class VMe extends VPage<CMe> {
             '',
             {
                 type: 'component',
+                component: <LMR className="w-100" onClick={this.faq}
+					right={<FA className="align-self-center" name="angle-right" />}>
+                    <IconText iconClass="text-info mr-2" icon="comments-o" text={this.t('基本概念')} />                    
+                </LMR>,
+            },
+            {
+                type: 'component',
                 component: <div className="w-100 d-flex justify-content-between">
                     <IconText iconClass="text-info mr-2" icon="smile-o" text={this.t('aboutTheApp')} />
-                    <div className="py-2 small">V{appConfig.version}</div>
+                    <div className="py-2 small">V{appConfig?.app?.version}</div>
                 </div>,
-            }
+            },
         ];
 
         let rows: Prop[];
@@ -84,6 +92,10 @@ export class VMe extends VPage<CMe> {
             </div>
         </LMR>;
     });
+
+	private faq = () => {
+		this.openVPage(VFaq);
+	}
 }
 
 function userSpan(name: string, nick: string): JSX.Element {

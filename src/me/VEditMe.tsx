@@ -3,7 +3,7 @@ import { observable } from 'mobx';
 import {
     userApi, ItemSchema, StringSchema, ImageSchema, UiTextItem, UiImageItem, nav, Page,
     Edit, UiSchema, VPage
-} from 'tonva';
+} from 'tonva-react';
 import { CMe } from './CMe';
 
 export class VEditMe extends VPage<CMe>{
@@ -43,18 +43,19 @@ export class VEditMe extends VPage<CMe>{
 
     private page = () => {
 		let { schema, uiSchema, data, onItemChanged } = this;
+		/*
 		let vAdmin: any;
 		
 		let { role } = this.controller;
 		if ((role & 2) === 2) {
 			vAdmin = <div className="px-3 py-2 cursor-pointer bg-white border-bottom" onClick={this.controller.showAdmin}>管理员</div>;
 		}
-
+		{vAdmin}
+		*/
         return <Page header="个人信息">
             <Edit schema={schema} uiSchema={uiSchema}
                 data={data}
                 onItemChanged={onItemChanged} />
-			{vAdmin}
         </Page>;
     }
 }

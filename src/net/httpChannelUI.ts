@@ -1,4 +1,4 @@
-import {nav} from 'tonva';
+import {nav} from 'tonva-react';
 
 export interface HttpChannelUI {
     startWait():void;

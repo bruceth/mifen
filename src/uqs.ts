@@ -1,4 +1,4 @@
-import { Tuid, Action, Query, Map } from 'tonva';
+import { Tuid, Action, Query, Map } from 'tonva-react';
 
 export interface UQs {
     mi: {

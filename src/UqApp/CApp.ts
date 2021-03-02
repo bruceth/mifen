@@ -1,9 +1,9 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import { observable, computed } from 'mobx';
-import { Controller, VPage } from 'tonva';
+import { Controller, VPage } from 'tonva-react';
 import { CHome } from '../home';
 import { CMe } from '../me';
-import { consts } from './consts';
+import { consts, defaultBlackListTagName, defaultTagName } from '../consts';
 import { MiApi } from '../net';
 import { VHome } from '../ui';
 import { CExplorer } from '../explorer';
@@ -12,13 +12,12 @@ import { CWarning } from '../warning';
 import { CPredictHistory } from '../predicthistory';
 import { CUqApp } from './CBase';
 import { res } from './res';
+import { CHolding } from 'holding';
 
-export const defaultTagName = '自选股';
-export const defaultBlackListTagName = '黑名单';
-
-export class CMiApp extends CUqApp {
-  cExporer: CExplorer;
+export class CApp extends CUqApp {
   cHome: CHome;
+  cHolding: CHolding;
+  cExporer: CExplorer;
   cWarning: CWarning;
   cMe: CMe;
   miApi: MiApi;
@@ -91,8 +90,9 @@ export class CMiApp extends CUqApp {
     //let miHost = consts.isDevelopment ? consts.miApiHostDebug : consts.miApiHost;
 	let miHost = consts.miApiHost;
     this.miApi = new MiApi(miHost, 'fsjs/', 'miapi', token, false);
-    this.cExporer = this.newC(CExplorer);
     this.cHome = this.newC(CHome);
+    this.cExporer = this.newC(CExplorer);
+    this.cHolding = this.newC(CHolding);
 	this.cMe = this.newC(CMe);
     this.cWarning = this.newC(CWarning);
 

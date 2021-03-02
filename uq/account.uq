@@ -1,0 +1,38 @@
+ID Account (
+	id,
+	KEY no char(20),
+	name char(50),
+);
+
+-- user 账号跟Account绑定
+IX UserAccount (
+	id user,
+	id2 Account,
+);
+
+ID Holding (
+	id,
+	KEY account ID Account,
+	KEY stock ID Stock,
+);
+
+IDX AccountValue (
+	id,
+	mi BIGINT,
+	market BIGINT,
+	count SMALLINT,
+);
+
+IDX Portfolio (
+	id,
+	quantity BIGINT LOG TRACK,
+);
+
+ID Transaction (
+	id,
+	KEY holding ID,
+	KEY tick TIMESTAMP,
+	price INT,
+	quantity INT,
+	amount INT,
+);
