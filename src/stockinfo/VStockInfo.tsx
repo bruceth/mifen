@@ -1,7 +1,7 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import * as React from 'react';
 import classNames from 'classnames';
-import { VPage, Page, View, List, LMR, left0, FA } from 'tonva';
+import { VPage, Page, View, List, LMR, left0, FA } from 'tonva-react';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import RC2 from 'react-chartjs2'

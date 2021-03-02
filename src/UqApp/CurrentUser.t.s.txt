@@ -1,4 +1,4 @@
-import { User, Map, BoxId, CUq } from 'tonva';
+import { User, Map, BoxId, CUq } from 'tonva-react';
 
 export class WebUser {
 

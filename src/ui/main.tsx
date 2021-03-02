@@ -1,21 +1,24 @@
 import * as React from 'react';
-import { VPage, TabCaptionComponent, Page, TabProp } from 'tonva';
-import { CMiApp } from '../UqApp';
+import { VPage, TabCaptionComponent, Page, TabProp } from 'tonva-react';
+import { CApp } from '../UqApp';
 
 const color = (selected: boolean) => selected === true ? 'text-primary' : 'text-muted';
 
-export class VHome extends VPage<CMiApp> {
+export class VHome extends VPage<CApp> {
 	async open(param?: any) {
 		this.openPage(this.render);
 	}
 	render = (param?: any): JSX.Element => {
-		let { cHome, cExporer, cMe } = this.controller;
+		let { cHome, cHolding, cExporer, cMe } = this.controller;
 		let tabs: TabProp[] = [
 			{ 
 				name: 'home', label: '首页', icon: 'home', content: cHome.tab, 
 				notify: undefined, 
 				//load: cHome.load, 
 				onShown: cHome.load,
+			},
+			{
+				name: 'explorer', label: '持仓', icon: 'money', content: cHolding.tab, load: cHolding.load 
 			},
 			{
 				name: 'explorer', label: '选股', icon: 'search', content: cExporer.tab, load: cExporer.load 

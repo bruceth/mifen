@@ -1,6 +1,6 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import * as React from 'react';
-import { observable, IObservableArray, autorun } from 'mobx';
+import { observable, IObservableArray, autorun, runInAction } from 'mobx';
 import { ErForEarning, SlrForEarning } from 'regression';
 import { UserTag } from '../types';
 import { CUqBase } from '../UqApp';
@@ -14,11 +14,11 @@ import { CMarketPE } from './CMarketPE';
 import { CStock } from 'stock';
 
 export class CHome extends CUqBase {
-  //PageItems: HomePageItems = new HomePageItems(this);
-  items: IObservableArray<any> = observable.array<any>([], { deep: true });
-  userTag: UserTag;
-  protected oldSortType: string;
-  //@observable warnings: any[] = [];
+	private lastLoadTick: number;
+	items: IObservableArray<any> = observable.array<any>([], { deep: true });
+	userTag: UserTag;
+	protected oldSortType: string;
+	//@observable warnings: any[] = [];
 
   /*
   disposeAutorun = autorun(async () => {
@@ -46,7 +46,7 @@ export class CHome extends CUqBase {
 
   public AddTagStockID(tagid: number, stockID: number) {
     if (this.userTag && this.userTag.tagID === tagid) {
-      this.load();
+      this.loadItems();
     }
   }
 
@@ -75,7 +75,7 @@ export class CHome extends CUqBase {
         let tagid = this.cApp.defaultListTagID;
         await this.cApp.miApi.call('t_tagstock$add', [this.user.id, tagid, id]);
         await this.cApp.AddTagStockID(tagid, id);
-        await this.load();
+        await this.loadItems();
       }
     }
   }
@@ -98,51 +98,56 @@ export class CHome extends CUqBase {
   //   if (key !== undefined) await this.PageItems.first(key);
   // }
 
-  //作为tabs中的首页，internalStart不会被调用
-  async internalStart(param: any) {
-  }
+	//作为tabs中的首页，internalStart不会被调用
+	async internalStart(param: any) {
+	}
 
-  load = async () => {
-    let tagID = this.cApp.tagID;
-    if (tagID > 0) {
-      await this.loadItems();
-    }
-  }
+  	load = async () => {
+    	let tagID = this.cApp.tagID;
+    	if (tagID > 0) {
+			if (this.lastLoadTick && Date.now() - this.lastLoadTick < 300*1000) return;
+      		await this.loadItems();
+    	}
+  	}
 
-  async loadItems() {
-    let queryName = 'taguser';
+	async loadItems() {
+		// 距离上次
+		let queryName = 'taguser';
 
-    let query = {
-      name: queryName,
-      pageStart: 0,
-      pageSize: 1000,
-      user: this.user.id,
-      tag: this.cApp.tagID,
-      yearlen: 1,
-    };
-    let result = await this.cApp.miApi.process(query, []);
-    if (Array.isArray(result) === false) {
-      return;
-    };
-    let arr = result as {id:number, order:number, data?:string, v?:number, e:number, e3:number, ep:number, price:number, exprice:number, divyield:number, r2:number, lr2:number, predictpe?:number, dataArr?:number[]}[];
-    for (let item of arr) {
-      let dataArray = JSON.parse(item.data) as number[];
-      item.dataArr = dataArray;
-      let sl = new SlrForEarning(dataArray);
-      item.ep = (sl.predict(4) + item.e) / 2;
-      item.e3 = sl.predict(7);
-      item.v = GFunc.calculateVN(sl.slopeR, item.ep, item.divyield * item.price, item.exprice);
-      item.predictpe = item.price / item.e3;
-    }
-    this.cApp.sortStocks(arr);
-    let o = 1;
-    for (let item of arr) {
-      item.order = o;
-      ++o;
-    }
-    this.items.clear();
-    this.items.push(...arr);
-  }
+		let query = {
+		name: queryName,
+		pageStart: 0,
+		pageSize: 1000,
+		user: this.user.id,
+		tag: this.cApp.tagID,
+		yearlen: 1,
+		};
+		let result = await this.cApp.miApi.process(query, []);
+		if (Array.isArray(result) === false) {
+		return;
+		};
+		let arr = result as {id:number, order:number, data?:string, v?:number, e:number, e3:number, ep:number, price:number, exprice:number, divyield:number, r2:number, lr2:number, predictpe?:number, dataArr?:number[]}[];
+		for (let item of arr) {
+		let dataArray = JSON.parse(item.data) as number[];
+		item.dataArr = dataArray;
+		let sl = new SlrForEarning(dataArray);
+		item.ep = (sl.predict(4) + item.e) / 2;
+		item.e3 = sl.predict(7);
+		item.v = GFunc.calculateVN(sl.slopeR, item.ep, item.divyield * item.price, item.exprice);
+		item.predictpe = item.price / item.e3;
+		}
+		this.cApp.sortStocks(arr);
+		let o = 1;
+		for (let item of arr) {
+		item.order = o;
+		++o;
+		}
+		runInAction(() => {
+			this.items.clear();
+			this.items.push(...arr);	
+			this.lastLoadTick = Date.now();
+		});
+	}
 
   setSortType = (type:string) => {
     this.cApp.setUserSortType(type);

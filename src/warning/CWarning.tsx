@@ -1,12 +1,12 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
-import { Context } from 'tonva';
+import { Context } from 'tonva-react';
 import { observable } from 'mobx';
-import { CMiApp, CUqBase } from '../UqApp';
+import { CApp, CUqBase } from '../UqApp';
 import { CStock } from '../stock';
 import { VWarningConfig, VNewWarning } from './VWarningConfig';
 
 export class CWarning extends CUqBase {
-  get cApp(): CMiApp { return this._cApp as CMiApp };
+  get cApp(): CApp { return this._cApp as CApp };
   @observable warnings:any[] = [];
 
   async internalStart(param: any) {

@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { View } from 'tonva';
+import { View } from 'tonva-react';
 import { CHome } from './CHome';
-import { SearchBox } from 'tonva';
+import { SearchBox } from 'tonva-react';
 
 export class VSearchHeader extends View<CHome> {
 

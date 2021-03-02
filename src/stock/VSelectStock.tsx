@@ -1,7 +1,7 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import * as React from 'react';
 import { observer } from 'mobx-react-lite';
-import { VPage, Page, List, LMR, SearchBox } from 'tonva';
+import { VPage, Page, List, LMR, SearchBox } from 'tonva-react';
 import { CStock } from './CStock'
 
 export class VStockSelect extends VPage<CStock> {

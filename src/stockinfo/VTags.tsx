@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { observer } from 'mobx-react-lite';
-import { VPage, Page, FA, List, Form, ItemSchema, StringSchema, UiInputItem, UiSchema, Context, IdSchema, UiIdItem, LMR } from 'tonva';
+import { VPage, Page, FA, List, Form, ItemSchema, StringSchema, UiInputItem, UiSchema, Context, IdSchema, UiIdItem, LMR } from 'tonva-react';
 import { CStockInfo } from './CStockInfo';
-import { defaultBlackListTagName, defaultTagName } from '../UqApp';
+import { defaultBlackListTagName, defaultTagName } from '../consts';
 
 export class VTags extends VPage<CStockInfo> {
   async open(param?: any) {
