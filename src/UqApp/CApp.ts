@@ -102,7 +102,7 @@ export class CApp extends CUqApp {
     let env = process.env;
     //
     await this.loadConfig();
-    await this.cHome.loadWarning();
+    //await this.cHome.loadWarning();
 	await this.cHome.load();
     this.openVPage(VMain);
   }
