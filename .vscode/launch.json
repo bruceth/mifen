@@ -10,6 +10,19 @@
 			"name": "Launch Chrome against localhost",
 			"url": "http://localhost:5103",
 			"webRoot": "${workspaceFolder}"
-		}
+		},
+		{
+			"name": "Build UqApp",
+			"type": "node",
+			"request": "launch",
+			"runtimeExecutable": "${workspaceRoot}/node_modules/.bin/react-scripts",
+			"args": ["test", "--runInBand", "--watchAll=false", "UqApp/build"], // "--no-cache", 
+			"cwd": "${workspaceRoot}",
+			"protocol": "inspector",
+			"console": "integratedTerminal",
+			"internalConsoleOptions": "neverOpen",
+			"env": { "CI": "true" },
+			"disableOptimisticBPs": true
+		},
 	]
 }

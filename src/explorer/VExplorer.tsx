@@ -1,7 +1,7 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { VPage, List, LMR, FA, Scroller } from 'tonva';
+import { VPage, List, LMR, FA, Scroller } from 'tonva-react';
 import { NStockInfo } from '../stockinfo';
 import { GFunc } from '../tool/GFunc';
 import { CExplorer } from './CExplorer';
@@ -54,7 +54,7 @@ export class VExplorer extends VPage<CExplorer> {
       
       return <>
       {avgHead}
-      <List header={renderSortHeaders(this.setSortType)}
+      <List header={renderSortHeaders('radioExplorer', this.setSortType)}
         items={items}
         item={{ render: this.renderRow, key: this.rowKey }}
         before={'选股'}

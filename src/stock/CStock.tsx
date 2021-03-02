@@ -1,6 +1,6 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import { observable } from 'mobx';
-import { PageItems } from 'tonva';
+import { PageItems } from 'tonva-react';
 import { CUqBase } from '../UqApp';
 import { VStockSelect } from './VSelectStock';
 

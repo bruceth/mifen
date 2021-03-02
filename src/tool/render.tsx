@@ -1,24 +1,24 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import * as React from 'react';
-import { FA, LMR } from 'tonva';
+import { FA, LMR } from 'tonva-react';
 import { NStockInfo } from '../stockinfo';
 import {percent0, percent1, number, numberToMarketValue, calculateZZ3} from '../tool';
 
-function renderSortCol(type:string, caption:string, sort: (sortType:string) => void, checked:boolean = false) {
+function renderSortCol(radioName:string, sortMethod:string, caption:string, sort: (sortMethod:string) => void, checked:boolean = false) {
 	return <label className="btn btn-outline-info mb-0">
 		<input type="radio" className="btn-sm btn-check mr-1"
-			name="btnradio" defaultChecked={checked}
-			onClick={() => sort(type)} />
+			name={radioName} defaultChecked={checked}
+			onClick={() => sort(sortMethod)} />
 		{caption}
 	</label>
 }
 
-export function renderSortHeaders(sort: (sortType:string) => void) {
+export function renderSortHeaders(radioName:string, sort: (sortMethod:string) => void) {
 	return <div className="my-1 justify-content-end mr-2">
 		<div className="btn-group" role="group" aria-label="Basic radio toggle button group">
-			{renderSortCol('tagv', '米息率', sort, true)}
-			{renderSortCol('tagpe', 'TTM', sort)}
-			{renderSortCol('tagdp', '股息率', sort)}
+			{renderSortCol(radioName, 'tagv', '米息率', sort, true)}
+			{renderSortCol(radioName, 'tagpe', 'TTM', sort)}
+			{renderSortCol(radioName, 'tagdp', '股息率', sort)}
 		</div>
 	</div>;
 }

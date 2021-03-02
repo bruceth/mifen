@@ -1,6 +1,6 @@
 export { VHome } from './main';
 
-//import { AppUI, CApp } from "tonva";
+//import { AppUI, CApp } from "tonva-react";
 //import { VHome } from './main';
 //import { CMiApp } from '../CMiApp';
 //import miUI from './mi';

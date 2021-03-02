@@ -1,6 +1,6 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import { observable, IObservableArray, computed } from 'mobx';
-import { nav } from 'tonva';
+import { nav } from 'tonva-react';
 import { CUqBase } from '../UqApp';
 import { GFunc } from '../tool/GFunc';
 import { VStockInfo } from './VStockInfo'

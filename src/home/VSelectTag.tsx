@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react-lite';
-import { VPage, Page, List } from 'tonva';
+import { VPage, Page, List } from 'tonva-react';
 import { CHome } from './CHome';
 
 export class VSelectTag extends VPage<CHome> {

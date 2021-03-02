@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import RC2 from 'react-chartjs2'
-import { VPage, Page, View, List, LMR, FA } from 'tonva';
+import { VPage, Page, View, List, LMR, FA } from 'tonva-react';
 import { CPredictHistory } from './CPredictHistory';
 
 export class VPredictHistory extends VPage<CPredictHistory> {

@@ -1,7 +1,7 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { VPage, List, LMR, FA, Scroller } from 'tonva';
+import { VPage, List, LMR, FA, Scroller } from 'tonva-react';
 import { NStockInfo } from '../stockinfo';
 import { CHome } from './CHome';
 import { renderSortHeaders, renderStockInfoRow, renderStockUrl } from '../tool';
@@ -38,7 +38,7 @@ export class VHome extends VPage<CHome> {
       let left = <div className="align-self-center">{title}</div>
       return <div>
       <LMR className="px-2 py-1" left={left} right={right}></LMR>
-      <List header={renderSortHeaders(this.setSortType)}
+      <List header={renderSortHeaders('radioHome', this.setSortType)}
         items={items}
         item={{ render: this.renderRow, key: this.rowKey }}
         before={'搜索'}

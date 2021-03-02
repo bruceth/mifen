@@ -1,8 +1,9 @@
 import React from 'react';
-import { NavView, start } from 'tonva';
+import { NavView, start } from 'tonva-react';
 //import logo from './logo.svg';
 import './App.css';
-import { appConfig, CMiApp } from './UqApp';
+import { CApp } from './UqApp';
+import { appConfig } from './appConfig';
 /*
 function App() {
   return (
@@ -30,7 +31,7 @@ export default App;
 class App extends React.Component {
   
 	private onLogined = async () => {
-	  await start(CMiApp, appConfig);
+	  await start(CApp, appConfig);
 	}
 	public render() {
 	  return <NavView onLogined={this.onLogined} />
