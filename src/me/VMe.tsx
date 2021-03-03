@@ -1,9 +1,10 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import { Image, VPage, nav, IconText, PropGrid, LMR, FA, Prop } from 'tonva-react';
+import { Image, VPage, nav, IconText, PropGrid, LMR, FA, Prop, Page } from 'tonva-react';
 import { CMe } from './CMe';
 import { appConfig } from '../appConfig';
 import { VFaq } from './VFaq';
+import { VAbout } from './VAbout';
 
 export class VMe extends VPage<CMe> {
 	header() {return this.t('me')}
@@ -21,10 +22,12 @@ export class VMe extends VPage<CMe> {
             },
             {
                 type: 'component',
-                component: <div className="w-100 d-flex justify-content-between">
-                    <IconText iconClass="text-info mr-2" icon="smile-o" text={this.t('aboutTheApp')} />
-                    <div className="py-2 small">V{appConfig?.app?.version}</div>
-                </div>,
+                component: <LMR className="w-100" onClick={this.about}
+					right={<FA className="align-self-center" name="angle-right" />}>
+                    <IconText iconClass="text-info mr-2" 
+						icon="smile-o" 
+						text={<>{this.t('aboutTheApp')} <small>版本 {appConfig.version}</small></>} />                    
+                </LMR>,
             },
         ];
 
@@ -42,14 +45,6 @@ export class VMe extends VPage<CMe> {
         }
         else {
             let logOutRows: Prop[] = [
-                '',
-                {
-                    type: 'component',
-                    bk: '',
-                    component: <button className="btn btn-danger w-100" onClick={this.onExit}>
-                        <FA name="sign-out" size="lg" /> {this.t('logout')}
-                </button>
-                },
             ];
 
             rows = [
@@ -58,27 +53,13 @@ export class VMe extends VPage<CMe> {
                     type: 'component',
                     component: <this.meInfo />
                 },
-                '',
-                {
-                    type: 'component',
-                    component: <IconText iconClass="text-info mr-2" icon="key" text={this.t('changePassword')} />,
-                    onClick: this.changePassword
-                },
             ]
             rows.push(...aboutRows, ...logOutRows);
         }
         return <PropGrid rows={[...rows]} values={{}} />;
 	}
 
-	private onExit = () => {
-        nav.showLogout();
-    }
-
-    private changePassword = async () => {
-        await nav.changePassword();
-    }
-
-    private meInfo = observer(() => {
+	private meInfo = observer(() => {
         let { user } = nav;
         if (user === undefined) return null;
         let { id, name, nick, icon } = user;
@@ -95,6 +76,10 @@ export class VMe extends VPage<CMe> {
 
 	private faq = () => {
 		this.openVPage(VFaq);
+	}
+
+	private about = () => {
+		this.openVPage(VAbout);
 	}
 }
 

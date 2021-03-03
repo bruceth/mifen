@@ -7,6 +7,7 @@ const bruce: DevConfig = {
 }
 
 export const appConfig: AppConfig = {
+	version: '0.1.0',		// 界面端app的版本
 	app: undefined,
 	uqs: [
 		{

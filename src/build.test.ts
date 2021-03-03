@@ -1,5 +1,5 @@
 import { build } from 'tonva-react';
-import { appConfig } from '../appConfig';
+import { appConfig } from './appConfig';
 
 test('build UqApp', async () => {
 	await build(appConfig);

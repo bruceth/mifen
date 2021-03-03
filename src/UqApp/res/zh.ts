@@ -5,7 +5,7 @@ export const zh = {
 	me: '我的',
 
 	changePassword: '修改密码',
-	aboutTheApp: '关于本APP',
+	aboutTheApp: '关于APP',
 	logout: '退出登录',
 	pleaseLogin: '登录',
 
