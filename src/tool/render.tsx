@@ -60,11 +60,11 @@ export function renderStockInfoRow(row: NStockInfo, onClickName: (row:NStockInfo
 		['股息率', divyield*100, 'n1'],
 		['价格', price, 'n2'],
 		['ROE', roe*100, 'n1'],
-		['增1', zzl[0], 'p0'],
-		['增2', zzl[1], 'p0'],
-		['增3', zzl[2], 'p0'],
-		['增4', zzl[3], 'p0'],
 		['预增', l, 'p0'],
+		['现增', zzl[3], 'p0'],
+		['增1', zzl[2], 'p0'],
+		['增2', zzl[1], 'p0'],
+		['增3', zzl[0], 'p0'],
 		['市值', total*price, 'yi'],
   	];
 	let inputSelectSpan:any;
