@@ -62,9 +62,9 @@ export function renderStockInfoRow(row: NStockInfo, onClickName: (row:NStockInfo
 		['ROE', roe*100, 'n1'],
 		['预增', l, 'p0'],
 		['现增', zzl[3], 'p0'],
-		['增1', zzl[2], 'p0'],
-		['增2', zzl[1], 'p0'],
-		['增3', zzl[0], 'p0'],
+		['增 1', zzl[2], 'p0'],
+		['增 2', zzl[1], 'p0'],
+		['增 3', zzl[0], 'p0'],
 		['市值', total*price, 'yi'],
   	];
 	let inputSelectSpan:any;
