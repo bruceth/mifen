@@ -43,13 +43,13 @@ export class VExplorerCfg extends VPage<CExplorer> {
   sortChage = (e)=> {
     let newType = e.target.value;
 
-    this.controller.cApp.setStockSortType(newType);
+    this.controller.cApp.store.setStockSortType(newType);
   }
 
   selectChange = (e)=> {
     let newType = e.target.value;
 
-    this.controller.cApp.setStockSelectType(newType);
+    this.controller.cApp.store.setStockSelectType(newType);
   }
 
   onChange = (e) => {
@@ -60,19 +60,19 @@ export class VExplorerCfg extends VPage<CExplorer> {
     //await this.controller.onSaveNewWarning(context.data);
     let {bmin, bmax, r2, lmin, lmax, lr2, mcount, lr4, r210, irate} = context.data;
     let cfg = {bmin:bmin, bmax:bmax, r2:r2, lmin:lmin, lmax:lmax, lr2:lr2, mcount:mcount, lr4:lr4, r210:r210, irate:irate};
-    await this.controller.cApp.setRegressionConfig(cfg);
+    await this.controller.cApp.store.setRegressionConfig(cfg);
     this.controller.closePage();
   }
 
 
   private page = observer(() => {
-    let scfg = this.controller.cApp.findStockConfg;
+    let scfg = this.controller.cApp.store.findStockConfg;
     //let findType = scfg.sortType;
     // let selectType = scfg.selectType;
     // if (selectType === undefined) {
     //   selectType = 'all';
     // }
-    let fData = this.controller.cApp.config.regression;
+    let fData = this.controller.cApp.store.config.regression;
     if (fData.irate === undefined)
       fData.irate = 0.04;
 

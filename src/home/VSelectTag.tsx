@@ -13,10 +13,10 @@ export class VSelectTag extends VPage<CHome> {
     }
 
     private page = observer(() => {
-        let {tags} = this.controller.cApp;
+        let {stockGroups} = this.controller.cApp.store;
         let { onClickTag } = this.controller;
         return <Page header="选择分组" headerClassName="bg-primary">
-            <List items={tags} item={{onClick:onClickTag, render:this.renderTag}} />
+            <List items={stockGroups.groups} item={{onClick:onClickTag, render:this.renderTag}} />
         </Page>;
     })
 }
