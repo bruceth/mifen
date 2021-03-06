@@ -14,7 +14,7 @@ export class VHolding extends VPage<CHolding> {
 		function renderValue(caption:string, value:number) {
 			return <span className="mr-3"><small className="text-muted">{caption}: </small>{value??0}</span>;
 		}
-		let {id, no, name, mi, market, count} = item;
+		let {name, mi, market, count} = item;
 		let right = <div className="px-2 d-flex align-items-center">
 			<FA className="align-" name="angle-right" />
 		</div>;

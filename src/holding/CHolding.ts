@@ -1,5 +1,5 @@
 import { makeObservable, observable } from "mobx";
-import { ParamID, ParamIDinIX, ParamIX } from "tonva-react";
+import { ParamID, ParamIDinIX } from "tonva-react";
 import { CApp, CUqBase } from "UqApp";
 import { Account, AccountValue } from "UqApp/uqs/BruceYuMi";
 import { VHolding } from "./VHolding";

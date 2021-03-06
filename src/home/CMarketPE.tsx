@@ -15,7 +15,8 @@ export class CMarketPE extends CUqBase {
     loadData = async () => {
         let dt = new Date();
         let param = [dt.getFullYear()*10000+(dt.getMonth()+1)*100+dt.getDate(), 750, this.longshortFlag];
-        let rets = await this.cApp.miApi.query('q_marketpe', param) as {day:number, pe:number, e:number}[];
+        //let rets = await this.cApp.store.miApi.query('q_marketpe', param) as {day:number, pe:number, e:number}[];
+		let rets = await this.cApp.miNet.q_marketpe(param);
         this.historyData = rets.reverse();
     }
 

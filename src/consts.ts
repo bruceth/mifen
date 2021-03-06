@@ -6,6 +6,6 @@ export const consts = {
     isDevelopment: process.env.NODE_ENV === 'development',
 }
 
-export const defaultTagName = '自选股';
-export const defaultBlackListTagName = '黑名单';
+export const defaultGroupName = '自选股';
+export const defaultBlackListGroupName = '黑名单';
 

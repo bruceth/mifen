@@ -1,23 +1,17 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
-import * as React from 'react';
-import { observable, IObservableArray, autorun, runInAction } from 'mobx';
-import { ErForEarning, SlrForEarning } from 'regression';
-import { UserTag } from '../types';
-import { CUqBase } from '../UqApp';
+import { CApp, CUqBase } from '../UqApp';
 import { CStockInfo, NStockInfo } from '../stockinfo';
 import { VSiteHeader } from './VSiteHeader';
 import { VSearchHeader } from './VSearchHeader';
 import { VHome } from './VHome';
 import { VSelectTag } from './VSelectTag';
-import { GFunc } from 'tool/GFunc';
 import { CMarketPE } from './CMarketPE';
 import { CStock } from 'stock';
+import { Stock, StockGroup, Store } from '../store';
 
 export class CHome extends CUqBase {
-	private lastLoadTick: number;
-	items: IObservableArray<any> = observable.array<any>([], { deep: true });
-	userTag: UserTag;
-	protected oldSortType: string;
+	private store: Store;
+	stockGroup: StockGroup;
 	//@observable warnings: any[] = [];
 
   /*
@@ -43,159 +37,85 @@ export class CHome extends CUqBase {
     }
   });
   */
+  	constructor(cApp: CApp) {
+		super(cApp);
+		let {store} = cApp;
+		this.store = store;
+	}
 
-  public AddTagStockID(tagid: number, stockID: number) {
-    if (this.userTag && this.userTag.tagID === tagid) {
-      this.loadItems();
-    }
-  }
+	load = async () => {
+		this.stockGroup = this.store.getHomeStockGroup();
+		if (!this.stockGroup) {
+			debugger;
+		}
+		await this.stockGroup.loadItems();
+		/*
+		let tagID = this.store.tagID;
+		if (tagID > 0) {
+			if (this.lastLoadTick && Date.now() - this.lastLoadTick < 300*1000) return;
+				await this.store.loadHomeItems();
+			this.lastLoadTick = Date.now();
+		}
+		*/
+	}
 
-  public RemoveTagStockID(tagid: number, stockID: number) {
-    if (this.userTag && this.userTag.tagID === tagid) {
-      //this.PageItems.RemoveStock(stockID);
-      let i = this.items.findIndex(v=>{return v.id === stockID})
-     if (i >= 0) {
-       this.items.splice(i, 1);
-     }
-    }
-  }
+	onSelectTag = async () => {
+		this.openVPage(VSelectTag);
+	}
 
+	onAddStock = async () => {
+		let cStock = new CStock(this.cApp);
+		let r = await cStock.call() as Stock;
 
-  onSelectTag = async () => {
-    this.openVPage(VSelectTag);
-  }
+		if (r !== undefined) {
+			await this.stockGroup.addStock(r);
+		}
+	}
 
-  onAddStock = async () => {
-    let cStock = new CStock(this.cApp);
-    let r = await cStock.call() as {id:number};
+	onClickTag = async (item:any) => {
+		await this.cApp.store.selectTag(item);
+		this.closePage();
+	}
 
-    if (r !== undefined) {
-      let id = r.id;
-      if (id > 0) {
-        let tagid = this.cApp.defaultListTagID;
-        await this.cApp.miApi.call('t_tagstock$add', [this.user.id, tagid, id]);
-        await this.cApp.AddTagStockID(tagid, id);
-        await this.loadItems();
-      }
-    }
-  }
+	onPage = async () => {
+		//this.PageItems.more();
+	}
 
-  onClickTag = async (item:any) => {
-    await this.cApp.selectTag(item);
-    this.closePage();
-  }
-
-  onPage = async () => {
-    //this.PageItems.more();
-  }
-
-  onWarningConfg = () => {
-    this.cApp.cWarning.onWarningConfg();
-  }
+	onWarningConfg = () => {
+		this.cApp.cWarning.onWarningConfg();
+	}
 
 
-  // async searchMain(key: any) {
-  //   if (key !== undefined) await this.PageItems.first(key);
-  // }
+	// async searchMain(key: any) {
+	//   if (key !== undefined) await this.PageItems.first(key);
+	// }
 
-	//作为tabs中的首页，internalStart不会被调用
+		//作为tabs中的首页，internalStart不会被调用
 	async internalStart(param: any) {
 	}
 
-  	load = async () => {
-    	let tagID = this.cApp.tagID;
-    	if (tagID > 0) {
-			if (this.lastLoadTick && Date.now() - this.lastLoadTick < 300*1000) return;
-      		await this.loadItems();
-    	}
-  	}
-
-	async loadItems() {
-		// 距离上次
-		let queryName = 'taguser';
-
-		let query = {
-		name: queryName,
-		pageStart: 0,
-		pageSize: 1000,
-		user: this.user.id,
-		tag: this.cApp.tagID,
-		yearlen: 1,
-		};
-		let result = await this.cApp.miApi.process(query, []);
-		if (Array.isArray(result) === false) {
-		return;
-		};
-		let arr = result as {id:number, order:number, data?:string, v?:number, e:number, e3:number, ep:number, price:number, exprice:number, divyield:number, r2:number, lr2:number, predictpe?:number, dataArr?:number[]}[];
-		for (let item of arr) {
-		let dataArray = JSON.parse(item.data) as number[];
-		item.dataArr = dataArray;
-		let sl = new SlrForEarning(dataArray);
-		item.ep = (sl.predict(4) + item.e) / 2;
-		item.e3 = sl.predict(7);
-		item.v = GFunc.calculateVN(sl.slopeR, item.ep, item.divyield * item.price, item.exprice);
-		item.predictpe = item.price / item.e3;
-		}
-		this.cApp.sortStocks(arr);
-		let o = 1;
-		for (let item of arr) {
-		item.order = o;
-		++o;
-		}
-		runInAction(() => {
-			this.items.clear();
-			this.items.push(...arr);	
-			this.lastLoadTick = Date.now();
-		});
+	renderSiteHeader = () => {
+		return this.renderView(VSiteHeader);
 	}
 
-  setSortType = (type:string) => {
-    this.cApp.setUserSortType(type);
-    let arr = this.items.slice();
-    this.cApp.sortStocks(arr);
+	renderSearchHeader = (size?: string) => {
+		return this.renderView(VSearchHeader, size);
+	}
 
-    this.items.replace(arr);
-  }
+	tab = () => this.renderView(VHome);
 
-  // async loadWarning() {
-  //   let r = await this.cApp.miApi.query('q_warnings', [this.cApp.user.id]);
-  //   if (r !== undefined && Array.isArray(r)) {
-  //     this.warnings = r;
-  //   }
-  //   else {
-  //     if (this.warnings.length > 0) {
-  //       this.warnings = [];
-  //     }
-  //   }
-  // }
+	openStockInfo = (item: NStockInfo) => {
+		let cStockInfo = this.newC(CStockInfo);
+		cStockInfo.start(item);
+	}
 
-  renderSiteHeader = () => {
-    return this.renderView(VSiteHeader);
-  }
+	openMarketPE = () => {
+		let cm = this.newC(CMarketPE);
+		cm.start();
+	}
 
-  renderSearchHeader = (size?: string) => {
-    return this.renderView(VSearchHeader, size);
-  }
-
-
-  renderHome = () => {
-    return this.renderView(VHome);
-  }
-
-  openMetaView = () => {
-  }
-
-  tab = () => {
-    return this.renderHome();
-  }
-
-  openStockInfo = (item: NStockInfo) => {
-    let cStockInfo = this.newC(CStockInfo);
-    cStockInfo.start(item);
-  }
-
-  openMarketPE = () => {
-    let cm = this.newC(CMarketPE);
-    cm.start();
-  }
+	setSortType = (type:string) => {
+		//this.setSortType(type);
+		alert('set sort type of home');
+	}
 }

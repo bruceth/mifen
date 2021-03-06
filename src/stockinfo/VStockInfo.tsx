@@ -132,12 +132,13 @@ export class VStockInfo extends VPage<CStockInfo> {
 
 
   private baseInfo = observer(() => {
-    let {baseItem} = this.controller;
+    let {baseItem, isMySelect} = this.controller;
     let { id, name, code, symbol, pe, roe, price, order, divyield, e, capital, bonus } = baseItem;
 
-    let list = this.controller.cApp.defaultList;
-    let fInList = list.findIndex(v=>v===id) >= 0;
-    let right = <label className="align-self-center px-3"> <input type="checkbox" name="checkDefaultList" defaultChecked={fInList}
+    //let list = this.controller.cApp.store.defaultList;
+    //let fInList = list.findIndex(v=>v===id) >= 0;
+	//let fInList = this.controller.cApp.store.isMySelect(id);
+    let right = <label className="align-self-center px-3"> <input type="checkbox" name="checkDefaultList" defaultChecked={isMySelect}
       onChange={this.checkDefaultTag} />自选股</label>;
     return <LMR className="bg-white" right={right}> <div className="px-3 py-2" >
       <div className="d-flex flex-wrap">
