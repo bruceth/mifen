@@ -8,6 +8,7 @@ import { VSelectTag } from './VSelectTag';
 import { CMarketPE } from './CMarketPE';
 import { CStock } from 'stock';
 import { Stock, StockGroup, Store } from '../store';
+import { makeObservable, observable } from 'mobx';
 
 export class CHome extends CUqBase {
 	private store: Store;
@@ -39,15 +40,16 @@ export class CHome extends CUqBase {
   */
   	constructor(cApp: CApp) {
 		super(cApp);
+		makeObservable(this, {
+			stockGroup: observable,
+		});
 		let {store} = cApp;
 		this.store = store;
 	}
 
 	load = async () => {
 		this.stockGroup = this.store.getHomeStockGroup();
-		if (!this.stockGroup) {
-			debugger;
-		}
+		if (!this.stockGroup) debugger;
 		await this.stockGroup.loadItems();
 		/*
 		let tagID = this.store.tagID;
@@ -57,6 +59,15 @@ export class CHome extends CUqBase {
 			this.lastLoadTick = Date.now();
 		}
 		*/
+	}
+
+	async changeGroup(stockGroup: StockGroup) {
+		this.stockGroup = stockGroup;
+		await this.stockGroup.loadItems();
+	}
+
+	manageGroups = async () => {
+		this.cApp.showGroupsManage();
 	}
 
 	onSelectTag = async () => {

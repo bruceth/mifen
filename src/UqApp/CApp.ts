@@ -11,6 +11,7 @@ import { CHolding } from 'holding';
 import { VMain } from './VMain';
 import { Store } from 'store';
 import { MiNet } from '../net';
+import { CGroup } from '../group';
 
 export class CApp extends CUqApp {
 	cHome: CHome;
@@ -47,5 +48,10 @@ export class CApp extends CUqApp {
 	}
 
 	protected onDispose() {
+	}
+
+	showGroupsManage() {
+		let cGroup = this.newC(CGroup);
+		cGroup.start();
 	}
 }

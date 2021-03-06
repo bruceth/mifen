@@ -61,11 +61,11 @@ export class CStockInfo extends CUqBase {
 		super(cApp);
 		makeObservable(this);
 	}
-	loadData = () => {
-		this.loading();
+	initLoad = () => {
+		this.load();
 	}
 
-	loading = async () => {
+	private load = async () => {
 		if (!this.baseItem) return;
 
 		let { id, day } = this.baseItem;
@@ -78,18 +78,19 @@ export class CStockInfo extends CUqBase {
 		this.stockTags = rets[1];
 		let ret = rets[0];
 		if (Array.isArray(ret[0])) {
-		let arr1 = ret[1];
-		if (Array.isArray(arr1)) {
-			this.price = arr1[0];
-		}
+			let arr1 = ret[1];
+			if (Array.isArray(arr1)) {
+				this.price = arr1[0];
+			}
 
-		if (this._capitalearning.length > 0) {
-			this._capitalearning.clear();
-		}
-		let arr2 = ret[2];
-		if (Array.isArray(arr2)) {
-			this._capitalearning.push(...arr2);
-		}
+			if (this._capitalearning.length > 0) {
+				this._capitalearning.clear();
+			}
+
+			let arr2 = ret[2];
+			if (Array.isArray(arr2)) {
+				this._capitalearning.push(...arr2);
+			}
 
 		this._bonus.clear();
 		let arr3 = ret[3];
@@ -108,7 +109,7 @@ export class CStockInfo extends CUqBase {
 		this.exrightInfo = ret[7];
 
 		this.historyDataOrg = ret[8];
-		this.LoadHistoryData(false);
+		this.loadHistoryData(false);
 		}
 
 		this.isMySelect = this.cApp.store.isMySelect(id);
@@ -189,22 +190,18 @@ export class CStockInfo extends CUqBase {
 	protected ExrightEarning(endDay:number, season:number, item:{c:number, e:number, esum:number}) {
 		let {end} = GFunc.SeasonnoToBeginEnd(season);
 		for (let i = 0; i < this.exrightForEarning.length; ++i) {
-		let exitem = this.exrightForEarning[i];
-		let day = exitem.day;
-		if (day > endDay)
-			break;
-		else if (day < end)
-			continue;
-		else {
+			let exitem = this.exrightForEarning[i];
+			let day = exitem.day;
+			if (day > endDay) break;
+			if (day < end) continue;
 			let factor = exitem.factor;
 			item.c = item.c * factor;
 			item.e = item.e * factor;
 			item.esum = item.esum * factor;
 		}
-		}
 	}
 
-	LoadHistoryData(showAll:boolean) {
+	loadHistoryData(showAll:boolean) {
 		let list = this.historyDataOrg;
 		let length = list.length;
 		if (length <= 10) {
@@ -282,17 +279,12 @@ export class CStockInfo extends CUqBase {
 		let season = GFunc.SeasonnoFromDay(day);
 		let len = this.seasonData.length;
 		for (let i = 0; i < len; ++i) {
-		let item = this.seasonData[i];
-		if (item.season >= season) {
-			continue;
-		}
-
-		if (item.esumorg === undefined)
-			return undefined;
-
-		let {end} = GFunc.SeasonnoToBeginEnd(item.season);
-		let pricere = this.RestorePrice(price, day, end);
-		return pricere / item.esumorg;
+			let item = this.seasonData[i];
+			if (item.season >= season) continue;
+			if (item.esumorg === undefined) return undefined;
+			let {end} = GFunc.SeasonnoToBeginEnd(item.season);
+			let pricere = this.RestorePrice(price, day, end);
+			return pricere / item.esumorg;
 		}
 
 		return undefined;
@@ -300,7 +292,9 @@ export class CStockInfo extends CUqBase {
 
 	async internalStart(param: any) {
 		this.baseItem = param as NStockInfo;
-		this.loadData();
+		let {id} = this.baseItem;
+		this.isMySelect = this.cApp.store.isMySelect(id);
+		this.initLoad();
 		this.openVPage(VStockInfo);
 	}
 
@@ -424,7 +418,7 @@ export class CStockInfo extends CUqBase {
 		b.day = day;
 		this.baseItem = b;
 		this.loaded = false;
-		await this.loading();
+		await this.load();
 	}
 
 	changeDay = async (day:number) => {
@@ -434,6 +428,6 @@ export class CStockInfo extends CUqBase {
 		let ni = {id:id, name:name, code:code, symbol:symbol, day:day ===0 ? undefined : day};
 		this.baseItem = ni;
 		this.loaded = false;
-		await this.loading();
+		await this.load();
 	}
 }
