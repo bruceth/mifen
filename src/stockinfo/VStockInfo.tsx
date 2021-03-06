@@ -491,7 +491,7 @@ export class VStockInfo extends VPage<CStockInfo> {
       <div className="px-3 c6 text-right">年收益o</div>
     </div>;
     return <>
-      <div className="px-3 py-1">历年股本收益</div>
+      <div className="px-3 py-1">历年季度股本收益</div>
       <List header={header} loading="..."
         items={items}
         item={{
