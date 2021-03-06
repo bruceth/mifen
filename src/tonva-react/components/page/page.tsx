@@ -89,9 +89,7 @@ export class Page extends React.Component<PageProps> {
 	
     render() {
 		if (this.tabsView) {
-			let {content} = this.tabsView;
-			//return React.createElement(content);
-			return content;
+			return React.createElement(this.tabsView.content);
 		}
 		const {onScroll, onScrollTop, onScrollBottom, children, className, webNav} = this.props;
 		let pageWebNav:PageWebNav;
