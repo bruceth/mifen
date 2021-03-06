@@ -4,11 +4,11 @@ import { nav } from 'tonva-react';
 import { CUqBase } from '../UqApp';
 import { GFunc } from '../tool/GFunc';
 import { VStockInfo } from './VStockInfo'
-import { NStockInfo, StockPrice, StockEarning, StockRoe, StockCapitalearning, StockBonus, StockDivideInfo } from './StockInfoType';
+import { NStockInfo, StockPrice, StockCapitalearning, StockBonus, StockDivideInfo } from './StockInfoType';
 import { VTags, VNewTag, VEditTag } from './VTags';
 import { ErForEarning, SlrForEarning } from 'regression';
-import { CStock } from 'stock/CStock';
-import { StockGroup } from 'store/stockGroup';
+import { StockGroup } from '../store';
+import { CStock } from '../stock';
 
 export class CStockInfo extends CUqBase {
 	@observable baseItem: NStockInfo;
@@ -376,7 +376,7 @@ export class CStockInfo extends CUqBase {
 		};
 		if (isSelected === true) {
 			//let ret = await this.cApp.store.miApi.call('t_tagstock$add', [this.user.id, tag.id, this.baseItem.id]); //.uqs.mi.TagStock.add(param);
-			await this.cApp.store.addTagStockID(this.baseItem.id);
+			await this.cApp.store.addTagStock(this.baseItem as any);
 			//let ret = this.cApp.miNet.t_tagstock$add(tag.id, this.baseItem.id);
 			let newTag = {
 				tag: {
@@ -388,7 +388,7 @@ export class CStockInfo extends CUqBase {
 		else {
 			//let ret = await this.cApp.store.miApi.call('t_tagstock$del', [this.user.id, tag.id, this.baseItem.id]); // //await this.uqs.mi.TagStock.del(param);
 			//let ret = this.cApp.miNet.t_tagstock$del(tag.id, this.baseItem.id);
-			await this.cApp.store.removeTagStockID(this.baseItem.id);
+			await this.cApp.store.removeTagStock(this.baseItem as any);
 			let i = this.stockTags.findIndex(v => v.tag.id === tag.id);
 			this.stockTags.splice(i, 1);
 		}
@@ -400,7 +400,7 @@ export class CStockInfo extends CUqBase {
 		let {id: groupId} = store.stockGroups.defaultGroup;
 		if (isSelected === true) {
 			//let ret = this.cApp.miNet.t_tagstock$add(tagid, this.baseItem.id);
-			await store.addTagStockID(this.baseItem.id);
+			await store.addTagStock(this.baseItem as any);
 			let newTag = {
 				tag: {
 					id: store.stockGroups.defaultGroup.id,
@@ -410,7 +410,7 @@ export class CStockInfo extends CUqBase {
 		}
 		else {
 			//let ret = await this.cApp.store.miApi.call('t_tagstock$del', [this.user.id, tagid, this.baseItem.id]); // //await this.uqs.mi.TagStock.del(param);
-			await this.cApp.store.removeTagStockID(this.baseItem.id);
+			await this.cApp.store.removeTagStock(this.baseItem as any);
 			//let ret = this.cApp.miNet.t_tagstock$del(tagid, this.baseItem.id);
 			let i = this.stockTags.findIndex(v => v.tag.id === groupId);
 			this.stockTags.splice(i, 1);

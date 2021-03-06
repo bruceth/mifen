@@ -2,15 +2,15 @@ import { IObservableArray, makeObservable, observable } from "mobx";
 import { User } from "tonva-react";
 import { MiNet } from "../net";
 import { defaultGroupName } from "../consts";
-import { MiConfigs, RegressionConfig, StockFindConfig, UserTag } from "./types";
+import { MiConfigs, RegressionConfig, Stock, StockFindConfig } from "./types";
 import { sortStocks } from "./sortStocks";
 import { StockGroups } from "./stockGroups";
 import { Accounts } from "./accounts";
 
 export class Store {
 	private miNet: MiNet;
-	user: User;
-	userTag: UserTag;
+	//user: User;
+	//userTag: UserTag;
 	homeItems: IObservableArray<any> = observable.array<any>([], { deep: true });
 	stockGroups: StockGroups;
 	accounts: Accounts;
@@ -19,7 +19,7 @@ export class Store {
 		makeObservable(this, {
 			config: observable,
 		});
-		this.user = user;
+		//this.user = user;
 		//let miHost = consts.miApiHost;
 		//let token = this.user.token;
 		//this.miApi = new MiApi(miHost, 'fsjs/', 'miapi', token, false);
@@ -171,7 +171,7 @@ export class Store {
 	}
 
 	selectTag = async (item:any) => {
-		let {name, id} = item as {name:string, id:number};
+		let {name} = item as {name:string, id:number};
 		let group = this.stockGroups.groupFromName(name);
 		if (group) {
 			this.config.groupName = name;
@@ -180,7 +180,7 @@ export class Store {
 	}
 
 	selectAccount = async (item:any) => {
-		let {name, id} = item as {name:string, id:number};
+		let {name} = item as {name:string, id:number};
 		let account = this.accounts.setCurrentAccount(name);
 		if (account) {
 			this.config.accountName = name;
@@ -270,7 +270,7 @@ export class Store {
 	}
 	*/
 
-	async addTagStockID(stockID: number) {
+	async addTagStock(stock: Stock) {
 		/*
 		if (this.userTag && this.userTag.tagID === tagid) {
 			if (tagid === this.blackListTagID) {
@@ -281,7 +281,7 @@ export class Store {
 			}
 		}
 		*/
-		this.stockGroups.defaultGroup.addStock(stockID);
+		await this.stockGroups.defaultGroup.addStock(stock);
 	}
 
 	/*
@@ -295,8 +295,8 @@ export class Store {
 	}
 	*/
 
-	async removeTagStockID(stockID: number) {
-		this.stockGroups.defaultGroup.removeStock(stockID);
+	async removeTagStock(stock: Stock) {
+		await this.stockGroups.defaultGroup.removeStock(stock);
 		/*
 		if (tagid === this.blackListTagID) {
 			this.removeBlackID(stockID);
@@ -322,18 +322,6 @@ export class Store {
 		if (i >= 0) {
 			this.homeItems.splice(i, 1);
 		}
-	}
-
-	async itemSelected(item:any) {
-		//let tagid = this.defaultListTagID;
-		//await this.miNet.t_tagstock$add(tagid, item.id);
-		await this.addTagStockID(item.id);
-	}
-
-	async itemUnselected(item:any) {
-		//let tagid = this.defaultListTagID;
-		//await this.miNet.t_tagstock$del(tagid, item.id);
-		await this.removeTagStockID(item.id);
 	}
 
 	/*
@@ -373,14 +361,14 @@ export class Store {
 
 	async loadExportItems(queryName: string):Promise<any[]> {
 		//let sName = this.store.config.stockFind.selectType;
-		let {bmin, bmax, r2, lmin, lmax, lr2, mcount, lr4, r210, irate} = this.config.regression;
+		let {bmin, bmax, r2, lmin, lmax, lr2, mcount, lr4, r210} = this.config.regression;
 		//if (sName !== undefined)
 		//  queryName = sName;
 		let query = {
 			name: queryName,
 			pageStart: 0,
 			pageSize: 3000,
-			user: this.user.id,
+			user: this.miNet.userId,
 			blackID: this.stockGroups.blackGroup.id,
 			bMin: bmin,
 			bMax: bmax,

@@ -1,8 +1,9 @@
+/*
 export interface UserTag {
 	tagName: string;
 	tagID?: number;
 }
-
+*/
 export interface StockFindConfig {
 	sortType: string;
 	selectType?: string;

@@ -12,8 +12,8 @@ export class CExplorer extends CUqBase {
 
 	constructor(cApp: CApp) {
 		super(cApp);
-		let {store, miNet} = cApp;
-		this.explore = new Explore(store, miNet);
+		let {store} = cApp;
+		this.explore = new Explore(store);
 	}
 
 	load = async () => {
@@ -36,7 +36,7 @@ export class CExplorer extends CUqBase {
 			this.explore.onItemSelected(item);
 		}
 		else {
-			this.explore.onItemSelected(item);
+			this.explore.onItemUnselected(item);
 		}
 	}
 

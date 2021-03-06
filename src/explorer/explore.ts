@@ -1,5 +1,4 @@
-import { IObservableArray, makeObservable, observable } from "mobx";
-import { MiNet } from "../net";
+import { makeObservable, observable, runInAction } from "mobx";
 import { SlrForEarning } from "regression";
 import { GFunc } from "../tool";
 import { Store, sortStocks } from "../store";
@@ -13,79 +12,37 @@ interface Avg {
 
 export class Explore {
 	private store: Store;
-	private miNet: MiNet;
-	items: IObservableArray<any> = observable.array<any>([], { deep: true });
+	items: any[]; // = observable.array<any>([], { deep: true });
 	avgs: Avg = {};
 	lastTradeDay: number;
 	//private oldSelectType: string;
 	selectedItems: any[] = [];
   
-	constructor(store: Store, miNet: MiNet) {
+	constructor(store: Store) {
 		this.store = store;
-		this.miNet = miNet;
 		makeObservable(this, {
 			avgs: observable,
+			items: observable,
 		});
 	}
-
-	/*
-	disposeAutorun = autorun(async () => {
-		let newSelectType = this.store.config.stockFind.selectType;
-		if (newSelectType === this.oldSelectType)
-		  return;
-		if (this.oldSelectType === undefined) {
-		  this.oldSelectType = newSelectType;
-		  return;
-		}
-		this.oldSelectType = newSelectType;
-		await this.load();
-	});
-	*/
-
-	/*
-	reload = async () => {
-		await this.load();
-	}
-	*/
 	
 	load = async () => {
 		this.selectedItems = [];
 		let items = await this.loadItems();
 		sortStocks(undefined, items);
-		this.items.replace(items);
+		runInAction(() => {
+			if (!this.items) {
+				this.items = items;
+			}
+			else {
+				this.items.splice(0, this.items.length, items);
+			}	
+		});
 	}
 
 	private async loadItems():Promise<any[]> {
 		let queryName = 'all';
 		let rets = await this.store.loadExportItems(queryName);
-		/*
-		let queryName = 'all';
-		//let sName = this.store.config.stockFind.selectType;
-		let {bmin, bmax, r2, lmin, lmax, lr2, mcount, lr4, r210, irate} = this.store.config.regression;
-		//if (sName !== undefined)
-		//  queryName = sName;
-		let query = {
-			name: queryName,
-			pageStart: 0,
-			pageSize: 3000,
-			user: this.store.user.id,
-			blackID: this.store.blackListTagID,
-			bMin: bmin,
-			bMax: bmax,
-			r2: r2,
-			lMin: lmin,
-			lMax: lmax,
-			lr2: lr2,
-			mcount: mcount,
-			lr4: lr4,
-			r210: r210,
-		};
-		let rets = await Promise.all([
-			this.miNet.process(query, []),
-			//this.store.miApi.call('q_getlasttradeday', [])
-			this.miNet.q_getlasttradeday(),
-		]);
-		*/
 		let lastDayRet = rets[1] as {day:number}[];
 		if (Array.isArray(lastDayRet) && lastDayRet.length > 0) {
 			this.lastTradeDay = lastDayRet[0].day;
@@ -107,27 +64,29 @@ export class Explore {
 			item.v = GFunc.calculateVN(sl.slopeR, item.ep, item.divyield * item.price, item.exprice);
 			item.e3 = sl.predict(7);
 		}
-		if (queryName === 'all') {
-			this.avgs = GFunc.CalculateValueAvg(arr);
-		}
-		else {
-			this.avgs = {};
-		}
+		runInAction(() => {
+			if (queryName === 'all') {
+				this.avgs = GFunc.CalculateValueAvg(arr);
+			}
+			else {
+				this.avgs = {};
+			}
+		});
 		return arr;
 	}
 
 	async onItemSelected(item:any) {
-		this.store.itemSelected(item);
+		this.store.addTagStock(item);
 	}
 
 	async onItemUnselected(item:any) {
-		this.store.itemUnselected(item);
+		this.store.removeTagStock(item);
 	}
 
 	setSortType(type:string) {
 		this.store.setUserSortType(type);
 		let arr = this.items.slice();
 		sortStocks(type, arr);
-		this.items.replace(arr);
+		this.items.splice(0, this.items.length, arr);
 	}
 }

@@ -93,7 +93,6 @@ export class StockGroups {
 			br = true;
 		}
 		else {
-			let param;
 			let i = list.findIndex(v => v.name === defaultGroupName);
 			if (i < 0) {
 				await this.miNet.t_tag$save(defaultGroupName);

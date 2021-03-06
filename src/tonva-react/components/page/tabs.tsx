@@ -149,6 +149,9 @@ export class TabsView {
 			selectedTab: observable, 
 			tabArr: observable,
 		});
+		setTimeout(() => {
+			this.tabClick(this.selectedTab);
+		}, 100);		
     }
 
     tabClick = async (tab:Tab) => {
@@ -316,9 +319,11 @@ export class TabsView {
     constructor(props: TabsProps) {
 		super(props);
 		this.tabsView = new TabsView(props);
+		/*
 		setTimeout(() => {
 			this.tabsView.tabClick(undefined);
 		}, 100);
+		*/
     }
 
     render() {
@@ -331,9 +336,11 @@ export class TabsView {
     constructor(props: TabsProps) {
 		super(props);
 		this.tabsView = new TabsView(props);
+		/*
 		setTimeout(() => {
 			this.tabsView.tabClick(undefined);
 		}, 100);
+		*/
     }
 
     render() {

@@ -65,20 +65,18 @@ export class StockGroup {
 		sortStocks(sortType, this.stocks);
 	}
 
-	async addStock(stockId:number) {
-		if (stockId <= 0) return;
-		//let tagid = this.defaultListTagID;
-		await this.miNet.t_tagstock$add(this.id, stockId);
-		//await this.addTagStockID(tagid, stockId);
-		//let group = this.stockGroups.groupFromId(tagid);
-		//await this.loadHomeItems();
-		//group.addStock(stockId);
-		this.stocks.push();
+	async addStock(stock: Stock) {
+		await this.miNet.t_tagstock$add(this.id, stock.id);
+		let index = this.stocks.findIndex(v => v.id === stock.id);
+		if (index >= 0) {
+			this.stocks.splice(index, 1);
+		}
+		this.stocks.unshift(stock);
 	}
 
-	async removeStock(stockId: number) {
-		await this.miNet.t_tagstock$del(this.id, stockId);
-		let index = this.stocks.findIndex(v => v.id === stockId);
+	async removeStock(stock: Stock) {
+		await this.miNet.t_tagstock$del(this.id, stock.id);
+		let index = this.stocks.findIndex(v => v.id === stock.id);
 		if (index >= 0) this.stocks.splice(index, 1);
 	}
 

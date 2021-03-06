@@ -7,10 +7,11 @@ import { VHome } from './VHome';
 import { VSelectTag } from './VSelectTag';
 import { CMarketPE } from './CMarketPE';
 import { CStock } from 'stock';
-import { Home } from './home';
+import { Stock, StockGroup, Store } from '../store';
 
 export class CHome extends CUqBase {
-	home: Home;
+	private store: Store;
+	stockGroup: StockGroup;
 	//@observable warnings: any[] = [];
 
   /*
@@ -39,11 +40,23 @@ export class CHome extends CUqBase {
   	constructor(cApp: CApp) {
 		super(cApp);
 		let {store} = cApp;
-		this.home = new Home(store);
+		this.store = store;
 	}
 
 	load = async () => {
-		await this.home.load();
+		this.stockGroup = this.store.getHomeStockGroup();
+		if (!this.stockGroup) {
+			debugger;
+		}
+		await this.stockGroup.loadItems();
+		/*
+		let tagID = this.store.tagID;
+		if (tagID > 0) {
+			if (this.lastLoadTick && Date.now() - this.lastLoadTick < 300*1000) return;
+				await this.store.loadHomeItems();
+			this.lastLoadTick = Date.now();
+		}
+		*/
 	}
 
 	onSelectTag = async () => {
@@ -52,10 +65,10 @@ export class CHome extends CUqBase {
 
 	onAddStock = async () => {
 		let cStock = new CStock(this.cApp);
-		let r = await cStock.call() as {id:number};
+		let r = await cStock.call() as Stock;
 
 		if (r !== undefined) {
-			await this.home.stockGroup.addStock(r.id);
+			await this.stockGroup.addStock(r);
 		}
 	}
 

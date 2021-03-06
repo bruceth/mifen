@@ -1,4 +1,4 @@
-import { FA, VPage } from "tonva-react";
+import { VPage } from "tonva-react";
 import { appConfig } from "../appConfig";
 import { CMe } from "./CMe";
 

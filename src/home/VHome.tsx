@@ -24,12 +24,17 @@ export class VHome extends VPage<CHome> {
 
 	content() {
 		return React.createElement(observer(() => {
-			let {cApp, setSortType, home} = this.controller;
+			let {setSortType, stockGroup} = this.controller;
+			/*
 			let {store} = cApp;
 			let {config} = store;
 			let title = config.groupName;
 			let { items } = home;
-			let { onSelectTag, onAddStock } = this.controller;
+			*/
+			let title = stockGroup.name;
+			let items = stockGroup.stocks;
+
+			let {  onSelectTag, onAddStock } = this.controller;
 			let right = <div className="d-flex">
 				<div className="btn cursor-pointer" onClick={onAddStock}><FA name="plus" inverse={false} /></div>
 				<div className="btn cursor-pointer ml-2" onClick={onSelectTag}><FA name="bars" inverse={false} /></div>
