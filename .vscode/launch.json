@@ -12,6 +12,13 @@
 			"webRoot": "${workspaceFolder}"
 		},
 		{
+			"type": "pwa-chrome",
+			"request": "launch",
+			"name": "Launch Chrome @ localMiServer",
+			"url": "http://localhost:5103/localmiserver",
+			"webRoot": "${workspaceFolder}"
+		},
+		{
 			"name": "Build UqApp",
 			"type": "node",
 			"request": "launch",
