@@ -1,16 +1,16 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
-import { observable } from 'mobx';
+import { MiNet } from '../net';
 import { Stock } from 'store';
 import { PageItems } from 'tonva-react';
 import { CUqBase } from '../UqApp';
 import { VStockSelect } from './VSelectStock';
 
 class PageStockItems<T> extends PageItems<T> {
-	cStock: CStock;
+	private miNet: MiNet;
 
-	constructor(cs: CStock) {
+	constructor(miNet: MiNet) {
 		super(true);
-		this.cStock = cs;
+		this.miNet = miNet;
 		this.firstSize = this.pageSize = 30;
 	}
 
@@ -21,8 +21,8 @@ class PageStockItems<T> extends PageItems<T> {
 		let p = ['%' + param.key + '%'];
 		try {
 			//let ret = await this.cStock.cApp.store.miApi.page('q_stocks$page', p, pageStart, pageSize);
-			let ret = await this.cStock.cApp.miNet.q_stocks$page(p, pageStart, pageSize);
-			return ret;
+			let ret = await this.miNet.q_stocks$page(p, pageStart, pageSize);
+			return {$page: ret};
 		}
 		catch (error) {
 			let e = error;
@@ -35,26 +35,20 @@ class PageStockItems<T> extends PageItems<T> {
 	}
 }
 
-export class CStock extends CUqBase {
-	@observable pageItems: PageStockItems<Stock> = new PageStockItems<Stock>(this);
-
-	//get cApp(): CMiApp { return this._cApp as CMiApp };
+export class CSelectStock extends CUqBase {
+	pageItems: PageStockItems<Stock>;
 
 	async internalStart(param: any) {
+		this.pageItems = new PageStockItems<Stock>(this.cApp.miNet);
 		this.openVPage(VStockSelect);
 	}
 
 	searchByKey = async (key: string) => {
-		this.pageItems = new PageStockItems<any>(this);
 		this.pageItems.first({ key: key });
 	}
 
 	//给调用页面返回id
 	returnStock = async (item: any): Promise<any> => {
 		this.returnCall(item);
-	}
-
-	onPage = async () => {
-		await this.pageItems.more();
 	}
 }

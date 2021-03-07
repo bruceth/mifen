@@ -8,7 +8,7 @@ import { NStockInfo, StockPrice, StockCapitalearning, StockBonus, StockDivideInf
 import { VTags, VNewTag, VEditTag } from './VTags';
 import { ErForEarning, SlrForEarning } from 'regression';
 import { StockGroup } from '../store';
-import { CStock } from '../stock';
+import { CSelectStock } from '../selectStock';
 
 export class CStockInfo extends CUqBase {
 	@observable baseItem: NStockInfo;
@@ -405,7 +405,7 @@ export class CStockInfo extends CUqBase {
 	}
 
 	showSelectStock = async (day:number): Promise<any> => {
-		let cStock = new CStock(this.cApp);
+		let cStock = new CSelectStock(this.cApp);
 		let item = await cStock.call() as any;
 		let b = {...item}
 		b.day = day;

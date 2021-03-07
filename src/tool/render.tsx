@@ -27,15 +27,21 @@ function renderValue(caption:string, value:number, valueType:'p0'|'p1'|'n1'|'n2'
 	let cn = _cn + 'c5';
 	let cnYI = _cn + 'c5'
 	let vStr:string;
-	switch (valueType) {
-		case 'p0': vStr = percent0(value); break;
-		case 'p1': vStr = percent1(value); break;
-		case 'n1': vStr = number(value, 1); break;
-		case 'n2': vStr = number(value, 2); break;
-		case 'yi': 
-			vStr = numberToMarketValue(value);
-			cn = cnYI;
-			break;
+	if (Number.isNaN(value) === true) {
+		value = undefined;
+		vStr = '';
+	}
+	else {
+		switch (valueType) {
+			case 'p0': vStr = percent0(value); break;
+			case 'p1': vStr = percent1(value); break;
+			case 'n1': vStr = number(value, 1); break;
+			case 'n2': vStr = number(value, 2); break;
+			case 'yi': 
+				vStr = numberToMarketValue(value);
+				cn = cnYI;
+				break;
+		}
 	}
 	return <div key={caption} className={cn}>
 		<span className="text-muted small">{caption}</span><br />

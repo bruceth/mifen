@@ -6,7 +6,7 @@ import { VSearchHeader } from './VSearchHeader';
 import { VHome } from './VHome';
 import { VSelectTag } from './VSelectTag';
 import { CMarketPE } from './CMarketPE';
-import { CStock } from 'stock';
+import { CSelectStock } from 'selectStock';
 import { Stock, StockGroup, Store } from '../store';
 import { makeObservable, observable } from 'mobx';
 
@@ -56,7 +56,7 @@ export class CHome extends CUqBase {
 	}
 
 	onAddStock = async () => {
-		let cStock = new CStock(this.cApp);
+		let cStock = new CSelectStock(this.cApp);
 		let r = await cStock.call() as Stock;
 
 		if (r !== undefined) {
