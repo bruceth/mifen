@@ -1,5 +1,4 @@
 import { IObservableArray, makeObservable, observable } from "mobx";
-import { User } from "tonva-react";
 import { MiNet } from "../net";
 import { defaultGroupName } from "../consts";
 import { MiConfigs, RegressionConfig, Stock, StockFindConfig } from "./types";
@@ -11,11 +10,11 @@ export class Store {
 	private miNet: MiNet;
 	//user: User;
 	//userTag: UserTag;
-	homeItems: IObservableArray<any> = observable.array<any>([], { deep: true });
+	//homeItems: IObservableArray<any> = observable.array<any>([], { deep: true });
 	stockGroups: StockGroups;
 	accounts: Accounts;
 	
-	constructor(user: User, miNet:MiNet) {
+	constructor(miNet:MiNet) {
 		makeObservable(this, {
 			config: observable,
 		});
@@ -83,7 +82,6 @@ export class Store {
 
 	protected async loadConfig() {
 		let rets = await Promise.all([
-			//this.miApi.query('t_usersettings$query', [this.user.id, 'config']),
 			this.miNet.t_usersettings$query(),
 			this.stockGroups.load(),
 			this.accounts.load(),
@@ -110,7 +108,6 @@ export class Store {
 					c.groupName = c.tagName;
 				}
 				this.config = c;
-
 			}
 		}
 		if (this.config.stockFind === undefined) {
@@ -164,8 +161,7 @@ export class Store {
 	}
 
 	setUserSortType = async (type:string)=> {
-		if (this.config.userStock.sortType === type)
-			return;
+		if (this.config.userStock.sortType === type) return;
 		this.config.userStock.sortType = type;
 		await this.saveConfig();
 	}
@@ -308,20 +304,6 @@ export class Store {
 			this.removeStock(stockID);
 		}
 		*/
-	}
-
-	setSortType = (type:string) => {
-		this.setUserSortType(type);
-		let arr = this.homeItems.slice();
-		sortStocks(type, arr);
-		this.homeItems.replace(arr);
-  	}
-
-	removeStock(stockId:number) {
-		let i = this.homeItems.findIndex(v => v.id === stockId);
-		if (i >= 0) {
-			this.homeItems.splice(i, 1);
-		}
 	}
 
 	/*

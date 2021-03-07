@@ -21,34 +21,28 @@ export class VExplorer extends VPage<CExplorer> {
 
 	content() {
 		return React.createElement(observer(() => {
-			let {explore, load} = this.controller;
-			let {items, avgs } = explore;
+			let {explore, load, setSortType} = this.controller;
+			let {items, avgs, sortType } = explore;
 
-			let avgHead: JSX.Element;
-			let right = <div>
-				<div className="btn cursor-pointer py-3" onClick={load}>刷新</div>
-			</div>;
+			let left: any;
+			let right = <div className="btn btn-link cursor-pointer py-1" onClick={load}>刷新</div>;
 			if (avgs.avg20 !== undefined || avgs.avg50 !== undefined || avgs.avg100 !== undefined) {
-				let avgStr = ' top20 : ' + GFunc.numberToFixString(avgs.avg20) 
-					+ '  -  top50 : ' + GFunc.numberToFixString(avgs.avg50)
-					+ '  -  top100 : ' + GFunc.numberToFixString(avgs.avg100)
-					+ '  -  all : ' + GFunc.numberToFixString(avgs.avg)
-					+ '  ...查看历史走势';
-					avgHead = <LMR right={right}>
-							<div className="px-3 cursor-pointer" 
-								onClick={this.controller.onClickPredictAVG}>
-									{GFunc.caption('价值指数均值')}{avgStr}
-							</div>
-						</LMR>;
-			}
-			else {
-				avgHead = <LMR right={right}></LMR>
-			}
-			
+				let avgStr = ` top20 : ${GFunc.numberToFixString(avgs.avg20)} 
+  -  top50 : ${GFunc.numberToFixString(avgs.avg50)}
+  -  top100 : ${GFunc.numberToFixString(avgs.avg100)}
+  -  all : ${GFunc.numberToFixString(avgs.avg)}
+  ...查看历史走势`;
+				left = <div className="px-3 cursor-pointer align-self-center"
+					onClick={this.controller.onClickPredictAVG}>
+						{GFunc.caption('价值指数均值')}{avgStr}
+					</div>;
+			}			
 			return <>
-				{avgHead}
-				<List header={renderSortHeaders('radioExplorer', this.setSortType)}
-					items={items}
+				<LMR left={left} right={right} />
+				<div className="d-flex justify-content-end mr-2 my-1">
+					{renderSortHeaders('radioHome', sortType, setSortType)}
+				</div>
+				<List items={items}
 					item={{ render: this.renderRow, key: this.rowKey }}
 					before={'选股'}
 				/>
@@ -56,7 +50,7 @@ export class VExplorer extends VPage<CExplorer> {
 		}));
 	}
 
-	renderRow = (item: any, index: number): JSX.Element => { //<this.rowContent {...item} />;
+	renderRow = (item: any, index: number): JSX.Element => {
 		return this.rowContent(item);
 	} 
 	protected rowContent = (row: any): JSX.Element => {
@@ -80,14 +74,10 @@ export class VExplorer extends VPage<CExplorer> {
 
 	private rowKey = (item: any) => {
 		if (item.item !== undefined) {
-		return item.item.id;
+			return item.item.id;
 		}
 		let { id } = item;
 		return id;
-	}
-
-	private setSortType = (type:string) => {
-		this.controller.setSortType(type);
 	}
 
 	protected onClickName = (item: NStockInfo) => {

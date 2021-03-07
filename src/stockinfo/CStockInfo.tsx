@@ -61,11 +61,11 @@ export class CStockInfo extends CUqBase {
 		super(cApp);
 		makeObservable(this);
 	}
-	loadData = () => {
-		this.loading();
+	initLoad = () => {
+		this.load();
 	}
 
-	loading = async () => {
+	private load = async () => {
 		if (!this.baseItem) return;
 
 		let { id, day } = this.baseItem;
@@ -78,18 +78,19 @@ export class CStockInfo extends CUqBase {
 		this.stockTags = rets[1];
 		let ret = rets[0];
 		if (Array.isArray(ret[0])) {
-		let arr1 = ret[1];
-		if (Array.isArray(arr1)) {
-			this.price = arr1[0];
-		}
+			let arr1 = ret[1];
+			if (Array.isArray(arr1)) {
+				this.price = arr1[0];
+			}
 
-		if (this._capitalearning.length > 0) {
-			this._capitalearning.clear();
-		}
-		let arr2 = ret[2];
-		if (Array.isArray(arr2)) {
-			this._capitalearning.push(...arr2);
-		}
+			if (this._capitalearning.length > 0) {
+				this._capitalearning.clear();
+			}
+
+			let arr2 = ret[2];
+			if (Array.isArray(arr2)) {
+				this._capitalearning.push(...arr2);
+			}
 
 		this._bonus.clear();
 		let arr3 = ret[3];
@@ -108,7 +109,7 @@ export class CStockInfo extends CUqBase {
 		this.exrightInfo = ret[7];
 
 		this.historyDataOrg = ret[8];
-		this.LoadHistoryData(false);
+		this.loadHistoryData(false);
 		}
 
 		this.isMySelect = this.cApp.store.isMySelect(id);
@@ -119,8 +120,7 @@ export class CStockInfo extends CUqBase {
 		this.seasonData.splice(0);
 		let seasonlist: {[index:number]:{season:number, c:number, e:number, esum:number, corg:number, eorg:number, esumorg:number}} = {};
 		let len = list.length;
-		if (len <= 0)
-			return;
+		if (len <= 0) return;
 		let minNo = list[len - 1].seasonno;
 		let lastItem = list[0];
 		let lastShares = lastItem.shares;
@@ -131,7 +131,7 @@ export class CStockInfo extends CUqBase {
 			let no = item.seasonno;
 			let sItem = {season:no, c: item.capital * item.shares / lastShares, e: item.pseason / lastShares, esum: item.profit / lastShares, 
 				corg: item.capital, eorg: item.es, esumorg: item.earning}
-			this.ExrightEarning(end, no, sItem);
+			//this.ExrightEarning(end, no, sItem);
 			seasonlist[no] = sItem;
 		}
 
@@ -160,92 +160,84 @@ export class CStockInfo extends CUqBase {
 		this.predictData = undefined;
 		this.predictSeasonData.splice(0);
 		this.predictSeasonDataFull.splice(0);
-		if (noBegin < minNo)
-			return;
+		if (noBegin < minNo) return;
 		noBegin += 3;
 		this.ypredict = [];
 		for (let x = noBegin; x <= maxNo; x += 4) {
-		let item = seasonlist[x];
-		if (item === undefined)
-			break;
-		this.predictSeasonData.splice(0, 0, item);
-		this.ypredict.push(item.esum);
+			let item = seasonlist[x];
+			if (item === undefined) break;
+			this.predictSeasonData.splice(0, 0, item);
+			this.ypredict.push(item.esum);
 		}
 
 		for (let x = maxNo; x >= minNo; x -= 4) {
-		let item = seasonlist[x];
-		if (item === undefined)
-			break;
-		this.predictSeasonDataFull.push(item);
+			let item = seasonlist[x];
+			if (item === undefined) break;
+			this.predictSeasonDataFull.push(item);
 		}
+
 		if (this.ypredict.length === 5) {
-		let er = new ErForEarning(this.ypredict);
-		let lr = new SlrForEarning(this.ypredict);
-		this.predictData = {e:this.ypredict[4], b: er.B, r2: er.r2, epre: er.predict(4), l: lr.slopeR, lr2: lr.r2, lpre: lr.predict(4)};
+			let er = new ErForEarning(this.ypredict);
+			let lr = new SlrForEarning(this.ypredict);
+			this.predictData = {e:this.ypredict[4], b: er.B, r2: er.r2, epre: er.predict(4), l: lr.slopeR, lr2: lr.r2, lpre: lr.predict(4)};
 		}
 		else {
-		this.predictSeasonData.splice(0);
+			this.predictSeasonData.splice(0);
 		}
 	}
 
 	protected ExrightEarning(endDay:number, season:number, item:{c:number, e:number, esum:number}) {
 		let {end} = GFunc.SeasonnoToBeginEnd(season);
 		for (let i = 0; i < this.exrightForEarning.length; ++i) {
-		let exitem = this.exrightForEarning[i];
-		let day = exitem.day;
-		if (day > endDay)
-			break;
-		else if (day < end)
-			continue;
-		else {
+			let exitem = this.exrightForEarning[i];
+			let day = exitem.day;
+			if (day > endDay) break;
+			if (day < end) continue;
 			let factor = exitem.factor;
 			item.c = item.c * factor;
 			item.e = item.e * factor;
 			item.esum = item.esum * factor;
 		}
-		}
 	}
 
-	LoadHistoryData(showAll:boolean) {
+	loadHistoryData(showAll:boolean) {
 		let list = this.historyDataOrg;
 		let length = list.length;
 		if (length <= 10) {
-		this.historyData = [];
-		return;
+			this.historyData = [];
+			return;
 		}
+
 		if (!showAll) {
-		let day = this.baseItem.day;
-		if (day !== undefined) {
-			let i = length - 1;
-			for (; i >= 0; --i) {
-			let item = list[i];
-			if (item.day <= day) {
-				break;
+			let day = this.baseItem.day;
+			if (day !== undefined) {
+				let i = length - 1;
+				for (; i >= 0; --i) {
+					let item = list[i];
+					if (item.day <= day) break;
+				}
+				length = i + 1;
 			}
-			}
-			length = i + 1;
-		}
 		}
 		let endIndex = length - 1;
 		let lastItem = list[endIndex];
 		let lastdayno = lastItem.dayno;
 		if (lastdayno === undefined) {
-		while (endIndex > 0) {
-			--endIndex;
-			lastItem = list[endIndex];
-			lastdayno = lastItem.dayno;
-			if (lastdayno !== undefined)
-			break;
-		}
+			while (endIndex > 0) {
+				--endIndex;
+				lastItem = list[endIndex];
+				lastdayno = lastItem.dayno;
+				if (lastdayno !== undefined) break;
+			}
 		}
 		let lastDay = lastItem.day;
 		let not = lastdayno % 5;
 		let historyList: any[] = [];
 		for (let i = 0; i <= endIndex; ++i) {
-		let {day, price, dayno} = list[i];
-		if ( dayno % 5 === not) {
-			historyList.push({day:day, price:this.RestorePrice(price, day, lastDay), ttm:this.CalculateHistoryPE(price, day)});
-		}
+			let {day, price, dayno} = list[i];
+			if ( dayno % 5 === not) {
+				historyList.push({day:day, price:this.RestorePrice(price, day, lastDay), ttm:this.CalculateHistoryPE(price, day)});
+			}
 		}
 		this.historyData = historyList;
 	}
@@ -266,16 +258,16 @@ export class CStockInfo extends CUqBase {
 		pricere = pricere - bsum;
 		}
 		else {
-		for (let i = 0; i < this.exrightInfo.length; ++i) {
-			let {day, bonus, factor, factore} = this.exrightInfo[i];
-			if (day <= dayIndex)
-			continue;
-			if (day > dayFrom)
-			break;
-			pricere = pricere / factor;
-			bsum = bsum / factore + bonus;
-		}
-		pricere = pricere + bsum;
+			for (let i = 0; i < this.exrightInfo.length; ++i) {
+				let {day, bonus, factor, factore} = this.exrightInfo[i];
+				if (day <= dayIndex)
+				continue;
+				if (day > dayFrom)
+				break;
+				pricere = pricere / factor;
+				bsum = bsum / factore + bonus;
+			}
+			pricere = pricere + bsum;
 		}
 		return pricere;
 	}
@@ -284,17 +276,12 @@ export class CStockInfo extends CUqBase {
 		let season = GFunc.SeasonnoFromDay(day);
 		let len = this.seasonData.length;
 		for (let i = 0; i < len; ++i) {
-		let item = this.seasonData[i];
-		if (item.season >= season) {
-			continue;
-		}
-
-		if (item.esumorg === undefined)
-			return undefined;
-
-		let {end} = GFunc.SeasonnoToBeginEnd(item.season);
-		let pricere = this.RestorePrice(price, day, end);
-		return pricere / item.esumorg;
+			let item = this.seasonData[i];
+			if (item.season >= season) continue;
+			if (item.esumorg === undefined) return undefined;
+			let {end} = GFunc.SeasonnoToBeginEnd(item.season);
+			let pricere = this.RestorePrice(price, day, end);
+			return pricere / item.esumorg;
 		}
 
 		return undefined;
@@ -302,7 +289,9 @@ export class CStockInfo extends CUqBase {
 
 	async internalStart(param: any) {
 		this.baseItem = param as NStockInfo;
-		this.loadData();
+		let {id} = this.baseItem;
+		this.isMySelect = this.cApp.store.isMySelect(id);
+		this.initLoad();
 		this.openVPage(VStockInfo);
 	}
 
@@ -426,16 +415,15 @@ export class CStockInfo extends CUqBase {
 		b.day = day;
 		this.baseItem = b;
 		this.loaded = false;
-		await this.loading();
+		await this.load();
 	}
 
 	changeDay = async (day:number) => {
-		if (this.baseItem.day === day)
-		return;
+		if (this.baseItem.day === day) return;
 		let {id, name, code, symbol} = this.baseItem;
 		let ni = {id:id, name:name, code:code, symbol:symbol, day:day ===0 ? undefined : day};
 		this.baseItem = ni;
 		this.loaded = false;
-		await this.loading();
+		await this.load();
 	}
 }

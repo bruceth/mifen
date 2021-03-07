@@ -1,4 +1,4 @@
-import { makeObservable, observable, runInAction } from "mobx";
+import { makeObservable, observable, runInAction, toJS } from "mobx";
 import { SlrForEarning } from "regression";
 import { GFunc } from "../tool";
 import { Store, sortStocks } from "../store";
@@ -15,7 +15,7 @@ export class Explore {
 	items: any[]; // = observable.array<any>([], { deep: true });
 	avgs: Avg = {};
 	lastTradeDay: number;
-	//private oldSelectType: string;
+	sortType: string;
 	selectedItems: any[] = [];
   
 	constructor(store: Store) {
@@ -23,14 +23,16 @@ export class Explore {
 		makeObservable(this, {
 			avgs: observable,
 			items: observable,
+			sortType: observable,
 		});
 	}
 	
 	load = async () => {
 		this.selectedItems = [];
 		let items = await this.loadItems();
-		sortStocks(undefined, items);
 		runInAction(() => {
+			this.sortType = this.store.config.userStock.sortType;
+			sortStocks(this.sortType, items);
 			if (!this.items) {
 				this.items = items;
 			}
@@ -84,9 +86,9 @@ export class Explore {
 	}
 
 	setSortType(type:string) {
-		this.store.setUserSortType(type);
-		let arr = this.items.slice();
-		sortStocks(type, arr);
-		this.items.splice(0, this.items.length, arr);
+		runInAction(() => {
+			sortStocks(type, this.items);
+			this.store.setUserSortType(type);	
+		});
 	}
 }
