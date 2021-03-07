@@ -7,11 +7,11 @@ import { Stock } from "./types";
 
 export class StockGroup {
 	private miNet: MiNet;
+	private sortType: string;
 
 	id: number;
 	name: string;
 	stocks: IObservableArray<Stock>;
-	sortType: string;
 
 	constructor(groupName:string, groupId:number, miNet: MiNet) {
 		this.name = groupName;

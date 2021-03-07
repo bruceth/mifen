@@ -1,30 +1,29 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
-import * as React from 'react';
 import { FA, LMR } from 'tonva-react';
 import { NStockInfo } from '../stockinfo';
 import {percent0, percent1, number, numberToMarketValue, calculateZZ3} from '../tool';
 
-function renderSortCol(radioName:string, sortMethod:string, caption:string, sort: (sortMethod:string) => void, checked:boolean = false) {
+function renderSortCol(radioName:string, sortMethod:string, caption:string, 
+	sort: (sortMethod:string) => void, defaultSort:string) {
 	return <label className="btn btn-outline-info mb-0">
 		<input type="radio" className="btn-sm btn-check mr-1"
-			name={radioName} defaultChecked={checked}
+			name={radioName} defaultChecked={sortMethod === defaultSort}
 			onClick={() => sort(sortMethod)} />
 		{caption}
 	</label>
 }
 
-export function renderSortHeaders(radioName:string, sort: (sortMethod:string) => void) {
-	return <div className="my-1 justify-content-end mr-2">
-		<div className="btn-group" role="group" aria-label="Basic radio toggle button group">
-			{renderSortCol(radioName, 'tagv', '米息率', sort, true)}
-			{renderSortCol(radioName, 'tagpe', 'TTM', sort)}
-			{renderSortCol(radioName, 'tagdp', '股息率', sort)}
-		</div>
+export function renderSortHeaders(radioName:string, defaultSort:string, sort: (sortMethod:string) => void) {
+	if (!defaultSort) defaultSort = 'tagv';
+	return <div className="btn-group" role="group" aria-label="Basic radio toggle button group">
+		{renderSortCol(radioName, 'tagv', '米息率', sort, defaultSort)}
+		{renderSortCol(radioName, 'tagpe', 'TTM', sort, defaultSort)}
+		{renderSortCol(radioName, 'tagdp', '股息率', sort, defaultSort)}
 	</div>;
 }
 
 function renderValue(caption:string, value:number, valueType:'p0'|'p1'|'n1'|'n2'|'yi'):JSX.Element {
-	const _cn = 'px-2 mb-2 text-right '; 
+	const _cn = 'px-2 mb-1 text-right '; 
 	let cn = _cn + 'c5';
 	let cnYI = _cn + 'c5'
 	let vStr:string;
@@ -73,7 +72,7 @@ export function renderStockInfoRow(row: NStockInfo, onClickName: (row:NStockInfo
 	}
   	return <div className="d-block border-top">
 		<LMR className="px-2 py-1 bg-light" left={left} right = {right}>{inputSelectSpan}</LMR>
-		<div className="d-flex flex-wrap" >
+		<div className="d-flex flex-wrap p-1" >
 			{rows.map(v => renderValue(v[0], v[1], v[2]))}
 	  	</div>
   	</div>;

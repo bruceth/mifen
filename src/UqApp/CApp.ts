@@ -26,7 +26,7 @@ export class CApp extends CUqApp {
 		this.setRes(res);
 
 		this.miNet = new MiNet(this.user);
-		this.store = new Store(this.user, this.miNet);
+		this.store = new Store(this.miNet);
 		await this.store.load();
 		
 		this.cHome = this.newC(CHome);

@@ -11,37 +11,15 @@ import { Stock, StockGroup, Store } from '../store';
 import { makeObservable, observable } from 'mobx';
 
 export class CHome extends CUqBase {
-	private store: Store;
+	store: Store;
 	stockGroup: StockGroup;
-	//@observable warnings: any[] = [];
+	sortType: string;
 
-  /*
-  disposeAutorun = autorun(async () => {
-    let needLoad = false;
-    let oldID = this.userTag && this.userTag.tagID;
-    this.userTag = { tagName: this.cApp.config.tagName, tagID: this.cApp.tagID };
-    if (oldID !== this.userTag.tagID) {
-      needLoad = true;
-    }
-
-    let newSortType = this.cApp.config.userStock.sortType;
-    if (this.oldSortType === undefined) {
-      this.oldSortType = newSortType;
-    }
-    else if (this.oldSortType !== newSortType) {
-      this.oldSortType = newSortType;
-      needLoad = true;
-    }
-
-    if (needLoad) {
-      await this.load();
-    }
-  });
-  */
-  	constructor(cApp: CApp) {
+	constructor(cApp: CApp) {
 		super(cApp);
 		makeObservable(this, {
 			stockGroup: observable,
+			sortType: observable,
 		});
 		let {store} = cApp;
 		this.store = store;
@@ -50,7 +28,10 @@ export class CHome extends CUqBase {
 	load = async () => {
 		this.stockGroup = this.store.getHomeStockGroup();
 		if (!this.stockGroup) debugger;
+		this.sortType = this.store.config.userStock.sortType;
+		if (!this.sortType) this.sortType = '';
 		await this.stockGroup.loadItems();
+		this.stockGroup.sort(this.sortType)
 		/*
 		let tagID = this.store.tagID;
 		if (tagID > 0) {
@@ -126,7 +107,7 @@ export class CHome extends CUqBase {
 	}
 
 	setSortType = (type:string) => {
-		//this.setSortType(type);
-		alert('set sort type of home');
+		this.stockGroup.sort(type);
+		this.store.setUserSortType(type);
 	}
 }

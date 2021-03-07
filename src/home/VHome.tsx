@@ -13,13 +13,15 @@ export class VHome extends VPage<CHome> {
 		}));
 	}
 	right() {
+		return React.createElement(observer(() => {
 		/*
 		return <button className="btn btn-sm btn-info mr-2"
 		onClick={()=>{this.controller.openMarketPE()}}>
 		市场平均PE
 		</button>;
 		*/
-		let groups = this.controller.cApp.store.stockGroups.groups.map(v => (
+		let {store} = this.controller;
+		let groups = store.stockGroups.groups.map(v => (
 			{
 				caption: v.name,
 				action: () => this.controller.changeGroup(v)
@@ -43,6 +45,7 @@ export class VHome extends VPage<CHome> {
 			},
 		];
 		return <DropdownActions actions={actions} icon="bars" className="mr-2 text-white bg-transparent border-0" />;
+	}));
 	}
 
 	protected onPageScrollBottom(scroller: Scroller): Promise<void> {
@@ -52,7 +55,7 @@ export class VHome extends VPage<CHome> {
 
 	content() {
 		return React.createElement(observer(() => {
-			let {setSortType, stockGroup} = this.controller;
+			let {setSortType, stockGroup, sortType} = this.controller;
 			/*
 			let {store} = cApp;
 			let {config} = store;
@@ -72,8 +75,10 @@ export class VHome extends VPage<CHome> {
 			<LMR className="px-2 py-1" left={left} right={right}></LMR>
 			*/
 			return <div>
-				<List header={renderSortHeaders('radioHome', setSortType)}
-					items={items}
+				<div className="d-flex justify-content-end mr-2 my-1">
+					{renderSortHeaders('radioHome', sortType, setSortType)}
+				</div>
+				<List items={items}
 					item={{ render: this.renderRow, key: this.rowKey }}
 					before={'...'}
 					none={<small className="px-3 py-3 text-info">无自选股, 请选股</small>}

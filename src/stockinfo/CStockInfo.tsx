@@ -120,70 +120,65 @@ export class CStockInfo extends CUqBase {
 		this.seasonData.splice(0);
 		let seasonlist: {[index:number]:{season:number, c:number, e:number, esum:number, corg:number, eorg:number, esumorg:number}} = {};
 		let len = list.length;
-		if (len <= 0)
-		return;
+		if (len <= 0) return;
 		let minNo = list[len - 1].seasonno;
 		let lastItem = list[0];
 		let maxNo = lastItem.seasonno;
 
 		let {end} = GFunc.SeasonnoToBeginEnd(maxNo);
 		for (let item of list) {
-		let no = item.seasonno;
-		let sItem = {season:no, c: item.capital, e: item.es, esum: item.earning, corg: item.capital, eorg: item.es, esumorg: item.earning}
-		this.ExrightEarning(end, no, sItem);
-		seasonlist[no] = sItem;
+			let no = item.seasonno;
+			let sItem = {season:no, c: item.capital, e: item.es, esum: item.earning, corg: item.capital, eorg: item.es, esumorg: item.earning}
+			this.ExrightEarning(end, no, sItem);
+			seasonlist[no] = sItem;
 		}
 
 		let i = 0;
 		let esum = 0;
 		for (let seasonno = minNo; seasonno <= maxNo; ++seasonno, ++i) {
-		let si = seasonlist[seasonno];
-		if (si === undefined) {
-			continue;
-		}
-		esum += si.e;
-		if (i < 3) {
-			si.esum = undefined;
-		}
-		else {
-			si.esum = esum;
-			let pastitem = seasonlist[seasonno-3];
-			if (pastitem !== undefined) {
-			esum -= pastitem.e;
+			let si = seasonlist[seasonno];
+			if (si === undefined) continue;
+			esum += si.e;
+			if (i < 3) {
+				si.esum = undefined;
 			}
-		}
-		this.seasonData.splice(0,0, si);
+			else {
+				si.esum = esum;
+				let pastitem = seasonlist[seasonno-3];
+				if (pastitem !== undefined) {
+				esum -= pastitem.e;
+				}
+			}
+			this.seasonData.splice(0,0, si);
 		}
 
 		let noBegin = maxNo - 19;
 		this.predictData = undefined;
 		this.predictSeasonData.splice(0);
 		this.predictSeasonDataFull.splice(0);
-		if (noBegin < minNo)
-		return;
+		if (noBegin < minNo) return;
 		noBegin += 3;
 		this.ypredict = [];
 		for (let x = noBegin; x <= maxNo; x += 4) {
-		let item = seasonlist[x];
-		if (item === undefined)
-			break;
-		this.predictSeasonData.splice(0, 0, item);
-		this.ypredict.push(item.esum);
+			let item = seasonlist[x];
+			if (item === undefined) break;
+			this.predictSeasonData.splice(0, 0, item);
+			this.ypredict.push(item.esum);
 		}
 
 		for (let x = maxNo; x >= minNo; x -= 4) {
-		let item = seasonlist[x];
-		if (item === undefined)
-			break;
-		this.predictSeasonDataFull.push(item);
+			let item = seasonlist[x];
+			if (item === undefined) break;
+			this.predictSeasonDataFull.push(item);
 		}
+
 		if (this.ypredict.length === 5) {
-		let er = new ErForEarning(this.ypredict);
-		let lr = new SlrForEarning(this.ypredict);
-		this.predictData = {e:this.ypredict[4], b: er.B, r2: er.r2, epre: er.predict(4), l: lr.slopeR, lr2: lr.r2, lpre: lr.predict(4)};
+			let er = new ErForEarning(this.ypredict);
+			let lr = new SlrForEarning(this.ypredict);
+			this.predictData = {e:this.ypredict[4], b: er.B, r2: er.r2, epre: er.predict(4), l: lr.slopeR, lr2: lr.r2, lpre: lr.predict(4)};
 		}
 		else {
-		this.predictSeasonData.splice(0);
+			this.predictSeasonData.splice(0);
 		}
 	}
 
@@ -205,42 +200,40 @@ export class CStockInfo extends CUqBase {
 		let list = this.historyDataOrg;
 		let length = list.length;
 		if (length <= 10) {
-		this.historyData = [];
-		return;
+			this.historyData = [];
+			return;
 		}
+
 		if (!showAll) {
-		let day = this.baseItem.day;
-		if (day !== undefined) {
-			let i = length - 1;
-			for (; i >= 0; --i) {
-			let item = list[i];
-			if (item.day <= day) {
-				break;
+			let day = this.baseItem.day;
+			if (day !== undefined) {
+				let i = length - 1;
+				for (; i >= 0; --i) {
+					let item = list[i];
+					if (item.day <= day) break;
+				}
+				length = i + 1;
 			}
-			}
-			length = i + 1;
-		}
 		}
 		let endIndex = length - 1;
 		let lastItem = list[endIndex];
 		let lastdayno = lastItem.dayno;
 		if (lastdayno === undefined) {
-		while (endIndex > 0) {
-			--endIndex;
-			lastItem = list[endIndex];
-			lastdayno = lastItem.dayno;
-			if (lastdayno !== undefined)
-			break;
-		}
+			while (endIndex > 0) {
+				--endIndex;
+				lastItem = list[endIndex];
+				lastdayno = lastItem.dayno;
+				if (lastdayno !== undefined) break;
+			}
 		}
 		let lastDay = lastItem.day;
 		let not = lastdayno % 5;
 		let historyList: any[] = [];
 		for (let i = 0; i <= endIndex; ++i) {
-		let {day, price, dayno} = list[i];
-		if ( dayno % 5 === not) {
-			historyList.push({day:day, price:this.RestorePrice(price, day, lastDay), ttm:this.CalculateHistoryPE(price, day)});
-		}
+			let {day, price, dayno} = list[i];
+			if ( dayno % 5 === not) {
+				historyList.push({day:day, price:this.RestorePrice(price, day, lastDay), ttm:this.CalculateHistoryPE(price, day)});
+			}
 		}
 		this.historyData = historyList;
 	}
@@ -261,16 +254,16 @@ export class CStockInfo extends CUqBase {
 		pricere = pricere - bsum;
 		}
 		else {
-		for (let i = 0; i < this.exrightInfo.length; ++i) {
-			let {day, bonus, factor, factore} = this.exrightInfo[i];
-			if (day <= dayIndex)
-			continue;
-			if (day > dayFrom)
-			break;
-			pricere = pricere / factor;
-			bsum = bsum / factore + bonus;
-		}
-		pricere = pricere + bsum;
+			for (let i = 0; i < this.exrightInfo.length; ++i) {
+				let {day, bonus, factor, factore} = this.exrightInfo[i];
+				if (day <= dayIndex)
+				continue;
+				if (day > dayFrom)
+				break;
+				pricere = pricere / factor;
+				bsum = bsum / factore + bonus;
+			}
+			pricere = pricere + bsum;
 		}
 		return pricere;
 	}
@@ -422,8 +415,7 @@ export class CStockInfo extends CUqBase {
 	}
 
 	changeDay = async (day:number) => {
-		if (this.baseItem.day === day)
-		return;
+		if (this.baseItem.day === day) return;
 		let {id, name, code, symbol} = this.baseItem;
 		let ni = {id:id, name:name, code:code, symbol:symbol, day:day ===0 ? undefined : day};
 		this.baseItem = ni;
