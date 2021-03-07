@@ -7,8 +7,8 @@ export class MiNet {
 	private user: User;
 
 	constructor(user: User) {
-		let miHost = consts.isDevelopment? consts.miApiHostDebug : consts.miApiHost;
-		//let miHost = consts.miApiHost;
+		//let miHost = consts.isDevelopment? consts.miApiHostDebug : consts.miApiHost;
+		let miHost = consts.miApiHost;
 		this.user = user;
 		this.miApi = new MiApi(miHost, 'fsjs/', 'miapi', user.token, false);
 	}

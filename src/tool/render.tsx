@@ -16,7 +16,7 @@ function renderSortCol(radioName:string, sortMethod:string, caption:string,
 export function renderSortHeaders(radioName:string, defaultSort:string, sort: (sortMethod:string) => void) {
 	if (!defaultSort) defaultSort = 'tagv';
 	return <div className="btn-group" role="group" aria-label="Basic radio toggle button group">
-		{renderSortCol(radioName, 'tagv', '米息率', sort, defaultSort)}
+		{renderSortCol(radioName, 'tagv', '米息分', sort, defaultSort)}
 		{renderSortCol(radioName, 'tagpe', 'TTM', sort, defaultSort)}
 		{renderSortCol(radioName, 'tagdp', '股息率', sort, defaultSort)}
 	</div>;
@@ -27,15 +27,20 @@ function renderValue(caption:string, value:number, valueType:'p0'|'p1'|'n1'|'n2'
 	let cn = _cn + 'c5';
 	let cnYI = _cn + 'c5'
 	let vStr:string;
-	switch (valueType) {
-		case 'p0': vStr = percent0(value); break;
-		case 'p1': vStr = percent1(value); break;
-		case 'n1': vStr = number(value, 1); break;
-		case 'n2': vStr = number(value, 2); break;
-		case 'yi': 
-			vStr = numberToMarketValue(value);
-			cn = cnYI;
-			break;
+	if (isNaN(value)) {
+		vStr = '-'
+	}
+	else {
+		switch (valueType) {
+			case 'p0': vStr = percent0(value); break;
+			case 'p1': vStr = percent1(value); break;
+			case 'n1': vStr = number(value, 1); break;
+			case 'n2': vStr = number(value, 2); break;
+			case 'yi': 
+				vStr = numberToMarketValue(value);
+				cn = cnYI;
+				break;
+		}
 	}
 	return <div key={caption} className={cn}>
 		<span className="text-muted small">{caption}</span><br />
@@ -54,7 +59,7 @@ export function renderStockInfoRow(row: NStockInfo, onClickName: (row:NStockInfo
 		<small className="small ml-1"><span className="text-danger">{order}</span></small>
   	</div>;
 	let rows:[string,number,'p0'|'p1'|'n1'|'n2'|'yi'][] = [
-		['米息率', v, 'n1'],
+		['米息分', v, 'n1'],
 		['TTM', pe, 'n1'],
 		['股息率', divyield*100, 'n1'],
 		['价格', price, 'n2'],
