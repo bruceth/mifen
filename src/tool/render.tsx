@@ -16,7 +16,7 @@ function renderSortCol(radioName:string, sortMethod:string, caption:string,
 export function renderSortHeaders(radioName:string, defaultSort:string, sort: (sortMethod:string) => void) {
 	if (!defaultSort) defaultSort = 'tagv';
 	return <div className="btn-group" role="group" aria-label="Basic radio toggle button group">
-		{renderSortCol(radioName, 'tagv', '米息率', sort, defaultSort)}
+		{renderSortCol(radioName, 'tagv', '米息分', sort, defaultSort)}
 		{renderSortCol(radioName, 'tagpe', 'TTM', sort, defaultSort)}
 		{renderSortCol(radioName, 'tagdp', '股息率', sort, defaultSort)}
 	</div>;
@@ -27,9 +27,8 @@ function renderValue(caption:string, value:number, valueType:'p0'|'p1'|'n1'|'n2'
 	let cn = _cn + 'c5';
 	let cnYI = _cn + 'c5'
 	let vStr:string;
-	if (Number.isNaN(value) === true) {
-		value = undefined;
-		vStr = '';
+	if (isNaN(value) === true) {
+		vStr = '-'
 	}
 	else {
 		switch (valueType) {
@@ -60,16 +59,16 @@ export function renderStockInfoRow(row: NStockInfo, onClickName: (row:NStockInfo
 		<small className="small ml-1"><span className="text-danger">{order}</span></small>
   	</div>;
 	let rows:[string,number,'p0'|'p1'|'n1'|'n2'|'yi'][] = [
-		['米息率', v, 'n1'],
+		['米息分', v, 'n1'],
 		['TTM', pe, 'n1'],
 		['股息率', divyield*100, 'n1'],
 		['价格', price, 'n2'],
 		['ROE', roe*100, 'n1'],
 		['预增', l, 'p0'],
 		['现增', zzl[3], 'p0'],
-		['增1', zzl[2], 'p0'],
-		['增2', zzl[1], 'p0'],
-		['增3', zzl[0], 'p0'],
+		['增 1', zzl[2], 'p0'],
+		['增 2', zzl[1], 'p0'],
+		['增 3', zzl[0], 'p0'],
 		['市值', total*price, 'yi'],
   	];
 	let inputSelectSpan:any;

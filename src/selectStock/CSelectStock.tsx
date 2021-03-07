@@ -1,7 +1,6 @@
-/*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
-import { MiNet } from '../net';
-import { Stock } from 'store';
 import { PageItems } from 'tonva-react';
+import { Stock } from 'store';
+import { MiNet } from '../net';
 import { CUqBase } from '../UqApp';
 import { VStockSelect } from './VSelectStock';
 
@@ -39,7 +38,7 @@ export class CSelectStock extends CUqBase {
 	pageItems: PageStockItems<Stock>;
 
 	async internalStart(param: any) {
-		this.pageItems = new PageStockItems<Stock>(this.cApp.miNet);
+		this.pageItems = new PageStockItems<any>(this.cApp.miNet);
 		this.openVPage(VStockSelect);
 	}
 
@@ -50,5 +49,9 @@ export class CSelectStock extends CUqBase {
 	//给调用页面返回id
 	returnStock = async (item: any): Promise<any> => {
 		this.returnCall(item);
+	}
+
+	onPage = async () => {
+		await this.pageItems.more();
 	}
 }
