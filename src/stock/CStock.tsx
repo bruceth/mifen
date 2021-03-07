@@ -1,5 +1,5 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
-import { observable } from 'mobx';
+import { makeObservable, observable } from 'mobx';
 import { Stock } from 'store';
 import { PageItems } from 'tonva-react';
 import { CUqBase } from '../UqApp';
@@ -36,7 +36,14 @@ class PageStockItems<T> extends PageItems<T> {
 }
 
 export class CStock extends CUqBase {
-	@observable pageItems: PageStockItems<Stock> = new PageStockItems<Stock>(this);
+	pageItems: PageStockItems<Stock> = new PageStockItems<Stock>(this);
+
+	constructor(cApp:any) {
+		super(cApp);
+		makeObservable(this, {
+			pageItems: observable
+		});
+	}
 
 	//get cApp(): CMiApp { return this._cApp as CMiApp };
 
