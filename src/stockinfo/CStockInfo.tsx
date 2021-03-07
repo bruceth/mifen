@@ -115,43 +115,45 @@ export class CStockInfo extends CUqBase {
 		this.loaded = true;
 	}
 
-	protected async loadTTMEarning(list: {seasonno:number, capital:number, earning:number, es:number}[]) {
+	protected async loadTTMEarning(list: {seasonno:number, capital:number, earning:number, es:number, profit:number, pseason:number, shares:number}[]) {
 		this.seasonData.splice(0);
 		let seasonlist: {[index:number]:{season:number, c:number, e:number, esum:number, corg:number, eorg:number, esumorg:number}} = {};
 		let len = list.length;
 		if (len <= 0)
-		return;
+			return;
 		let minNo = list[len - 1].seasonno;
 		let lastItem = list[0];
+		let lastShares = lastItem.shares;
 		let maxNo = lastItem.seasonno;
 
 		let {end} = GFunc.SeasonnoToBeginEnd(maxNo);
 		for (let item of list) {
-		let no = item.seasonno;
-		let sItem = {season:no, c: item.capital, e: item.es, esum: item.earning, corg: item.capital, eorg: item.es, esumorg: item.earning}
-		this.ExrightEarning(end, no, sItem);
-		seasonlist[no] = sItem;
+			let no = item.seasonno;
+			let sItem = {season:no, c: item.capital * item.shares / lastShares, e: item.pseason / lastShares, esum: item.profit / lastShares, 
+				corg: item.capital, eorg: item.es, esumorg: item.earning}
+			this.ExrightEarning(end, no, sItem);
+			seasonlist[no] = sItem;
 		}
 
 		let i = 0;
-		let esum = 0;
+//		let esum = 0;
 		for (let seasonno = minNo; seasonno <= maxNo; ++seasonno, ++i) {
-		let si = seasonlist[seasonno];
-		if (si === undefined) {
-			continue;
-		}
-		esum += si.e;
-		if (i < 3) {
-			si.esum = undefined;
-		}
-		else {
-			si.esum = esum;
-			let pastitem = seasonlist[seasonno-3];
-			if (pastitem !== undefined) {
-			esum -= pastitem.e;
+			let si = seasonlist[seasonno];
+			if (si === undefined) {
+				continue;
 			}
-		}
-		this.seasonData.splice(0,0, si);
+			// esum += si.e;
+			// if (i < 3) {
+			// 	si.esum = undefined;
+			// }
+			// else {
+			// 	si.esum = esum;
+			// 	let pastitem = seasonlist[seasonno-3];
+			// 	if (pastitem !== undefined) {
+			// 		esum -= pastitem.e;
+			// 	}
+			// }
+			this.seasonData.splice(0,0, si);
 		}
 
 		let noBegin = maxNo - 19;
@@ -159,7 +161,7 @@ export class CStockInfo extends CUqBase {
 		this.predictSeasonData.splice(0);
 		this.predictSeasonDataFull.splice(0);
 		if (noBegin < minNo)
-		return;
+			return;
 		noBegin += 3;
 		this.ypredict = [];
 		for (let x = noBegin; x <= maxNo; x += 4) {

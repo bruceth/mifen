@@ -45,14 +45,7 @@ export class StockGroup {
 			item.v = GFunc.calculateVN(sl.slopeR, item.ep, item.divyield * item.price, item.exprice);
 			item.predictpe = item.price / item.e3;
 		}
-		//sortStocks(this. arr);
-		/*
-		let o = 1;
-		for (let item of arr) {
-			item.order = o;
-			++o;
-		}
-		*/
+		sortStocks(undefined, arr);
 
 		runInAction(() => {
 			this.stocks.clear();
