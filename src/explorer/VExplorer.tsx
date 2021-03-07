@@ -26,7 +26,7 @@ export class VExplorer extends VPage<CExplorer> {
 
 			let left: any;
 			let right = <div className="btn btn-link cursor-pointer py-1" onClick={load}>刷新</div>;
-			if (avgs.avg20 !== undefined || avgs.avg50 !== undefined || avgs.avg100 !== undefined) {
+			/*if (avgs.avg20 !== undefined || avgs.avg50 !== undefined || avgs.avg100 !== undefined) {
 				let avgStr = ` top20 : ${GFunc.numberToFixString(avgs.avg20)} 
   -  top50 : ${GFunc.numberToFixString(avgs.avg50)}
   -  top100 : ${GFunc.numberToFixString(avgs.avg100)}
@@ -35,6 +35,12 @@ export class VExplorer extends VPage<CExplorer> {
 				left = <div className="px-3 cursor-pointer align-self-center"
 					onClick={this.controller.onClickPredictAVG}>
 						{GFunc.caption('价值指数均值')}{avgStr}
+					</div>;
+			}*/
+			if (avgs.avg !== undefined) {
+				let avgStr = ` : ${GFunc.numberToFixString(avgs.avg)}`;
+				left = <div className="px-3 cursor-pointer align-self-center">
+						{GFunc.caption('米息分均值')}{avgStr}
 					</div>;
 			}			
 			return <>

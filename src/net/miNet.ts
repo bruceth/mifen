@@ -8,6 +8,9 @@ export class MiNet {
 
 	constructor(user: User) {
 		let miHost = consts.miApiHost;
+		if (document.baseURI.indexOf('localmiserver') > 0) {
+			miHost = consts.miApiHostDebug;
+		}
 		this.user = user;
 		this.miApi = new MiApi(miHost, 'fsjs/', 'miapi', user.token, false);
 	}

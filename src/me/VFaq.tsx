@@ -33,8 +33,9 @@ export class VFaq extends VPage<CMe> {
 				<ul className="px-3 text-info">
 					<li><span className="mr-3">定义1: </span>米息 = 增息 + 股息</li>
 					<li><span className="mr-3">定义2: </span>增息 = 企业未来三年利润增长值</li>
-					<li><span className="mr-3">定义3: </span>米息率 = 米息 / PE</li>
-					<li><span className="mr-3">定义4: </span>PE = 股价 / 利润</li>
+					<li><span className="mr-3">定义3: </span>米息率 = 米息 / 股价</li>
+					<li><span className="mr-3">定义4: </span>米息率大一倍，米息分加1</li>
+					<li><span className="mr-3">定义5: </span>PE = 股价 / 利润</li>
 				</ul>
 			</li>
 		</ul>
