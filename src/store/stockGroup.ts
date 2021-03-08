@@ -62,9 +62,16 @@ export class StockGroup {
 		await this.miNet.t_tagstock$add(this.id, stock.id);
 		let index = this.stocks.findIndex(v => v.id === stock.id);
 		if (index >= 0) {
-			this.stocks.splice(index, 1);
+			let rows = this.stocks.splice(index, 1);
+			this.stocks.unshift(rows[0]);
 		}
-		this.stocks.unshift(stock);
+		else {
+			// 重新加载stock的其它值
+			// await ...
+			//this.stocks.unshift(stock);
+			await this.loadItems();
+			sortStocks(this.sortType, this.stocks);
+		}
 	}
 
 	async removeStock(stock: Stock) {

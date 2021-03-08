@@ -27,7 +27,7 @@ function renderValue(caption:string, value:number, valueType:'p0'|'p1'|'n1'|'n2'
 	let cn = _cn + 'c5';
 	let cnYI = _cn + 'c5'
 	let vStr:string;
-	if (isNaN(value)) {
+	if (isNaN(value) === true) {
 		vStr = '-'
 	}
 	else {

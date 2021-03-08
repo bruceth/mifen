@@ -2,7 +2,7 @@
 import { Context } from 'tonva-react';
 import { observable } from 'mobx';
 import { CUqBase } from '../UqApp';
-import { CStock } from '../stock';
+import { CSelectStock } from '../selectStock';
 import { VWarningConfig, VNewWarning } from './VWarningConfig';
 
 export class CWarning extends CUqBase {
@@ -48,7 +48,7 @@ export class CWarning extends CUqBase {
 	}
 
 	showSelectStock = async (context: Context, name: string, value: number): Promise<any> => {
-		let cStock = new CStock(this.cApp);
+		let cStock = new CSelectStock(this.cApp);
 		return await cStock.call();
 	}
 }
