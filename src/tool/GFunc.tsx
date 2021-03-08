@@ -85,7 +85,7 @@ export class GFunc {
     if (bonus !== undefined && !isNaN(bonus)) {
       r += bonus * 100;
     }
-    return Math.log2(r / price);
+    return r / price;
   }
 
   public static calculateZZ3(data:number[]) {

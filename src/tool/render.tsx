@@ -59,7 +59,7 @@ export function renderStockInfoRow(row: NStockInfo, onClickName: (row:NStockInfo
 		<small className="small ml-1"><span className="text-danger">{order}</span></small>
   	</div>;
 	let rows:[string,number,'p0'|'p1'|'n1'|'n2'|'yi'][] = [
-		['米息分', v, 'n1'],
+		['米息分', Math.log2(v), 'n1'],
 		['TTM', pe, 'n1'],
 		['股息率', divyield*100, 'n1'],
 		['价格', price, 'n2'],
