@@ -6,6 +6,11 @@ const bz: DevConfig = {
 	alias: 'bz',
 }
 
+const bruce: DevConfig = {
+	name: 'bruce',
+	alias: undefined,
+}
+
 export const appConfig: AppConfig = {
 	version: '0.1.0',
 	app: undefined,
@@ -16,9 +21,15 @@ export const appConfig: AppConfig = {
 			alias: 'HelloTonva',
 			version: '0.1.0',
 		},
+		{
+			dev: bruce,
+			name: 'yumi',
+			alias: 'YuMi',
+			version: '0.1.0',
+		},
 	],
 	noUnit: true,
     tvs: {},
 	oem: undefined,
-	htmlTitle: 'hello-tonva',
+	htmlTitle: '鱼米乡 - 私享投资圈',
 };

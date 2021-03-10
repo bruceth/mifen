@@ -8,7 +8,10 @@ function caption(label:string, icon:string) {
 }
 
 export class VMain extends VPage<CApp> {
+	header() {return false;}
+
 	protected get tabsProps(): TabsProps {
+		/*
 		let { cHome, cBug, cMe, cUI } = this.controller;
 		let tabs: TabProp[] = [
 			{name: 'home', caption: caption(t('home'), 'home'), content: cHome.tab},
@@ -23,12 +26,44 @@ export class VMain extends VPage<CApp> {
 			});
 		}
 		return {tabs};
+		*/
+		let { cHome, cHolding, cExporer, cMe } = this.controller;
+		let tabs: TabProp[] = [
+			{ 
+				name: 'home', label: '首页', icon: 'home', content: cHome.tab, 
+				notify: undefined, 
+				load: cHome.load, 
+				onShown: cHome.load,
+			},
+			{
+				name: 'explorer', label: '持仓', icon: 'money', content: cHolding.tab, load: cHolding.load 
+			},
+			{
+				name: 'explorer', label: '选股', icon: 'search', content: cExporer.tab, load: cExporer.load
+			},
+			{
+				name: 'me', label: '我的', icon: 'user', content: cMe.tab, onShown: undefined
+			}
+		].map(v => {
+			let { name, label, icon, content, notify, load, onShown } = v;
+			return {
+				name,
+				caption: (selected: boolean) => TabCaptionComponent(label, icon, color(selected)),
+				content,
+				notify,
+				load,
+				onShown,
+			};
+		});
+		return {tabs};
 	}
 
+	/*
 	protected get webNav(): PageWebNav {
 		return {
 			navHeader: <div>webNav header</div>, 
 			navFooter: <div>webNav footer</div>,
 		};
 	}
+	*/
 }
