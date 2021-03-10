@@ -20,11 +20,7 @@ export class VMarketPE extends VPage<CMarketPE> {
     return <this.page />
   }
 
-<<<<<<< HEAD
   checkLimitShow = (e:any)=> {
-=======
-  checkLimitShow = (e)=> {
->>>>>>> 5bcaeda4c2033b5eb8c57ffcf608faf9120d7759
     let check = e.target.checked as boolean;
     let f = check ? 1:0;
     this.controller.onLongShortFlag(f);
