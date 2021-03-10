@@ -1,0 +1,27 @@
+ID Market (
+	id,
+	KEY name char(100),
+	currency char(20),
+);
+
+ID Stock (
+	id,
+	KEY market ID Market,
+	KEY code char(20),
+	name char(50),
+);
+
+IDX StockValue (
+	id,
+	miRate SMALLINT,
+	ttm SMALLINT,
+	divident SMALLINT,
+	price INT,
+	roe SMALLINT,
+	inc1 SMALLINT,
+	inc2 SMALLINT,
+	inc3 SMALLINT,
+	inc4 SMALLINT,
+	preInc SMALLINT,
+	marketValue INT,
+);

@@ -24,17 +24,29 @@ export class VStockInfo extends VPage<CStockInfo> {
 		return this.page();
 	}
 
+<<<<<<< HEAD
 	checkLimitShow = (e:any)=> {
+=======
+	checkLimitShow = (e)=> {
+>>>>>>> 5bcaeda4c2033b5eb8c57ffcf608faf9120d7759
 		let check = e.target.checked as boolean;
 		this.ttmLimit = check;
 	}
 
+<<<<<<< HEAD
 	checkShowLater = (e:any)=> {
+=======
+	checkShowLater = (e)=> {
+>>>>>>> 5bcaeda4c2033b5eb8c57ffcf608faf9120d7759
 		let check = e.target.checked as boolean;
 		this.controller.loadHistoryData(check);
 	}
 
+<<<<<<< HEAD
 	checkDefaultTag = (e:any)=> {
+=======
+	checkDefaultTag = (e)=> {
+>>>>>>> 5bcaeda4c2033b5eb8c57ffcf608faf9120d7759
 		let check = e.target.checked as boolean;
 		this.controller.onClickDefaultTag(check);
 	}

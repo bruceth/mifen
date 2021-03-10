@@ -44,11 +44,19 @@ export default class BaseRegression {
     // Do nothing for this package
   }
 
+<<<<<<< HEAD
   toString(precision:any) {
     return '';
   }
 
   toLaTeX(precision:any) {
+=======
+  toString(precision) {
+    return '';
+  }
+
+  toLaTeX(precision) {
+>>>>>>> 5bcaeda4c2033b5eb8c57ffcf608faf9120d7759
     return '';
   }
 
