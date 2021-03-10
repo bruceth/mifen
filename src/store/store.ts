@@ -1,8 +1,7 @@
-import { IObservableArray, makeObservable, observable } from "mobx";
+import { makeObservable, observable } from "mobx";
 import { MiNet } from "../net";
 import { defaultGroupName } from "../consts";
 import { MiConfigs, RegressionConfig, Stock, StockFindConfig } from "./types";
-import { sortStocks } from "./sortStocks";
 import { StockGroups } from "./stockGroups";
 import { Accounts } from "./accounts";
 

@@ -24,7 +24,7 @@ class PageStockItems<T> extends PageItems<T> {
 			return {$page: ret};
 		}
 		catch (error) {
-			let e = error;
+			//let e = error;
 			return undefined;
 		}
 	}
