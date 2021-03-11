@@ -1,6 +1,6 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import { observable, IObservableArray } from 'mobx';
-import { CUqBase } from '../UqApp';
+import { CUqBase } from "../uq-app";
 import { VPredictHistory } from './VPredictHistory'
 
 export interface PredictHistoryParam {

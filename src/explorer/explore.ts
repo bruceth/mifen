@@ -1,4 +1,4 @@
-import { makeObservable, observable, runInAction, toJS } from "mobx";
+import { makeObservable, observable, runInAction } from "mobx";
 import { SlrForEarning } from "regression";
 import { GFunc } from "../tool";
 import { Store, sortStocks } from "../store";

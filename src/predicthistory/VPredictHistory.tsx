@@ -1,7 +1,7 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import RC2 from 'react-chartjs2'
+import RC2 from 'react-chartjs-2'
 import { VPage, Page, View, List, LMR, FA } from 'tonva-react';
 import { CPredictHistory } from './CPredictHistory';
 

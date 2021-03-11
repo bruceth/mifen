@@ -1,7 +1,7 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import { observable, IObservableArray, computed, makeObservable } from 'mobx';
 import { nav } from 'tonva-react';
-import { CUqBase } from '../UqApp';
+import { CUqBase } from "../uq-app";
 import { GFunc } from '../tool/GFunc';
 import { VStockInfo } from './VStockInfo'
 import { NStockInfo, StockPrice, StockCapitalearning, StockBonus, StockDivideInfo } from './StockInfoType';

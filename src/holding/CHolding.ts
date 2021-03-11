@@ -1,7 +1,7 @@
 import { makeObservable, observable } from "mobx";
 import { ParamID, ParamIDinIX } from "tonva-react";
-import { CApp, CUqBase } from "UqApp";
-import { Account, AccountValue } from "UqApp/uqs/BruceYuMi";
+import { CApp, CUqBase } from "../uq-app";
+import { Account, AccountValue } from "../uq-app/uqs/BruceYuMi";
 import { VHolding } from "./VHolding";
 import { VAccount } from "./VAccount";
 
@@ -46,13 +46,13 @@ export class CHolding extends CUqBase {
 		}
 		let paramValue:ParamID = {
 			IDX: BruceYuMi.AccountValue,
-			id: ret.map(v => (v as unknown as Account).id),
+			id: ret.map((v:any) => (v as unknown as Account).id),
 		}
 		let values = await BruceYuMi.ID<AccountValue>(paramValue);
 		this.accounts = ret as unknown as (Account&AccountValue)[];
 		this.accounts.forEach(account => {
 			let {id} = account;
-			let value = values.find(v => v.id === id);
+			let value = values.find((v:any) => v.id === id);
 			if (value) {
 				Object.assign(account, value);
 			}

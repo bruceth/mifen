@@ -1,5 +1,5 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
-import { CApp, CUqBase } from '../UqApp';
+import { CApp, CUqBase } from "../uq-app";
 import { CStockInfo, NStockInfo } from '../stockinfo';
 import { VSiteHeader } from './VSiteHeader';
 import { VExplorer } from './VExplorer';

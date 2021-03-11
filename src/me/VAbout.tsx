@@ -1,5 +1,5 @@
 import { VPage } from "tonva-react";
-import { appConfig } from "../appConfig";
+import { appConfig } from "../uq-app/appConfig";
 import { CMe } from "./CMe";
 
 export class VAbout extends VPage<CMe> {

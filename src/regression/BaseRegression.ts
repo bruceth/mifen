@@ -1,4 +1,4 @@
-export function maybeToPrecision(value, digits) {
+export function maybeToPrecision(value:any, digits:any) {
   if (value < 0) {
     value = 0 - value;
     if (typeof digits === 'number') {
@@ -44,11 +44,11 @@ export default class BaseRegression {
     // Do nothing for this package
   }
 
-  toString(precision) {
+  toString(precision:any) {
     return '';
   }
 
-  toLaTeX(precision) {
+  toLaTeX(precision:any) {
     return '';
   }
 

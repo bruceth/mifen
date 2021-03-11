@@ -1,6 +1,6 @@
 import { FA, List, LMR, VPage } from "tonva-react";
 import { CHolding } from "./CHolding";
-import { Account, AccountValue } from "UqApp/uqs/BruceYuMi";
+import { Account, AccountValue } from "../uq-app/uqs/BruceYuMi";
 
 export class VHolding extends VPage<CHolding> {
 	header() {return <span className="ml-3">持仓组合 <small className="text-muted">正在设计实现中...</small></span>}

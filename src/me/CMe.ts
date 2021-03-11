@@ -1,8 +1,8 @@
 import { QueryPager, User } from "tonva-react";
-import { CUqBase } from "../UqApp";
-//import { VAdmin } from "./VAdmin";
+import { CUqBase } from "../uq-app";
 import { VEditMe } from "./VEditMe";
 import { VMe } from "./VMe";
+//import { VAdmin } from "./VAdmin";
 
 export interface RootUnitItem {
 	id: number;					// root unit id

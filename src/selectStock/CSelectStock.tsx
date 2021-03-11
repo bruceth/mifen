@@ -1,7 +1,7 @@
 import { PageItems } from 'tonva-react';
 import { Stock } from 'store';
 import { MiNet } from '../net';
-import { CUqBase } from '../UqApp';
+import { CUqBase } from "../uq-app";
 import { VStockSelect } from './VSelectStock';
 
 class PageStockItems<T> extends PageItems<T> {
@@ -24,7 +24,7 @@ class PageStockItems<T> extends PageItems<T> {
 			return {$page: ret};
 		}
 		catch (error) {
-			let e = error;
+			//let e = error;
 			return undefined;
 		}
 	}

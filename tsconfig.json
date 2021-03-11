@@ -19,20 +19,10 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-
-    "baseUrl": "src/",
-    "rootDir": "src",
-    "allowUnusedLabels": true,
     "strictNullChecks": false,
-    "suppressImplicitAnyIndexErrors": true,
-    "noUnusedLocals": false,
-    "preserveSymlinks": true,
     "experimentalDecorators": true,
-    "noImplicitReturns": false,
-    "noImplicitThis": true,
-    "noImplicitAny": false,
-    "importHelpers": true,
-},
+    "baseUrl": "src"
+  },
   "include": [
     "src"
   ]

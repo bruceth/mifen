@@ -1,6 +1,6 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import { observable } from 'mobx';
-import { CUqBase } from '../UqApp';
+import { CUqBase } from "../uq-app";
 import { VMarketPE } from './VMarketPE';
 
 export class CMarketPE extends CUqBase {

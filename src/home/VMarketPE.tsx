@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { VPage, Page, View, List, LMR, left0, FA } from 'tonva-react';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
-import RC2 from 'react-chartjs2'
+import RC2 from 'react-chartjs-2'
 import { GFunc } from '../tool/GFunc';
 import {CMarketPE } from './CMarketPE'
 
@@ -20,7 +20,7 @@ export class VMarketPE extends VPage<CMarketPE> {
     return <this.page />
   }
 
-  checkLimitShow = (e)=> {
+  checkLimitShow = (e:any)=> {
     let check = e.target.checked as boolean;
     let f = check ? 1:0;
     this.controller.onLongShortFlag(f);

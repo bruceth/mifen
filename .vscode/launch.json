@@ -5,25 +5,18 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"type": "pwa-chrome",
+			"type": "chrome",
 			"request": "launch",
 			"name": "Launch Chrome against localhost",
-			"url": "http://localhost:5103",
+			"url": "http://localhost:3391#test",
 			"webRoot": "${workspaceFolder}"
 		},
 		{
-			"type": "pwa-chrome",
-			"request": "launch",
-			"name": "Launch Chrome @ localMiServer",
-			"url": "http://localhost:5103/localmiserver",
-			"webRoot": "${workspaceFolder}"
-		},
-		{
-			"name": "Build UqApp",
+			"name": "Build uq-app",
 			"type": "node",
 			"request": "launch",
 			"runtimeExecutable": "${workspaceRoot}/node_modules/.bin/react-scripts",
-			"args": ["test", "--runInBand", "--watchAll=false", "build"], // "--no-cache", 
+			"args": ["test", "--runInBand", "--watchAll=false", "uq-app/build"], // "--no-cache", 
 			"cwd": "${workspaceRoot}",
 			"protocol": "inspector",
 			"console": "integratedTerminal",

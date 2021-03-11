@@ -40,19 +40,19 @@ export class VExplorerCfg extends VPage<CExplorer> {
     this.openPage(this.page);
   }
 
-  sortChage = (e)=> {
+  sortChage = (e:any)=> {
     let newType = e.target.value;
 
     this.controller.cApp.store.setStockSortType(newType);
   }
 
-  selectChange = (e)=> {
+  selectChange = (e:any)=> {
     let newType = e.target.value;
 
     this.controller.cApp.store.setStockSelectType(newType);
   }
 
-  onChange = (e) => {
+  onChange = (e:any) => {
     let {name, value} = e.target;
   }
 

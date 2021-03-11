@@ -1,4 +1,4 @@
-import { CUqBase } from "UqApp";
+import { CUqBase } from "../uq-app";
 import { VGroup } from "./VGroup";
 
 export class CGroup extends CUqBase {

@@ -1,7 +1,7 @@
 //import {isDevelopment} from '../local';
 import {HttpChannel} from './httpChannel';
 
-export async function refetchApi(channel:HttpChannel, url, options, resolve, reject) {
+export async function refetchApi(channel:HttpChannel, url:any, options:any, resolve:any, reject:any) {
     await channel.fetch(url, options, resolve, reject);
 }
 

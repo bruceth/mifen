@@ -8,4 +8,3 @@ export const consts = {
 
 export const defaultGroupName = '自选股';
 export const defaultBlackListGroupName = '黑名单';
-

@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { VPage, Page, View, List, LMR, left0, FA } from 'tonva-react';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
-import RC2 from 'react-chartjs2'
+import RC2 from 'react-chartjs-2'
 import { GFunc } from '../tool/GFunc';
 import { CStockInfo } from './CStockInfo'
 import { NStockInfo, StockCapitalearning, StockBonus } from './StockInfoType';
@@ -24,17 +24,17 @@ export class VStockInfo extends VPage<CStockInfo> {
 		return this.page();
 	}
 
-	checkLimitShow = (e)=> {
+	checkLimitShow = (e:any)=> {
 		let check = e.target.checked as boolean;
 		this.ttmLimit = check;
 	}
 
-	checkShowLater = (e)=> {
+	checkShowLater = (e:any)=> {
 		let check = e.target.checked as boolean;
 		this.controller.loadHistoryData(check);
 	}
 
-	checkDefaultTag = (e)=> {
+	checkDefaultTag = (e:any)=> {
 		let check = e.target.checked as boolean;
 		this.controller.onClickDefaultTag(check);
 	}

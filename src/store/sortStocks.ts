@@ -1,11 +1,11 @@
 function getsortFunc(sortType:string) {
 	switch (sortType) {
 		case 'tagpe':
-			return (a, b) => a.pe - b.pe;
+			return (a:any, b:any) => a.pe - b.pe;
 		case 'tagdp': 
-			return (a, b) => b.divyield - a.divyield;
+			return (a:any, b:any) => b.divyield - a.divyield;
 		default:
-			return (a, b) => b.v - a.v;
+			return (a:any, b:any) => b.v - a.v;
 	}
 }
 
