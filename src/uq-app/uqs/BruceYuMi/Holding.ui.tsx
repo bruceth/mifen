@@ -23,11 +23,18 @@ const fields = {
 		"isKey": true,
 		"label": "Stock"
 	} as FieldItemId,
+	order: {
+		"name": "order",
+		"type": "integer",
+		"isKey": false,
+		"widget": "updown",
+		"label": "Order"
+	} as FieldItemInt,
 };
 /*==fields==*/
 
 export const fieldArr: FieldItem[] = [
-	fields.account, fields.stock, 
+	fields.account, fields.stock, fields.order, 
 ];
 
 export const ui: UI = {

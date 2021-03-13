@@ -4,16 +4,22 @@ import { defaultGroupName } from "../consts";
 import { MiConfigs, RegressionConfig, Stock, StockFindConfig } from "./types";
 import { StockGroups } from "./stockGroups";
 import { Accounts } from "./accounts";
+import { UQs } from "uq-app";
+import { MiAccounts } from "./miAccount";
+import { MiGroups } from "./miGroups";
 
 export class Store {
 	private miNet: MiNet;
+	private uqs: UQs;
 	//user: User;
 	//userTag: UserTag;
 	//homeItems: IObservableArray<any> = observable.array<any>([], { deep: true });
 	stockGroups: StockGroups;
 	accounts: Accounts;
+	miAccounts: MiAccounts;
+	miGroups: MiGroups;
 	
-	constructor(miNet:MiNet) {
+	constructor(miNet:MiNet, uqs: UQs) {
 		makeObservable(this, {
 			config: observable,
 		});
@@ -22,8 +28,11 @@ export class Store {
 		//let token = this.user.token;
 		//this.miApi = new MiApi(miHost, 'fsjs/', 'miapi', token, false);
 		this.miNet = miNet;
+		this.uqs = uqs;
 		this.stockGroups = new StockGroups(miNet);
 		this.accounts = new Accounts(miNet);
+		this.miAccounts = new MiAccounts(uqs.BruceYuMi);
+		this.miGroups = new MiGroups(uqs.BruceYuMi);
 	}
 
 	@observable config: MiConfigs = { 
@@ -71,6 +80,8 @@ export class Store {
 	async load() {
 		await this.loadConfig();
 		//await this.loadHomeItems();
+		await this.miAccounts.load();
+		await this.miGroups.load();
 	}
 
 	async saveConfig() {

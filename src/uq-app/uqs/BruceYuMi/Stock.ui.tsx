@@ -31,11 +31,18 @@ const fields = {
 		"widget": "string",
 		"label": "Name"
 	} as FieldItemString,
+	search: {
+		"name": "search",
+		"type": "string",
+		"isKey": false,
+		"widget": "string",
+		"label": "Search"
+	} as FieldItemString,
 };
 /*==fields==*/
 
 export const fieldArr: FieldItem[] = [
-	fields.market, fields.code, fields.name, 
+	fields.market, fields.code, fields.name, fields.search, 
 ];
 
 export const ui: UI = {

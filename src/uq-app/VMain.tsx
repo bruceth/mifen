@@ -3,10 +3,11 @@ import { VPage, TabProp, TabCaptionComponent, TabsProps } from 'tonva-react';
 import { CApp } from './CApp';
 
 const color = (selected: boolean) => selected === true ? 'text-primary' : 'text-muted';
+/*
 function caption(label:string, icon:string) {
 	return (selected: boolean) => TabCaptionComponent(label, icon, color(selected));
 }
-
+*/
 export class VMain extends VPage<CApp> {
 	header() {return false;}
 
@@ -36,7 +37,7 @@ export class VMain extends VPage<CApp> {
 				onShown: cHome.load,
 			},
 			{
-				name: 'explorer', label: '持仓', icon: 'money', content: cHolding.tab, load: cHolding.load 
+				name: 'explorer', label: '持仓', icon: 'money', content: cHolding.tab, // load: cHolding.load 
 			},
 			{
 				name: 'explorer', label: '选股', icon: 'search', content: cExporer.tab, load: cExporer.load

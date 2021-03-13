@@ -9,6 +9,7 @@ ID Stock (
 	KEY market ID Market,
 	KEY code char(20),
 	name char(50),
+	search char(100),
 );
 
 IDX StockValue (
@@ -25,3 +26,32 @@ IDX StockValue (
 	preInc SMALLINT,
 	marketValue INT,
 );
+
+OPEN ACT WriteStock ver 0.3 (
+	ARR stocks (
+		market char(100),
+		code char(20),
+		name char(50),
+		miRate SMALLINT,
+		ttm SMALLINT,
+		divident SMALLINT,
+		price INT,
+		roe SMALLINT,
+		inc1 SMALLINT,
+		inc2 SMALLINT,
+		inc3 SMALLINT,
+		inc4 SMALLINT,
+		preInc SMALLINT,
+		marketValue INT,
+	)
+) {
+	foreach stocks {
+		VAR mId ID = ID(Market, market);
+		VAR stock ID = ID(Stock, mId, code);
+		WITH Stock as a ID stock SET a.name=name;
+		WITH StockValue as a ID stock SET a.miRate=miRate,
+			a.ttm=ttm, a.divident=divident, a.price=price,
+			a.roe=roe, a.inc1=inc1, a.inc2=inc2, a.inc3=inc3, a.inc4=inc4,
+			a.preInc=preInc, a.marketValue=marketValue;
+	}
+};

@@ -1,19 +1,21 @@
-import { makeObservable, observable } from "mobx";
-import { ParamID, ParamIDinIX } from "tonva-react";
 import { CApp, CUqBase } from "../uq-app";
 import { Account, AccountValue } from "../uq-app/uqs/BruceYuMi";
 import { VHolding } from "./VHolding";
 import { VAccount } from "./VAccount";
+import { MiAccounts } from "store/miAccount";
+import { makeObservable, observable } from "mobx";
+import { CID, MidID } from "tonva-uqui";
 
 export class CHolding extends CUqBase {
-	accounts: (Account&AccountValue)[];
-	account: Account&AccountValue;
+	miAccounts: MiAccounts;
+	miAccount: Account & AccountValue = null;
 
 	constructor(cApp: CApp) {
 		super(cApp);
 		makeObservable(this, {
-			accounts: observable,
+			miAccount: observable,
 		});
+		this.miAccounts = cApp.store.miAccounts;
 	}
 
 	protected async internalStart() {
@@ -23,44 +25,15 @@ export class CHolding extends CUqBase {
 		return this.renderView(VHolding);
 	}
 
-	load = async () => {
-		let {BruceYuMi} = this.uqs;
-		let {Account, UserAccount} = BruceYuMi;
-		let param:ParamIDinIX = {
-			ID: Account,
-			IX: UserAccount,
-			id: this.user.id,
-		};
-		let ret = await BruceYuMi.IDinIX<Account>(param);
-		if (ret.length === 0) {
-			// 没有持仓账号，则创建默认账号
-			let accountNO = await BruceYuMi.IDNO({ID: Account});
-			let retActs = await BruceYuMi.IDActs({
-				account: [{
-					id: undefined, 
-					no: accountNO, 
-					name: '我的持仓组合', 
-				}]
-			});
-			ret = await BruceYuMi.IDinIX(param);
-		}
-		let paramValue:ParamID = {
-			IDX: BruceYuMi.AccountValue,
-			id: ret.map((v:any) => (v as unknown as Account).id),
-		}
-		let values = await BruceYuMi.ID<AccountValue>(paramValue);
-		this.accounts = ret as unknown as (Account&AccountValue)[];
-		this.accounts.forEach(account => {
-			let {id} = account;
-			let value = values.find((v:any) => v.id === id);
-			if (value) {
-				Object.assign(account, value);
-			}
-		});
-	}
-
 	showAccount = async (item:Account&AccountValue) => {
-		this.account = item;
+		this.miAccount = item;
 		this.openVPage(VAccount);
 	};
+
+	showGroups = async () => {
+		let uq = this.uqs.BruceYuMi;
+		let mId = new MidID(uq, {ID:uq.Group});
+		let cID = new CID(mId);
+		await cID.start();
+	}
 }

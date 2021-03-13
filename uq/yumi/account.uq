@@ -1,6 +1,6 @@
 ID Account (
 	id,
-	KEY no char(20),
+	KEY no,
 	name char(50),
 );
 
@@ -14,6 +14,7 @@ ID Holding (
 	id,
 	KEY account ID Account,
 	KEY stock ID Stock,
+	order SMALLINT,
 );
 
 IDX AccountValue (

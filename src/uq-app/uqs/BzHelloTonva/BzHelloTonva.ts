@@ -1,4 +1,4 @@
-//=== UqApp builder created on Wed Mar 10 2021 17:59:44 GMT-0500 (GMT-05:00) ===//
+//=== UqApp builder created on Fri Mar 12 2021 22:25:11 GMT-0500 (GMT-05:00) ===//
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { IDXValue, Uq, UqTuid, UqQuery, UqID, UqIDX, UqIX } from "tonva-react";
 
@@ -117,7 +117,7 @@ export interface UserStaff {
 	id2: number;
 }
 
-export interface ParamIDActs {
+export interface ParamActs {
 	customer?: Customer[];
 	orderMaster?: OrderMaster[];
 	orderDetail?: OrderDetail[];
@@ -133,7 +133,7 @@ export interface ParamIDActs {
 
 
 export interface UqExt extends Uq {
-	IDActs(param:ParamIDActs): Promise<any>;
+	Acts(param:ParamActs): Promise<any>;
 
 	$sheet: UqTuid<Tuid$sheet>;
 	$user: UqTuid<Tuid$user>;
