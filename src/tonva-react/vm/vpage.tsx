@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { Page, Scroller, TabsProps } from "../components";
 import { View } from "./view";
 import { Controller } from "./controller";

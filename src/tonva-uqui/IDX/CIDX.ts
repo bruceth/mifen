@@ -25,7 +25,7 @@ export class CIDX extends Controller {
 		this.setRes(res);
 		this.setRes(midIDX.res);
 		this.midIDX = midIDX;
-		this.historyPageItems = new HistoryPageItems<any>(midIDX.historyPageItems);
+		this.historyPageItems = new HistoryPageItems<any>(midIDX.historyLoader);
 	}
 
 	protected async internalStart() {

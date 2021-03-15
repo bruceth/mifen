@@ -58,7 +58,7 @@ export class Edit extends React.Component<EditProps> {
 				let {stopEdit} = this.props;
 				let {name} = itemSchema;
 				let uiItem = this.uiSchema===undefined? undefined : this.uiSchema[name];
-				let label:string, labelHide:any;
+				let label:string|JSX.Element, labelHide:any;
 				if (uiItem !== undefined) {
 					label = uiItem.label || name;
 					labelHide = uiItem.labelHide;
@@ -160,9 +160,9 @@ export class Edit extends React.Component<EditProps> {
     }
 }
 
-type NewItemEdit = new (edit: Edit, itemSchema: ItemSchema, uiItem:UiItem, label:string, value: any) => ItemEdit;
+type NewItemEdit = new (edit: Edit, itemSchema: ItemSchema, uiItem:UiItem, label:string|JSX.Element, value: any) => ItemEdit;
 
-function createItemEdit(edit: Edit, itemSchema: ItemSchema, uiItem:UiItem, label:string, value: any):ItemEdit {
+function createItemEdit(edit: Edit, itemSchema: ItemSchema, uiItem:UiItem, label:string|JSX.Element, value: any):ItemEdit {
 	let ie: ItemEdit;
     let itemEdit: NewItemEdit;
     if (uiItem !== undefined) {

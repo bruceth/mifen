@@ -1,5 +1,5 @@
-import { ID, Uq } from "tonva-react";
-import { IDBase } from "../base";
+import { ID, IX, Uq } from "tonva-react";
+import { IDBase, IXBase } from "../base";
 import { MidIDListBase } from "../list";
 
 export class MidIDList<T extends IDBase> extends MidIDListBase<T> {
@@ -24,6 +24,34 @@ export class MidIDList<T extends IDBase> extends MidIDListBase<T> {
 	}
 
 	update(id:number, item:any) {
-		this.listPageItems.update(id, item);
+		item.id = id;
+		this.listPageItems.update(item);
+	}
+}
+
+export class MidIXIDList<T extends IXBase> extends MidIDList<T> {
+	readonly IX:IX;
+	constructor(uq:Uq, ID:ID, IX:IX) {
+		super(uq, ID);
+		this.IX = IX;
+	}
+	/*
+	key:((item:T) => number|string) = item => {
+		return item.id2;
+	}
+	*/
+
+	protected async loadPageItems(pageStart:any, pageSize:number):Promise<T[]> {
+		let ret = await this.uq.IX<T>({
+			IX: this.IX,
+			IDX: [this.ID],
+			id: undefined,
+			page: {start:pageStart, size:pageSize},
+		});
+		for (let item of ret) {
+			item.id = item.id2;
+			delete item.id2;
+		}
+		return ret;
 	}
 }

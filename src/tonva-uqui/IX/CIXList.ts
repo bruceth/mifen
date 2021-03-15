@@ -22,7 +22,7 @@ export class MidIXList<T extends IXBase> extends MidIDListBase<T> {
 	readonly ID:ID;
 	readonly id: number;
 	constructor(uq:Uq, IX:IX, ID:ID, id:number) {
-		super(uq);
+		super(uq, undefined);
 		this.IX = IX;
 		this.ID = ID;
 		this.id = id;

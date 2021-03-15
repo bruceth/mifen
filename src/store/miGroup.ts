@@ -1,22 +1,19 @@
 import { IObservableArray, observable, runInAction } from "mobx";
 import { SlrForEarning } from "regression";
 import { GFunc } from "tool";
-import { UqExt } from "uq-app/uqs/BruceYuMi";
+import { EnumGroupType, UqExt } from "uq-app/uqs/BruceYuMi";
 import { sortStocks } from "./sortStocks";
 import { Stock } from "./types";
 
 export class MiGroup {
-	private yumi: UqExt;
-	private sortType: string;
-
 	id: number;
 	name: string;
+	type: EnumGroupType;
 	stocks: IObservableArray<Stock>;
 
-	constructor(groupName:string, groupId:number, yumi: UqExt) {
+	constructor(groupName:string, groupId:number) {
 		this.name = groupName;
 		this.id = groupId;
-		this.yumi = yumi;
 		this.stocks = observable.array<Stock>([], { deep: true });
 	}
 
@@ -57,7 +54,7 @@ export class MiGroup {
 	}
 
 	sort(sortType: string) {
-		this.sortType = sortType;
+		//this.sortType = sortType;
 		sortStocks(sortType, this.stocks);
 	}
 

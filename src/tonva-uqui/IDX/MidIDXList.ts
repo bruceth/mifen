@@ -6,7 +6,7 @@ export class MidIDXList<T extends IDBase> extends MidIDListBase<T> {
 	readonly ID:ID;
 	readonly IDX: IDX;
 	constructor(uq:Uq, ID:ID, IDX:IDX) {
-		super(uq);
+		super(uq, undefined);
 		this.ID = ID;
 		this.IDX = IDX;
 	}

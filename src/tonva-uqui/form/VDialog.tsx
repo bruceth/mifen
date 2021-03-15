@@ -1,7 +1,7 @@
-import { CDialog } from "./CDialog";
-import { VForm } from "./VForm";
+import { CFormDialog } from "./CFormDialog";
+import { VFormPage } from "./VFormPage";
 
-export class VDialog extends VForm<CDialog<any>> {
+export class VDialog extends VFormPage<CFormDialog<any>> {
 	protected afterBack():void {
 		this.controller.close();
 	}

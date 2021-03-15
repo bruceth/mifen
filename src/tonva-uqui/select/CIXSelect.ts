@@ -1,6 +1,6 @@
-import { ID, IX, PageItems, Uq } from "tonva-react";
-import { ListPageItems } from "../tools";
-import { IDBase, IXBase } from "../base";
+import { ID, IX, Uq } from "tonva-react";
+import { IDListPageItems } from "../list";
+import { IXBase } from "../base";
 import { CIDSelect, MidIDSelectList } from "./CIDSelect";
 
 export class CIXSelect<T extends IXBase> extends CIDSelect<T, MidIXSelectList<T>> {
@@ -21,11 +21,14 @@ export class MidIXSelectList<T extends IXBase> extends MidIDSelectList<T> {
 	}
 
 	key:((item:T) => number|string) = item => item.id;
-	createPageItems():PageItems<T> {
-		return this.listPageItems = new IDListPageItems<T>(
+
+	protected createPageItems() {
+		let listPageItems = new IDListPageItems<T>(
 			(pageStart:any, pageSize:number) => this.loadPageItems(pageStart, pageSize)
 		);
+		return listPageItems;
 	}
+
 	protected async loadPageItems(pageStart:any, pageSize:number):Promise<T[]> {
 		let ret = await this.uq.IDinIX<T>({
 			ID: this.ID,
@@ -35,9 +38,4 @@ export class MidIXSelectList<T extends IXBase> extends MidIDSelectList<T> {
 		});
 		return ret as any[];
 	}
-}
-
-class IDListPageItems<T extends IDBase> extends ListPageItems<T> {
-	itemId(item:T):number {return item.id}
-	newItem(id:number, item:T):T {return {...item, id}}
 }

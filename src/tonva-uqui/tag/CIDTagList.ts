@@ -16,7 +16,7 @@ export class CIDTagList<T extends IDBase> extends CList<ItemTags<T>> {
 	private midIDTagList: MidIDTagList<T>;
 	constructor(midIDTagList: MidIDTagList<T>) {
 		super(midIDTagList);
-		this.setRes(this.midIDTagList.res);
+		this.setRes(midIDTagList.res);
 		this.midIDTagList = midIDTagList;
 	}
 
@@ -45,18 +45,20 @@ export class MidIDTagList<T extends IDBase> extends MidList<ItemTags<T>> {
 	private itemTagsColl:{[id:number]:ItemTags<T>};
 	renderTags: (types:Tag[]) => JSX.Element;
 	constructor(midTag:MidTag) {
-		super(midTag.uq);
+		super(midTag.uq, undefined);
 		this.midTag = midTag;
+		this.createPageItems();
 	}
 
 	async init() {
 		await this.midTag.IX.loadSchema();
 	}
 
-	createPageItems():ItemTagsListPageItems<T> {
-		return this.listPageItems = new ItemTagsListPageItems<T>(
+	protected createPageItems():ItemTagsListPageItems<T> {
+		let listPageItems = new ItemTagsListPageItems<T>(
 			(pageStart:any, pageSize:number) => this.loadPageItems(pageStart, pageSize)
 		);
+		return listPageItems;
 	}
 
 	key:((item:ItemTags<T>) => number|string) = item => item.item.id;
@@ -173,5 +175,8 @@ class ItemTagsListPageItems<T extends IDBase> extends ListPageItems<ItemTags<T>>
 			typeArr,
 			typeColl,
 		}
+	}
+	update(item: ItemTags<T>):Promise<void> {
+		return;
 	}
 }

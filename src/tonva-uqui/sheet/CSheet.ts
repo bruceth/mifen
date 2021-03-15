@@ -1,7 +1,7 @@
 import { makeObservable, observable } from "mobx";
-import { Controller } from "tonva-react";
+import { Context, Controller } from "tonva-react";
 import { createPickId } from "../select";
-import { CForm, FormProps } from "../form";
+import { CFormPage, FormUI } from "../form";
 import { Detail, Master } from "../base";
 import { MidSheet } from "./MidSheet";
 
@@ -41,11 +41,11 @@ export abstract class CSheet<M extends Master, D extends Detail> extends Control
 	private serial:number = 1;
 	editDetail = async (detail: D) => {
 		let {uq, detail:detailFormUI} = this.midSheet;
-		let {ID, fieldItems} = detailFormUI;
-		let uiForm = new FormProps(ID.ui, fieldItems);
-		if (fieldItems) {
-			for (let i in fieldItems) {
-				let field = fieldItems[i];
+		let {ID, fieldCustoms} = detailFormUI;
+		let uiForm = new FormUI(ID.ui, fieldCustoms);
+		if (fieldCustoms) {
+			for (let i in fieldCustoms) {
+				let field = fieldCustoms[i];
 				let {ID} = field;
 				if (ID) {
 					uiForm.setIDUi(i, createPickId(uq, ID), ID.render);
@@ -53,7 +53,9 @@ export abstract class CSheet<M extends Master, D extends Detail> extends Control
 			}
 		}
 		uiForm.hideField('master', 'row');
-		uiForm.onSubmit = async (values) => {
+		let cForm = new CFormPage(uiForm, detail);
+		cForm.onSubmit = async (name:string, context: Context) => {
+			let values = context.data;
 			let serial = values['#'];
 			if (!serial) {
 				values['#'] = this.serial++;
@@ -67,11 +69,10 @@ export abstract class CSheet<M extends Master, D extends Detail> extends Control
 			}
 			this.closePage();
 			if (detail === undefined) {
-				let cForm = new CForm(uiForm);
-				await cForm.start(detail);
+				let cForm = new CFormPage(uiForm, detail);
+				await cForm.start();
 			}
 		}
-		let cForm = new CForm(uiForm);
-		await cForm.start(detail);
+		await cForm.start();
 	}
 }

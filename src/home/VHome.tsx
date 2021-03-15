@@ -1,10 +1,11 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { VPage, List, LMR, FA, Scroller, DropdownActions, DropdownAction } from 'tonva-react';
+import { VPage, List, LMR, FA, Scroller, DropdownActions, DropdownAction, t } from 'tonva-react';
 import { NStockInfo } from '../stockinfo';
 import { CHome } from './CHome';
 import { renderSortHeaders, renderStockInfoRow, renderStockUrl } from '../tool';
+import { EnumGroupType } from 'uq-app/uqs/BruceYuMi';
 
 export class VHome extends VPage<CHome> {
 	header() {
@@ -14,38 +15,83 @@ export class VHome extends VPage<CHome> {
 	}
 	right() {
 		return React.createElement(observer(() => {
-		/*
-		return <button className="btn btn-sm btn-info mr-2"
-		onClick={()=>{this.controller.openMarketPE()}}>
-		市场平均PE
-		</button>;
-		*/
-		let {store} = this.controller;
-		let groups = store.stockGroups.groups.map(v => (
-			{
-				caption: v.name,
-				action: () => this.controller.changeGroup(v)
+			let {store, uqs} = this.controller;
+			let stockGroups = store.stockGroups.groups.map(v => {
+				let {name} = v;
+				return {
+					caption: name,
+					action: () => this.controller.changeGroup(v),
+					icon: 'circle-o',
+				};
+			});
+			let {BruceYuMi} = uqs;
+			let {Group} = BruceYuMi;
+			let groups = store.miGroups.groups.map(v => {
+				let {name, type} = v;
+				let icon = 'list-alt', iconClass:string = undefined;
+				switch (type) {
+					case EnumGroupType.all:
+						icon = 'home';
+						iconClass = 'text-primary'
+						break;
+					case EnumGroupType.black:
+						icon = 'ban';
+						iconClass = 'text-black';
+						break;
+				}
+				return {
+					caption: Group.t(name) as string,
+					action: () => this.controller.changeMiGroup(v),
+					icon,
+					iconClass,
+				};
+			});
+			let actions: DropdownAction[] = [
+				{
+					caption: '市场平均PE',
+					action: this.controller.openMarketPE,
+					icon: 'bar-chart',
+				},
+				{
+					caption: '选择股票',
+					action: this.controller.onAddStock,
+					icon: 'money',
+				},
+				undefined,
+				...stockGroups,
+				undefined,
+				...groups,
+				undefined,
+				{
+					caption: '管理自选组',
+					action: this.controller.manageGroups,
+					icon: 'object-group',
+				},
+				{
+					caption: '管理持仓账号',
+					action: this.controller.manageAccounts,
+					icon: 'book',
+				},
+			];
+			if (this.isDev === true) {
+				let { cBug, cUI } = this.controller.cApp;
+				actions.push(
+					undefined,
+					{
+						caption: t('UI') as string,
+						icon: 'television', 
+						action: () => cUI.start(),
+					},
+					{
+						caption: t('debug') as string,
+						icon: 'bug', 
+						action: () => cBug.start(),
+					}
+				);
 			}
-		));
-		let actions: DropdownAction[] = [
-			{
-				caption: '市场平均PE',
-				action: this.controller.openMarketPE,
-			},
-			{
-				caption: '选择股票',
-				action: this.controller.onAddStock,
-			},
-			undefined,
-			...groups,
-			undefined,
-			{
-				caption: '管理自选组',
-				action: this.controller.manageGroups,
-			},
-		];
-		return <DropdownActions actions={actions} icon="bars" className="mr-2 text-white bg-transparent border-0" />;
-	}));
+
+			return <DropdownActions actions={actions} icon="bars" className="mr-2 text-white bg-transparent border-0" />;
+		}));
 	}
 
 	protected onPageScrollBottom(scroller: Scroller): Promise<void> {

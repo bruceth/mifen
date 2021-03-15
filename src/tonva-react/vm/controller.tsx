@@ -25,9 +25,9 @@ export interface WebNav<C extends Controller> {
 
 export abstract class Controller {
 	protected res: any = {};
-	readonly t = (str: string): string|JSX.Element => this.internalT(str) || str;
+	t = (str: string): string|JSX.Element => this.internalT(str) || str;
     icon: string|JSX.Element;
-    label:string;
+    label:string|JSX.Element;
 	readonly isDev:boolean = env.isDevelopment;
 	pageWebNav: PageWebNav;
     get user():User {return nav.user}
@@ -47,7 +47,7 @@ export abstract class Controller {
 	}
 
 	internalT(str:string):any {
-		return this.res[str] ?? t(str);
+		return this.res?.[str] ?? t(str);
 	}
 
 	get webNav(): WebNav<any> {return undefined;}
@@ -149,11 +149,6 @@ export abstract class Controller {
     }
 
     protected async beforeStart():Promise<boolean> {
-        /*
-        console.log('this.receiveHandlerId = nav.registerReceiveHandler(this.onMessageReceive);');
-        this.receiveHandlerId = nav.registerReceiveHandler(this.onMessageReceive);
-        console.log('return true');
-        */
         return true;
 	}
 	protected async afterStart():Promise<void> {
@@ -164,7 +159,6 @@ export abstract class Controller {
 
     protected abstract internalStart(param?:any, ...params:any[]):Promise<void>;
     async start(param?:any, ...params:any[]):Promise<void> {
-        //this.disposer = this.dispose;
 		this.registerReceiveHandler();
         let ret = await this.beforeStart();
         if (ret === false) return;

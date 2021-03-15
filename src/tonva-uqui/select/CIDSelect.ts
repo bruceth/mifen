@@ -1,17 +1,8 @@
-import { ID, PageItems, Uq } from "tonva-react";
+import { ID, Uq } from "tonva-react";
 import { IDBase } from "../base/IDBase";
-import { CList, MidList } from "../list";
-import { ListPageItems } from "../tools";
+import { CList, IDListPageItems, MidList } from "../list";
 import { renderSelectItem } from "./parts";
 
-/*
-export interface IDSelectProps<T extends IDBase> {
-	uq: Uq;
-	ID: ID;
-	renderItem: (item:T, index:number)=>JSX.Element;
-	onSelectChange: (item:T, isSelected:boolean)=>any;
-}
-*/
 export class CIDSelect<T extends IDBase, P extends MidIDSelectList<T>> extends CList<T> {
 	midIDSelectList: P;
 	constructor(midIDSelectList: P) {
@@ -23,6 +14,7 @@ export class CIDSelect<T extends IDBase, P extends MidIDSelectList<T>> extends C
 	protected createMidList(): MidList<T> {
 		return new MidIDSelectList(this.midIDSelectList.uq, this.midIDSelectList.ID);
 	}
+
 	protected onItemClick(item:any):void {
 		return; //this.props.onItemClick(item);
 	}
@@ -56,11 +48,14 @@ export class MidIDSelectList<T extends IDBase> extends MidList<T> {
 		await this.ID.loadSchema();
 	}
 	key:((item:T) => number|string) = item => item.id;
-	createPageItems():PageItems<T> {
-		return this.listPageItems = new IDListPageItems<T>(
+
+	protected createPageItems() {
+		let listPageItems = new IDListPageItems<T>(
 			(pageStart:any, pageSize:number) => this.loadPageItems(pageStart, pageSize)
 		);
+		return listPageItems;
 	}
+
 	protected async loadPageItems(pageStart:any, pageSize:number):Promise<T[]> {
 		let ret = await this.uq.ID<T>({
 			IDX: this.ID,
@@ -69,9 +64,4 @@ export class MidIDSelectList<T extends IDBase> extends MidList<T> {
 		});
 		return ret;
 	}
-}
-
-class IDListPageItems<T extends IDBase> extends ListPageItems<T> {
-	itemId(item:T):number {return item.id}
-	newItem(id:number, item:T):T {return {...item, id}}
 }

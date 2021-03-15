@@ -14,14 +14,14 @@ export abstract class ItemEdit {
     protected _uiItem:UiItem;
     get uiItem():UiItem {return this._uiItem}
     value: any;
-	label: string;
+	label: string|JSX.Element;
 	get editInRow(): boolean {return false;}
     protected newValue: any;
 
     error: string = null;
     isChanged: boolean = false;
 
-    constructor(edit:Edit, itemSchema: ItemSchema, uiItem:UiItem, label:string, value: any) {
+    constructor(edit:Edit, itemSchema: ItemSchema, uiItem:UiItem, label:string|JSX.Element, value: any) {
 		makeObservable(this, {
 			error: observable,
 			isChanged: observable,
@@ -52,7 +52,7 @@ export abstract class ItemEdit {
         let {name, type} = this._itemSchema;
         let divValue:any;
         let uiItem = this._uiItem;
-        let label:string, labelHide:boolean;
+        let label:string|JSX.Element, labelHide:boolean;
         if (uiItem === undefined) {
             label = name;
         }

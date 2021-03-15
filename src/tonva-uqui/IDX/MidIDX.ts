@@ -1,5 +1,5 @@
 import { ID, Schema, UiSchema, Uq, Prop, IDX } from "tonva-react";
-import { buildGridProps, TimeSpan } from "../tools";
+import { TimeSpan } from "../tools";
 import { Mid } from "../base";
 
 export class MidIDX extends Mid {
@@ -25,7 +25,7 @@ export class MidIDX extends Mid {
 		let IDUI = {ID: this.ID};
 		this._itemSchema = await this.buildItemSchema(IDUI);
 		this._uiSchema = this.buildUISchema(IDUI);
-		this._props = buildGridProps(this.IDX.ui);
+		this._props = this.buildGridProps(this.IDX.ui);
 		let {exFields} = this.IDX.schema;
 		for (let prop of this._props) {
 			let {name} = prop as any;
@@ -47,7 +47,7 @@ export class MidIDX extends Mid {
 		return ret;
 	}
 
-	historyPageItems = async (id:number, field:string, far:number, near:number, pageStart:any, pageSize:number):Promise<any[]> => {
+	historyLoader = async (id:number, field:string, far:number, near:number, pageStart:any, pageSize:number):Promise<any[]> => {
 		let ret = await this.uq.IDLog({
 			IDX: this.IDX,
 			field,

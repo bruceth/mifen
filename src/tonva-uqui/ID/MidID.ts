@@ -1,10 +1,11 @@
-import { ID, Schema, UiSchema, Uq, Prop, UiButton, UiItemCollection, IDUI } from "tonva-react";
-import { buildGridProps } from "../tools";
+import { ID, Schema, UiSchema, Uq, Prop, UiButton, UiItemCollection, IDUI, IX, ParamActIX } from "tonva-react";
 import { IDBase, Mid } from "../base";
+import { MidIDList, MidIXIDList } from "./MidIDList";
 
 export class MidID<T extends IDBase> extends Mid {
 	readonly IDUI: IDUI;
 	readonly ID: ID;
+
 	constructor(uq: Uq, IDUI: IDUI) {
 		super(uq);
 		this.IDUI = IDUI;
@@ -14,8 +15,11 @@ export class MidID<T extends IDBase> extends Mid {
 	async init():Promise<void> {
 		await this.loadSchema();
 		this._itemSchema = await this.buildItemSchema(this.IDUI);
-		await this.setDefaultNo();
 		this._uiSchema = this.buildUISchema(this.IDUI);
+	}
+
+	createMidIDList():MidIDList<T> {
+		return new MidIDList(this.uq, this.ID);
 	}
 
 	protected buildUISchema(IDUI:IDUI):UiSchema {
@@ -39,8 +43,6 @@ export class MidID<T extends IDBase> extends Mid {
 		items['submit'] = uiButton;
 		return this._uiSchema;
 	}
-
-
 	protected async loadSchema() {
 		await this.ID.loadSchema();
 	}
@@ -79,9 +81,10 @@ export class MidID<T extends IDBase> extends Mid {
 	private _props: Prop[];
 	get props():Prop[] {
 		if (this._props !== undefined) return this._props;
-		return this._props = buildGridProps(this.ID.ui);
+		return this._props = this.buildGridProps(this.IDUI.ID.ui);
 	}
 
+	/*
 	protected async setDefaultNo() {
 		for (let fieldItem of this._itemSchema) {
 			if (fieldItem.name === 'no') {
@@ -89,5 +92,32 @@ export class MidID<T extends IDBase> extends Mid {
 				this.setNO(no, fieldItem);
 			}
 		}
+	}
+	*/
+}
+
+export class MidIXID<T extends IDBase> extends MidID<T> {
+	readonly IX: IX;
+	constructor(uq: Uq, IDUI: IDUI, IX: IX) {
+		super(uq, IDUI);
+		this.IX = IX;
+	}
+
+	createMidIDList():MidIDList<T> {
+		return new MidIXIDList<any>(this.uq, this.ID, this.IX);
+	}
+
+	async saveID(data:any):Promise<number> {
+		let param: ParamActIX<T> = {
+			ID: this.ID,
+			IX: this.IX,
+			values: [
+				{id:undefined, id2:data}
+			],
+		};
+		let ret = await this.uq.ActIX(param);
+		let id = ret[0];
+		if (!id) return;
+		return id;
 	}
 }

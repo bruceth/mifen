@@ -132,7 +132,7 @@ export function factory(context: Context, itemSchema: ItemSchema, children:React
     }
 
     let typeWidget: TypeWidget;
-    let ui = context.getUiItem(name);
+    let ui = context.getUiItem(name);	
     function getTypeWidget(t:DataType): TypeWidget {
         switch(t) {
         default: return TextWidget; 
@@ -150,7 +150,8 @@ export function factory(context: Context, itemSchema: ItemSchema, children:React
         typeWidget = getTypeWidget(type);
     }
     else {
-        let {widget:widgetType} = ui;
+        let {widget:widgetType, hiden} = ui;
+		if (hiden === true) return null;
         switch (widgetType) {
         default:
             if (widgetType !== undefined) {

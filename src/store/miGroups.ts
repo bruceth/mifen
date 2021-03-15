@@ -1,7 +1,6 @@
-//import { defaultBlackListGroupName, defaultGroupName } from "consts";
 import { IObservableArray, observable } from "mobx";
 import { BruceYuMi } from "uq-app";
-import { UqExt } from "uq-app/uqs/BruceYuMi";
+import { Group, UqExt } from "uq-app/uqs/BruceYuMi";
 import { MiGroup } from "./miGroup";
 
 const myAll = 'myAll';
@@ -45,9 +44,11 @@ export class MiGroups {
 	}
 	
 	isMySelect(id:number): boolean {
+		/*
 		for (let group of this.groups) {
 			if (group.exists(id) === true) return true;
 		}
+		*/
 		return false;
 	}
 	
@@ -80,35 +81,17 @@ export class MiGroups {
 				ID: this.yumi.Group, 
 				values: groupArr.map(v => ({id:undefined, id2: v})),
 			});
+			ret = await this.yumi.IX<BruceYuMi.Group>({
+				IX: this.yumi.UserGroup,
+				IDX: [this.yumi.Group],
+				id: undefined,
+			});
 		}
-		/*
-		let bc = await this.checkDefaultTags(ret);
-		if (bc) {
-			//r = await this.miApi.query('t_tag$all', [this.user.id]);
-			r = await this.miNet.t_tag$all();
-			ret = r as any[];
-		}
-		let r1 = [];
-		let i = ret.findIndex(v=>v.name === defaultGroupName);
-		if (i >= 0) {
-			r1.push(ret[i]);
-			ret.splice(i, 1);
-		}
-		i = ret.findIndex(v=> v.name === defaultBlackListGroupName);
-		if (i >= 0) {
-			r1.push(ret[i]);
-			ret.splice(i, 1);
-		}
-		r1.push(...ret);
-		this.groups.replace(r1.map(v => new MiGroup(v.name, v.id, this.miNet)));
-
-		this.defaultGroup = this.groupFromName(defaultGroupName);
-		this.blackGroup = this.groupFromName(defaultBlackListGroupName);
-		await Promise.all([
-			this.defaultGroup?.loadItems(),
-			this.blackGroup?.loadItems(),
-		]);
-		*/
+		let miGroups = (ret as Group[]).map(v => {
+			let {id, name} = v;
+			return new MiGroup(name, id);
+		});
+		this.groups.splice(0, this.groups.length, ...miGroups);
 	}
 
 	private async checkDefaultTags(list:any[]): Promise<boolean> {

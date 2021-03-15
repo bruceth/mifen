@@ -11,7 +11,7 @@ export class ImageItemEdit extends ItemEdit {
     get uiItem(): UiImageItem {return this._uiItem as UiImageItem}
 	resId: string = null;
 	
-	constructor(edit:Edit, itemSchema: ItemSchema, uiItem:UiItem, label:string, value: any) {
+	constructor(edit:Edit, itemSchema: ItemSchema, uiItem:UiItem, label:string|JSX.Element, value: any) {
 		super(edit, itemSchema, uiItem, label, value);
 		makeObservable(this, {
 			resId: observable

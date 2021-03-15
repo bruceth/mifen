@@ -1,37 +1,45 @@
-import { ButtonSchema, Controller, FieldItem, FieldItems, Schema, UI, UiButton, UiIdItem, UiNumberItem, UiSchema } from "tonva-react";
-import { FormProps } from "./FormProps";
-import { VForm } from "./VForm";
+import { ButtonSchema, Context, Controller, FieldItem, FieldItems, FieldItemString, ID, Schema, UI, UiButton, UiIdItem, UiNumberItem, UiSchema } from "tonva-react";
+import { FormUI } from "./FormUI";
+import { VFormView } from "./VFormView";
 
-export class CForm<T> extends Controller {
+export class CFormView<T> extends Controller {
 	protected readonly ui: UI;
-	param: T;
 	schema: Schema;
 	uiSchema: UiSchema;
-	label: string;
-	submitCaption: string;
-	private onSubmit: (values:any) => Promise<void>;
+	label: string|JSX.Element;
+	submitCaption: string|JSX.Element;
+	onSubmit: (name:string, context: Context) => Promise<void>;
 
-	constructor(props: FormProps, res?:any) {
+	constructor(formUI: FormUI) {
 		super();
-		this.setRes(res);
-		let {label, fieldArr, fields, onSubmit, submitCaption} = props;
+		let {label, fieldArr, fields, submitCaption, t} = formUI;
+		this.t = t;
 		this.schema = this.buildItemSchema(fieldArr);
 		this.uiSchema = this.buildUISchema(fields);
-		this.label = label;
-		this.submitCaption = submitCaption;
-		this.onSubmit = onSubmit;
+		this.label = t(label);
+		this.submitCaption = t(submitCaption);
 	}
 
-	protected async internalStart(param: T) {
-		this.param = {...param};
-		this.openVPage<any, any>(VForm);
+	protected async internalStart() {
 	}
 
-	submit(data:any) {
-		if (!this.param) this.param = {} as any;
-		Object.assign(this.param, data);
-		//this.returnCall(param);
-		this.onSubmit?.(this.param);
+	async setNO(ID: ID, fieldName:string = 'no') {
+		let field = this.schema.find(v => v.name === fieldName);
+		if (!field) return;
+		if (field.type !== 'string') return;
+		let noField = field as FieldItemString;
+		let no = await ID.NO();
+		noField.readOnly = true;
+		noField.defaultValue = no;
+		let uiField = this.uiSchema.items[fieldName];
+		if (uiField) {
+			uiField.readOnly = true;
+			uiField.defaultValue = no;
+		}
+	}
+
+	submit(name:string, context: Context) {
+		this.onSubmit?.(name, context);
 	}
 
 	protected buildItemSchema(fieldArr: FieldItems): Schema {
@@ -77,5 +85,10 @@ export class CForm<T> extends Controller {
 		}
 		let ret = {items};
 		return ret;
+	}
+
+	renderForm(item:T):JSX.Element {
+		let v = new VFormView(this);
+		return v.render(item);
 	}
 }

@@ -7,7 +7,6 @@ export class VHolding extends VPage<CHolding> {
 	content() {
 		return <div>
 			<List items={this.controller.miAccounts.accounts} item={{render: this.renderAccount, onClick: this.onClickAccount}} />
-			<button className="m-3 btn btn-primary" onClick={this.controller.showGroups}>自选组</button>
 		</div>;
 	}
 

@@ -87,6 +87,7 @@ export class DropdownActions extends React.Component<DropdownActionsProps, Dropd
                         let i:any;
                         if (hasIcon === true) {
                             if (icon !== undefined) icon = 'fa-' + icon;
+							if (!iconClass) iconClass = 'text-info';
 							i = <i className={classNames('mr-2', 'fa', icon, 'fa-fw', iconClass || itemIconClass)}
 								aria-hidden={true}></i>;
                         }

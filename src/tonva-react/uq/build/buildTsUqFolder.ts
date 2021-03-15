@@ -26,7 +26,7 @@ function saveTsIndexAndRender(uqFolder:string, uq: UqMan, uqAlias:string) {
 		imports += `\nimport * as ${cName} from './${cName}.ui';`;
 		sets += `\n	Object.assign(uq.${cName}, ${cName});`;
 
-		let tsUI = `import { Res, UI } from "tonva-react";
+		let tsUI = `import { Res, setRes, TFunc, UI } from "tonva-react";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { FieldItem, FieldItemNumber, FieldItemString, FieldItemId } from "tonva-react";
 import { ${cName} } from "./${uqAlias}";
@@ -45,12 +45,18 @@ export const ui: UI = {
 	fields,
 };
 
-export const res: Res<any> = {
+const resRaw: Res<any> = {
 	zh: {
 	},
 	en: {
 	}
 };
+const res: any = {};
+setRes(res, resRaw);
+
+export const t:TFunc = (str:string|JSX.Element): string|JSX.Element => {
+	return res[str as string] ?? str;
+}
 
 export function render(item: ${cName}):JSX.Element {
 	return <>{JSON.stringify(item)}</>;

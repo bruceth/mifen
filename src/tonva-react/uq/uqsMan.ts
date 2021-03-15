@@ -195,7 +195,7 @@ export class UQsMan {
         for (let uqMan of this.uqMans) {
             let uqKey = uqMan.getUqKey();
 			let lower = uqKey.toLowerCase();
-			let proxy = uqMan.proxy();
+			let proxy = uqMan.createProxy();
 			uqs[uqKey] = proxy;
 			if (lower !== uqKey) uqs[lower] = proxy;
         }

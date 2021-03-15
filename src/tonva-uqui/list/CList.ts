@@ -13,7 +13,7 @@ export class CList<T> extends Controller {
 
 	protected async internalStart() {
 		await this.midList.init();
-		let pageItems = this.midList.createPageItems();
+		let pageItems = this.midList.pageItems;
 		let props:ListPageProps = {
 			header: this.header,
 			pageItems,
@@ -25,7 +25,7 @@ export class CList<T> extends Controller {
 		};
 		pageItems.first(this.firstParam);
 		let page = new ListPage(props);
-		this.openPage(page.render());
+		this.openPage(page.render(), () => this.returnCall(undefined));
 	}
 
 	protected get firstParam():any {return undefined;}

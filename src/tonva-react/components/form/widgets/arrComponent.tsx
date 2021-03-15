@@ -17,7 +17,7 @@ export const ArrComponent = observer((
     let arrRowContexts = parentContext.getArrRowContexts(name);
 	let ui = parentContext.getUiItem(name) as UiArr;
 	let {onDeleted, onRestored} = ui;
-    let arrLabel = name;
+    let arrLabel:string|JSX.Element = name;
     let Templet:TempletType;
     let selectable:boolean, deletable:boolean, restorable:boolean;
     let {ArrContainer, RowContainer, RowSeperator, uiSchema} = form;

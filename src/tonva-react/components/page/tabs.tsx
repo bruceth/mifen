@@ -93,7 +93,7 @@ class Tab {
     }
 }
 
-export const TabCaptionComponent = (label:string, icon:string, color:string) => <div 
+export const TabCaptionComponent = (label:string|JSX.Element, icon:string, color:string) => <div 
     className={'d-flex justify-content-center align-items-center flex-column cursor-pointer ' + color}>
     <div><i className={'fa fa-lg fa-' + icon} /></div>
     <small>{label}</small>

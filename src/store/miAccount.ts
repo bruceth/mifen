@@ -1,5 +1,5 @@
-import { makeObservable, observable } from "mobx";
-import { ParamID, ParamIDinIX } from "tonva-react";
+import { makeObservable, observable, runInAction } from "mobx";
+import { ParamIX } from "tonva-react";
 import { AccountValue, UqExt } from "uq-app/uqs/BruceYuMi";
 import { Account } from "./types";
 
@@ -16,36 +16,38 @@ export class MiAccounts {
 
 	async load() {
 		let {Account, UserAccount} = this.yumi;
-		let param:ParamIDinIX = {
-			ID: Account,
+		let param:ParamIX = {
 			IX: UserAccount,
+			IDX: [Account],
 			id: undefined,			// auto userId
 		};
-		let ret = await this.yumi.IDinIX<Account>(param);
+		let ret = await this.yumi.IX<Account>(param);
 		if (ret.length === 0) {
 			// 没有持仓账号，则创建默认账号
-			let accountNO = await Account.NO();
-			//let retActs = 
-			await this.yumi.Acts({
-				account: [{
+			//let accountNO = await Account.NO();
+			let accountName = '我的持仓组合';
+			let retActs = await this.yumi.ActIX({
+				IX: UserAccount,
+				ID: Account,
+				values: [{
 					id: undefined, 
-					no: accountNO, 
-					name: '我的持仓组合', 
+					id2: {
+						name: accountName, 
+					}
 				}]
 			});
-			ret = await this.yumi.IDinIX(param);
+			//ret = await this.yumi.IDinIX(param);
+			ret.push({
+				id: retActs[0],
+				name: accountName,
+			} as any);
 		}
-		let paramValue:ParamID = {
-			IDX: this.yumi.AccountValue,
-			id: ret.map((v:any) => (v as unknown as Account).id),
-		}
-		let values = await this.yumi.ID<AccountValue>(paramValue);
-		this.accounts = ret as unknown as (Account&AccountValue)[];
-		this.accounts.forEach(account => {
-			let {id} = account;
-			let value = values.find((v:any) => v.id === id);
-			if (value) {
-				Object.assign(account, value);
+		runInAction(() => {
+			if (this.accounts) {
+				this.accounts.splice(0, this.accounts.length, ...ret as unknown as (Account&AccountValue)[]);
+			}
+			else {
+				this.accounts = ret as unknown as (Account&AccountValue)[];
 			}
 		});
 	}

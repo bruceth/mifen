@@ -4,7 +4,7 @@ import { CApp } from './CApp';
 
 const color = (selected: boolean) => selected === true ? 'text-primary' : 'text-muted';
 /*
-function caption(label:string, icon:string) {
+function caption(label:string|JSX.Element, icon:string) {
 	return (selected: boolean) => TabCaptionComponent(label, icon, color(selected));
 }
 */
@@ -28,13 +28,16 @@ export class VMain extends VPage<CApp> {
 		}
 		return {tabs};
 		*/
-		let { cHome, cHolding, cExporer, cMe } = this.controller;
+		let { cHome, cGroup, cHolding, cExporer, cMe } = this.controller;
 		let tabs: TabProp[] = [
 			{ 
 				name: 'home', label: '首页', icon: 'home', content: cHome.tab, 
 				notify: undefined, 
 				load: cHome.load, 
 				onShown: cHome.load,
+			},
+			{
+				name: 'explorer', label: '自选', icon: 'money', content: cGroup.tab, load: cGroup.load 
 			},
 			{
 				name: 'explorer', label: '持仓', icon: 'money', content: cHolding.tab, // load: cHolding.load 

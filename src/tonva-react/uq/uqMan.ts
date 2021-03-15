@@ -247,6 +247,7 @@ export class UqMan {
     private readonly tuidsCache: TuidsCache;
     private readonly localEntities: LocalCache;
     private readonly tvs:{[entity:string]:(values:any)=>JSX.Element};
+	proxy: any;
     readonly localMap: LocalMap;
     readonly localModifyMax: LocalCache;
     readonly tuids: {[name:string]: Tuid} = {};
@@ -666,7 +667,7 @@ export class UqMan {
 		return uqKey;
 	}
 
-	proxy():any {
+	createProxy():any {
 		let ret = new Proxy(this.entities, {
 			get: (target, key, receiver) => {
 				let lk = (key as string).toLowerCase();
@@ -699,6 +700,7 @@ export class UqMan {
 				return undefined;
 			}
 		});
+		this.proxy = ret;
 		return ret;
 	}
 

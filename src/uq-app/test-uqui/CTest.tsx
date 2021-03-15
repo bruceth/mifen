@@ -83,13 +83,13 @@ export class CTester extends CBase<CApp,UQs> {
 				let sheetUI:SheetUI = {
 					master: {
 						ID: uq.OrderMaster,
-						fieldItems: {
+						fieldCustoms: {
 							customer: {ID: uq.Customer},
 						}
 					},
 					detail: {
 						ID: uq.OrderDetail,
-						fieldItems: {
+						fieldCustoms: {
 							product: { ID: uq.Customer },
 							price: { onChanged },
 							quantity: { onChanged },
@@ -105,6 +105,7 @@ export class CTester extends CBase<CApp,UQs> {
 	];
 
 	protected async internalStart() {
+		this.openVPage(VTester);
 	}
 
 	tab = () => this.renderView(VTester);

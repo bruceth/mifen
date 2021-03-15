@@ -22,7 +22,7 @@ export interface UiItem {
     readOnly?: boolean;
     disabled?: boolean;
     visible?: boolean;
-	label?: string;
+	label?: string|JSX.Element;
 	labelHide?: boolean;
     className?: string;
     onChanging?: ChangingHandler;
@@ -32,6 +32,7 @@ export interface UiItem {
     discription?: (string | JSX.Element | (()=>JSX.Element));
     discriptionClassName?: string;
     defaultValue?: any;
+	hiden?: boolean;
 }
 
 export interface UiCustom extends UiItem {

@@ -1,28 +1,53 @@
-import { ChangedHandler, ChangingHandler, FieldItem, FieldItemId, FieldItemString, ID, UI } from "tonva-react";
+import { ChangedHandler, ChangingHandler, FieldCustoms, FieldItem, FieldItemId, FieldItemString, ID, TFunc, UI } from "tonva-react";
+import { createPickId } from '../select';
 
-export class FormProps {
-	label: string;
+export class FormUI {
+	label: string|JSX.Element;
 	readonly fieldArr: FieldItem[];
 	readonly fields: {[name:string]: FieldItem};
-	onSubmit: (values:any) => Promise<void>;
 	submitCaption: string;
+	t: TFunc;
 
-	constructor(ui: UI, exFields:{[name:string]: Partial<FieldItem>}) {
+	constructor(ui: UI, fieldCustoms:FieldCustoms, t?: TFunc) {
+		this.t = t ?? ((str:string|JSX.Element) => str);
 		let {label, fieldArr, fields} = ui;
 		this.label = label;
 		this.fieldArr = [];
 		this.fields = {};
 		for (let i in fields) {
 			let field = fields[i];
-			let exField = exFields?.[i];
+			let fieldCustom = fieldCustoms?.[i];
 			let index = fieldArr.findIndex(v => v === field);
-			let f = {...field, ...exField};
+			let f:FieldItem;
+			if (fieldCustom) {
+				let label = this.t(fieldCustom.label ?? field.label);
+				f = {...field, ...fieldCustom, label};
+				let {ID} = field;
+				if (ID) {
+					let idField = f as FieldItemId;
+					idField.widget = 'id';
+					idField.pickId = createPickId(ID.uq.proxy, ID);
+					(idField as any).Templet = ID.render;
+				}
+			}
+			else {
+				let label = this.t(field.label);
+				f = {...field, label};
+			}
 			this.fields[i] = f;
 			this.fieldArr[index] = f;
 		}
-	}
-
-	private setDefaultIDUi(field:FieldItem, FieldID:ID) {
+		/*
+		if (fieldCustoms) {
+			for (let i in fieldCustoms) {
+				let field = fieldCustoms[i];
+				let {ID} = field;
+				if (ID) {
+					this.setIDUi(i, createPickId(ID.uq.proxy, ID), ID.render);
+				}
+			}
+		}
+		*/
 	}
 
 	setIDUi(fieldName:string, pickId: () => Promise<any>, render: (values:any) => JSX.Element) {
@@ -41,12 +66,13 @@ export class FormProps {
 		(idField as any).Templet = render;
 	}
 
-	setNO(no:string, fieldName:string = 'no') {
+	async setNO(ID:ID, fieldName:string = 'no'):Promise<void> {
 		let field = this.fields[fieldName];
 		if (!field) return;
 		if (field.type !== 'string') return;
 		let noField = field as FieldItemString;
 		noField.readOnly = true;
+		let no = await ID.NO();
 		noField.defaultValue = no;
 	}
 

@@ -1,4 +1,4 @@
-import { Res } from "../res";
+import { TFunc } from "../res";
 import { Entity } from "./entity";
 import { Render, UI } from '../ui';
 
@@ -6,7 +6,7 @@ import { Render, UI } from '../ui';
 export abstract class IDXEntity<M> extends Entity {
 	readonly ui: UI;
 	readonly render: Render<M>;
-	readonly res: Res<any>;
+	readonly t: TFunc;
 }
 
 export class UqID<M> extends IDXEntity<M> {

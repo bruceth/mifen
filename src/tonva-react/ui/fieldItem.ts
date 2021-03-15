@@ -9,15 +9,16 @@ export interface FieldItem {
 	name: string;
 	type: FieldItemType;
 	ID?: ID;
-	label?: string;
+	label?: string|JSX.Element;
 	isKey?: boolean;
     required?: boolean;
 	widget?: FieldUIType;
     className?: string;
-	defaultValue?: string;
+	defaultValue?: string | number;
     onChanging?: ChangingHandler;
 	onChanged?: ChangedHandler;
 	readOnly?: boolean;
+	hiden?: boolean;
 }
 
 export interface FieldItemObject extends FieldItem {
@@ -76,3 +77,4 @@ export interface FieldItemButton extends FieldItem {
 }
 
 export type FieldItems = FieldItem[];
+export type FieldCustoms = {[name:string]:Partial<FieldItem>};

@@ -1,10 +1,10 @@
 import * as React from 'react';
 import classNames from 'classnames';
-import { Widget } from './widget';
-import { UiTextItem, StringSchema, ItemSchema } from '../../schema';
 import { makeObservable, observable, runInAction } from 'mobx';
+import { UiTextItem, StringSchema, ItemSchema } from '../../schema';
 import { Context } from '../context';
 import { FieldProps } from '../field';
+import { Widget } from './widget';
 
 export class TextWidget extends Widget {
     protected inputType = 'text';
@@ -23,7 +23,15 @@ export class TextWidget extends Widget {
         if (this.input === null) return;
         this.input.value = value;
     }
-    protected get placeholder() {return (this.ui && this.ui.placeholder) || this.name}
+    protected get placeholder() {
+		if (this.ui) {
+			let {placeholder} = this.ui;
+			if (placeholder) return placeholder;
+			let {label} = this.ui;
+			if (label) return label;
+		}
+		return this.name
+	}
     protected onKeyDown = async (evt:React.KeyboardEvent<HTMLInputElement>) => {
         this.internalOnKeyDown(evt);
         if (evt.keyCode !== 13) return;
@@ -90,7 +98,7 @@ export class TextWidget extends Widget {
             type={this.inputType}
             defaultValue={this.value}
             onChange={(evt: React.ChangeEvent<any>) => this.onChange(evt)}
-            placeholder={this.placeholder}
+            placeholder={typeof this.placeholder === 'string'? this.placeholder : undefined}
             readOnly={this.readOnly}
             disabled={this.disabled}
             onKeyDown = {this.onKeyDown}

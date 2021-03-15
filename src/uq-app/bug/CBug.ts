@@ -15,6 +15,7 @@ export class CBug extends CUqBase {
 	currentItem: DebugItem;
 
 	protected async internalStart() {
+		this.openVPage(VBug);
 	}
 
 	tab = () => this.renderView(VBug);

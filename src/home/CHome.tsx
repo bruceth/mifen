@@ -9,11 +9,17 @@ import { CMarketPE } from './CMarketPE';
 import { CSelectStock } from 'selectStock';
 import { Stock, StockGroup, Store } from '../store';
 import { makeObservable, observable } from 'mobx';
+import { CID, MidIXID } from 'tonva-uqui';
+import { EnumGroupType, Group } from 'uq-app/uqs/BruceYuMi';
+import { renderGroup } from 'holding/renderGroup';
+import { IDUI } from 'tonva-react';
+import { MiGroup } from 'store/miGroup';
 
 export class CHome extends CUqBase {
 	store: Store;
 	stockGroup: StockGroup;
 	sortType: string;
+	miGroup: MiGroup;
 
 	constructor(cApp: CApp) {
 		super(cApp);
@@ -47,8 +53,55 @@ export class CHome extends CUqBase {
 		await this.stockGroup.loadItems();
 	}
 
+	async changeMiGroup(group: Group) {
+		let {id, name} = group;
+		this.miGroup = new MiGroup(name, id);
+		await this.miGroup.loadItems();
+	}
+
 	manageGroups = async () => {
-		this.cApp.showGroupsManage();
+		let uq = this.uqs.BruceYuMi;
+		let IDUI:IDUI = {
+			ID: uq.Group,
+			fieldCustoms: {
+				no: {hiden: true},
+				type: {hiden: true, defaultValue: '0'}
+			},
+			t: this.t,
+		}
+		let mId = new MidIXID<Group>(uq, IDUI, uq.UserGroup);
+		let cID = new CID(mId);
+		let {renderItem, onItemClick} = cID;
+		cID.renderItem = (item: Group, index:number) => renderGroup(item, index, renderItem);
+		cID.onItemClick = (item: Group):void => {
+			let {type} = item;
+			switch (type) {
+				//case EnumGroupType.all:
+				//case EnumGroupType.black: break;
+				default: onItemClick(item); break;
+			}
+		}
+		let changed = await cID.call();
+		if (changed === true) {
+			await this.cApp.store.miGroups.load();
+		}
+	}
+
+	manageAccounts = async () => {
+		let uq = this.uqs.BruceYuMi;
+		let IDUI:IDUI = {
+			ID: uq.Account,
+			fieldCustoms: {
+				no: {hiden: true},
+			},
+			t: this.t,
+		}
+		let mId = new MidIXID(uq, IDUI, uq.UserAccount);
+		let cID = new CID(mId);
+		let changed = await cID.call();
+		if (changed === true) {
+			await this.cApp.store.miAccounts.load();
+		}
 	}
 
 	onSelectTag = async () => {

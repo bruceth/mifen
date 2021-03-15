@@ -26,6 +26,7 @@ export class CApp extends CUqApp {
 	cBug: CBug;
 	cMe: CMe;
 	cUI: CTester;
+	cGroup: CGroup;
 	cHolding: CHolding;
 	cExporer: CExplorer;
 	cWarning: CWarning;
@@ -48,9 +49,15 @@ export class CApp extends CUqApp {
 		
 		this.cHome = this.newC(CHome);
 		this.cExporer = this.newC(CExplorer);
+		this.cGroup = this.newC(CGroup);
 		this.cHolding = this.newC(CHolding);
 		this.cMe = this.newC(CMe);
 		this.cWarning = this.newC(CWarning);
+		if (this.isDev === true) {
+			this.cBug = this.newC(CBug);
+			this.cUI = this.newC(CTester) as CTester;
+		}
+
 		this.openVPage(VMain, undefined, this.dispose);
 		// 加上下面一句，可以实现主动页面刷新
 		// this.timer = setInterval(this.callTick, 1000);

@@ -32,7 +32,7 @@ export class ButtonWidget extends Widget {
 
     private observerRender = observer(() => {
         let {name, type} = this.itemSchema;
-        let Templet:TempletType, cn:string, caption:string;
+        let Templet:TempletType, cn:string, caption:string|JSX.Element;
         if (this.ui !== undefined) {
             let {widget:widgetType} = this.ui;
             if (widgetType !== 'button') return Unknown(type, widgetType, ['button']);
