@@ -5,6 +5,6 @@ ID Tag ver 0.1 (
 );
 
 IX CustomerTag (
-	id,					-- object
-	id2 index log,		-- tag
+	ix,					-- object
+	id index log,		-- tag
 );

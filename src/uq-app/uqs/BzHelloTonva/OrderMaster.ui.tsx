@@ -24,11 +24,23 @@ const fields = {
 		"isKey": false,
 		"label": "Customer"
 	} as FieldItemId,
+	$owner: {
+		"name": "$owner",
+		"type": "integer",
+		"isKey": false,
+		"widget": "updown",
+		"label": "$owner"
+	} as FieldItemInt,
+	$create: {
+		"name": "$create",
+		"isKey": false,
+		"label": "$create"
+	} as undefined,
 };
 /*==fields==*/
 
 export const fieldArr: FieldItem[] = [
-	fields.no, fields.customer, 
+	fields.no, fields.customer, fields.$owner, fields.$create, 
 ];
 
 export const ui: UI = {

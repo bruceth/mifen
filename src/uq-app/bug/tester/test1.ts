@@ -29,8 +29,8 @@ export const testItem1:DebugItem = {
 				{id: undefined, a1: 1, a2: 7, a3:51, n5: 71},
 			],
 			assign1: [
-				{id: 3, id2: 5, val: 3},
-				{id: 3, id2: 6, val: 30},
+				{ix: 3, id: 5, val: 3},
+				{ix: 3, id: 6, val: 30},
 			],
 			iBook1: [
 				{id: 7, f1: 3.5, f2: 7.2, b: 'bbbb', c: 1},

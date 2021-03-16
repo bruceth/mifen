@@ -1,56 +1,30 @@
-import { IObservableArray, observable, runInAction } from "mobx";
-import { SlrForEarning } from "regression";
-import { GFunc } from "tool";
-import { EnumGroupType, UqExt } from "uq-app/uqs/BruceYuMi";
+import { IObservableArray, makeObservable, observable} from "mobx";
+import { EnumGroupType, Group, Stock, StockValue } from "uq-app/uqs/BruceYuMi";
+import { MiGroups } from "./miGroups";
 import { sortStocks } from "./sortStocks";
-import { Stock } from "./types";
 
-export class MiGroup {
+export class MiGroup implements Group {
+	private readonly miGroups: MiGroups;
 	id: number;
 	name: string;
+	tName: string|JSX.Element;
 	type: EnumGroupType;
-	stocks: IObservableArray<Stock>;
+	stocks: IObservableArray<Stock & StockValue> = null;
 
-	constructor(groupName:string, groupId:number) {
-		this.name = groupName;
-		this.id = groupId;
-		this.stocks = observable.array<Stock>([], { deep: true });
+	constructor(miGroups: MiGroups, group:Group) {
+		makeObservable(this, {
+			stocks: observable,
+		});
+		this.miGroups = miGroups;
+		Object.assign(this, group);
+		//this.stocks = observable.array<Stock & StockValue>([], { deep: true });
 	}
 
 	async loadItems() {
-		/*
-		// 距离上次
-		let queryName = 'taguser';
-
-		let query = {
-			name: queryName,
-			pageStart: 0,
-			pageSize: 1000,
-			user: this.miNet.userId,
-			tag: this.id,
-			yearlen: 1,
-		};
-		let result = await this.miNet.process(query, []);
-		if (Array.isArray(result) === false) return;
-
-		let arr: Stock[] = result;
-		for (let item of arr) {
-			let dataArray = JSON.parse(item.data) as number[];
-			item.dataArr = dataArray;
-			let sl = new SlrForEarning(dataArray);
-			item.ep = (sl.predict(4) + item.e) / 2;
-			item.e3 = sl.predict(7);
-			item.v = GFunc.calculateVN(sl.slopeR, item.ep, item.divyield * item.price, item.exprice);
-			item.predictpe = item.price / item.e3;
-		}
-		sortStocks(undefined, arr);
-
-		runInAction(() => {
-			this.stocks.clear();
-			this.stocks.push(...arr);	
-		});
-		*/
-
+		let ret = await this.miGroups.loadGroupStocks(this);
+		if (!ret) return;
+		//this.stocks.spliceWithArray(0, this.stocks.length, ret);
+		this.stocks = observable(ret, {deep: false});
 	}
 
 	sort(sortType: string) {

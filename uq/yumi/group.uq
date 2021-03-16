@@ -8,12 +8,12 @@ ID Group (
 );
 
 IX UserGroup (
-	id user,
-	id2 Group,
+	ix user,
+	id Group,
 );
 
 IX GroupStock (
-	id,				-- group
-	id2,			-- Stock
+	ix,				-- group
+	id,			-- Stock
 	order SMALLINT,
 );

@@ -9,8 +9,10 @@ import { VTags, VNewTag, VEditTag } from './VTags';
 import { ErForEarning, SlrForEarning } from 'regression';
 import { StockGroup } from '../store';
 import { CSelectStock } from '../selectStock';
+import { Stock, StockValue } from 'uq-app/uqs/BruceYuMi';
 
 export class CStockInfo extends CUqBase {
+	stock: Stock&StockValue;
 	@observable baseItem: NStockInfo;
 	@observable protected loaded: boolean = false;
 
@@ -288,6 +290,8 @@ export class CStockInfo extends CUqBase {
 	}
 
 	async internalStart(param: any) {
+		let {stock} = param;
+		this.stock = stock;
 		this.baseItem = param as NStockInfo;
 		let {id} = this.baseItem;
 		this.isMySelect = this.cApp.store.isMySelect(id);
@@ -298,17 +302,10 @@ export class CStockInfo extends CUqBase {
 	openMetaView = () => {
 	}
 
-	onSelectTag = async () => {
-		//await this.loadTags();
-		this.selectedTags = this.cApp.store.stockGroups.getSelected(this.stockTags);
-		/*
-		this.cApp.store.stockGroups.filter(v => {
-			let i = this.stockTags.findIndex(st => st.tag === v.groupId);
-			return i >= 0;
-		});
-		*/
-		//await this.loadTags();
-		this.openVPage(VTags);
+	onStockInGroup = async () => {
+		this.cApp.cGroup.setStockGroup(this.stock)
+		//this.selectedTags = this.cApp.store.stockGroups.getSelected(this.stockTags);
+		//this.openVPage(VTags);
 	}
 
 	onNewTag = () => {

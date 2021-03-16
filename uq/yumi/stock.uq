@@ -10,21 +10,22 @@ ID Stock (
 	KEY code char(20),
 	name char(50),
 	search char(100),
+	rawId ID,
 );
 
 IDX StockValue (
 	id,
 	miRate SMALLINT,
 	ttm SMALLINT,
-	divident SMALLINT,
+	divident INT,
 	price INT,
 	roe SMALLINT,
-	inc1 SMALLINT,
-	inc2 SMALLINT,
-	inc3 SMALLINT,
-	inc4 SMALLINT,
-	preInc SMALLINT,
-	marketValue INT,
+	inc1 INT,
+	inc2 INT,
+	inc3 INT,
+	inc4 INT,
+	preInc INT,
+	volumn BIGINT,
 );
 
 OPEN ACT WriteStock ver 0.3 (
@@ -34,15 +35,15 @@ OPEN ACT WriteStock ver 0.3 (
 		name char(50),
 		miRate SMALLINT,
 		ttm SMALLINT,
-		divident SMALLINT,
+		divident INT,
 		price INT,
-		roe SMALLINT,
-		inc1 SMALLINT,
-		inc2 SMALLINT,
-		inc3 SMALLINT,
-		inc4 SMALLINT,
-		preInc SMALLINT,
-		marketValue INT,
+		roe INT,
+		inc1 INT,
+		inc2 INT,
+		inc3 INT,
+		inc4 INT,
+		preInc INT,
+		volumn BIGINT,
 	)
 ) {
 	foreach stocks {
@@ -52,6 +53,6 @@ OPEN ACT WriteStock ver 0.3 (
 		WITH StockValue as a ID stock SET a.miRate=miRate,
 			a.ttm=ttm, a.divident=divident, a.price=price,
 			a.roe=roe, a.inc1=inc1, a.inc2=inc2, a.inc3=inc3, a.inc4=inc4,
-			a.preInc=preInc, a.marketValue=marketValue;
+			a.preInc=preInc, a.volumn=volumn;
 	}
 };

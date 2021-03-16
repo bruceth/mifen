@@ -67,7 +67,7 @@ export class MidIDTagList<T extends IDBase> extends MidList<ItemTags<T>> {
 		let result = await this.uq.IDxID<T, any>({
 			ID: this.midTag.ID,
 			IX: this.midTag.IX,
-			ID2: this.midTag.tag, //.ID2,
+			ID2: this.midTag.tag,
 			page: {start:pageStart, size:pageSize},
 		});
 		let [ret, ret2] = result;
@@ -131,7 +131,7 @@ export class MidIDTagList<T extends IDBase> extends MidList<ItemTags<T>> {
 		let {item} = itemTags;
 		let {id:itemId} = item;
 		let {id, parent} = tag;
-		let ix:IXBase = {id:undefined, id2: id};
+		let ix:IXBase = {ix:undefined, id};
 		let acts:{[name:string]: IXBase[]} = {};
 		acts[this.midTag.tag.name] = [ix];
 		if (selected === true) {
@@ -145,25 +145,6 @@ export class MidIDTagList<T extends IDBase> extends MidList<ItemTags<T>> {
 			this.delTag(itemTags, parent, id);
 		}
 	}
-	/*
-	update(item:T) {
-		runInAction(() => {
-			let {_items} = this.listPageItems;
-			if (!_items) return;
-			let {id, id2} = item;
-			if (id < 0) {
-				let index = _items.findIndex(v => v.id === -id && v.id2 === id2);
-				if (index >= 0) _items.splice(index, 1);
-			}
-			else {
-				let ret = _items.find(v => v.id === id && v.id2 === id2);
-				if (!ret) {
-					_items.unshift({id, id2} as T);
-				}
-			}
-		});
-	}
-	*/
 }
 
 class ItemTagsListPageItems<T extends IDBase> extends ListPageItems<ItemTags<T>> {

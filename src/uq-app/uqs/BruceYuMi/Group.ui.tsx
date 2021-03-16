@@ -42,7 +42,7 @@ const resRaw: Res<any> = {
 		Group: '股票组',
 		myAll: '我的自选',
 		Name: '组名',
-		myBlack: '不关注',
+		myBlack: '黑名单',
 	},
 	$en: {
 		myAll: 'My Selection',

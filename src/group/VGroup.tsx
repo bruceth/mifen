@@ -2,33 +2,43 @@ import React from "react";
 import { observer } from "mobx-react";
 import { DropdownAction, DropdownActions, List, VPage } from "tonva-react";
 import { CGroup } from "./CGroup";
-import { EnumGroupType, Stock } from "uq-app/uqs/BruceYuMi";
+import { Stock, StockValue } from "uq-app/uqs/BruceYuMi";
+import { renderStockRow } from "tool";
 
 export class VGroup extends VPage<CGroup> {
 	header() {
 		return React.createElement(observer(() => {
 			return <span className="ml-3">
-				组 - {this.controller.uqs.BruceYuMi.Group.t(this.controller.miGroup.name)}
+				组 - {this.controller.uqs.BruceYuMi.Group.t(this.controller.miGroup?.name)}
 			</span>;
 		}));
 	}
 	content() {
-		let {miGroup, onStockClick} = this.controller;
-		return <div>
-			<List items={miGroup.stocks} item={{onClick: onStockClick, render: this.renderStock}} />
-		</div>;
+		return React.createElement(observer(() => {
+			let {miGroup, onStockClick} = this.controller;
+			if (!miGroup) return <div>no group</div>;
+			return <div>
+				<List items={miGroup.stocks} item={{onClick: onStockClick, render: this.renderStock}} />
+			</div>;
+		}));
+	}
+
+	private onClickName = (stock:Stock) => {
+
 	}
 
 	private renderStock = (stock:Stock, index:number) => {
-		return <>{JSON.stringify(stock)}</>;
+		let inputSelect = <>select</>;
+		let right = <>right</>;
+		return renderStockRow(1, stock as Stock & StockValue, this.onClickName, inputSelect, right);
 	}
 
 	right() {
 		return React.createElement(observer(() => {
-			let {store, uqs} = this.controller.cApp;
-			let {BruceYuMi} = uqs;
-			let {Group} = BruceYuMi;
-			let groups = store.miGroups.groups.map(v => {
+			let {store} = this.controller.cApp;
+			let groups = store.miGroups.getMemuItems(this.controller.changeMiGroup);
+			/*
+			.groups.map(v => {
 				let {name, type} = v;
 				let icon = 'list-alt', iconClass:string = undefined;
 				switch (type) {
@@ -48,6 +58,7 @@ export class VGroup extends VPage<CGroup> {
 					iconClass,
 				};
 			});
+			*/
 			let actions: DropdownAction[] = [
 				{
 					caption: '管理自选组',

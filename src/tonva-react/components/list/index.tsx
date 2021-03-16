@@ -82,7 +82,6 @@ export class List extends React.Component<ListProps> {
         if (before === undefined) before = '-';
         if (loading === undefined) loading = () => <i className="fa fa-spinner fa-spin fa-2x fa-fw text-info" />;
         if (none === undefined) none = List.res.none;
-        //this.listBase.selectedItems = selectedItems;
         let {items, loading:isLoading} = this.listBase;
         function staticRow(row:StaticRow, type:string) {
             if (!row) return;

@@ -53,9 +53,8 @@ export class CHome extends CUqBase {
 		await this.stockGroup.loadItems();
 	}
 
-	async changeMiGroup(group: Group) {
-		let {id, name} = group;
-		this.miGroup = new MiGroup(name, id);
+	async changeMiGroup(miGroup: MiGroup) {
+		this.miGroup = miGroup;
 		await this.miGroup.loadItems();
 	}
 
@@ -148,11 +147,6 @@ export class CHome extends CUqBase {
 	}
 
 	tab = () => this.renderView(VHome);
-
-	openStockInfo = (item: NStockInfo) => {
-		let cStockInfo = this.newC(CStockInfo);
-		cStockInfo.start(item);
-	}
 
 	openMarketPE = () => {
 		let cm = this.newC(CMarketPE);

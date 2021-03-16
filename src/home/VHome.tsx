@@ -147,7 +147,7 @@ export class VHome extends VPage<CHome> {
 	}
 
 	protected onClickName = (item: NStockInfo) => {
-		this.controller.openStockInfo(item);
+		this.controller.cApp.showStock(item);
 	}
 
 	protected onSelected = async (item: any): Promise<void> => {

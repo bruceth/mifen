@@ -6,8 +6,8 @@ ID Account (
 
 -- user 账号跟Account绑定
 IX UserAccount (
-	id user,
-	id2 Account,
+	ix user,
+	id Account,
 );
 
 ID Holding (

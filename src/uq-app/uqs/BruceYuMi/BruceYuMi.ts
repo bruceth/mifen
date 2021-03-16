@@ -1,4 +1,4 @@
-//=== UqApp builder created on Sun Mar 14 2021 12:25:48 GMT-0400 (GMT-04:00) ===//
+//=== UqApp builder created on Mon Mar 15 2021 19:31:56 GMT-0400 (GMT-04:00) ===//
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { IDXValue, Uq, UqTuid, UqAction, UqQuery, UqID, UqIDX, UqIX } from "tonva-react";
 
@@ -50,7 +50,7 @@ export interface ParamWriteStock {
 		inc3: number;
 		inc4: number;
 		preInc: number;
-		marketValue: number;
+		volumn: number;
 	}[];
 
 }
@@ -94,6 +94,7 @@ export interface Stock {
 	code: string;
 	name: string;
 	search: string;
+	rawId: number;
 }
 
 export interface Market {
@@ -144,7 +145,7 @@ export interface StockValue {
 	inc3?: number|IDXValue;
 	inc4?: number|IDXValue;
 	preInc?: number;
-	marketValue?: number;
+	volumn?: number|IDXValue;
 }
 
 export interface AccountValue {
@@ -155,18 +156,18 @@ export interface AccountValue {
 }
 
 export interface UserAccount {
+	ix: number;
 	id: number;
-	id2: number;
 }
 
 export interface UserGroup {
+	ix: number;
 	id: number;
-	id2: number;
 }
 
 export interface GroupStock {
+	ix: number;
 	id: number;
-	id2: number;
 	order: number;
 }
 

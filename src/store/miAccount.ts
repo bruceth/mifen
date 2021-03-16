@@ -19,7 +19,7 @@ export class MiAccounts {
 		let param:ParamIX = {
 			IX: UserAccount,
 			IDX: [Account],
-			id: undefined,			// auto userId
+			ix: undefined,			// auto userId
 		};
 		let ret = await this.yumi.IX<Account>(param);
 		if (ret.length === 0) {
@@ -30,8 +30,8 @@ export class MiAccounts {
 				IX: UserAccount,
 				ID: Account,
 				values: [{
-					id: undefined, 
-					id2: {
+					ix: undefined, 
+					id: {
 						name: accountName, 
 					}
 				}]

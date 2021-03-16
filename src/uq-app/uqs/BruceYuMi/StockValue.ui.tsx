@@ -81,18 +81,18 @@ const fields = {
 		"widget": "updown",
 		"label": "PreInc"
 	} as FieldItemInt,
-	marketValue: {
-		"name": "marketValue",
+	volumn: {
+		"name": "volumn",
 		"type": "integer",
 		"isKey": false,
 		"widget": "updown",
-		"label": "MarketValue"
+		"label": "Volumn"
 	} as FieldItemInt,
 };
 /*==fields==*/
 
 export const fieldArr: FieldItem[] = [
-	fields.miRate, fields.ttm, fields.divident, fields.price, fields.roe, fields.inc1, fields.inc2, fields.inc3, fields.inc4, fields.preInc, fields.marketValue, 
+	fields.miRate, fields.ttm, fields.divident, fields.price, fields.roe, fields.inc1, fields.inc2, fields.inc3, fields.inc4, fields.preInc, fields.volumn, 
 ];
 
 export const ui: UI = {

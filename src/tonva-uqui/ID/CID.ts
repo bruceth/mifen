@@ -43,7 +43,7 @@ export class CID<T extends IDBase> extends Controller {
 
 	protected createFormView() {
 		let {ID, IDUI} = this.midID;
-		let {fieldCustoms, t} = IDUI;
+		let {fieldCustoms} = IDUI;
 		let formUI = new FormUI(ID.ui, fieldCustoms, ID.t);
 		this.cFormView = new CFormView(formUI);
 		this.cFormView.onSubmit = this.onSubmit;

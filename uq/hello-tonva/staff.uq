@@ -19,6 +19,6 @@ USER(UserStaff)
 
 -- user 账号跟Staff绑定
 IX UserStaff (
-	id user,
-	id2 Staff Index,
+	ix user,
+	id Staff Index,
 );

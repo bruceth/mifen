@@ -77,7 +77,7 @@ interface ParamPage {
 export interface ParamActIX<T> {
 	IX: IX;
 	ID?: ID;
-	values: {id:number, id2:number|T}[];
+	values: {ix:number, id:number|T}[];
 }
 
 export interface ParamActDetail<M,D> {
@@ -145,7 +145,8 @@ export interface ParamKeyID {
 
 export interface ParamIX {
 	IX: IX;
-	id: number | number[];
+	IX1?: IX;
+	ix: number | number[];
 	IDX?: (ID|IDX)[];
 	page?: ParamPage;
 }
@@ -220,7 +221,7 @@ export interface Uq {
 	ID<T>(param: ParamID): Promise<T[]>;
 	KeyID<T>(param: ParamKeyID): Promise<T[]>;
 	IX<T>(param: ParamIX): Promise<T[]>;
-	IXr<T> (param: ParamIX): Promise<T[]>; // IX id2 反查ID list
+	IXr<T> (param: ParamIX): Promise<T[]>; // IX id 反查IX list
 	KeyIX<T>(param: ParamKeyIX): Promise<T[]>;
 	IDLog<T> (param: ParamIDLog): Promise<T[]>;
 	IDSum<T> (param: ParamIDSum): Promise<T[]>;
@@ -849,21 +850,23 @@ export class UqMan {
 		return ret;
 	}
 	private IX = async (param: ParamIX): Promise<any[]> => {
-		let {IX, IDX} = param;
+		let {IX, IX1, IDX} = param;
 		//this.checkParam(null, IDX, IX, id, null, page);
 		let ret = await this.uqApi.post(IDPath('ix'), {
 			...param,
 			IX: entityName(IX),
+			IX1: entityName(IX1),
 			IDX: IDX?.map(v => entityName(v)),
 		});
 		return ret;
 	}
 	private IXr = async (param: ParamIX): Promise<any[]> => {
-		let {IX, IDX} = param;
+		let {IX, IX1, IDX} = param;
 		//this.checkParam(null, IDX, IX, id, null, page);
 		let ret = await this.uqApi.post(IDPath('ixr'), {
 			...param,
 			IX: entityName(IX),
+			IX1: entityName(IX1),
 			IDX: IDX?.map(v => entityName(v)),
 		});
 		return ret;

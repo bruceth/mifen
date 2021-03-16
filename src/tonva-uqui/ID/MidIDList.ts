@@ -35,23 +35,20 @@ export class MidIXIDList<T extends IXBase> extends MidIDList<T> {
 		super(uq, ID);
 		this.IX = IX;
 	}
-	/*
-	key:((item:T) => number|string) = item => {
-		return item.id2;
-	}
-	*/
 
 	protected async loadPageItems(pageStart:any, pageSize:number):Promise<T[]> {
 		let ret = await this.uq.IX<T>({
 			IX: this.IX,
 			IDX: [this.ID],
-			id: undefined,
+			ix: undefined,
 			page: {start:pageStart, size:pageSize},
 		});
+		/*
 		for (let item of ret) {
-			item.id = item.id2;
-			delete item.id2;
+			item.id = item.id;
+			delete item.id;
 		}
+		*/
 		return ret;
 	}
 }

@@ -40,7 +40,7 @@ export class VStockInfo extends VPage<CStockInfo> {
 	}
 
 	private page = observer(() => {
-		let { openMetaView, baseItem, onSelectTag, stockTags, isLogined } = this.controller;
+		let { openMetaView, baseItem, onStockInGroup, stockTags, isLogined } = this.controller;
 		let { name, code, day } = baseItem;
 		let viewMetaButton = <></>;
 		if (isLogined) {
@@ -48,8 +48,8 @@ export class VStockInfo extends VPage<CStockInfo> {
 		}
 		let right = stockTags && <button 
 			className="btn btn-sm mr-2 btn-outline-success bg-light align-self-center"
-			onClick={onSelectTag}>
-		{stockTags.length === 0? '加自选' : '设分组'}
+			onClick={onStockInGroup}>
+			{stockTags.length === 0? '加自选' : '设分组'}
 		</button>;
 		let headStr = name + ' ' + code;
 		if (day !== undefined) {

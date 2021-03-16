@@ -18,6 +18,7 @@ import { CHolding } from 'holding';
 import { Store } from 'store';
 import { MiNet } from '../net';
 import { CGroup } from '../group';
+import { CStockInfo, NStockInfo } from "stockinfo";
 
 const gaps = [10, 3,3,3,3,3,5,5,5,5,5,5,5,5,10,10,10,10,15,15,15,30,30,60];
 
@@ -102,5 +103,10 @@ export class CApp extends CUqApp {
 		}
 		catch {
 		}
+	}
+
+	showStock = (item: NStockInfo) => {
+		let cStockInfo = this.newC(CStockInfo);
+		cStockInfo.start(item);
 	}
 }

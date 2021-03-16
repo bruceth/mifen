@@ -172,8 +172,8 @@ function buildIXFieldArr(i:IX):string {
 	let ts = '';
 	for (let f of schema.fields) {
 		let {name} = f;
+		if (name === 'ix') continue;
 		if (name === 'id') continue;
-		if (name === 'id2') continue;
 		ts += `fields.${name}, `;
 	}
 	return ts;

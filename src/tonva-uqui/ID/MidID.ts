@@ -112,7 +112,7 @@ export class MidIXID<T extends IDBase> extends MidID<T> {
 			ID: this.ID,
 			IX: this.IX,
 			values: [
-				{id:undefined, id2:data}
+				{ix:undefined, id:data}
 			],
 		};
 		let ret = await this.uq.ActIX(param);

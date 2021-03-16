@@ -85,7 +85,7 @@ export class MidTagIDList<T extends IDBase> extends MidIDList<T> {
 		let result = await this.uq.IXr<T>({
 			IX: this.midTag.IX,
 			IDX: [this.ID],
-			id: this.ids,
+			ix: this.ids,
 			page: {start:pageStart, size:pageSize},
 		});
 		return result;

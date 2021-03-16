@@ -32,13 +32,13 @@ export class MidIXList<T extends IXBase> extends MidIDListBase<T> {
 		await this.IX.loadSchema();
 	}
 
-	key:((item:T) => number|string) = item => item.id2;
+	//key:((item:T) => number|string) = item => item.id 2;
 
 	protected async loadPageItems(pageStart:any, pageSize:number):Promise<T[]> {
 		let ret = await this.uq.IX<T>({
 			IX: this.IX,
 			IDX: this.ID? [this.ID] : undefined,
-			id: this.id,
+			ix: this.id,
 			page: {start:pageStart, size:pageSize},
 		});
 		return ret;
@@ -48,15 +48,15 @@ export class MidIXList<T extends IXBase> extends MidIDListBase<T> {
 		runInAction(() => {
 			let {_items} = this.listPageItems;
 			if (!_items) return;
-			let {id, id2} = item;
+			let {ix, id} = item;
 			if (id < 0) {
-				let index = _items.findIndex(v => v.id === -id && v.id2 === id2);
+				let index = _items.findIndex(v => v.id === -id && v.id === id);
 				if (index >= 0) _items.splice(index, 1);
 			}
 			else {
-				let ret = _items.find(v => v.id === id && v.id2 === id2);
+				let ret = _items.find(v => v.id === id && v.id === id);
 				if (!ret) {
-					_items.unshift({id, id2} as T);
+					_items.unshift({ix, id} as T);
 				}
 			}
 		});

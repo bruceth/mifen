@@ -95,8 +95,7 @@ export function calculateZZ3(data:number[]) {
 		return ret;
 
 	let funcz = (n:number, p:number) => {
-		if (p <= 0 || n <= 0)
-		return undefined;
+		if (p <= 0 || n <= 0) return undefined;
 		return ((n / p) - 1);
 	}
 	for (let i = 0; i < 4; ++i) {

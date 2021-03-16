@@ -1,31 +1,26 @@
 import { IObservableArray, observable } from "mobx";
+import { ID, ParamIX } from "tonva-react";
+import { IXBase } from "tonva-uqui/base";
 import { BruceYuMi } from "uq-app";
-import { Group, UqExt } from "uq-app/uqs/BruceYuMi";
+import { EnumGroupType, Stock, StockValue, UqExt } from "uq-app/uqs/BruceYuMi";
 import { MiGroup } from "./miGroup";
 
 const myAll = 'myAll';
 const myBlack = 'myBlack';
 
 export class MiGroups {
-	private yumi: UqExt;
+	private readonly yumi: UqExt;
+	private readonly ID: ID;
+	groupStocks: IXBase[];
 	readonly groups: IObservableArray<MiGroup>;
-	defaultGroup: MiGroup;
-	blackGroup: MiGroup;
+	groupAll: MiGroup;
+	groupBlack: MiGroup;
 
 	constructor(yumi: UqExt) {
 		this.yumi = yumi;
+		this.ID = yumi.Group;
 		this.groups = observable.array<MiGroup>([], { deep: true });
 	}
-
-	groupFromName(groupName:string) {
-		return this.groups.find(v => v.name === groupName);
-	}
-
-	groupFromId(id:number) {
-		return this.groups.find(v => v.id === id);
-	}
-
-	get group0() {return this.groups[0]}
 
 	getSelected(tags:{tag:number}[]) {
 		let ret = this.groups.filter(v => {
@@ -52,25 +47,34 @@ export class MiGroups {
 		return false;
 	}
 	
+	/*
 	isMyBlack(id:number): boolean {
 		if (!this.blackGroup) return false;
 		return this.blackGroup.exists(id);
 	}
+	*/
 
 	async load(): Promise<void> {
-		let ret = await this.yumi.IX<BruceYuMi.Group>({
-			IX: this.yumi.UserGroup,
-			IDX: [this.yumi.Group],
-			id: undefined,
-		});
+		let ret = await Promise.all([
+			this.yumi.IX<BruceYuMi.Group>({
+				IX: this.yumi.UserGroup,
+				IDX: [this.yumi.Group],
+				ix: undefined,
+			}),
+			this.yumi.IX<IXBase>({
+				IX: this.yumi.UserGroup,
+				IX1: this.yumi.GroupStock,
+				ix: undefined,
+			}),
+		]);
+		let [groups, groupStocks] = ret;
+		this.groupStocks = groupStocks;
 		let groupArr:BruceYuMi.Group[] = [];
-		if (ret.findIndex(v => v.type === BruceYuMi.EnumGroupType.all) < 0) {
-			//let no = await this.yumi.IDNO({ID: this.yumi.Group});
+		if (groups.findIndex(v => v.type === BruceYuMi.EnumGroupType.all) < 0) {
 			let no = undefined;
 			groupArr.push({no, name: myAll, type: BruceYuMi.EnumGroupType.all})
 		}
-		if (ret.findIndex(v => v.type === BruceYuMi.EnumGroupType.black) < 0) {
-			//let no = await this.yumi.IDNO({ID: this.yumi.Group});
+		if (groups.findIndex(v => v.type === BruceYuMi.EnumGroupType.black) < 0) {
 			let no = undefined;
 			groupArr.push({no, name: myBlack, type: BruceYuMi.EnumGroupType.black})
 		}
@@ -79,19 +83,58 @@ export class MiGroups {
 			await this.yumi.ActIX({
 				IX: this.yumi.UserGroup, 
 				ID: this.yumi.Group, 
-				values: groupArr.map(v => ({id:undefined, id2: v})),
+				values: groupArr.map(v => ({ix:undefined, id: v})),
 			});
-			ret = await this.yumi.IX<BruceYuMi.Group>({
+			groups = await this.yumi.IX<BruceYuMi.Group>({
 				IX: this.yumi.UserGroup,
 				IDX: [this.yumi.Group],
-				id: undefined,
+				ix: undefined,
 			});
 		}
-		let miGroups = (ret as Group[]).map(v => {
-			let {id, name} = v;
-			return new MiGroup(name, id);
+		let miGroups = groups.map(v => {
+			let g = new MiGroup(this, v);
+			let {type, name} = v;
+			switch (type) {
+				default:
+					g.tName = name;
+					return g;
+				case EnumGroupType.all: 
+					this.groupAll = g; 
+					break;
+				case EnumGroupType.black: 
+					this.groupBlack = g; 
+					break;
+			}
+			g.tName = this.yumi.Group.t(name);
+			return g;
 		});
 		this.groups.splice(0, this.groups.length, ...miGroups);
+	}
+
+	async loadGroupStocks(group:MiGroup):Promise<(Stock&StockValue)[]> {
+		let {id, type} = group;
+		switch (type) {
+			case EnumGroupType.all:
+			case EnumGroupType.black:
+				if (group.stocks) return;
+				let param:ParamIX = {
+					IX: this.yumi.GroupStock,
+					ix: id,
+					IDX: [this.yumi.Stock, this.yumi.StockValue],
+				}
+				let ret = await this.yumi.IX<(Stock&StockValue)>(param);
+				return ret;
+		}
+		if (group.stocks) return;
+		let ret = this.groupAll.stocks.filter(v => {
+			let stockId = v.id;
+			let ok = this.groupStocks.findIndex(gs => {
+				let {ix, id:gStockId} = gs;
+				return ix===id && gStockId===stockId;
+			}) >= 0;
+			return ok;
+		});
+		return ret;
 	}
 
 	private async checkDefaultTags(list:any[]): Promise<boolean> {
@@ -118,5 +161,29 @@ export class MiGroups {
 		return br;
 		*/
 		return false;
+	}
+
+	getMemuItems(action: (group: MiGroup) => Promise<void>) {
+		let groups = this.groups.map(v => {
+			let {name, type} = v;
+			let icon = 'list-alt', iconClass:string = undefined;
+			switch (type) {
+				case EnumGroupType.all:
+					icon = 'home';
+					iconClass = 'text-primary'
+					break;
+				case EnumGroupType.black:
+					icon = 'ban';
+					iconClass = 'text-black';
+					break;
+			}
+			return {
+				caption: this.ID.t(name) as string,
+				action: () => action(v),
+				icon,
+				iconClass,
+			};
+		});
+		return groups;
 	}
 }

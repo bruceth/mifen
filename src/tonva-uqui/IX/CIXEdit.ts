@@ -36,10 +36,10 @@ export class CIXEdit extends CIX<IXEditProps> {
 			// id negtive means delete
 			id = -id;
 		}
-		let id2Item = {id, id2: item.id};
-		param[IX.name] = [id2Item];
+		let idItem = {ix:id, id: item.id};
+		param[IX.name] = [idItem];
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		let ret = await this.midIX.uq.Acts(param);
-		this.cIXList.update(id2Item);
+		this.cIXList.update(idItem);
 	} 
 }
