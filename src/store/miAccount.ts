@@ -1,54 +1,90 @@
-import { makeObservable, observable, runInAction } from "mobx";
-import { ParamIX } from "tonva-react";
-import { AccountValue, UqExt } from "uq-app/uqs/BruceYuMi";
-import { Account } from "./types";
+import { IObservableArray, makeObservable, observable, runInAction } from "mobx";
+import { Account, AccountValue, Stock, StockValue, Holding, Portfolio } from "uq-app/uqs/BruceYuMi";
+import { MiAccounts } from "./miAccounts";
 
-export class MiAccounts {
-	private yumi: UqExt
-	accounts: (Account&AccountValue)[] = null;
+export class MiAccount  implements Account, AccountValue {
+	protected readonly miAccounts: MiAccounts;
+	id: number;
+	no: string;
+	name: string;
+	count: number;
+	mi: number;
+	market: number;
+	cash: number;
 
-	constructor(yumi: UqExt) {
+	stockHoldings: IObservableArray<HoldingStock> = null;
+
+	constructor(miAccounts: MiAccounts, account: Account&AccountValue) {
 		makeObservable(this, {
-			accounts: observable,
-		});
-		this.yumi = yumi;
+			stockHoldings: observable,
+			count: observable,
+			mi: observable,
+			market: observable,
+			cash: observable,
+		})
+		this.miAccounts = miAccounts;
+		Object.assign(this, account);
 	}
 
-	async load() {
-		let {Account, UserAccount} = this.yumi;
-		let param:ParamIX = {
-			IX: UserAccount,
-			IDX: [Account],
-			ix: undefined,			// auto userId
-		};
-		let ret = await this.yumi.IX<Account>(param);
-		if (ret.length === 0) {
-			// 没有持仓账号，则创建默认账号
-			//let accountNO = await Account.NO();
-			let accountName = '我的持仓组合';
-			let retActs = await this.yumi.ActIX({
-				IX: UserAccount,
-				ID: Account,
-				values: [{
-					ix: undefined, 
-					id: {
-						name: accountName, 
-					}
-				}]
-			});
-			//ret = await this.yumi.IDinIX(param);
-			ret.push({
-				id: retActs[0],
-				name: accountName,
-			} as any);
-		}
+	async loadItems() {
+		if (this.stockHoldings) return;
 		runInAction(() => {
-			if (this.accounts) {
-				this.accounts.splice(0, this.accounts.length, ...ret as unknown as (Account&AccountValue)[]);
+			this.stockHoldings = undefined;
+		});
+		let ret = await this.miAccounts.loadAccountHoldings(this);
+		if (!ret) ret = [];
+		runInAction(() => {
+			this.stockHoldings = observable(ret, {deep: false});
+			this.count = this.stockHoldings.length;
+		});
+	}
+
+	async addHolding(stock: Stock&StockValue, quantity: number) {
+		let stockId = stock.id;
+		let hs = new HoldingStock();
+		hs.id = 0;
+		hs.stock = stockId;
+		hs.stockObj = stock;
+		hs.quantity = quantity;
+		runInAction(() => {
+			let index = this.stockHoldings.findIndex(v => v.stock === stockId);
+			if (index < 0) {
+				this.stockHoldings.push(hs);
 			}
 			else {
-				this.accounts = ret as unknown as (Account&AccountValue)[];
+				let orgHs = this.stockHoldings[index];
+				orgHs.quantity += quantity;
 			}
+			this.recalc();
 		});
 	}
+
+	private recalc() {
+		this.count = this.stockHoldings.length;
+		let sumMi = 0, sumMarket = 0;
+		for (let sh of this.stockHoldings) {
+			let {quantity, stockObj} = sh;
+			let {price, miRate} = stockObj;
+			sumMi += quantity * miRate;
+			sumMarket += quantity * (price as number);
+		}
+		this.mi = sumMi;
+		this.market = sumMarket;
+	}
+
+	changeCash(delta: number) {
+		runInAction(() => {
+			if (!this.cash) this.cash = delta;
+			else this.cash += delta;
+		});
+	}
+}
+
+export class HoldingStock implements Holding, Portfolio {
+	id: number;
+	account: number;
+	stock: number;
+	order: number;
+	quantity: number;
+	stockObj: Stock & StockValue;
 }

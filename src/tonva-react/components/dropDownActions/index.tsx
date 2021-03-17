@@ -11,9 +11,11 @@ export interface DropdownAction {
 
 export interface DropdownActionsProps {
     icon?: string;
+	content?: string|JSX.Element;
     actions: DropdownAction[];
     isRight?: boolean;
 	className?: string;
+	containerClass?: string;
 	itemIconClass?: string;
 	itemCaptionClass?: string;
 }
@@ -57,7 +59,7 @@ export class DropdownActions extends React.Component<DropdownActionsProps, Dropd
     }
 
     render() {
-        let {icon, actions, isRight, className, itemIconClass, itemCaptionClass} = this.props;
+        let {icon, content, actions, isRight, className, containerClass, itemIconClass, itemCaptionClass} = this.props;
         if (isRight === undefined) isRight = true;
         let hasIcon = actions.some(v => {
 			if (!v) return false;
@@ -67,13 +69,14 @@ export class DropdownActions extends React.Component<DropdownActionsProps, Dropd
 		//isOpen={this.state.dropdownOpen} toggle={this.toggle}
 		let cn = className || 'cursor-pointer dropdown-toggle btn btn-sm';
 		//if (className) cn += className;
-        return <div className={'dropdown'}>
+        return <div className={classNames('dropdown', containerClass)}>
 			<button ref={v=>this.button=v} 
 				className={cn}
                 data-toggle="dropdown"
                 aria-expanded={dropdownOpen}
                 onClick={this.toggle}>
-                <i className={classNames('fa fa-fw ', 'fa-'+(icon||'ellipsis-v'))} />
+                <i className={classNames('fa fa-fw ', 'fa-'+(icon||'ellipsis-v'))} /> 
+				{content && <span className="ml-2">{content}</span>}
             </button>
             <div ref={v => this.menu=v} className={classNames({"dropdown-menu":true, "dropdown-menu-right":isRight, "show":dropdownOpen})}>
                 {

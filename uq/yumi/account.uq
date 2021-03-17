@@ -24,8 +24,13 @@ IDX AccountValue (
 	count SMALLINT,
 );
 
+IX AccountHolding (
+	ix,					-- account
+	id Holding,
+);
+
 IDX Portfolio (
-	id,
+	id,							-- Holding
 	quantity BIGINT LOG TRACK,
 );
 

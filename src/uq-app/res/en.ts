@@ -13,4 +13,7 @@ export const en = {
 
 	content: 'Content',
 	backend: 'Backend Management',
+
+	myAll: 'All My Stock',
+	myBlack: 'Block List',
 }

@@ -12,6 +12,16 @@ IX UserGroup (
 	id Group,
 );
 
+IX UserAllStock (
+	ix user,
+	id Stock,
+);
+
+IX UserBlockStock (
+	ix user,
+	id Stock,
+);
+
 IX GroupStock (
 	ix,				-- group
 	id,			-- Stock

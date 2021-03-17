@@ -1,7 +1,6 @@
 import { observer } from "mobx-react";
 import React from "react";
 import { VPage } from "tonva-react";
-import { EnumGroupType } from "uq-app/uqs/BruceYuMi";
 import { CGroup } from "./CGroup";
 
 export class VStockInGroup extends VPage<CGroup> {
@@ -16,7 +15,7 @@ export class VStockInGroup extends VPage<CGroup> {
 			let {id:stockId, name, code} = stock;
 			let {store} = cApp;
 			let {miGroups} = store;
-			let {groups, groupAll, groupBlack, groupStocks} = miGroups;
+			let {groups, groupStocks, groupMyAll, groupBlock } = miGroups;
 			let inGroup:{[groupId:number]:boolean} = {};
 			for (let gs of groupStocks) {
 				let {ix, id} = gs;
@@ -29,17 +28,13 @@ export class VStockInGroup extends VPage<CGroup> {
 				</div>
 				<div className="d-flex flex-wrap py-1 border-top border-bottom">
 					{groups.map(v => {
-						let {id, tName, type} = v;
-						switch (type) {
-							case EnumGroupType.all:
-							case EnumGroupType.black: return null;
-						}
+						let {id, name} = v;
 						return <label key={id} className="mb-0 w-8c px-3 py-2">
 							<input className="mr-1" 
 								type="checkbox" 
 								defaultChecked={inGroup[id]}
 								onChange={evt => setGroup(evt.currentTarget.checked, v)} />
-							{tName}
+							{name}
 						</label>;
 					})}
 				</div>
@@ -49,16 +44,16 @@ export class VStockInGroup extends VPage<CGroup> {
 							disabled={true}
 							defaultChecked={true}
 							onChange={evt => setMyAll(evt.currentTarget.checked)} />
-						{groupAll.tName}
+						{groupMyAll.name}
 					</label>
 				</div>
-				<div>
+				<div className="mt-2">
 					<label className="mb-0 w-8c px-3 py-2">
 						<input className="mr-1" type="checkbox"
 							onChange={evt => setBlock(evt.currentTarget.checked)} />
-						{groupBlack.tName}
+						{groupBlock.name}
 					</label>
-					<small className="text-muted">加入黑名单，选股时就不列出</small>
+					<small className="text-muted">选股时不列出</small>
 				</div>
 			</div>;
 		}));

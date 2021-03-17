@@ -1,25 +1,33 @@
 import { IObservableArray, observable } from "mobx";
-import { ID, ParamIX } from "tonva-react";
+import { ID, t } from "tonva-react";
 import { IXBase } from "tonva-uqui/base";
 import { BruceYuMi } from "uq-app";
 import { EnumGroupType, Stock, StockValue, UqExt } from "uq-app/uqs/BruceYuMi";
-import { MiGroup } from "./miGroup";
+import { GroupMyAll, GroupMyBlock, MiGroup } from "./miGroup";
 
-const myAll = 'myAll';
-const myBlack = 'myBlack';
+//const myAll = 'myAll';
+//const myBlack = 'myBlack';
 
 export class MiGroups {
 	private readonly yumi: UqExt;
 	private readonly ID: ID;
 	groupStocks: IXBase[];
 	readonly groups: IObservableArray<MiGroup>;
-	groupAll: MiGroup;
-	groupBlack: MiGroup;
+	//groupAll: MiGroup;
+	//groupBlack: MiGroup;
+	//stocksAll: IObservableArray<Stock & StockValue> = null;
+	//stocksBlock: IObservableArray<Stock & StockValue> = null;
+	//groupAllName: string|JSX.Element;
+	//groupBlockName: string|JSX.Element;
+	groupMyAll: MiGroup;
+	groupBlock: MiGroup;
 
 	constructor(yumi: UqExt) {
 		this.yumi = yumi;
 		this.ID = yumi.Group;
 		this.groups = observable.array<MiGroup>([], { deep: true });
+		this.groupMyAll = new GroupMyAll(this, t('myAll') as string);
+		this.groupBlock = new GroupMyBlock(this, t('myBlack') as string);
 	}
 
 	getSelected(tags:{tag:number}[]) {
@@ -56,6 +64,7 @@ export class MiGroups {
 
 	async load(): Promise<void> {
 		let ret = await Promise.all([
+			this.groupMyAll.loadItems(),
 			this.yumi.IX<BruceYuMi.Group>({
 				IX: this.yumi.UserGroup,
 				IDX: [this.yumi.Group],
@@ -67,8 +76,9 @@ export class MiGroups {
 				ix: undefined,
 			}),
 		]);
-		let [groups, groupStocks] = ret;
+		let [, groups, groupStocks] = ret;
 		this.groupStocks = groupStocks;
+		/*
 		let groupArr:BruceYuMi.Group[] = [];
 		if (groups.findIndex(v => v.type === BruceYuMi.EnumGroupType.all) < 0) {
 			let no = undefined;
@@ -91,42 +101,15 @@ export class MiGroups {
 				ix: undefined,
 			});
 		}
-		let miGroups = groups.map(v => {
-			let g = new MiGroup(this, v);
-			let {type, name} = v;
-			switch (type) {
-				default:
-					g.tName = name;
-					return g;
-				case EnumGroupType.all: 
-					this.groupAll = g; 
-					break;
-				case EnumGroupType.black: 
-					this.groupBlack = g; 
-					break;
-			}
-			g.tName = this.yumi.Group.t(name);
-			return g;
-		});
+		*/
+		let miGroups = groups.map(v => new MiGroup(this, v));
 		this.groups.splice(0, this.groups.length, ...miGroups);
 	}
 
 	async loadGroupStocks(group:MiGroup):Promise<(Stock&StockValue)[]> {
-		let {id, type} = group;
-		switch (type) {
-			case EnumGroupType.all:
-			case EnumGroupType.black:
-				if (group.stocks) return;
-				let param:ParamIX = {
-					IX: this.yumi.GroupStock,
-					ix: id,
-					IDX: [this.yumi.Stock, this.yumi.StockValue],
-				}
-				let ret = await this.yumi.IX<(Stock&StockValue)>(param);
-				return ret;
-		}
 		if (group.stocks) return;
-		let ret = this.groupAll.stocks.filter(v => {
+		let {id} = group;
+		let ret = this.groupMyAll.stocks.filter(v => {
 			let stockId = v.id;
 			let ok = this.groupStocks.findIndex(gs => {
 				let {ix, id:gStockId} = gs;
@@ -135,6 +118,84 @@ export class MiGroups {
 			return ok;
 		});
 		return ret;
+	}
+
+	async loadMyAll() {
+		let ret = await this.yumi.IX<(Stock&StockValue)>({
+			IX: this.yumi.UserAllStock,
+			IDX: [this.yumi.Stock, this.yumi.StockValue],
+			ix: undefined,
+		});
+		return ret;
+	}
+
+	async loadBlock() {
+		let ret = await this.yumi.IX<(Stock&StockValue)>({
+			IX: this.yumi.UserBlockStock,
+			IDX: [this.yumi.Stock, this.yumi.StockValue],
+			ix: undefined,
+		});
+		return ret;
+	}
+
+	async addStockToGroup(stock:Stock&StockValue, group: MiGroup) {
+		let {groupStocks, groupMyAll} = this;
+		let {stocks} = groupMyAll;
+		let stockId = stock.id;
+		let groupId = group.id;
+		await this.yumi.Acts({
+			groupStock: [{ix: groupId, id: stockId, order: undefined}],
+			userAllStock: [{ix: undefined, id: stockId}],
+		});
+		groupStocks.push({ix:groupId, id:stockId});
+		group.stocks?.push(stock);
+		let index = stocks.findIndex(v => v.id === stockId);
+		if (index < 0) stocks.push(stock);
+		group.calcCount();
+	}
+
+	async removeStockFromGroup(stock:Stock, group: MiGroup) {
+		let {groupStocks} = this;
+		let stockId = stock.id;
+		let groupId = group.id;
+		await this.yumi.Acts({
+			groupStock: [{ix: groupId, id: -stockId, order: undefined}],
+		});
+		for (let i=0; i<groupStocks.length; i++) {
+			let {ix, id} = groupStocks[i];				
+			if (id === stockId) {
+				if (ix === groupId) {
+					groupStocks.splice(i, 1);
+					if (group.stocks) {
+						let index = group.stocks.findIndex(v => v.id === stockId);
+						if (index >= 0) group.stocks.splice(index, 1);
+					}
+				}
+			}
+		}
+		group.calcCount();
+	}
+
+	stockInNGroup(stock:Stock): number {
+		let nGroup = 0;
+		let {groupStocks} = this;
+		let stockId = stock.id;
+		for (let i=0; i<groupStocks.length; i++) {
+			let {id} = groupStocks[i];				
+			if (id === stockId) ++nGroup;
+		}
+		return nGroup;
+	}
+
+	calcGroupStockCount(group: MiGroup): number {
+		if (!this.groupStocks) return;
+		let count = 0;
+		let groupId = group.id;
+		for (let gs of this.groupStocks) {
+			let {ix} = gs;
+			if (ix === groupId) ++count;
+		}
+		return count;
 	}
 
 	private async checkDefaultTags(list:any[]): Promise<boolean> {

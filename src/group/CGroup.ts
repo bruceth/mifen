@@ -1,30 +1,37 @@
 import { renderGroup } from "holding/renderGroup";
-import { makeObservable, observable } from "mobx";
+import { makeObservable, observable, runInAction } from "mobx";
+import { HoldingStock, MiAccount } from "store/miAccount";
 import { MiGroup } from "store/miGroup";
 import { IDUI } from "tonva-react";
 import { CID, MidIXID } from "tonva-uqui";
 import { Group, Stock, StockValue } from "uq-app/uqs/BruceYuMi";
 import { CApp, CUqBase } from "../uq-app";
-import { VGroup } from "./VGroup";
+import { VAccount } from "./VAccount";
+import { VBuy, VBuyNew, VCashAdjust, VCashIn, VCashOut, VSell } from "./VForm";
+import { VGroups } from "./VGroups";
 import { VStockInGroup } from "./VStockInGroup";
+import { VStockList } from "./VStockList";
 
 export class CGroup extends CUqBase {
-	miGroup: MiGroup;
+	miGroup: MiGroup = null;
 	stock: Stock & StockValue;
+	miAccount: MiAccount = null;
+	holdingStock: HoldingStock;
 
 	constructor(cApp: CApp) {
 		super(cApp);
 		makeObservable(this, {
 			miGroup: observable,
+			miAccount: observable,
 		});
 	}
 
 	async internalStart(param: any) {
-		this.openVPage(VGroup);
+		this.openVPage(VGroups);
 	}
 
 	tab = () => {
-		return this.renderView(VGroup);
+		return this.renderView(VGroups);
 	}
 
 	load = async () => {
@@ -32,13 +39,99 @@ export class CGroup extends CUqBase {
 		await this.miGroup?.loadItems();
 	}
 
+	showMiGroup = async (miGroup: MiGroup) => {
+		runInAction(() => {
+			this.miGroup = miGroup;
+			this.openVPage(VStockList);
+		});
+		await miGroup.loadItems();
+	}
+
+	showStocksAll = async () => {
+		let {miGroups} = this.cApp.store;
+		runInAction(() => {
+			this.miGroup =miGroups.groupMyAll;
+			this.openVPage(VStockList);	
+		})
+	}
+
+	showStocksBlock = async () => {
+		let {miGroups} = this.cApp.store;
+		let miGroup = miGroups.groupBlock;
+		runInAction(() => {
+			this.miGroup = miGroup;
+			this.openVPage(VStockList);
+		});
+		await miGroup.loadItems();
+	}
+
+	showAccount = async (item: MiAccount) => {
+		this.miAccount = item;
+		this.openVPage(VAccount);
+		await item.loadItems();
+	};
+	
+	showHolding = async (item: HoldingStock) => {
+		this.onStockClick(item.stockObj);
+	}
+
+	showBuy = async (item?: HoldingStock) => {
+		if (item) {
+			this.holdingStock = item;
+			this.openVPage(VBuy);
+		}
+		else {
+			this.holdingStock = undefined;
+			this.openVPage(VBuyNew);
+		}
+	}
+
+	submitBuy = async (value:number) => {
+		this.miAccount.addHolding(this.cApp.store.miGroups.groupMyAll.stocks[0], value);
+	}
+
+	showSell = async (item: HoldingStock) => {
+		this.holdingStock = item;
+		this.openVPage(VSell);
+	}
+
+	submitSell = async (value:number) => {
+
+	}
+	
+	showCashIn = async () => {
+		this.openVPage(VCashIn);
+	}
+
+	submitCashIn = async (value:number) => {
+		this.miAccount.changeCash(value);
+	}
+	
+	showCashOut = async () => {
+		this.openVPage(VCashOut);
+	}
+
+	submitCashOut = async (value:number) => {		
+		this.miAccount.changeCash(-value);
+	}
+	
+	showCashAdjust = async () => {
+		this.openVPage(VCashAdjust);
+	}
+
+	submitCashAdjust = async (value:number) => {
+		this.miAccount.changeCash(value);
+	}
+
 	changeMiGroup = async (miGroup: MiGroup) => {
-		this.miGroup = miGroup;
-		await this.miGroup.loadItems();
+		runInAction(() => {
+			this.miGroup = miGroup;
+		});
+		await miGroup.loadItems();
 	}
 
 	onStockClick = async (stock: Stock) => {
-		let {name, code, market, rawId} = stock;	  
+		let {name, code, market, rawId} = stock;
 		rawId = 1;
 		let date = new Date();
 		let year = date.getFullYear();
@@ -89,32 +182,11 @@ export class CGroup extends CUqBase {
 
 	setGroup = async (checked:boolean, group: MiGroup) => {
 		let {miGroups} = this.cApp.store;
-		let {groupStocks, groupAll, groupBlack} = miGroups;
-		let stockId = this.stock.id;
-		let groupId = group.id;
 		if (checked === true) {
-			groupStocks.push({ix:groupId, id:stockId});
-			group.stocks?.push(this.stock as any);
-			let index = groupAll.stocks.findIndex(v => v.id === stockId);
-			if (index < 0) groupAll.stocks.push(this.stock);
+			await miGroups.addStockToGroup(this.stock, group);
 		}
 		else {
-			let nGroup = 0; // 在组数
-			for (let i=0; i<groupStocks.length; i++) {
-				let {ix, id} = groupStocks[i];				
-				if (id === stockId) {
-					if (ix === groupId) {
-						groupStocks.splice(i, 1);
-						if (group.stocks) {
-							let index = group.stocks.findIndex(v => v.id === stockId);
-							if (index >= 0) group.stocks.splice(index, 1);
-						}
-					}
-					if (ix !== groupAll.id && ix !== groupBlack.id) {
-						++nGroup;
-					}
-				}
-			}
+			await miGroups.removeStockFromGroup(this.stock, group);
 		}
 	}
 
@@ -122,7 +194,10 @@ export class CGroup extends CUqBase {
 		alert('my All');
 	}
 
-	setBlock = (checked: boolean) => {
+	setBlock = async (checked: boolean) => {
+		let {store} = this.cApp;
+		// block 操作之前，确保载入。还有显示之前，确保载入
+		await store.miGroups.loadBlock();
 		alert('block');
 	}
 

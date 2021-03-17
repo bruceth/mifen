@@ -10,7 +10,7 @@ import { CSelectStock } from 'selectStock';
 import { Stock, StockGroup, Store } from '../store';
 import { makeObservable, observable } from 'mobx';
 import { CID, MidIXID } from 'tonva-uqui';
-import { EnumGroupType, Group } from 'uq-app/uqs/BruceYuMi';
+import { Group } from 'uq-app/uqs/BruceYuMi';
 import { renderGroup } from 'holding/renderGroup';
 import { IDUI } from 'tonva-react';
 import { MiGroup } from 'store/miGroup';

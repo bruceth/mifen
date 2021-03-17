@@ -1,4 +1,4 @@
-//=== UqApp builder created on Mon Mar 15 2021 19:31:56 GMT-0400 (GMT-04:00) ===//
+//=== UqApp builder created on Tue Mar 16 2021 09:29:57 GMT-0400 (GMT-04:00) ===//
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { IDXValue, Uq, UqTuid, UqAction, UqQuery, UqID, UqIDX, UqIX } from "tonva-react";
 
@@ -171,6 +171,16 @@ export interface GroupStock {
 	order: number;
 }
 
+export interface UserBlockStock {
+	ix: number;
+	id: number;
+}
+
+export interface UserAllStock {
+	ix: number;
+	id: number;
+}
+
 export interface ParamActs {
 	account?: Account[];
 	holding?: Holding[];
@@ -186,6 +196,8 @@ export interface ParamActs {
 	userAccount?: UserAccount[];
 	userGroup?: UserGroup[];
 	groupStock?: GroupStock[];
+	userBlockStock?: UserBlockStock[];
+	userAllStock?: UserAllStock[];
 }
 
 
@@ -210,4 +222,6 @@ export interface UqExt extends Uq {
 	UserAccount: UqIX<any>;
 	UserGroup: UqIX<any>;
 	GroupStock: UqIX<any>;
+	UserBlockStock: UqIX<any>;
+	UserAllStock: UqIX<any>;
 }

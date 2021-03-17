@@ -5,7 +5,7 @@ import { MiConfigs, RegressionConfig, Stock, StockFindConfig } from "./types";
 import { StockGroups } from "./stockGroups";
 import { Accounts } from "./accounts";
 import { UQs } from "uq-app";
-import { MiAccounts } from "./miAccount";
+import { MiAccounts } from "./miAccounts";
 import { MiGroups } from "./miGroups";
 
 export class Store {

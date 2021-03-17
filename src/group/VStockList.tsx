@@ -5,20 +5,16 @@ import { CGroup } from "./CGroup";
 import { Stock, StockValue } from "uq-app/uqs/BruceYuMi";
 import { renderStockRow } from "tool";
 
-export class VGroup extends VPage<CGroup> {
+export class VStockList extends VPage<CGroup> {
 	header() {
-		return React.createElement(observer(() => {
-			return <span className="ml-3">
-				组 - {this.controller.uqs.BruceYuMi.Group.t(this.controller.miGroup?.name)}
-			</span>;
-		}));
+		return this.controller.miGroup.name;
 	}
 	content() {
 		return React.createElement(observer(() => {
 			let {miGroup, onStockClick} = this.controller;
-			if (!miGroup) return <div>no group</div>;
+			let {stocks} = miGroup;
 			return <div>
-				<List items={miGroup.stocks} item={{onClick: onStockClick, render: this.renderStock}} />
+				<List items={stocks} item={{onClick: onStockClick, render: this.renderStock}} />
 			</div>;
 		}));
 	}

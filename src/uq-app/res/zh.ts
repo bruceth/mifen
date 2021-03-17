@@ -13,4 +13,7 @@ export const zh = {
 
 	content: '内容',
 	backend: '后台管理',
+
+	myAll: '自选股',
+	myBlack: '黑名单',
 }

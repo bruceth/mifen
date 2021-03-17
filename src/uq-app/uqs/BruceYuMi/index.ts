@@ -13,6 +13,8 @@ import * as AccountValue from './AccountValue.ui';
 import * as UserAccount from './UserAccount.ui';
 import * as UserGroup from './UserGroup.ui';
 import * as GroupStock from './GroupStock.ui';
+import * as UserBlockStock from './UserBlockStock.ui';
+import * as UserAllStock from './UserAllStock.ui';
 
 export function setUI(uq: Uq) {
 	Object.assign(uq.Account, Account);
@@ -29,5 +31,7 @@ export function setUI(uq: Uq) {
 	Object.assign(uq.UserAccount, UserAccount);
 	Object.assign(uq.UserGroup, UserGroup);
 	Object.assign(uq.GroupStock, GroupStock);
+	Object.assign(uq.UserBlockStock, UserBlockStock);
+	Object.assign(uq.UserAllStock, UserAllStock);
 }
 export * from './BruceYuMi';

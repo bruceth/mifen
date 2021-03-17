@@ -1,30 +1,49 @@
-import { IObservableArray, makeObservable, observable} from "mobx";
+import { IObservableArray, makeObservable, observable, runInAction} from "mobx";
 import { EnumGroupType, Group, Stock, StockValue } from "uq-app/uqs/BruceYuMi";
 import { MiGroups } from "./miGroups";
 import { sortStocks } from "./sortStocks";
 
 export class MiGroup implements Group {
-	private readonly miGroups: MiGroups;
+	protected readonly miGroups: MiGroups;
 	id: number;
 	name: string;
-	tName: string|JSX.Element;
+	count: number;
 	type: EnumGroupType;
 	stocks: IObservableArray<Stock & StockValue> = null;
 
 	constructor(miGroups: MiGroups, group:Group) {
 		makeObservable(this, {
 			stocks: observable,
+			count: observable,
 		});
 		this.miGroups = miGroups;
 		Object.assign(this, group);
-		//this.stocks = observable.array<Stock & StockValue>([], { deep: true });
+		this.calcCount();
 	}
 
 	async loadItems() {
-		let ret = await this.miGroups.loadGroupStocks(this);
-		if (!ret) return;
-		//this.stocks.spliceWithArray(0, this.stocks.length, ret);
-		this.stocks = observable(ret, {deep: false});
+		if (this.stocks) return;
+		runInAction(() => {
+			this.stocks = undefined;
+		});
+		let ret = await this.internalLoad();
+		runInAction(() => {
+			this.stocks = observable(ret, {deep: false});
+			this.count = this.stocks.length;
+		});
+	}
+
+	protected async internalLoad() {
+		return await this.miGroups.loadGroupStocks(this);
+	}
+
+	calcCount() {
+		runInAction(() => {
+			this.count = this.stocks?
+				this.stocks.length
+				:
+				this.miGroups.calcGroupStockCount(this);
+		})
 	}
 
 	sort(sortType: string) {
@@ -63,5 +82,25 @@ export class MiGroup implements Group {
 			if (stock.id === stockId) return true;
 		}
 		return false;
+	}
+}
+
+export class GroupMyAll extends MiGroup {
+	constructor(miGroups: MiGroups, name:string) {
+		super(miGroups, {name, type: undefined});
+	}
+
+	protected async internalLoad() {
+		return await this.miGroups.loadMyAll();
+	}
+}
+
+export class GroupMyBlock extends MiGroup {
+	constructor(miGroups: MiGroups, name:string) {
+		super(miGroups, {name, type: undefined});
+	}
+
+	protected async internalLoad() {
+		return await this.miGroups.loadBlock();
 	}
 }

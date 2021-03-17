@@ -2,7 +2,7 @@ import { CApp, CUqBase } from "../uq-app";
 import { Account, AccountValue } from "../uq-app/uqs/BruceYuMi";
 import { VHolding } from "./VHolding";
 import { VAccount } from "./VAccount";
-import { MiAccounts } from "store/miAccount";
+import { MiAccounts } from "store/miAccounts";
 import { makeObservable, observable } from "mobx";
 import { res } from "./res";
 
