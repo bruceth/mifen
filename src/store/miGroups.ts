@@ -61,6 +61,9 @@ export class MiGroups {
 		return this.blackGroup.exists(id);
 	}
 	*/
+	stockFromId(stockId: number): Stock&StockValue {
+		return this.groupMyAll.stockFromId(stockId);
+	}
 
 	async load(): Promise<void> {
 		let ret = await Promise.all([

@@ -46,6 +46,10 @@ export class MiGroup implements Group {
 		})
 	}
 
+	stockFromId(stockId: number): Stock&StockValue {
+		return this.stocks.find(v => v.id === stockId);
+	}
+
 	sort(sortType: string) {
 		//this.sortType = sortType;
 		sortStocks(sortType, this.stocks);

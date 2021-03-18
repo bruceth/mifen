@@ -1,16 +1,19 @@
 import { IObservableArray, makeObservable, observable, runInAction } from "mobx";
 import { ParamIX } from "tonva-react";
-import { AccountValue, Account, UqExt } from "uq-app/uqs/BruceYuMi";
+import { AccountValue, Account, UqExt, Stock, StockValue } from "uq-app/uqs/BruceYuMi";
 import { HoldingStock, MiAccount } from "./miAccount";
+import { Store } from "./store";
 
 export class MiAccounts {
+	private store: Store;
 	private yumi: UqExt
 	accounts: IObservableArray<MiAccount> = null;
 
-	constructor(yumi: UqExt) {
+	constructor(store: Store, yumi: UqExt) {
 		makeObservable(this, {
 			accounts: observable,
 		});
+		this.store = store;
 		this.yumi = yumi;
 	}
 
@@ -65,4 +68,7 @@ export class MiAccounts {
 		return undefined as any;
 	}
 
+	stockFromId(stockId: number): Stock&StockValue {
+		return this.store.stockFromId(stockId);
+	}
 }

@@ -9,7 +9,10 @@ export class VAccount extends VPage<CGroup> {
 	content() {
 		return React.createElement(observer(() => {
 			function renderValue(caption:string, value:number) {
-				return <span className="mr-3"><small className="text-muted">{caption}: </small>{value??0}</span>;
+				return <div className="mx-1 border rounded w-min-5c px-1 py-2">
+					<small className="text-muted">{caption}</small>
+					<div>{new Intl.NumberFormat('zh-CN', { maximumSignificantDigits: 3 }).format(value??0)}</div>
+				</div>;
 			}
 			let {miAccount, showBuy, showCashIn, showCashOut, showCashAdjust} = this.controller;
 			let {no, name, mi, market, cash, stockHoldings} = miAccount;
@@ -23,9 +26,9 @@ export class VAccount extends VPage<CGroup> {
 					<LMR right={<small className="text-muted">组合编号: {no}</small>}>
 						{name}
 					</LMR>
-					<div className="my-2">
-						{renderValue('总米值', mi as number)}
-						{renderValue('股票市值', market as number)}
+					<div className="my-2 text-center d-flex justify-content-center">
+						{renderValue('米值', mi as number)}
+						{renderValue('市值', market as number)}
 						{renderValue('现金', cash as number)}
 					</div>
 				</div>
@@ -51,17 +54,17 @@ export class VAccount extends VPage<CGroup> {
 		return <div className="px-3 py-2">
 			<div className="d-flex cursor-pointer flex-grow-1"
 				 onClick={() => showHolding(holding)}>
-				<div className="mr-auto">
+				<div className="mr-auto w-min-4c">
 					<div className="small text-muted">{code}</div>
 					<b>{name}</b> 
 				</div>
-				<div className="d-flex flex-sm-row flex-wrap">
+				<div className="d-flex flex-sm-row flex-wrap justify-content-end">
 					{this.renderValue('股数', quantity)}
-					{this.renderValue('米值', quantity * miRate, 2)}
-					{this.renderValue('市值', quantity * (price as number), 2)}
+					{this.renderValue('米值', quantity * (price as number) * miRate / 100)}
+					{this.renderValue('市值', quantity * (price as number))}
 				</div>
 			</div>
-			<div className="flex-column flex-sm-row ml-5 d-flex">
+			<div className="flex-column flex-sm-row ml-3 ml-sm-5 d-flex w-min-3-5c">
 				<button className="btn btn-sm btn-outline-info mb-2 mb-sm-0"
 					onClick={() => showBuy(holding)}>加买</button>
 				<button className="ml-0 ml-sm-2 btn btn-sm btn-outline-info"

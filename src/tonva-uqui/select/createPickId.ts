@@ -1,11 +1,12 @@
-import { ID, Uq } from "tonva-react";
+import { Context, ID, PickId, Uq } from "tonva-react";
 import { CIDSelect,MidIDSelectList } from "./CIDSelect";
 
-export function createPickId(uq: Uq, ID: ID): () => Promise<any> {
-	async function pickId() {
+export function createPickId(uq: Uq, ID: ID): PickId {
+	async function pickId(context:Context, name: string, value: number):Promise<any> {
 		let mid: MidIDSelectList<any> = new MidIDSelectList(uq, ID);
 		let cIDSelect = new CIDSelectInPickId(mid);
-		return cIDSelect.call();
+		let ret = await cIDSelect.call<any>();
+		return ret;
 	}
 	return pickId;
 }
@@ -17,7 +18,9 @@ export class CIDSelectInPickId extends CIDSelect<any, MidIDSelectList<any>> {
 	}
 
 	private onSelectChange = (item:any, isSelected:boolean) => {
+		this.selectedItem = item;
 		this.closePage();
-		this.returnCall(item);
+		// closePage时，returnCall已经被调用了
+		// this.returnCall(item);
 	}
 }

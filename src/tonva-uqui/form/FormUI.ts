@@ -1,4 +1,4 @@
-import { ChangedHandler, ChangingHandler, FieldCustoms, FieldItem, FieldItemId, FieldItemString, ID, TFunc, UI } from "tonva-react";
+import { ChangedHandler, ChangingHandler, FieldCustoms, FieldItem, FieldItemId, FieldItemString, ID, PickId, TFunc, UI } from "tonva-react";
 import { createPickId } from '../select';
 
 export class FormUI {
@@ -50,7 +50,7 @@ export class FormUI {
 		*/
 	}
 
-	setIDUi(fieldName:string, pickId: () => Promise<any>, render: (values:any) => JSX.Element) {
+	setIDUi(fieldName:string, pickId: PickId, render: (values:any) => JSX.Element) {
 		let field = this.fields[fieldName];
 		if (field === undefined) {
 			alert(`${fieldName} not defined in UI`);

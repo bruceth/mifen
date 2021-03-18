@@ -1,12 +1,13 @@
 import { makeObservable, observable } from "mobx";
 import { MiNet } from "../net";
 import { defaultGroupName } from "../consts";
-import { MiConfigs, RegressionConfig, Stock, StockFindConfig } from "./types";
+import { MiConfigs, RegressionConfig, Stock as StockType, StockFindConfig } from "./types";
 import { StockGroups } from "./stockGroups";
 import { Accounts } from "./accounts";
 import { UQs } from "uq-app";
 import { MiAccounts } from "./miAccounts";
 import { MiGroups } from "./miGroups";
+import { Stock, StockValue } from "uq-app/uqs/BruceYuMi";
 
 export class Store {
 	private miNet: MiNet;
@@ -31,7 +32,7 @@ export class Store {
 		this.uqs = uqs;
 		this.stockGroups = new StockGroups(miNet);
 		this.accounts = new Accounts(miNet);
-		this.miAccounts = new MiAccounts(uqs.BruceYuMi);
+		this.miAccounts = new MiAccounts(this, uqs.BruceYuMi);
 		this.miGroups = new MiGroups(uqs.BruceYuMi);
 	}
 
@@ -49,6 +50,11 @@ export class Store {
 		let name = this.config.groupName;
 		return this.stockGroups.groupFromName(name);
 	}
+
+	stockFromId(stockId: number): Stock&StockValue {
+		return this.miGroups.stockFromId(stockId);
+	}
+
 	/*
 	@computed get tagID(): number {
 		if (this.stockGroups) {
@@ -276,7 +282,7 @@ export class Store {
 	}
 	*/
 
-	async addTagStock(stock: Stock) {
+	async addTagStock(stock: StockType) {
 		/*
 		if (this.userTag && this.userTag.tagID === tagid) {
 			if (tagid === this.blackListTagID) {
@@ -301,7 +307,7 @@ export class Store {
 	}
 	*/
 
-	async removeTagStock(stock: Stock) {
+	async removeTagStock(stock: StockType) {
 		await this.stockGroups.defaultGroup.removeStock(stock);
 		/*
 		if (tagid === this.blackListTagID) {

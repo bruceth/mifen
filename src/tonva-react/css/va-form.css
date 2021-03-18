@@ -111,6 +111,15 @@
 .w-max-3c {
   max-width: 3rem !important;
 }
+.w-3-5c {
+  width: 3.5rem !important;
+}
+.w-min-3-5c {
+  min-width: 3.5rem !important;
+}
+.w-max-3-5c {
+  max-width: 3.5rem !important;
+}
 .w-4c {
   width: 4rem !important;
 }

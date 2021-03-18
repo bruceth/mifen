@@ -45,11 +45,12 @@ export interface UiImageItem extends UiItem {
     size: 'sm' | 'lg';
 }
 
+export type PickId = (context:Context, name:string, value:number) => Promise<any>;
 export interface UiIdItem extends UiItem {
     widget: 'id';
     placeholder?: string | JSX.Element;
     //Templet?: (context:Context, name:string, value:number) => JSX.Element;
-    pickId?: (context:Context, name:string, value:number) => Promise<any>;
+    pickId?: PickId;
 }
 
 export interface UiInputItem extends UiItem {

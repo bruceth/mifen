@@ -4,6 +4,7 @@ import { HoldingStock, MiAccount } from "store/miAccount";
 import { MiGroup } from "store/miGroup";
 import { IDUI } from "tonva-react";
 import { CID, MidIXID } from "tonva-uqui";
+import { createPickId } from "tonva-uqui/select";
 import { Group, Stock, StockValue } from "uq-app/uqs/BruceYuMi";
 import { CApp, CUqBase } from "../uq-app";
 import { VAccount } from "./VAccount";
@@ -75,6 +76,11 @@ export class CGroup extends CUqBase {
 		this.onStockClick(item.stockObj);
 	}
 
+	createPickStockId() {
+		let yumi = this.uqs.BruceYuMi;
+		return createPickId(yumi, yumi.Stock);
+	}
+
 	showBuy = async (item?: HoldingStock) => {
 		if (item) {
 			this.holdingStock = item;
@@ -86,8 +92,13 @@ export class CGroup extends CUqBase {
 		}
 	}
 
-	submitBuy = async (value:number) => {
-		this.miAccount.addHolding(this.cApp.store.miGroups.groupMyAll.stocks[0], value);
+	submitBuyNew = async (stockId: number, price:number, quantity:number) => {
+		this.miAccount.buyHolding(stockId, price, quantity);
+		//this.cApp.store.miGroups.groupMyAll.stocks[0], value);
+	}
+
+	submitBuy = async (price:number, quantity:number) => {
+		this.miAccount.buyHolding(this.holdingStock.stock, price, quantity);
 	}
 
 	showSell = async (item: HoldingStock) => {
@@ -95,8 +106,8 @@ export class CGroup extends CUqBase {
 		this.openVPage(VSell);
 	}
 
-	submitSell = async (value:number) => {
-
+	submitSell = async (price:number, quantity:number) => {
+		this.miAccount.sellHolding(this.holdingStock.stock, price, quantity);
 	}
 	
 	showCashIn = async () => {
@@ -104,7 +115,7 @@ export class CGroup extends CUqBase {
 	}
 
 	submitCashIn = async (value:number) => {
-		this.miAccount.changeCash(value);
+		this.miAccount.cashIn(value);
 	}
 	
 	showCashOut = async () => {
@@ -112,7 +123,7 @@ export class CGroup extends CUqBase {
 	}
 
 	submitCashOut = async (value:number) => {		
-		this.miAccount.changeCash(-value);
+		this.miAccount.cashOut(value);
 	}
 	
 	showCashAdjust = async () => {
@@ -120,7 +131,7 @@ export class CGroup extends CUqBase {
 	}
 
 	submitCashAdjust = async (value:number) => {
-		this.miAccount.changeCash(value);
+		this.miAccount.cashAdjust(value);
 	}
 
 	changeMiGroup = async (miGroup: MiGroup) => {

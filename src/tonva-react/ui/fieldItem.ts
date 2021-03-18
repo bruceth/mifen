@@ -1,4 +1,4 @@
-import { ChangedHandler, ChangingHandler } from "../components";
+import { ChangedHandler, ChangingHandler, PickId } from "../components";
 import { ID } from "../uq";
 import { FieldUIType } from "./fieldUI";
 
@@ -27,7 +27,7 @@ export interface FieldItemObject extends FieldItem {
 
 export interface FieldItemId extends FieldItem {
     type: 'id';
-	pickId: (values:any) => Promise<any>;
+	pickId: PickId;
 	render: (values:any) => JSX.Element;
 }
 

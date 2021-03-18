@@ -18,6 +18,7 @@ export interface FormProps {
     onButtonClick?: FormButtonClick;
     onEnter?: InputEnter;
     fieldLabelSize?: number;            // col-sm-2 for label
+	fieldLabelAlign?: 'left'|'center'|'right';
     requiredFlag?: boolean;             // default=true
     beforeShow?: (formContext:FormContext) => void;
     res?: FormRes;
@@ -218,7 +219,7 @@ export class Form extends React.Component<FormProps> {
         </form>;
     }
     protected DefaultFieldContainer = (label:string|JSX.Element, content:JSX.Element): JSX.Element => {
-        let {fieldLabelSize} = this.props;
+        let {fieldLabelSize, fieldLabelAlign} = this.props;
 
         if (fieldLabelSize > 0) {
             let labelView:any;
@@ -226,7 +227,12 @@ export class Form extends React.Component<FormProps> {
                 fieldLabelSize = 0;
             }
             else {
-                labelView = <label className={classNames('col-sm-' + fieldLabelSize, 'col-form-label')}>{label}</label>
+				let cnAlign: string;
+				switch (fieldLabelAlign) {
+					case 'right': cnAlign = 'text-sm-right'; break;
+					case 'center': cnAlign = 'text-sm-center'; break;
+				}
+                labelView = <label className={classNames('col-sm-' + fieldLabelSize, 'col-form-label', cnAlign)}>{label}</label>
             }
             let fieldCol = 'col-sm-' + (12 - fieldLabelSize);
             return <div className="form-group row">

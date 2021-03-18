@@ -27,7 +27,9 @@ export class NumberWidget extends TextWidget {
     }
 
     protected parse(value:any):any {
-        if (value === undefined || value === null) return;
+        if (value === undefined 
+			|| value === null 
+			|| (value as string).trim().length === 0) return;
         return Number(value);
     }
 }

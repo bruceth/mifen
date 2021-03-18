@@ -5,6 +5,7 @@ import { MidList } from "./MidList";
 
 export class CList<T> extends Controller {
 	protected readonly midList: MidList<T>;
+	protected selectedItem: T;
 	constructor(midList: MidList<T>) {
 		super();
 		this.setRes(midList.res);
@@ -25,7 +26,7 @@ export class CList<T> extends Controller {
 		};
 		pageItems.first(this.firstParam);
 		let page = new ListPage(props);
-		this.openPage(page.render(), () => this.returnCall(undefined));
+		this.openPage(page.render(), () => this.returnCall(this.selectedItem));
 	}
 
 	protected get firstParam():any {return undefined;}

@@ -1,4 +1,4 @@
-import { ButtonSchema, FieldItem, FieldItemId, FieldItemString, IDUI, Prop, Schema, UI, UiButton, UiSchema, Uq } from "tonva-react";
+import { ButtonSchema, FieldItem, FieldItemId, FieldItemString, IDUI, PickId, Prop, Schema, UI, UiButton, UiSchema, Uq } from "tonva-react";
 
 export abstract class Mid {
 	readonly uq: Uq;
@@ -63,7 +63,7 @@ export abstract class Mid {
 		return ret;
 	}
 	
-	protected setIDUi(fieldItem:FieldItem, pickId: () => Promise<any>, render: (values:any) => JSX.Element) {
+	protected setIDUi(fieldItem:FieldItem, pickId: PickId, render: (values:any) => JSX.Element) {
 		if (fieldItem.type !== 'id') {
 			alert(`${fieldItem.name} is not id UI`);
 			return;
