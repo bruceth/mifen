@@ -12,6 +12,13 @@
 			"webRoot": "${workspaceFolder}"
 		},
 		{
+			"type": "chrome",
+			"request": "launch",
+			"name": "Launch Chrome localdata",
+			"url": "http://localhost:3391#localmiserver",
+			"webRoot": "${workspaceFolder}"
+		},
+		{
 			"name": "Build uq-app",
 			"type": "node",
 			"request": "launch",

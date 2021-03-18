@@ -1,6 +1,5 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import * as React from 'react';
-import classNames from 'classnames';
 import { VPage, Page, View, List, LMR, left0, FA } from 'tonva-react';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
@@ -31,7 +30,7 @@ export class VStockInfo extends VPage<CStockInfo> {
 
 	checkShowLater = (e:any)=> {
 		let check = e.target.checked as boolean;
-		this.controller.loadHistoryData(check);
+		//this.controller.loadHistoryData(check);
 	}
 
 	checkDefaultTag = (e:any)=> {
@@ -66,7 +65,6 @@ export class VStockInfo extends VPage<CStockInfo> {
 		return <>
 		{this.dateHead()}
 		{React.createElement(this.baseInfo)}
-		{React.createElement(this.historyChart)}
 		{React.createElement(this.predictInfo)}
 		{React.createElement(this.predictSeasonEarning)}
 		{React.createElement(this.seasonEarning)}
@@ -133,8 +131,9 @@ export class VStockInfo extends VPage<CStockInfo> {
 
 	private baseInfo = observer(() => {
 		let {baseItem, isMySelect} = this.controller;
-		let { id, name, code, symbol, pe, roe, price, order, divyield, e, capital, bonus } = baseItem;
-
+		let { id, name, market, code, symbol, pe, roe, price, order, divyield, e, capital, bonus } = baseItem;
+        let url = market === 'HK' ? `https://xueqiu.com/S/${code}` : `https://finance.sina.com.cn/realstock/company/${symbol}/nc.shtml`;
+    
 		//let list = this.controller.cApp.store.defaultList;
 		//let fInList = list.findIndex(v=>v===id) >= 0;
 		//let fInList = this.controller.cApp.store.isMySelect(id);
@@ -146,101 +145,94 @@ export class VStockInfo extends VPage<CStockInfo> {
 			<div className="px-3 c8">{GFunc.caption('股息率')}{GFunc.percentToFixString(divyield)}</div>
 			<div className="px-3 c8">{GFunc.caption('ROE')}{GFunc.percentToFixString(roe)}</div>
 			<div className="px-3 c8">{GFunc.caption('价格')}{GFunc.numberToFixString(price)}</div>
-			<a className="px-3 text-info" href={`https://finance.sina.com.cn/realstock/company/${symbol}/nc.shtml`} target="_blank" rel="noopener noreferrer" onClick={(e) =>{e.stopPropagation() }}>新浪财经</a>
+			<a className="px-3 text-info" href={url} target="_blank" rel="noopener noreferrer" onClick={(e) =>{e.stopPropagation() }}>新浪财经</a>
 		</div>    
 		</div>
 		</LMR>;
 	});
 
-	protected onClickName = async (item: NStockInfo) => {
-		let { symbol } = item;
-		let url = `http://finance.sina.com.cn/realstock/company/${symbol}/nc.shtml`;
-		let w = window.open(url, '');
-		w.opener = undefined;
-	}
+	// protected historyChart = observer(() => {
+	// 	let {historyData, baseItem} = this.controller;
+	// 	if (historyData === undefined) 
+	// 	return <></>;
+	// 	let chartHistory = <></>;
+	// 	let labelList:any[] = [];
+	// 	let priceList:number[] = [];
+	// 	let ttmList:number[] = [];
+	// 	for (let item of historyData) {
+	// 	let {day, price, ttm} = item;
+	// 	labelList.push(day);
+	// 	priceList.push(GFunc.numberToPrecision(price, 4));
+	// 	if (ttm <= 0) 
+	// 		ttmList.push(undefined);
+	// 	else {
+	// 		if (this.ttmLimit && ttm >= 35) {
+	// 		ttmList.push(35);
+	// 		}
+	// 		else {
+	// 		ttmList.push(GFunc.numberToPrecision(ttm, 4));
+	// 		}
+	// 	}
+	// 	}
+	// 	let chartdata1 = {
+	// 	labels: labelList,
+	// 	datasets: [
+	// 		{
+	// 		label: '价格',
+	// 		data: priceList,
+	// 		borderColor:'blue',
+	// 		backgroundColor:'skyBlue',
+	// 		borderWidth: 1,
+	// 		fill: false,
+	// 		yAxisID: 'y-axis-1',
+	// 		},
+	// 		{
+	// 		label: 'TTM',
+	// 		data: ttmList,
+	// 		borderColor:'red',
+	// 		backgroundColor:'pink',
+	// 		borderWidth: 1,
+	// 		fill: false,
+	// 		yAxisID: 'y-axis-2',
+	// 		}
+	// 	]
+	// 	};
+	// 	let options = {
+	// 	scales:{
+	// 		yAxes: [{
+	// 			type: 'linear',
+	// 			display: true,
+	// 			position: 'left',
+	// 			id: 'y-axis-1',
+	// 		}, {
+	// 			type: 'linear',
+	// 			display: true,
+	// 			position: 'right',
+	// 			id: 'y-axis-2',
+	// 			gridLines: {
+	// 				drawOnChartArea: false
+	// 			}
+	// 		}],       
+	// 	}
+	// 	}
+	// 	chartHistory = <RC2 data={chartdata1} type='line' options={options} />;
+	// 	let right = <></>;
+	// 	if (baseItem.day !== undefined) {
+	// 	right = <><label className="px-3"> <input type="checkbox" name="showLater" defaultChecked={false}
+	// 			onChange={this.checkShowLater} />显示后面数据</label>
+	// 		<label className="px-3"> <input type="checkbox" name="selectType" defaultChecked={this.ttmLimit}
+	// 		onChange={this.checkLimitShow} />限制TTM显示范围</label>
+	// 		</>;
 
-	protected historyChart = observer(() => {
-		let {historyData, baseItem} = this.controller;
-		if (historyData === undefined) 
-		return <></>;
-		let chartHistory = <></>;
-		let labelList:any[] = [];
-		let priceList:number[] = [];
-		let ttmList:number[] = [];
-		for (let item of historyData) {
-		let {day, price, ttm} = item;
-		labelList.push(day);
-		priceList.push(GFunc.numberToPrecision(price, 4));
-		if (ttm <= 0) 
-			ttmList.push(undefined);
-		else {
-			if (this.ttmLimit && ttm >= 35) {
-			ttmList.push(35);
-			}
-			else {
-			ttmList.push(GFunc.numberToPrecision(ttm, 4));
-			}
-		}
-		}
-		let chartdata1 = {
-		labels: labelList,
-		datasets: [
-			{
-			label: '价格',
-			data: priceList,
-			borderColor:'blue',
-			backgroundColor:'skyBlue',
-			borderWidth: 1,
-			fill: false,
-			yAxisID: 'y-axis-1',
-			},
-			{
-			label: 'TTM',
-			data: ttmList,
-			borderColor:'red',
-			backgroundColor:'pink',
-			borderWidth: 1,
-			fill: false,
-			yAxisID: 'y-axis-2',
-			}
-		]
-		};
-		let options = {
-		scales:{
-			yAxes: [{
-				type: 'linear',
-				display: true,
-				position: 'left',
-				id: 'y-axis-1',
-			}, {
-				type: 'linear',
-				display: true,
-				position: 'right',
-				id: 'y-axis-2',
-				gridLines: {
-					drawOnChartArea: false
-				}
-			}],       
-		}
-		}
-		chartHistory = <RC2 data={chartdata1} type='line' options={options} />;
-		let right = <></>;
-		if (baseItem.day !== undefined) {
-		right = <><label className="px-3"> <input type="checkbox" name="showLater" defaultChecked={false}
-				onChange={this.checkShowLater} />显示后面数据</label>
-			<label className="px-3"> <input type="checkbox" name="selectType" defaultChecked={this.ttmLimit}
-			onChange={this.checkLimitShow} />限制TTM显示范围</label>
-			</>;
-
-		}
-		else {
-		right = <label className="px-3"> <input type="checkbox" name="selectType" defaultChecked={this.ttmLimit}
-			onChange={this.checkLimitShow} />限制TTM显示范围</label>;
-		}
-		return <><LMR className="px-3 py-2 bg-white" left={'历史走势'} right={right}></LMR>
-		<div className="px-3" style={{width:'95%'}}>{chartHistory}</div>
-		</>;
-	});
+	// 	}
+	// 	else {
+	// 	right = <label className="px-3"> <input type="checkbox" name="selectType" defaultChecked={this.ttmLimit}
+	// 		onChange={this.checkLimitShow} />限制TTM显示范围</label>;
+	// 	}
+	// 	return <><LMR className="px-3 py-2 bg-white" left={'历史走势'} right={right}></LMR>
+	// 	<div className="px-3" style={{width:'95%'}}>{chartHistory}</div>
+	// 	</>;
+	// });
 
 	protected predictInfo = observer(() => {
 		let {predictData, ypredict} = this.controller;

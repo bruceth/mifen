@@ -49,12 +49,12 @@ function renderValue(caption:string, value:number, valueType:'p0'|'p1'|'n1'|'n2'
 }
 
 export function renderStockInfoRow(row: NStockInfo, onClickName: (row:NStockInfo) => void, inputSelect:JSX.Element, right:JSX.Element):JSX.Element {
-  	let { id, name, code, pe, roe, price, divyield, v, order, symbol, l, e, ep, e3, total } = row;
+  	let { id, name, code, pe, roe, price, divyield, v, order, symbol, l, pshares } = row;
   	let zzl = calculateZZ3((row as any).dataArr);
   	let left = <div className="cursor-pointer" onClick={()=>onClickName(row)}>
 		<span className="text-primary">{name}</span>
 		&nbsp; 
-		<span className="text-info">{code}</span>
+		<span className="text-info">{symbol}</span>
 	  	&nbsp;
 		<small className="small ml-1"><span className="text-danger">{order}</span></small>
   	</div>;
@@ -70,7 +70,7 @@ export function renderStockInfoRow(row: NStockInfo, onClickName: (row:NStockInfo
 		['增 1', zzl[2], 'p0'],
 		['增 2', zzl[1], 'p0'],
 		['增 3', zzl[0], 'p0'],
-		['市值', total*price, 'yi'],
+		['市值', pshares*price, 'yi'],
   	];
 	let inputSelectSpan:any;
 	if (inputSelect) {
@@ -85,8 +85,9 @@ export function renderStockInfoRow(row: NStockInfo, onClickName: (row:NStockInfo
 }
 
 export function renderStockUrl(row: NStockInfo) {
-    let { symbol } = row;
-	return <a className="text-info" href={`https://finance.sina.com.cn/realstock/company/${symbol}/nc.shtml`} target="_blank" rel="noopener noreferrer" onClick={(e)=>{e.stopPropagation();}}>
+    let { symbol, market, code } = row;
+    let url = market === 'HK' ? `https://xueqiu.com/S/${code}` : `https://finance.sina.com.cn/realstock/company/${symbol}/nc.shtml`;
+	return <a className="text-info" href={url} target="_blank" rel="noopener noreferrer" onClick={(e)=>{e.stopPropagation();}}>
 		<FA name="angle-double-right" />
 	</a>;
 }
