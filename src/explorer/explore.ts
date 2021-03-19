@@ -56,11 +56,6 @@ export class Explore {
 			return;
 		};
 		let arr: Stock[] = result;
-        let userid = this.store.userId;
-        let checkUser = userid === 22 || userid === 10;
-        arr = arr.filter((vi) => {
-            return vi.market !== 'HK' || checkUser;
-        })
 		for (let item of arr) {
 			let dataArray = JSON.parse(item.data) as number[];
 			item.dataArr = dataArray;
