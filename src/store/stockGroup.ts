@@ -37,7 +37,8 @@ export class StockGroup {
 
 		let arr: Stock[] = result;
 		for (let item of arr) {
-			let dataArray = JSON.parse(item.data) as number[];
+            let data = item.data;
+			let dataArray = data ===undefined ? [] : JSON.parse(item.data) as number[];
 			item.dataArr = dataArray;
             let e = item.e * item.eshares;
             let p = item.price * item.pshares;
