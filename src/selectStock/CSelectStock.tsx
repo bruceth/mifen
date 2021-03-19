@@ -17,7 +17,7 @@ class PageStockItems<T> extends PageItems<T> {
 			[name: string]: any[];
 		}> {
 		if (pageStart === undefined) pageStart = 0;
-		let p = ['%' + param.key + '%'];
+		let p = [this.miNet.userId, '%' + param.key + '%'];
 		try {
 			//let ret = await this.cStock.cApp.store.miApi.page('q_stocks$page', p, pageStart, pageSize);
 			let ret = await this.miNet.q_stocks$page(p, pageStart, pageSize);

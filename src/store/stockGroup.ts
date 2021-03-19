@@ -36,6 +36,11 @@ export class StockGroup {
 		if (Array.isArray(result) === false) return;
 
 		let arr: Stock[] = result;
+        let userid = this.miNet.userId;
+        let checkUser = userid === 22 || userid === 10;
+        arr = arr.filter((vi) => {
+            return vi.market !== 'HK' || checkUser;
+        })
 		for (let item of arr) {
 			let dataArray = JSON.parse(item.data) as number[];
 			item.dataArr = dataArray;

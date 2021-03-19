@@ -4,6 +4,7 @@ import { defaultGroupName } from "../consts";
 import { MiConfigs, RegressionConfig, Stock, StockFindConfig } from "./types";
 import { StockGroups } from "./stockGroups";
 import { Accounts } from "./accounts";
+//import { User } from "tonva-react";
 
 export class Store {
 	private miNet: MiNet;
@@ -25,6 +26,10 @@ export class Store {
 		this.stockGroups = new StockGroups(miNet);
 		this.accounts = new Accounts(miNet);
 	}
+
+    get userId() {
+        return this.miNet.userId;
+    }
 
 	@observable config: MiConfigs = { 
 		groupName: defaultGroupName, 

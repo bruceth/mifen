@@ -156,6 +156,12 @@ export class GFunc {
         return year * 100 + month;
     }
 
+    public static GetSeasonnoYearMonth(no: number) {
+        let year = Math.floor(no / 4) + 1995;
+        let month = (Math.floor(no % 4) + 1) * 3;
+        return {year: year, month: month};
+    }
+
     public static SeasonnoToBeginEnd(season: number) {
         let year = (1995 + Math.floor(season / 4)) * 10000;
         let s = season % 4;

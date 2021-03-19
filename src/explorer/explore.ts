@@ -56,10 +56,12 @@ export class Explore {
 			return;
 		};
 		let arr: Stock[] = result;
+        let userid = this.store.userId;
+        let checkUser = userid === 22 || userid === 10;
+        arr = arr.filter((vi) => {
+            return vi.market !== 'HK' || checkUser;
+        })
 		for (let item of arr) {
-            if (item.id === 10003989) {
-                let a =0;
-            }
 			let dataArray = JSON.parse(item.data) as number[];
 			item.dataArr = dataArray;
             let e = item.e * item.eshares;

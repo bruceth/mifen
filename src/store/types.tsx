@@ -47,6 +47,7 @@ export interface Account {
 export interface Stock {
 	id: number;
 	name: string;
+    market: string;
 	order: number;
 	data?: string;
 	v?: number;
