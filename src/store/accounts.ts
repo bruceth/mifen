@@ -16,10 +16,10 @@ export class Accounts {
 	}
 
 	async load() {
-		let r = await this.miNet.t_allaccounts();
-		if (Array.isArray(r)) {
-			this.accounts = r;
-		}
+		// let r = await this.miNet.t_allaccounts();
+		// if (Array.isArray(r)) {
+		// 	this.accounts = r;
+		// }
 	}
 
 	setCurrentAccount(name:string):Account {

@@ -38,7 +38,7 @@ export class VExplorer extends VPage<CExplorer> {
 					</div>;
 			}*/
 			if (avgs.avg !== undefined) {
-				let avgStr = ` : ${GFunc.numberToFixString(avgs.avg)}`;
+				let avgStr = ` : ${GFunc.numberToFixString(Math.log(avgs.avg), 1)}`;
 				left = <div className="px-3 cursor-pointer align-self-center">
 						{GFunc.caption('米息分均值')}{avgStr}
 					</div>;

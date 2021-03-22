@@ -1,7 +1,6 @@
 import { makeObservable, observable, runInAction } from "mobx";
-import { SlrForEarning } from "regression";
 import { GFunc } from "../tool";
-import { Store, sortStocks } from "../store";
+import { Store, sortStocks, Stock } from "../store";
 
 interface Avg {
 	avg20?: number;
@@ -56,19 +55,23 @@ export class Explore {
 		if (Array.isArray(result) === false) {
 			return;
 		};
-		let arr = result as {id:number, data?:string, v:number, pe:number, e:number, ep:number, price:number, exprice:number, divyield:number, r2:number, lr2:number, e3:number, predictpe:number, order:number, ma:number, dataArr?:number[]}[];
+		let arr: Stock[] = result;
 		for (let item of arr) {
-			let dataArray = JSON.parse(item.data) as number[];
+            let data = item.data;
+			let dataArray = data ===undefined ? [] : JSON.parse(item.data) as number[];
 			item.dataArr = dataArray;
-			let sl = new SlrForEarning(dataArray);
-			//let ep = GFunc.evaluatePricePrice(irate, sl.predict(5), sl.predict(6), sl.predict(7));
-			item.ep = (sl.predict(4) + item.e) / 2;
-			item.v = GFunc.calculateVN(sl.slopeR, item.ep, item.divyield * item.price, item.exprice);
-			item.e3 = sl.predict(7);
+            let e = item.e * item.eshares;
+            let p = item.price * item.pshares;
+            let c = item.capital * item.eshares;
+            let b = item.bonus * item.bshares;
+			item.v = GFunc.calculateVS(item.ev * item.eshares, b, p);
+            item.pe = p / e;
+            item.roe = e / c;
+            item.divyield = b / p;
 		}
 		runInAction(() => {
 			if (queryName === 'all') {
-				this.avgs = GFunc.CalculateValueAvg(arr);
+				this.avgs = GFunc.CalculateValueAvg(arr as  {v:number}[]);
 			}
 			else {
 				this.avgs = {};

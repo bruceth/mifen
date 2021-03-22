@@ -47,17 +47,22 @@ export interface Account {
 export interface Stock {
 	id: number;
 	name: string;
+    market: string;
 	order: number;
 	data?: string;
 	v?: number;
+    capital: number;
 	e: number;
-	e3: number;
-	ep: number;
+	ev: number;
+	eshares: number;
 	price: number;
-	exprice: number;
+	pshares: number;
+    bonus: number;
+    bshares: number;
 	divyield: number;
 	r2: number;
 	lr2: number;
-	predictpe?: number;
 	dataArr?: number[];
+    pe?: number;
+    roe?: number;
 }

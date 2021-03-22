@@ -37,13 +37,17 @@ export class StockGroup {
 
 		let arr: Stock[] = result;
 		for (let item of arr) {
-			let dataArray = JSON.parse(item.data) as number[];
+            let data = item.data;
+			let dataArray = data ===undefined ? [] : JSON.parse(item.data) as number[];
 			item.dataArr = dataArray;
-			let sl = new SlrForEarning(dataArray);
-			item.ep = (sl.predict(4) + item.e) / 2;
-			item.e3 = sl.predict(7);
-			item.v = GFunc.calculateVN(sl.slopeR, item.ep, item.divyield * item.price, item.exprice);
-			item.predictpe = item.price / item.e3;
+            let e = item.e * item.eshares;
+            let p = item.price * item.pshares;
+            let c = item.capital * item.eshares;
+            let b = item.bonus * item.bshares;
+			item.v = GFunc.calculateVS(item.ev * item.eshares, b, p);
+            item.pe = p / e;
+            item.roe = e / c;
+            item.divyield = b / p;
 		}
 		sortStocks(undefined, arr);
 

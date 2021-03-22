@@ -76,9 +76,9 @@ export class MiNet {
 		return await this.miApi.query('t_usersettings$query', [this.user.id, 'config']);
 	}
 
-	async t_allaccounts() {
-		return await this.miApi.query('t_allaccounts', [this.user.id]);
-	}
+	// async t_allaccounts() {
+	// 	return await this.miApi.query('t_allaccounts', [this.user.id]);
+	// }
 
 	async q_getlasttradeday() {
 		return await this.miApi.call('q_getlasttradeday', []);

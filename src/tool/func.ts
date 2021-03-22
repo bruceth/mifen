@@ -2,198 +2,196 @@ export function numberToFixString(n: number, w = 2) {
     return n === undefined ? '' : n.toFixed(w);
 }
 
-export function number(n: number, w=2) {
-	return n === undefined ? '' : n.toFixed(w);
+export function number(n: number, w = 2) {
+    return n === undefined ? '' : n.toFixed(w);
 }
 
 export function numberToMarketValue(n: number) {
-	return n === undefined || isNaN(n) ? '' : Math.round(n/10000).toString(); // + '亿';
+    return n === undefined || isNaN(n) ? '' : Math.round(n / 10000).toString(); // + '亿';
 }
 
 export function numberToString(n: number, precision = 2) {
-	return n === undefined ? '' : n.toPrecision(precision);
+    return n === undefined ? '' : n.toPrecision(precision);
 }
 
 export function numberToPrecision(n: number, precision = 4) {
-	return n === undefined ? undefined : Number.parseFloat(n.toPrecision(precision));
+    return n === undefined ? undefined : Number.parseFloat(n.toPrecision(precision));
 }
 
 export function percentToFixString(n: number) {
-	return n === undefined || isNaN(n) ? '' : (n * 100).toFixed(2) + '%';
+    return n === undefined || isNaN(n) ? '' : (n * 100).toFixed(2) + '%';
 }
 
 export function percent0(n: number) {
-	return n === undefined || isNaN(n) ? '' : (n * 100).toFixed(0) + '%';
+    return n === undefined || isNaN(n) ? '' : (n * 100).toFixed(0) + '%';
 }
 export function percent1(n: number) {
-	return n === undefined || isNaN(n) ? '' : (n * 100).toFixed(1) + '%';
+    return n === undefined || isNaN(n) ? '' : (n * 100).toFixed(1) + '%';
 }
 
 export function warningTypeString(t: string) {
-	switch (t) {
-		case 'gt': return '大于';
-		case 'lt': return '小于';
-		default: return t;
-	}
+    switch (t) {
+        case 'gt': return '大于';
+        case 'lt': return '小于';
+        default: return t;
+    }
 }
 
-export function predictCutRatio(r2:number) {
-	return r2 * 2 - r2 * r2;
+export function predictCutRatio(r2: number) {
+    return r2 * 2 - r2 * r2;
 }
 
-export function evaluatePricePrice(iRate:number, e1:number, e2:number, e3:number) {
-	let r = 1 + iRate;
-	let r2 = r * r;
-	let r3 = r2 * r;
-	return (e1/r + e2 /r2 + e3 / r3 + e3 / iRate / r3) / 2;
+export function evaluatePricePrice(iRate: number, e1: number, e2: number, e3: number) {
+    let r = 1 + iRate;
+    let r2 = r * r;
+    let r3 = r2 * r;
+    return (e1 / r + e2 / r2 + e3 / r3 + e3 / iRate / r3) / 2;
 }
 
-export function calculateV(z:number, divyield:number, pe:number) {
-	if (pe === undefined || isNaN(pe)) {
-		return undefined;
-	}
+export function calculateV(z: number, divyield: number, pe: number) {
+    if (pe === undefined || isNaN(pe)) {
+        return undefined;
+    }
 
-	let r = 0;
-	if (z !== undefined) {
-		if (z > 0.25) {
-		z = 0.25;
-		}
-		r += z * 100;
-	}
-	if (divyield !== undefined) {
-		r += divyield * 100;
-	}
-	return r / pe;
+    let r = 0;
+    if (z !== undefined) {
+        if (z > 0.25) {
+            z = 0.25;
+        }
+        r += z * 100;
+    }
+    if (divyield !== undefined) {
+        r += divyield * 100;
+    }
+    return r / pe;
 }
 
-export function calculateVN(z:number, e:number, bonus:number, price:number) {
-	if (price === undefined || isNaN(price) || e === undefined || isNaN(e)) {
-		return undefined;
-	}
+export function calculateVN(z: number, e: number, bonus: number, price: number) {
+    if (price === undefined || isNaN(price) || e === undefined || isNaN(e)) {
+        return undefined;
+    }
 
-	let r = 0;
-	if (z !== undefined && e > 0) {
-		if (z > 0.25) {
-		z = 0.24 + Math.pow((z-0.24)*100, 0.6667) / 100;
-		}
-		z = 1 + z;
-		z = z * z * z - 1;
-		r += z * e * 100;
-	}
-	if (bonus !== undefined && !isNaN(bonus)) {
-		r += bonus * 100;
-	}
-	return r / price;
+    let r = 0;
+    if (z !== undefined && e > 0) {
+        if (z > 0.25) {
+            z = 0.24 + Math.pow((z - 0.24) * 100, 0.6667) / 100;
+        }
+        z = 1 + z;
+        z = z * z * z - 1;
+        r += z * e * 100;
+    }
+    if (bonus !== undefined && !isNaN(bonus)) {
+        r += bonus * 100;
+    }
+    return r / price;
 }
 
-export function calculateZZ3(data:number[]) {
-	let ret:number[] = [undefined, undefined, undefined, undefined] ;
-	if (data === undefined)
-		return ret;
-	let len = data.length;
-	if (len < 5)
-		return ret;
+export function calculateVS(ev: number, bonus: number, price: number) {
+    if (price === undefined || isNaN(price)) {
+        return undefined;
+    }
 
-	let funcz = (n:number, p:number) => {
-		if (p <= 0 || n <= 0) return undefined;
-		return ((n / p) - 1);
-	}
-	for (let i = 0; i < 4; ++i) {
-		ret[i] = funcz(data[i+1], data[i]);
-	}
-	return ret;
+    if (ev === undefined || isNaN(ev)) {
+        if (bonus === undefined || isNaN(bonus)) {
+            return undefined;
+        }
+        else {
+            return bonus * 100 / price;
+        }
+    }
+    else {
+        if (bonus === undefined || isNaN(bonus)) {
+            return ev * 100 / price;
+        }
+        else {
+            return (bonus + ev) * 100 / price;
+        }
+    }
+}
+
+export function calculateZZ3(data: number[]) {
+    let ret: number[] = [undefined, undefined, undefined, undefined];
+    if (data === undefined)
+        return ret;
+    let len = data.length;
+    if (len < 5)
+        return ret;
+
+    let funcz = (n: number, p: number) => {
+        if (p <= 0 || n <= 0)
+            return undefined;
+        return ((n / p) - 1);
+    }
+    for (let i = 0; i < 4; ++i) {
+        ret[i] = funcz(data[i + 1], data[i]);
+    }
+    return ret;
 }
 
 //export function caption = (value:string) => <span className="text-muted small">{value}</span>;
 
-export function MonthnoFromDay(day:number) {
-	let year = Math.floor(day/10000);
-	let month = Math.floor((day%10000)/100) - 1;
-	return (year-1995)*12+month;
+export function MonthnoFromDay(day: number) {
+    let year = Math.floor(day / 10000);
+    let month = Math.floor((day % 10000) / 100) - 1;
+    return (year - 1995) * 12 + month;
 }
 
-export function SeasonnoFromDay(day:number) {
-	let year = Math.floor(day/10000);
-	let month = Math.floor((day%10000)/100) - 1;
-	let season = Math.floor(month / 3);
-	return (year-1995)*4 + season;
+export function SeasonnoFromDay(day: number) {
+    let year = Math.floor(day / 10000);
+    let month = Math.floor((day % 10000) / 100) - 1;
+    let season = Math.floor(month / 3);
+    return (year - 1995) * 4 + season;
 }
 
-export function SeasonnoFromYearMonth(year:number, month:number) {
-	let season = Math.floor((month-1) / 3);
-	return (year-1995)*4 + season;
+export function SeasonnoFromYearMonth(year: number, month: number) {
+    let season = Math.floor((month - 1) / 3);
+    return (year - 1995) * 4 + season;
 }
 
 export function SeasonnoToYearMonth(no: number) {
-	let year = Math.floor(no / 4) + 1995;
-	let month = (Math.floor(no % 4) + 1) * 3;
-	return year * 100 + month;
+    let year = Math.floor(no / 4) + 1995;
+    let month = (Math.floor(no % 4) + 1) * 3;
+    return year * 100 + month;
 }
 
-export function SeasonnoToBeginEnd(season:number) {
-	let year = (1995 + Math.floor(season / 4)) * 10000;
-	let s = season % 4;
-	if (s === 0) {
-		return {begin: year + 101, end: year + 331};
-	} 
-	if (s === 1) {
-		return {begin: year + 401, end: year + 630};
-	}
-	if (s === 2) {
-		return {begin: year + 701, end: year + 930};
-	}
-	return {begin: year + 1001, end: year + 1231};
+export function SeasonnoToBeginEnd(season: number) {
+    let year = (1995 + Math.floor(season / 4)) * 10000;
+    let s = season % 4;
+    if (s === 0) {
+        return { begin: year + 101, end: year + 331 };
+    }
+    if (s === 1) {
+        return { begin: year + 401, end: year + 630 };
+    }
+    if (s === 2) {
+        return { begin: year + 701, end: year + 930 };
+    }
+    return { begin: year + 1001, end: year + 1231 };
 }
 
-export function CalculatePredictAvg(arr: {predictpe:number}[]) {
-	let ret : {avg20:number, avg50:number, avg100:number} = {avg20:undefined, avg50:undefined, avg100:undefined};
+export function CalculateValueAvg(arr: { v: number }[]) {
+    let ret: { avg20: number, avg50: number, avg100: number, avg: number } = { avg20: undefined, avg50: undefined, avg100: undefined, avg: undefined };
 
-	let length = arr.length;
-	let calcuOne = (count:number) : number => {
-		let endIndex = count;
-		if (endIndex > length)
-		endIndex = length;
-		if (endIndex >= 10) {
-		let sum = 0;
-		for (let i = 3; i < endIndex; ++i) {
-			sum += arr[i].predictpe
-		}
-		return sum / (endIndex - 3);
-		}
-		else {
-		return undefined;
-		}
-	}
+    let length = arr.length;
+    let calcuOne = (count: number): number => {
+        let endIndex = count;
+        if (count === 0 || endIndex > length)
+            endIndex = length;
+        if (endIndex >= 10) {
+            let sum = 0;
+            for (let i = 3; i < endIndex; ++i) {
+                sum += arr[i].v;
+            }
+            return sum / (endIndex - 3);
+        }
+        else {
+            return undefined;
+        }
+    }
 
-	ret.avg20 = calcuOne(20);
-	ret.avg50 = calcuOne(50);
-	ret.avg100 = calcuOne(100);
-	return ret;
-}
-
-export function CalculateValueAvg(arr: {v:number}[]) {
-	let ret : {avg20:number, avg50:number, avg100:number, avg:number} = {avg20:undefined, avg50:undefined, avg100:undefined, avg:undefined};
-
-	let length = arr.length;
-	let calcuOne = (count:number) : number => {
-		let endIndex = count;
-		if (count === 0 || endIndex > length)
-		endIndex = length;
-		if (endIndex >= 10) {
-		let sum = 0;
-		for (let i = 3; i < endIndex; ++i) {
-			sum += arr[i].v;
-		}
-		return sum / (endIndex - 3);
-		}
-		else {
-		return undefined;
-		}
-	}
-
-	ret.avg20 = calcuOne(20);
-	ret.avg50 = calcuOne(50);
-	ret.avg100 = calcuOne(100);
-	ret.avg = calcuOne(0);
-	return ret;
+    ret.avg20 = calcuOne(20);
+    ret.avg50 = calcuOne(50);
+    ret.avg100 = calcuOne(100);
+    ret.avg = calcuOne(0);
+    return ret;
 }
