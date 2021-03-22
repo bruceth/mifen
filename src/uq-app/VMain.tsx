@@ -28,19 +28,24 @@ export class VMain extends VPage<CApp> {
 		}
 		return {tabs};
 		*/
-		let { cHome, cGroup, cHolding, cExporer, cMe } = this.controller;
+		let { cHome, cFind, cExporer, cMe } = this.controller;
 		let tabs: TabProp[] = [
-			{ 
+			/*{ 
 				name: 'home', label: '首页', icon: 'home', content: cHome.tab, 
 				notify: undefined, 
 				load: cHome.load, 
 				onShown: cHome.load,
-			},
+			},*/
 			{
-				name: 'explorer', label: '自选', icon: 'money', content: cGroup.tab, load: cGroup.load 
+				name: 'home', label: '首页', icon: 'money', 
+				notify: undefined,
+				content: cHome.tab, //load: cGroup.load, onShow: cGroup.load,
 			},
-			{
+			/*{
 				name: 'explorer', label: '持仓', icon: 'money', content: cHolding.tab, // load: cHolding.load 
+			},*/
+			{
+				name: 'find', label: '发现', icon: 'search', content: cFind.tab, load: cFind.load
 			},
 			{
 				name: 'explorer', label: '选股', icon: 'search', content: cExporer.tab, load: cExporer.load

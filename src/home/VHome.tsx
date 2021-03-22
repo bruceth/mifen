@@ -1,167 +1,51 @@
-/*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
-import * as React from 'react';
-import { observer } from 'mobx-react';
-import { VPage, List, LMR, FA, Scroller, DropdownActions, DropdownAction, t } from 'tonva-react';
-import { NStockInfo } from '../stockinfo';
-import { CHome } from './CHome';
-import { renderSortHeaders, renderStockInfoRow, renderStockUrl } from '../tool';
-import { EnumGroupType } from 'uq-app/uqs/BruceYuMi';
+import React from "react";
+import { observer } from "mobx-react";
+import { DropdownAction, DropdownActions, FA, LMR, VPage } from "tonva-react";
+import { CHome } from "./CHome";
 
 export class VHome extends VPage<CHome> {
-	header() {
-		return React.createElement(observer(() => {
-			return <span className="ml-3">首页 - {this.controller.stockGroup.name}</span>;
-		}));
+	header() { return '首页'; }
+	content() {
+		let {cApp, cAccount, cGroup, showStocksAll, showStocksBlock} = this.controller;
+		let {stocksMyAll, stocksMyBlock, myAllCaption, myBlockCaption} = cApp.store;
+		return <div className="pb-3">
+			{cAccount.renderAccounts()}
+			{cGroup.renderGroups()}
+			{this.renderSpec(stocksMyAll?.length, myAllCaption, 'home', 'text-primary', showStocksAll)}
+			{this.renderSpec(stocksMyBlock?.length, <>
+					<span className="mr-3">{myBlockCaption}</span>
+					<small className="text-muted">选股时不列出</small>
+				</>, 			
+				'ban', 'text-black', showStocksBlock)}
+		</div>
 	}
+
 	right() {
 		return React.createElement(observer(() => {
-			let {store, uqs} = this.controller;
-			let stockGroups = store.stockGroups.groups.map(v => {
-				let {name} = v;
-				return {
-					caption: name,
-					action: () => this.controller.changeGroup(v),
-					icon: 'circle-o',
-				};
-			});
-			let {BruceYuMi} = uqs;
-			let {Group} = BruceYuMi;
-			let groups = store.miGroups.groups.map(v => {
-				let {name, type} = v;
-				let icon = 'list-alt', iconClass:string = undefined;
-				switch (type) {
-					case EnumGroupType.all:
-						icon = 'home';
-						iconClass = 'text-primary'
-						break;
-					case EnumGroupType.black:
-						icon = 'ban';
-						iconClass = 'text-black';
-						break;
-				}
-				return {
-					caption: Group.t(name) as string,
-					action: () => this.controller.changeMiGroup(v),
-					icon,
-					iconClass,
-				};
-			});
 			let actions: DropdownAction[] = [
 				{
-					caption: '市场平均PE',
-					action: this.controller.openMarketPE,
-					icon: 'bar-chart',
-				},
-				{
-					caption: '选择股票',
-					action: this.controller.onAddStock,
+					caption: '管理持仓账户',
+					action: this.controller.manageAccounts,
 					icon: 'money',
 				},
 				undefined,
-				...stockGroups,
-				undefined,
-				...groups,
-				undefined,
 				{
-					caption: '管理自选组',
+					caption: '管理股票分组',
 					action: this.controller.manageGroups,
 					icon: 'object-group',
 				},
-				{
-					caption: '管理持仓账号',
-					action: this.controller.manageAccounts,
-					icon: 'book',
-				},
 			];
-			if (this.isDev === true) {
-				let { cBug, cUI } = this.controller.cApp;
-				actions.push(
-					undefined,
-					{
-						caption: t('UI') as string,
-						icon: 'television', 
-						action: () => cUI.start(),
-					},
-					{
-						caption: t('debug') as string,
-						icon: 'bug', 
-						action: () => cBug.start(),
-					}
-				);
-			}
-
 			return <DropdownActions actions={actions} icon="bars" className="mr-2 text-white bg-transparent border-0" />;
 		}));
 	}
 
-	protected onPageScrollBottom(scroller: Scroller): Promise<void> {
-		this.controller.onPage();
-		return;
-	}
-
-	content() {
-		return React.createElement(observer(() => {
-			let {setSortType, stockGroup, sortType} = this.controller;
-			/*
-			let {store} = cApp;
-			let {config} = store;
-			let title = config.groupName;
-			let { items } = home;
-			*/
-			let title = stockGroup.name;
-			let items = stockGroup.stocks;
-
-			let {  onSelectTag, onAddStock } = this.controller;
-			/*
-			let right = <div className="d-flex">
-				<div className="btn cursor-pointer" onClick={onAddStock}><FA name="plus" inverse={false} /></div>
-				<div className="btn cursor-pointer ml-2" onClick={onSelectTag}><FA name="bars" inverse={false} /></div>
-			</div>;
-			let left = <div className="align-self-center">{title}</div>
-			<LMR className="px-2 py-1" left={left} right={right}></LMR>
-			*/
-			return <div>
-				<div className="d-flex justify-content-end mr-2 my-1">
-					{renderSortHeaders('radioHome', sortType, setSortType)}
-				</div>
-				<List items={items}
-					item={{ render: this.renderRow, key: this.rowKey }}
-					before={'...'}
-					none={<small className="px-3 py-3 text-info">无自选股, 请选股</small>}
-				/>
-			</div>;
-		}));
-	}
-
-	renderRow = (item: any, index: number): JSX.Element => { //<this.rowContent {...item} />;
-		return this.rowContent(item);
-	} 
-	protected rowContent = (row: any): JSX.Element => {
-		let right = renderStockUrl(row);
-		return renderStockInfoRow(row, this.onClickName, null, right);
-	}
-
-	private rowKey = (item: any) => {
-		let { id } = item;
-		return id;
-	}
-
-	protected onClickName = (item: NStockInfo) => {
-		this.controller.cApp.showStock(item);
-	}
-
-	protected onSelected = async (item: any): Promise<void> => {
-		let a = 0;
-	}
-
-	private callOnSelected(item: any) {
-		if (this.onSelected === undefined) {
-		alert('onSelect is undefined');
-		return;
-		}
-		this.onSelected(item);
-	}
-	clickRow = (item: any) => {
-		this.callOnSelected(item);
+	private renderSpec(count:number, text:string|JSX.Element, icon:string, color:string, click:()=>void) {
+		let right = count > 0 && <small className="align-self-center mx-3 text-muted">{count}</small>;
+		let cn = "align-self-center ml-3 " + color;
+		return <div className="mt-2 bg-white cursor-pointer" onClick={click}>
+			<LMR left={<FA name={icon} className={cn} size="lg" fixWidth={true} />} right={right}>
+				<div className="px-3 py-2">{text}</div>
+			</LMR>
+		</div>
 	}
 }

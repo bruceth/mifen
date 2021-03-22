@@ -1,6 +1,5 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import { CApp, CUqBase } from '../uq-app';
-import { CStockInfo, NStockInfo } from '../stockinfo';
 import { VSiteHeader } from './VSiteHeader';
 import { VSearchHeader } from './VSearchHeader';
 import { VHome } from './VHome';
@@ -11,9 +10,9 @@ import { Stock, StockGroup, Store } from '../store';
 import { makeObservable, observable } from 'mobx';
 import { CID, MidIXID } from 'tonva-uqui';
 import { Group } from 'uq-app/uqs/BruceYuMi';
-import { renderGroup } from 'holding/renderGroup';
 import { IDUI } from 'tonva-react';
 import { MiGroup } from 'store/miGroup';
+import { renderGroup } from '../tool';
 
 export class CHome extends CUqBase {
 	store: Store;

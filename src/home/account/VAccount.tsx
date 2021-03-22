@@ -1,21 +1,43 @@
 import { observer } from "mobx-react";
 import React from "react";
-import { HoldingStock } from "store/miAccount";
-import { DropdownAction, DropdownActions, List, LMR, VPage } from "tonva-react";
-import { CGroup } from "./CGroup";
+import { DropdownAction, DropdownActions, FA, List, LMR, VPage } from "tonva-react";
+import { formatNumber } from "tool";
+import { HoldingStock } from "../../store";
+import { CAccount } from "./CAccount";
 
-export class VAccount extends VPage<CGroup> {
+export class VAccount extends VPage<CAccount> {
 	header() {return this.controller.miAccount.name}
 	content() {
 		return React.createElement(observer(() => {
 			function renderValue(caption:string, value:number) {
-				return <div className="mx-1 border rounded w-min-5c px-1 py-2">
+				return <div className="m-1 border rounded w-min-5c px-1 py-2">
 					<small className="text-muted">{caption}</small>
-					<div>{new Intl.NumberFormat('zh-CN', { maximumSignificantDigits: 3 }).format(value??0)}</div>
+					<div>{formatNumber(value??0)}</div>
+				</div>;
+			}
+			let renderCash = (value:number) => {
+				let caption = '现金';
+				if (typeof value === 'number') return renderValue(caption, value);
+				return <div className="m-1 border rounded w-min-5c px-1 py-2">
+					<small className="text-muted">{caption}</small>
+					<div className="text-danger small">无期初</div>
 				</div>;
 			}
 			let {miAccount, showBuy, showCashIn, showCashOut, showCashAdjust} = this.controller;
-			let {no, name, mi, market, cash, stockHoldings} = miAccount;
+			let {no, name, mi, market, cash, holdingStocks} = miAccount;
+
+			let holdings:HoldingStock[], holdings0:HoldingStock[];
+			if (holdingStocks) {
+				holdings = [];
+				holdings0 = [];
+				let len = holdingStocks.length;
+				for (let i=0; i<len; i++) {
+					let holding = holdingStocks[i];
+					if (holding.quantity === 0) holdings0.push(holding);
+					else holdings.push(holding);
+				}
+			}
+
 			let actions: DropdownAction[] = [
 				{ caption: '调入资金', action: showCashIn, icon: 'sign-in' },
 				{ caption: '调出资金', action: showCashOut, icon: 'sign-out' },
@@ -26,31 +48,46 @@ export class VAccount extends VPage<CGroup> {
 					<LMR right={<small className="text-muted">组合编号: {no}</small>}>
 						{name}
 					</LMR>
-					<div className="my-2 text-center d-flex justify-content-center">
+					<div className="my-3 text-center d-flex justify-content-center flex-wrap">
 						{renderValue('米值', mi as number)}
 						{renderValue('市值', market as number)}
-						{renderValue('现金', cash as number)}
+						{renderCash(cash as number)}
+						{typeof cash === 'number' && renderValue('总值', (market as number) + (cash as number))}
 					</div>
 				</div>
 
 				<div className="mb-3 mx-3 d-flex">
 					<button className="btn btn-outline-primary mr-3" onClick={() => showBuy()}>买股</button>
-					<DropdownActions className="btn btn-outline-warning"
-						containerClass="ml-auto"
-						actions={actions} icon="money" content="资金" />
+					{
+						typeof cash === 'number'?
+							<DropdownActions className="btn btn-outline-warning"
+								containerClass="ml-auto"
+								actions={actions} icon="money" content="资金" />
+							:
+							<button className="btn btn-outline-info ml-auto" onClick={this.controller.showCashInit}>
+								<FA name="cog" className="small text-info" /> 设置期初资金
+							</button>
+					}
 				</div>
 
 				<div className="small text-muted px-3 py-1">持仓明细</div>
-				<List items={stockHoldings}
+				<List items={holdings}
 					item={{render: this.renderHolding}} />
+				{
+					holdings0 && holdings0.length > 0 && <>
+						<div className="small text-muted px-3 py-1 mt-3">0持仓股票</div>
+						<List items={holdings0}
+							item={{render: this.renderHolding}} />
+					</>
+				}
 			</div>;
 		}));
 	}
 
 	private renderHolding = (holding: HoldingStock, index: number) => {
 		let {showHolding, showBuy, showSell} = this.controller;
-		let {stockObj, quantity} = holding;
-		let {name, code, miRate, price} = stockObj;
+		let {stockObj, quantity, mi, market} = holding;
+		let {name, code} = stockObj;
 		return <div className="px-3 py-2">
 			<div className="d-flex cursor-pointer flex-grow-1"
 				 onClick={() => showHolding(holding)}>
@@ -60,8 +97,8 @@ export class VAccount extends VPage<CGroup> {
 				</div>
 				<div className="d-flex flex-sm-row flex-wrap justify-content-end">
 					{this.renderValue('股数', quantity)}
-					{this.renderValue('米值', quantity * (price as number) * miRate / 100)}
-					{this.renderValue('市值', quantity * (price as number))}
+					{this.renderValue('米值', mi)}
+					{this.renderValue('市值', market)}
 				</div>
 			</div>
 			<div className="flex-column flex-sm-row ml-3 ml-sm-5 d-flex w-min-3-5c">
@@ -74,9 +111,9 @@ export class VAccount extends VPage<CGroup> {
 	}
 
 	private renderValue(caption:string, value: number, dec: number = 0) {
-		return <div className="text-right ml-3 ml-sm-5">
+		return <div className="text-right ml-3 ml-sm-5 w-min-3c">
 			<div className="small text-muted">{caption}</div>
-			<div>{value.toFixed(dec)}</div>
+			<div>{value?.toFixed(dec)}</div>
 		</div>;
 	}
 }

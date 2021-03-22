@@ -13,30 +13,76 @@ ID Stock (
 	rawId ID,
 );
 
-IDX StockValue (
+IDX StockValue ver 0.1 (
 	id,
-	miRate SMALLINT,
-	ttm SMALLINT,
+	miValue INT,
+	earning INT,
 	divident INT,
-	price INT,
-	roe SMALLINT,
+	price BIGINT,
+	pvolumn BIGINT,
+	roe INT,
+	inc1 INT,
+	inc2 INT,
+	inc3 INT,
+	inc4 INT,
+	preInc INT LOG,
+	volumn BIGINT,
+	smoothness SMALLINT,
+	date DATE,
+);
+
+QUERY SearchStock (
+	key CHAR(20),
+	market CHAR(100),
+)
+PAGE (
+	id ID ASC,
+	market CHAR(20),
+	currency CHAR(20),
+	code char(20),
+	name char(50),
+	rawId ID,
+	miValue INT,
+	earning INT,
+	divident INT,
+	price BIGINT,
+	roe INT,
 	inc1 INT,
 	inc2 INT,
 	inc3 INT,
 	inc4 INT,
 	preInc INT,
 	volumn BIGINT,
-);
+	smoothness SMALLINT,
+) {
+	IF key is null {
+		SET key = '';
+	}
+	SET key = concat('%', key, '%');
+	TABLE tblm(m CHAR(20));
+	TEXT market INTO tblm;
+	PAGE SELECT a.id, a.code, a.name, a.rawId,
+		c.name as market, c.currency,
+		b.miValue, b.earning, b.divident,
+		b.price, b.roe, b.inc1, b.inc2, b.inc3, b.inc4, b.preInc, b.volumn,
+		b.smoothness
+		FROM Stock as a 
+			LEFT JOIN StockValue as b on a.id=b.id
+			LEFT JOIN Market as c on a.market=c.id
+		WHERE a.id>$pageStart AND a.search LIKE key AND EXISTS(SELECT m FROM tblm WHERE m=c.name)
+		ORDER BY a.id ASC
+		LIMIT $pageSize;
+};
 
-OPEN ACT WriteStock ver 0.3 (
+OPEN ACT WriteStock ver 0.4 (
 	ARR stocks (
 		market char(100),
 		code char(20),
 		name char(50),
-		miRate SMALLINT,
-		ttm SMALLINT,
+		rawId BIGINT,
+		miValue INT,
+		earning INT,
 		divident INT,
-		price INT,
 		roe INT,
 		inc1 INT,
 		inc2 INT,
@@ -44,15 +90,38 @@ OPEN ACT WriteStock ver 0.3 (
 		inc4 INT,
 		preInc INT,
 		volumn BIGINT,
+		smoothness SMALLINT,
 	)
 ) {
 	foreach stocks {
 		VAR mId ID = ID(Market, market);
 		VAR stock ID = ID(Stock, mId, code);
-		WITH Stock as a ID stock SET a.name=name;
-		WITH StockValue as a ID stock SET a.miRate=miRate,
-			a.ttm=ttm, a.divident=divident, a.price=price,
+		WITH Stock as a ID stock SET a.name=name, a.rawId=rawId, a.search=concat_ws('\t', name, code, market);
+		WITH StockValue as a ID stock SET a.miValue=miValue,
+			a.earning=earning, a.divident=divident,
 			a.roe=roe, a.inc1=inc1, a.inc2=inc2, a.inc3=inc3, a.inc4=inc4,
-			a.preInc=preInc, a.volumn=volumn;
+			a.preInc=preInc, a.volumn=volumn,
+			a.smoothness=smoothness;
+	}
+};
+
+OPEN ACT WritePrice ver 0.1 (
+	ARR prices (
+		market char(100),
+		code char(20),
+		name char(50),
+		rawId BIGINT,
+		price BIGINT,
+		pvolumn BIGINT,
+		date INT,
+	)
+) {
+	foreach prices {
+		VAR mId ID = ID(Market, market);
+		VAR stock ID = ID(Stock, mId, code);
+		WITH Stock as a ID stock SET a.name=name, a.rawId=rawId, a.search=concat_ws('\t', name, code, market);
+		WITH StockValue as a ID stock 
+			SET a.price=price, a.pvolumn=pvolumn,
+				a.date=concat(date DIV 10000, '-', date DIV 100, '-', date MOD 100);
 	}
 };

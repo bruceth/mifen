@@ -12,7 +12,7 @@ export class MiNet {
 			miHost = consts.miApiHostDebug;
 		}
 		this.user = user;
-		this.miApi = new MiApi(miHost, 'fsjs/', 'miapi', user.token, false);
+		this.miApi = new MiApi(miHost, 'miscan/', 'miapi', user.token, false);
 	}
 
 	get userId():number {return this.user.id;}

@@ -6,29 +6,32 @@ import { res } from "./res";
 import { VMain } from "./VMain";
 import { CTester } from "./test-uqui";
 import { setUI } from "./uqs";
-import { CHome } from '../home';
+//import { CHome } from '../home';
 import { CMe } from '../me';
 import { CExplorer } from '../explorer';
 import { CWarning } from '../warning';
 import { CPredictHistory } from '../predicthistory';
 //import { CUqApp } from './CBase';
 //import { res } from './res';
-import { CHolding } from 'holding';
+//import { CHolding } from 'holding';
 //import { VMain } from './VMain';
 import { Store } from 'store';
 import { MiNet } from '../net';
-import { CGroup } from '../group';
+import { CHome } from '../home';
 import { CStockInfo, NStockInfo } from "stockinfo";
+import { CFind } from "find";
+import { Stock, StockValue } from "./uqs/BruceYuMi";
 
 const gaps = [10, 3,3,3,3,3,5,5,5,5,5,5,5,5,10,10,10,10,15,15,15,30,30,60];
 
 export class CApp extends CUqApp {
-	cHome: CHome;
+	//cHome: CHome;
 	cBug: CBug;
 	cMe: CMe;
 	cUI: CTester;
-	cGroup: CGroup;
-	cHolding: CHolding;
+	//cGroup: CGroup;
+	cHome: CHome;
+	cFind: CFind;
 	cExporer: CExplorer;
 	cWarning: CWarning;
 	miNet: MiNet;
@@ -48,10 +51,10 @@ export class CApp extends CUqApp {
 		this.store = new Store(this.miNet, this.uqs);
 		await this.store.load();
 		
-		this.cHome = this.newC(CHome);
+		//this.cHome = this.newC(CHome);
 		this.cExporer = this.newC(CExplorer);
-		this.cGroup = this.newC(CGroup);
-		this.cHolding = this.newC(CHolding);
+		this.cHome = this.newC(CHome);
+		this.cFind = this.newC(CFind);
 		this.cMe = this.newC(CMe);
 		this.cWarning = this.newC(CWarning);
 		if (this.isDev === true) {
@@ -69,11 +72,6 @@ export class CApp extends CUqApp {
 	openPredictAVG(param:any) {
 		let pc = this.newC(CPredictHistory);
 		pc.start(param);
-	}
-
-	showGroupsManage() {
-		let cGroup = this.newC(CGroup);
-		cGroup.start();
 	}
 
 	private timer:any;
@@ -108,5 +106,22 @@ export class CApp extends CUqApp {
 	showStock = (item: NStockInfo) => {
 		let cStockInfo = this.newC(CStockInfo);
 		cStockInfo.start(item);
+	}
+
+	openStock = (stock: Stock & StockValue) => {
+		let {name, code, market, rawId} = stock;
+		rawId = 1;
+		let date = new Date();
+		let year = date.getFullYear();
+		let month = date.getMonth() + 1;
+		let dt = date.getDate();
+		this.showStock({
+			id: rawId, 
+			name,
+			code,
+			symbol: market,
+			day: year*10000 + month*100 + dt,
+			stock
+		} as any);
 	}
 }

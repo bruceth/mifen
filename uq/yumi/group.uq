@@ -27,3 +27,28 @@ IX GroupStock (
 	id,			-- Stock
 	order SMALLINT,
 );
+
+QUERY StockUsing (
+	stock ID,
+)
+RETURNS accounts (
+	account ID,
+)
+RETURNS groups (
+	group ID,
+) {
+	INTO accounts SELECT a.id as account
+		FROM UserAccount as a
+		WHERE a.ix=$user 
+			AND exists(
+				SELECT b.id 
+					FROM AccountHolding as b 
+					JOIN Holding as c ON b.id=c.id 
+					WHERE b.ix=a.id AND c.stock=stock
+			);
+
+	INTO groups SELECT a.id as [group]
+		FROM UserGroup as a
+		WHERE a.ix=$user 
+			AND exists(SELECT b.id FROM GroupStock as b WHERE b.ix=a.id AND b.id=stock);
+};

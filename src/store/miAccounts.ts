@@ -1,35 +1,34 @@
 import { IObservableArray, makeObservable, observable, runInAction } from "mobx";
 import { ParamIX } from "tonva-react";
-import { AccountValue, Account, UqExt, Stock, StockValue } from "uq-app/uqs/BruceYuMi";
-import { HoldingStock, MiAccount } from "./miAccount";
+import { AccountValue, Account } from "uq-app/uqs/BruceYuMi";
+import { MiAccount } from "./miAccount";
 import { Store } from "./store";
 
 export class MiAccounts {
 	private store: Store;
-	private yumi: UqExt
 	accounts: IObservableArray<MiAccount> = null;
 
-	constructor(store: Store, yumi: UqExt) {
+	constructor(store: Store) {
 		makeObservable(this, {
 			accounts: observable,
 		});
 		this.store = store;
-		this.yumi = yumi;
 	}
 
 	async load() {
-		let {UserAccount, Account, AccountValue} = this.yumi;
+		let {yumi} = this.store;
+		let {UserAccount, Account, AccountValue} = yumi;
 		let param:ParamIX = {
 			IX: UserAccount,
 			IDX: [Account, AccountValue],
 			ix: undefined,			// auto userId
 		};
-		let ret = await this.yumi.IX<Account&AccountValue>(param);
+		let ret = await yumi.IX<Account&AccountValue>(param);
 		if (ret.length === 0) {
 			// 没有持仓账号，则创建默认账号
 			//let accountNO = await Account.NO();
 			let accountName = '我的持仓组合';
-			let retActs = await this.yumi.ActIX({
+			let retActs = await yumi.ActIX({
 				IX: UserAccount,
 				ID: Account,
 				values: [{
@@ -46,29 +45,20 @@ export class MiAccounts {
 			} as any);
 		}
 		runInAction(() => {
-			let accounts = ret.map(v => new MiAccount(this, v));
+			let accounts = ret.map(v => new MiAccount(this.store, v));
 			this.accounts = observable(accounts);
 		});
 	}
 
-	async loadAccountHoldings(account:MiAccount):Promise<(HoldingStock)[]> {
-		if (account.stockHoldings) return;
-		let {id} = account;
-		/*	
-		let ret = this.yumi.a.groupMyAll.stocks.filter(v => {
-			let stockId = v.id;
-			let ok = this.groupStocks.findIndex(gs => {
-				let {ix, id:gStockId} = gs;
-				return ix===id && gStockId===stockId;
-			}) >= 0;
-			return ok;
-		});
+	accountsFromIds(ids: number[]): MiAccount[] {
+		let ret:MiAccount[] = [];
+		let len = this.accounts.length;
+		for (let i=0; i<len; i++) {			
+			let account = this.accounts[i];
+			if (ids.findIndex(v => v === account.id) >= 0) {
+				ret.push(account);
+			}
+		}
 		return ret;
-		*/
-		return undefined as any;
-	}
-
-	stockFromId(stockId: number): Stock&StockValue {
-		return this.store.stockFromId(stockId);
 	}
 }

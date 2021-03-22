@@ -11,19 +11,19 @@ const fields = {
 		"isKey": false,
 		"label": "Id"
 	} as FieldItemId,
-	miRate: {
-		"name": "miRate",
+	miValue: {
+		"name": "miValue",
 		"type": "integer",
 		"isKey": false,
 		"widget": "updown",
-		"label": "MiRate"
+		"label": "MiValue"
 	} as FieldItemInt,
-	ttm: {
-		"name": "ttm",
+	earning: {
+		"name": "earning",
 		"type": "integer",
 		"isKey": false,
 		"widget": "updown",
-		"label": "Ttm"
+		"label": "Earning"
 	} as FieldItemInt,
 	divident: {
 		"name": "divident",
@@ -38,6 +38,13 @@ const fields = {
 		"isKey": false,
 		"widget": "updown",
 		"label": "Price"
+	} as FieldItemInt,
+	pvolumn: {
+		"name": "pvolumn",
+		"type": "integer",
+		"isKey": false,
+		"widget": "updown",
+		"label": "Pvolumn"
 	} as FieldItemInt,
 	roe: {
 		"name": "roe",
@@ -88,11 +95,23 @@ const fields = {
 		"widget": "updown",
 		"label": "Volumn"
 	} as FieldItemInt,
+	smoothness: {
+		"name": "smoothness",
+		"type": "integer",
+		"isKey": false,
+		"widget": "updown",
+		"label": "Smoothness"
+	} as FieldItemInt,
+	date: {
+		"name": "date",
+		"isKey": false,
+		"label": "Date"
+	} as undefined,
 };
 /*==fields==*/
 
 export const fieldArr: FieldItem[] = [
-	fields.miRate, fields.ttm, fields.divident, fields.price, fields.roe, fields.inc1, fields.inc2, fields.inc3, fields.inc4, fields.preInc, fields.volumn, 
+	fields.miValue, fields.earning, fields.divident, fields.price, fields.pvolumn, fields.roe, fields.inc1, fields.inc2, fields.inc3, fields.inc4, fields.preInc, fields.volumn, fields.smoothness, fields.date, 
 ];
 
 export const ui: UI = {

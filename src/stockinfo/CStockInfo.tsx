@@ -303,7 +303,7 @@ export class CStockInfo extends CUqBase {
 	}
 
 	onStockInGroup = async () => {
-		this.cApp.cGroup.setStockGroup(this.stock)
+		//this.cApp.cGroup.setStockToGroup(this.stock)
 		//this.selectedTags = this.cApp.store.stockGroups.getSelected(this.stockTags);
 		//this.openVPage(VTags);
 	}

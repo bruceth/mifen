@@ -22,6 +22,7 @@ export interface SearchBoxState {
 
 export class SearchBox extends React.Component<SearchBoxProps> { //}, SearchBoxState> {
     private input: HTMLInputElement;
+	private button: HTMLButtonElement;
     private key: string = null;
 	
     private onChange = (evt: React.ChangeEvent<any>) => {
@@ -31,8 +32,10 @@ export class SearchBox extends React.Component<SearchBoxProps> { //}, SearchBoxS
             if (this.key === '') this.key = undefined;
         }
 		console.log('key = ' + this.key);
-        if (this.props.allowEmptySearch !== true) {
-            this.input.disabled = !this.key;
+        if (this.props.allowEmptySearch === true) {
+		}
+		else {
+            this.button.disabled = this.key === undefined || this.key.length === 0;
         }
     }
     private onSubmit = async (evt: React.FormEvent<any>) => {
@@ -41,9 +44,11 @@ export class SearchBox extends React.Component<SearchBoxProps> { //}, SearchBoxS
         if (this.props.allowEmptySearch !== true) {
             if (!this.key) return;
             if (this.input) this.input.disabled = true;
+			if (this.button) this.button.disabled = true;
         }
         await this.props.onSearch(this.key);
         if (this.input) this.input.disabled = false;
+		if (this.button) this.button.disabled = false;
     }
     clear() {
         if (this.input) this.input.value = '';
@@ -70,7 +75,7 @@ export class SearchBox extends React.Component<SearchBoxProps> { //}, SearchBoxS
 					defaultValue={this.props.initKey}
 					maxLength={maxLength} />
 				<div className="input-group-append">
-					<button className="btn btn-primary"
+					<button ref={v=>this.button=v} className="btn btn-primary"
 						type="submit"
 						disabled={this.props.allowEmptySearch !== true}>
 						<i className='fa fa-search' />

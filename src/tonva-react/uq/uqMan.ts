@@ -188,6 +188,7 @@ export interface ParamIDxID {
 export interface IDXValue {
 	value: number;
 	time?: number|Date;
+	act: '='|'+';
 }
 
 export interface ParamIDinIX {

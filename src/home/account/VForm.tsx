@@ -1,8 +1,9 @@
 import { IntSchema, ButtonSchema, UiNumberItem, UiButton, Form, Schema, VPage, UiSchema, Context, NumSchema, IdSchema, UiIdItem } from "tonva-react";
+import { formatNumber } from "tool";
 import { Stock } from "uq-app/uqs/BruceYuMi";
-import { CGroup } from "./CGroup";
+import { CAccount } from "./CAccount";
 
-abstract class VForm extends VPage<CGroup> {
+abstract class VForm extends VPage<CAccount> {
 	protected get back(): 'close' | 'back' | 'none' {return 'close'}
 	protected onCheckValue(value:any): string[] | string {
 		return;
@@ -36,14 +37,14 @@ abstract class VForm extends VPage<CGroup> {
 		let {holdingStock} = this.controller;
 		if (!holdingStock) return null;
 		let {stockObj, quantity} = holdingStock;
-		let {name, code, miRate, price} = stockObj;
+		let {name, code, miValue, price} = stockObj;
 		return <div className="py-2">
 			<div className="mr-auto px-3 mb-2">
 				<b>{name}</b> <span className="ml-2 small text-muted">{code}</span>
 			</div>
 			<div className="d-flex my-2 py-2 border-top border-bottom justify-content-center text-center bg-white">
 				{this.renderValue('股数', quantity)}
-				{this.renderValue('米值', quantity * miRate, 2)}
+				{this.renderValue('米值', quantity * miValue, 2)}
 				{this.renderValue('市值', quantity * (price as number), 2)}
 			</div>
 		</div>;
@@ -52,7 +53,7 @@ abstract class VForm extends VPage<CGroup> {
 	private renderValue(caption:string, value: number, dec: number = 0) {
 		return <div className="mx-1 border rounded w-min-5c px-1 py-2">
 			<small className="text-muted">{caption}</small>
-			<div>{new Intl.NumberFormat('zh-CN', { maximumSignificantDigits: 3 }).format(value??0)}</div>
+			<div>{formatNumber(value??0)}</div>
 		</div>;
 	}
 
@@ -86,6 +87,7 @@ abstract class VForm extends VPage<CGroup> {
 
 abstract class VStock extends VForm {
 	protected beforeRender() {
+		super.beforeRender();
 		this.schema.unshift(
 			{ name: 'price', type: 'number', min: 0, required: true } as NumSchema,
 		);
@@ -101,7 +103,24 @@ abstract class VStock extends VForm {
 	}
 }
 
-export class VBuyNew extends VStock {
+abstract class VBuy extends VStock {
+	protected beforeRender() {
+		super.beforeRender();
+		this.uiSchema.rules = [this.checkCash];
+	}
+	protected checkCash = (context:Context): string[] | string => {
+		let {holdingStock, miAccount} = this.controller;
+		let {cash} = miAccount;
+		if (typeof cash !== 'number') return;
+		let {stockObj} = holdingStock;
+		let quantity = context.data.quantity;
+		let {price} = stockObj;
+		if ((quantity as number) * (price as number) > (cash as number))
+			return `超过账户资金余额，无法买入`;
+    }
+}
+
+export class VBuyNew extends VBuy {
 	header() {return '新买股票'}
 	protected beforeRender() {
 		super.beforeRender();
@@ -128,7 +147,7 @@ export class VBuyNew extends VStock {
 	}
 }
 
-export class VBuy extends VStock {
+export class VBuyExist extends VBuy {
 	header() {return '加买股票'}
 	protected get placeholder(): string {return '加买数量'}
 
@@ -145,7 +164,7 @@ export class VSell extends VStock {
 		let {holdingStock} = this.controller;
 		let {quantity} = holdingStock;
 		if (value > quantity)
-			return `卖出数量不能超过持有股数${quantity}`;
+			return `现有持股${quantity}，卖出数量超出`;
     }
 
 	protected async onSubmit(data:any): Promise<void> {
@@ -157,6 +176,15 @@ export class VSell extends VStock {
 abstract class VCash extends VForm {
 	protected get valueLabel(): string {return '资金数量'}
 	protected renderStock(): JSX.Element {return null}
+}
+
+export class VCashInit extends VCash {
+	header() {return '期初资金'}
+	protected get placeholder(): string {return '期初金额'}
+	protected async onSubmit(data:any): Promise<void> {
+		let {value} = data;
+		await this.controller.submitCashInit(value);
+	}
 }
 
 export class VCashIn extends VCash {

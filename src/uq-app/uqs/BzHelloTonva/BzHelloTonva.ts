@@ -1,4 +1,4 @@
-//=== UqApp builder created on Tue Mar 16 2021 09:29:57 GMT-0400 (GMT-04:00) ===//
+//=== UqApp builder created on Mon Mar 22 2021 00:15:03 GMT-0400 (GMT-04:00) ===//
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { IDXValue, Uq, UqTuid, UqQuery, UqID, UqIDX, UqIX } from "tonva-react";
 
@@ -97,17 +97,33 @@ export interface $PiecewiseDetail {
 export interface Achieve {
 	id: number;
 	saleAmount?: number;
-	deliver?: number|IDXValue;
+	deliver?: number;
 }
 
 export interface Hours {
 	id: number;
+	onsite?: number;
+	offsite?: number;
+	break?: number;
+	sick?: number;
+	over?: number;
+	noTimeLog?: number;
+}
+
+export interface ActParamAchieve {
+	id: number|IDXValue;
+	saleAmount?: number|IDXValue;
+	deliver?: number|IDXValue;
+}
+
+export interface ActParamHours {
+	id: number|IDXValue;
 	onsite?: number|IDXValue;
 	offsite?: number|IDXValue;
 	break?: number|IDXValue;
 	sick?: number|IDXValue;
 	over?: number|IDXValue;
-	noTimeLog?: number;
+	noTimeLog?: number|IDXValue;
 }
 
 export interface CustomerTag {
@@ -128,8 +144,8 @@ export interface ParamActs {
 	staff?: Staff[];
 	$Piecewise?: $Piecewise[];
 	$PiecewiseDetail?: $PiecewiseDetail[];
-	achieve?: Achieve[];
-	hours?: Hours[];
+	achieve?: ActParamAchieve[];
+	hours?: ActParamHours[];
 	customerTag?: CustomerTag[];
 	userStaff?: UserStaff[];
 }

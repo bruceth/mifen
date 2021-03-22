@@ -32,11 +32,18 @@ const fields = {
 		"widget": "updown",
 		"label": "Count"
 	} as FieldItemInt,
+	cash: {
+		"name": "cash",
+		"type": "integer",
+		"isKey": false,
+		"widget": "updown",
+		"label": "Cash"
+	} as FieldItemInt,
 };
 /*==fields==*/
 
 export const fieldArr: FieldItem[] = [
-	fields.mi, fields.market, fields.count, 
+	fields.mi, fields.market, fields.count, fields.cash, 
 ];
 
 export const ui: UI = {

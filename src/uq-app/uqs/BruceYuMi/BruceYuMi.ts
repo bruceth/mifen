@@ -1,4 +1,4 @@
-//=== UqApp builder created on Tue Mar 16 2021 09:29:57 GMT-0400 (GMT-04:00) ===//
+//=== UqApp builder created on Mon Mar 22 2021 00:15:03 GMT-0400 (GMT-04:00) ===//
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { IDXValue, Uq, UqTuid, UqAction, UqQuery, UqID, UqIDX, UqIX } from "tonva-react";
 
@@ -40,10 +40,10 @@ export interface ParamWriteStock {
 		market: string;
 		code: string;
 		name: string;
-		miRate: number;
-		ttm: number;
+		rawId: number;
+		miValue: number;
+		earning: number;
 		divident: number;
-		price: number;
 		roe: number;
 		inc1: number;
 		inc2: number;
@@ -51,10 +51,26 @@ export interface ParamWriteStock {
 		inc4: number;
 		preInc: number;
 		volumn: number;
+		smoothness: number;
 	}[];
 
 }
 interface ResultWriteStock {
+}
+
+export interface ParamWritePrice {
+	prices: {
+		market: string;
+		code: string;
+		name: string;
+		rawId: number;
+		price: number;
+		pvolumn: number;
+		date: number;
+	}[];
+
+}
+interface ResultWritePrice {
 }
 
 export interface Param$poked {
@@ -64,6 +80,79 @@ interface Return$pokedRet {
 }
 interface Result$poked {
 	ret: Return$pokedRet[];
+}
+
+export interface ParamSearchStock {
+	key: string;
+	market: string;
+}
+interface ReturnSearchStock$page {
+	id: number;
+	market: string;
+	currency: string;
+	code: string;
+	name: string;
+	rawId: number;
+	miValue: number;
+	earning: number;
+	divident: number;
+	price: number;
+	roe: number;
+	inc1: number;
+	inc2: number;
+	inc3: number;
+	inc4: number;
+	preInc: number;
+	volumn: number;
+	smoothness: number;
+}
+interface ResultSearchStock {
+	$page: ReturnSearchStock$page[];
+}
+
+export interface ParamStockUsing {
+	stock: number;
+}
+interface ReturnStockUsingAccounts {
+	account: number;
+}
+interface ReturnStockUsingGroups {
+	group: number;
+}
+interface ResultStockUsing {
+	accounts: ReturnStockUsingAccounts[];
+	groups: ReturnStockUsingGroups[];
+}
+
+export interface $Piecewise {
+	id?: number;
+	name: string;
+	mul: number;
+	div: number;
+	offset: number;
+	asc: number;
+}
+
+export interface Market {
+	id?: number;
+	name: string;
+	currency: string;
+}
+
+export interface Transaction {
+	id?: number;
+	holding: number;
+	tick: any;
+	price: number;
+	quantity: number;
+	amount: number;
+}
+
+export interface Group {
+	id?: number;
+	no?: string;
+	name: string;
+	type: any;
 }
 
 export interface Account {
@@ -79,13 +168,12 @@ export interface Holding {
 	order: number;
 }
 
-export interface Transaction {
+export interface $PiecewiseDetail {
 	id?: number;
-	holding: number;
-	tick: any;
-	price: number;
-	quantity: number;
-	amount: number;
+	parent: number;
+	row?: number;
+	sec: number;
+	value: number;
 }
 
 export interface Stock {
@@ -97,62 +185,75 @@ export interface Stock {
 	rawId: number;
 }
 
-export interface Market {
-	id?: number;
-	name: string;
-	currency: string;
+export interface StockValue {
+	id: number;
+	miValue?: number;
+	earning?: number;
+	divident?: number;
+	price?: number;
+	pvolumn?: number;
+	roe?: number;
+	inc1?: number;
+	inc2?: number;
+	inc3?: number;
+	inc4?: number;
+	preInc?: number;
+	volumn?: number;
+	smoothness?: number;
+	date?: any;
 }
 
-export interface $PiecewiseDetail {
-	id?: number;
-	parent: number;
-	row?: number;
-	sec: number;
-	value: number;
-}
-
-export interface $Piecewise {
-	id?: number;
-	name: string;
-	mul: number;
-	div: number;
-	offset: number;
-	asc: number;
-}
-
-export interface Group {
-	id?: number;
-	no?: string;
-	name: string;
-	type: any;
+export interface AccountValue {
+	id: number;
+	mi?: number;
+	market?: number;
+	count?: number;
+	cash?: number;
+	$track?: number;
 }
 
 export interface Portfolio {
 	id: number;
-	quantity?: number|IDXValue;
+	quantity?: number;
 	$track?: number;
 }
 
-export interface StockValue {
-	id: number;
-	miRate?: number;
-	ttm?: number|IDXValue;
+export interface ActParamStockValue {
+	id: number|IDXValue;
+	miValue?: number|IDXValue;
+	earning?: number|IDXValue;
 	divident?: number|IDXValue;
 	price?: number|IDXValue;
+	pvolumn?: number|IDXValue;
 	roe?: number|IDXValue;
 	inc1?: number|IDXValue;
 	inc2?: number|IDXValue;
 	inc3?: number|IDXValue;
 	inc4?: number|IDXValue;
-	preInc?: number;
+	preInc?: number|IDXValue;
 	volumn?: number|IDXValue;
+	smoothness?: number|IDXValue;
+	date?: any|IDXValue;
 }
 
-export interface AccountValue {
-	id: number;
+export interface ActParamAccountValue {
+	id: number|IDXValue;
 	mi?: number|IDXValue;
 	market?: number|IDXValue;
 	count?: number|IDXValue;
+	cash?: number|IDXValue;
+	$track?: number;
+}
+
+export interface ActParamPortfolio {
+	id: number|IDXValue;
+	quantity?: number|IDXValue;
+	$track?: number;
+}
+
+export interface UserBlockStock {
+	ix: number;
+	id: number;
 }
 
 export interface UserAccount {
@@ -165,39 +266,40 @@ export interface UserGroup {
 	id: number;
 }
 
+export interface UserAllStock {
+	ix: number;
+	id: number;
+}
+
+export interface AccountHolding {
+	ix: number;
+	id: number;
+}
+
 export interface GroupStock {
 	ix: number;
 	id: number;
 	order: number;
 }
 
-export interface UserBlockStock {
-	ix: number;
-	id: number;
-}
-
-export interface UserAllStock {
-	ix: number;
-	id: number;
-}
-
 export interface ParamActs {
+	$Piecewise?: $Piecewise[];
+	market?: Market[];
+	transaction?: Transaction[];
+	group?: Group[];
 	account?: Account[];
 	holding?: Holding[];
-	transaction?: Transaction[];
-	stock?: Stock[];
-	market?: Market[];
 	$PiecewiseDetail?: $PiecewiseDetail[];
-	$Piecewise?: $Piecewise[];
-	group?: Group[];
-	portfolio?: Portfolio[];
-	stockValue?: StockValue[];
-	accountValue?: AccountValue[];
+	stock?: Stock[];
+	stockValue?: ActParamStockValue[];
+	accountValue?: ActParamAccountValue[];
+	portfolio?: ActParamPortfolio[];
+	userBlockStock?: UserBlockStock[];
 	userAccount?: UserAccount[];
 	userGroup?: UserGroup[];
-	groupStock?: GroupStock[];
-	userBlockStock?: UserBlockStock[];
 	userAllStock?: UserAllStock[];
+	accountHolding?: AccountHolding[];
+	groupStock?: GroupStock[];
 }
 
 
@@ -207,21 +309,25 @@ export interface UqExt extends Uq {
 	$user: UqTuid<Tuid$user>;
 	$sheet: UqTuid<Tuid$sheet>;
 	WriteStock: UqAction<ParamWriteStock, ResultWriteStock>;
+	WritePrice: UqAction<ParamWritePrice, ResultWritePrice>;
 	$poked: UqQuery<Param$poked, Result$poked>;
+	SearchStock: UqQuery<ParamSearchStock, ResultSearchStock>;
+	StockUsing: UqQuery<ParamStockUsing, ResultStockUsing>;
+	$Piecewise: UqID<any>;
+	Market: UqID<any>;
+	Transaction: UqID<any>;
+	Group: UqID<any>;
 	Account: UqID<any>;
 	Holding: UqID<any>;
-	Transaction: UqID<any>;
-	Stock: UqID<any>;
-	Market: UqID<any>;
 	$PiecewiseDetail: UqID<any>;
-	$Piecewise: UqID<any>;
-	Group: UqID<any>;
-	Portfolio: UqIDX<any>;
+	Stock: UqID<any>;
 	StockValue: UqIDX<any>;
 	AccountValue: UqIDX<any>;
+	Portfolio: UqIDX<any>;
+	UserBlockStock: UqIX<any>;
 	UserAccount: UqIX<any>;
 	UserGroup: UqIX<any>;
-	GroupStock: UqIX<any>;
-	UserBlockStock: UqIX<any>;
 	UserAllStock: UqIX<any>;
+	AccountHolding: UqIX<any>;
+	GroupStock: UqIX<any>;
 }

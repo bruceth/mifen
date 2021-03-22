@@ -14,13 +14,9 @@ export class VStockInGroup extends VPage<CGroup> {
 			if (!stock) return <div>no stock, can set group</div>;
 			let {id:stockId, name, code} = stock;
 			let {store} = cApp;
-			let {miGroups} = store;
-			let {groups, groupStocks, groupMyAll, groupBlock } = miGroups;
-			let inGroup:{[groupId:number]:boolean} = {};
-			for (let gs of groupStocks) {
-				let {ix, id} = gs;
-				if (id === stockId) inGroup[ix] = true;
-			}
+			let {miGroups, myAllCaption, myBlockCaption} = store;
+			let {groups} = miGroups;
+			let inGroup = store.buildInGroup(stockId);
 			return <div>
 				<div className="p-3">
 					<b>{name}</b> 
@@ -44,14 +40,14 @@ export class VStockInGroup extends VPage<CGroup> {
 							disabled={true}
 							defaultChecked={true}
 							onChange={evt => setMyAll(evt.currentTarget.checked)} />
-						{groupMyAll.name}
+						{myAllCaption}
 					</label>
 				</div>
 				<div className="mt-2">
 					<label className="mb-0 w-8c px-3 py-2">
 						<input className="mr-1" type="checkbox"
 							onChange={evt => setBlock(evt.currentTarget.checked)} />
-						{groupBlock.name}
+						{myBlockCaption}
 					</label>
 					<small className="text-muted">选股时不列出</small>
 				</div>

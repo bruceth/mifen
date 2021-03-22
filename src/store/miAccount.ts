@@ -1,127 +1,150 @@
 import { IObservableArray, makeObservable, observable, runInAction } from "mobx";
-import { Account, AccountValue, Stock, StockValue, Holding, Portfolio } from "uq-app/uqs/BruceYuMi";
-import { MiAccounts } from "./miAccounts";
+import { Account, AccountValue, Holding, Portfolio } from "uq-app/uqs/BruceYuMi";
+import { HoldingStock } from "./holdingStock";
+import { Store } from "./store";
 
 export class MiAccount  implements Account, AccountValue {
-	protected readonly miAccounts: MiAccounts;
+	protected store: Store;
 	id: number;
 	no: string;
 	name: string;
-	count: number;
-	mi: number;
-	market: number;
-	divident: number;
-	cash: number;
+	count: number = 0;
+	mi: number = 0;
+	market: number = 0;
+	divident: number = 0;
+	cash: number = null;
 
-	stockHoldings: IObservableArray<HoldingStock> = null;
+	holdingStocks: IObservableArray<HoldingStock> = null;
 
-	constructor(miAccounts: MiAccounts, account: Account&AccountValue) {
+	constructor(store: Store, account: Account&AccountValue) {
 		makeObservable(this, {
-			stockHoldings: observable,
+			holdingStocks: observable,
 			count: observable,
 			mi: observable,
 			market: observable,
 			divident: observable,
 			cash: observable,
 		})
-		this.miAccounts = miAccounts;
-		Object.assign(this, account);
+		this.store = store;
+		runInAction(() => {
+			Object.assign(this, account);
+			this.cash = undefined;
+		});
 	}
 
 	async loadItems() {
-		if (this.stockHoldings) return;
-		runInAction(() => {
-			this.stockHoldings = undefined;
+		if (this.holdingStocks) return;
+		let {yumi} = this.store;
+		let ret = await yumi.IX<Holding&Portfolio>({
+			// IX: yumi.UserAccount,
+			IX: yumi.AccountHolding,
+			ix: this.id,
+			IDX: [yumi.Holding, yumi.Portfolio]
 		});
-		let ret = await this.miAccounts.loadAccountHoldings(this);
-		if (!ret) ret = [];
+		let noneStocks = ret.filter(v => !this.store.stockFromId(v.stock));
+		if (noneStocks.length > 0) {
+			await yumi.ActIX({
+				IX: yumi.UserAllStock,
+				values: noneStocks.map(v => ({ix:undefined, id: v.stock}))
+			});
+			await this.store.loadMyAll();
+		}
 		runInAction(() => {
-			this.stockHoldings = observable(ret, {deep: true});
-			this.count = this.stockHoldings.length;
-		});
-	}
-
-	async addHolding(stock: Stock&StockValue, quantity: number) {
-		let stockId = stock.id;
-		let hs = new HoldingStock();
-		hs.id = 0;
-		hs.stock = stockId;
-		hs.stockObj = stock;
-		hs.quantity = quantity;
-		let {price, miRate, divident} = stock;
-		hs.mi = quantity * (price as number) * miRate / 100;
-		hs.market = quantity * (price as number);
-		hs.divident = quantity * (divident as number ?? 0);
-		runInAction(() => {
-			let index = this.stockHoldings.findIndex(v => v.stock === stockId);
-			if (index < 0) {
-				this.stockHoldings.push(hs);
-			}
-			else {
-				let orgHs = this.stockHoldings[index];
-				orgHs.quantity += quantity;
-			}
-			this.recalc();
+			this.holdingStocks = observable(ret.map(v => {
+				let {id, stock:stockId} = v;
+				let stock = this.store.stockFromId(stockId);
+				let holdingStock = new HoldingStock(id, stock, v.quantity);
+				return holdingStock;
+			}));
+			this.count = this.holdingStocks.length;
 		});
 	}
 
-	protected stockFromId(stockId:number): Stock & StockValue {
-		return this.miAccounts.stockFromId(stockId);
+	async buyNewHolding(stockId: number, price: number, quantity: number) {
+		let holdingId: number;
+		let stock = this.store.stockFromId(stockId);
+		if (!stock) {
+			stock = await this.store.loadStock(stockId);
+			if (!stock) throw new Error(`stock ${stockId} not exists`);
+		}
+		let index = this.holdingStocks.findIndex(v => v.stock === stockId);
+		if (index < 0) {
+			holdingId = await this.saveHolding(stockId);
+			await this.store.addStockToMyAll(stock);
+			let hs = new HoldingStock(holdingId, stock, quantity);
+			hs.setQuantity(price, quantity);
+			runInAction(() => {
+				this.holdingStocks.push(hs);
+			})
+		}
+		else {
+			let orgHs = this.holdingStocks[index];
+			holdingId = orgHs.id;
+			let holdingQuantity = orgHs.quantity + quantity;
+			orgHs.setQuantity(price, holdingQuantity);
+		}
+		await this.bookHolding(holdingId, price, quantity);
 	}
 
 	async buyHolding(stockId: number, price: number, quantity: number) {
-		let stock = this.stockFromId(stockId);
-		let hs = new HoldingStock();
-		hs.id = 0;
-		hs.stock = stockId;
-		hs.stockObj = stock;
-		hs.quantity = quantity;
-		let {miRate, divident} = stock;
-		hs.mi = quantity * (price as number) * miRate / 100;
-		hs.market = quantity * (price as number);
-		hs.divident = quantity * (divident as number ?? 0);
+		let index = this.holdingStocks.findIndex(v => v.stock === stockId);
+		if (index < 0) return;
+		let orgHs = this.holdingStocks[index];
+		let holdingId = orgHs.id;
+		let holdingQuantity = orgHs.quantity + quantity;
 		runInAction(() => {
-			let index = this.stockHoldings.findIndex(v => v.stock === stockId);
-			if (index < 0) {
-				this.stockHoldings.push(hs);
-			}
-			else {
-				let orgHs = this.stockHoldings[index];
-				orgHs.quantity += quantity;
-			}
-			this.recalc();
+			orgHs.setQuantity(price, holdingQuantity);
+		});
+		await this.bookHolding(holdingId, price, quantity);
+	}
+
+	private async saveHolding(stock:number): Promise<number> {
+		let ret = await this.store.yumi.Acts({
+			holding: [{account: this.id, stock, order: undefined}]
+		});
+		return ret.holding[0];
+	}
+
+	private async bookHolding(holdingId:number, price:number, quantity:number): Promise<void> {
+		this.recalc();
+		await this.store.yumi.Acts({
+			accountValue: [{
+				id: this.id,
+				mi: this.mi,
+				market: this.market,
+				count: this.count,
+			}],
+			accountHolding: [{
+				ix: this.id,
+				id: holdingId
+			}],
+			portfolio: [{
+				id: holdingId,
+				quantity: quantity,
+			}],
+			transaction: [{
+				holding: holdingId,
+				tick: undefined,
+				price, 
+				quantity,
+				amount: price * quantity,
+			}],
 		});
 	}
 
 	async sellHolding(stockId: number, price: number, quantity: number) {
-		//let stockId = stock.id;
-		let stock = this.stockFromId(stockId);
-		let hs = new HoldingStock();
-		hs.id = 0;
-		hs.stock = stockId;
-		hs.stockObj = stock;
-		hs.quantity = quantity;
-		let {miRate, divident} = stock;
-		hs.mi = quantity * (price as number) * miRate / 100;
-		hs.market = quantity * (price as number);
-		hs.divident = quantity * (divident as number ?? 0);
+		let holding = this.holdingStocks.find(v => v.stock === stockId);
+		if (holding === undefined) return;
 		runInAction(() => {
-			let index = this.stockHoldings.findIndex(v => v.stock === stockId);
-			if (index < 0) {
-				this.stockHoldings.push(hs);
-			}
-			else {
-				let orgHs = this.stockHoldings[index];
-				orgHs.quantity += quantity;
-			}
-			this.recalc();
+			holding.setQuantity(price, holding.quantity - quantity);
 		});
+		await this.bookHolding(holding.id, price, -quantity);
 	}
 
 	private recalc() {
-		this.count = this.stockHoldings.length;
+		this.count = this.holdingStocks.length;
 		let sumMi = 0, sumMarket = 0, sumDivident = 0;
-		for (let sh of this.stockHoldings) {
+		for (let sh of this.holdingStocks) {
 			let {mi, market, divident} = sh;
 			sumMi += mi;
 			sumMarket += market;
@@ -132,37 +155,39 @@ export class MiAccount  implements Account, AccountValue {
 		this.divident = sumDivident;
 	}
 
-	cashIn(amount: number) {
+	private async cashAct(amount: number, act: string):Promise<void> {
+		await this.store.yumi.Acts({
+			accountValue: [{id: this.id, cash: {value: amount, act:'+'}}]
+		});
+	}
+
+	async cashInit(amount: number) {
+		await this.cashAct(amount, 'init');
+		runInAction(() => {
+			if (typeof this.cash !== 'number') this.cash = amount;
+		});
+	}
+
+	async cashIn(amount: number) {
+		await this.cashAct(amount, 'in');
 		runInAction(() => {
 			if (!this.cash) this.cash = amount;
 			else this.cash += amount;
 		});
 	}
 
-	cashOut(amount: number) {
+	async cashOut(amount: number) {
+		await this.cashAct(-amount, 'out');
 		runInAction(() => {
-			// if (!this.cash) this.cash = amount;
-			// else 
 			this.cash -= amount;
 		});
 	}
 
-	cashAdjust(amount: number) {
+	async cashAdjust(amount: number) {
+		await this.cashAct(amount, 'adjust');
 		runInAction(() => {
 			if (!this.cash) this.cash = amount;
 			else this.cash += amount;
 		});
 	}
-}
-
-export class HoldingStock implements Holding, Portfolio {
-	id: number;
-	account: number;
-	stock: number;
-	order: number;
-	quantity: number;
-	mi: number;				// 米值
-	market: number;			// 市值
-	divident: number;		// 股息
-	stockObj: Stock & StockValue;
 }

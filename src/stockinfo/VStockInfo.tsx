@@ -40,23 +40,25 @@ export class VStockInfo extends VPage<CStockInfo> {
 	}
 
 	private page = observer(() => {
-		let { openMetaView, baseItem, onStockInGroup, stockTags, isLogined } = this.controller;
+		let { cApp, stock, openMetaView, baseItem, onStockInGroup, stockTags, isLogined } = this.controller;
 		let { name, code, day } = baseItem;
 		let viewMetaButton = <></>;
 		if (isLogined) {
 		viewMetaButton = <button type="button" className="btn w-100" onClick={openMetaView}>view</button>
 		}
+		/*
 		let right = stockTags && <button 
 			className="btn btn-sm mr-2 btn-outline-success bg-light align-self-center"
 			onClick={onStockInGroup}>
 			{stockTags.length === 0? '加自选' : '设分组'}
 		</button>;
+		*/
 		let headStr = name + ' ' + code;
 		if (day !== undefined) {
 		headStr += ' - ' + day;
 		}
 	let head = <div onClick={()=>this.controller.showSelectStock(day)}>{headStr}</div>
-		return <Page header={head} right={right}
+		return <Page header={head}
 		headerClassName='bg-primary'>
 		{React.createElement(this.pageContent)}
 		</Page>;
@@ -132,15 +134,18 @@ export class VStockInfo extends VPage<CStockInfo> {
 
 
 	private baseInfo = observer(() => {
-		let {baseItem, isMySelect} = this.controller;
+		let {cApp, stock, baseItem, isMySelect} = this.controller;
 		let { id, name, code, symbol, pe, roe, price, order, divyield, e, capital, bonus } = baseItem;
 
 		//let list = this.controller.cApp.store.defaultList;
 		//let fInList = list.findIndex(v=>v===id) >= 0;
 		//let fInList = this.controller.cApp.store.isMySelect(id);
+		/*
 		let right = <label className="align-self-center px-3"> <input type="checkbox" name="checkDefaultList" defaultChecked={isMySelect}
 		onChange={this.checkDefaultTag} />自选股</label>;
-		return <LMR className="bg-white" right={right}> <div className="px-3 py-2" >
+		*/
+		let pinStock = <div className="mr-3">{cApp.cHome.renderPinStock(stock)}</div>;
+		return <LMR className="bg-white" right={pinStock}> <div className="px-3 py-2" >
 		<div className="d-flex flex-wrap">
 			<div className="px-3 c8">{GFunc.caption('TTM')}{GFunc.numberToFixString(pe)}</div>
 			<div className="px-3 c8">{GFunc.caption('股息率')}{GFunc.percentToFixString(divyield)}</div>

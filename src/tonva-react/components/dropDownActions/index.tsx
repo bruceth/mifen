@@ -76,7 +76,7 @@ export class DropdownActions extends React.Component<DropdownActionsProps, Dropd
                 aria-expanded={dropdownOpen}
                 onClick={this.toggle}>
                 <i className={classNames('fa fa-fw ', 'fa-'+(icon||'ellipsis-v'))} /> 
-				{content && <span className="ml-2">{content}</span>}
+				{content && <span className="ml-1">{content}</span>}
             </button>
             <div ref={v => this.menu=v} className={classNames({"dropdown-menu":true, "dropdown-menu-right":isRight, "show":dropdownOpen})}>
                 {

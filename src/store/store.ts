@@ -1,4 +1,5 @@
-import { makeObservable, observable } from "mobx";
+import { IObservableArray, makeObservable, observable } from "mobx";
+import { IXBase } from "tonva-uqui";
 import { MiNet } from "../net";
 import { defaultGroupName } from "../consts";
 import { MiConfigs, RegressionConfig, Stock as StockType, StockFindConfig } from "./types";
@@ -7,34 +8,152 @@ import { Accounts } from "./accounts";
 import { UQs } from "uq-app";
 import { MiAccounts } from "./miAccounts";
 import { MiGroups } from "./miGroups";
-import { Stock, StockValue } from "uq-app/uqs/BruceYuMi";
+import { Stock, StockValue, UqExt } from "uq-app/uqs/BruceYuMi";
+import { MiGroup } from "./miGroup";
+import { MiAccount } from "./miAccount";
 
 export class Store {
-	private miNet: MiNet;
-	private uqs: UQs;
-	//user: User;
-	//userTag: UserTag;
-	//homeItems: IObservableArray<any> = observable.array<any>([], { deep: true });
+	private readonly miNet: MiNet;
+	readonly myAllColl: {[id:number]: boolean} = {};
+	readonly yumi: UqExt;
 	stockGroups: StockGroups;
 	accounts: Accounts;
 	miAccounts: MiAccounts;
 	miGroups: MiGroups;
+	stocksMyAll: IObservableArray<Stock & StockValue> = null;
+	stocksMyBlock: IObservableArray<Stock & StockValue> = null;
+	groupIXs: IXBase[];
 	
 	constructor(miNet:MiNet, uqs: UQs) {
 		makeObservable(this, {
 			config: observable,
+			myAllColl: observable,
+			stocksMyAll: observable.shallow,
+			stocksMyBlock: observable.shallow,
 		});
-		//this.user = user;
-		//let miHost = consts.miApiHost;
-		//let token = this.user.token;
-		//this.miApi = new MiApi(miHost, 'fsjs/', 'miapi', token, false);
 		this.miNet = miNet;
-		this.uqs = uqs;
+		this.yumi = uqs.BruceYuMi;
+		this.miAccounts = new MiAccounts(this);
+		this.miGroups = new MiGroups(this);
+
 		this.stockGroups = new StockGroups(miNet);
 		this.accounts = new Accounts(miNet);
-		this.miAccounts = new MiAccounts(this, uqs.BruceYuMi);
-		this.miGroups = new MiGroups(uqs.BruceYuMi);
 	}
+
+	stockFromId(stockId: number): Stock&StockValue {
+		return this.stocksMyAll.find(v => v.id === stockId);
+	}
+
+	async loadStock(stockId: number): Promise<Stock&StockValue> {
+		let ret = await this.yumi.ID<Stock&StockValue>({
+			IDX: [this.yumi.Stock, this.yumi.StockValue],
+			id: stockId,
+		});
+		let stock = ret[0];
+		Store.buildStockValues(stock);
+		return stock;
+	}
+
+	private static buildStockValues(stock: Stock & StockValue) {
+		if (stock === undefined) return;
+		let {miValue, earning, divident, price} = stock;
+		if (miValue) stock.miValue = miValue;
+		if (earning) stock.earning = earning;
+		if (divident) stock.divident = divident * 1000 / price;
+		if (price) stock.price = price / 10000;
+		// if (roe) stock.roe = roe;
+	}
+	
+	async searchStock(param:any, pageStart:any, pageSize:number):Promise<{[name:string]:any[]}> {
+		let ret = await this.yumi.SearchStock.page(param, pageStart, pageSize, true);
+		let {$page} = ret;
+		$page.forEach(v => Store.buildStockValues(v as unknown as (Stock & StockValue)));
+		return ret as any;
+	}
+
+	isMySelect(id:number): boolean {
+		return this.myAllColl[id] === true;
+	}
+	
+	async addStockToMyAll(stock:Stock&StockValue) {
+		if (!stock) return;
+		await this.yumi.ActIX({
+			IX: this.yumi.UserAllStock, 
+			values: [
+				{ix: undefined, id: stock.id}
+			]
+		});
+		this.stocksMyAll.push(stock);
+		this.myAllColl[stock.id] = true;
+	}
+
+	async removeStockFromMyAll(stock: Stock&StockValue): Promise<{miAccounts: MiAccount[], miGroups: MiGroup[]}> {
+		if (!stock) return;
+
+		let ret = await this.yumi.StockUsing.query({stock: stock.id});
+		let {groups, accounts} = ret;
+		if (groups.length > 0 || accounts.length > 0) {
+			let miAccounts = this.miAccounts.accountsFromIds(accounts.map(v => v.account));
+			let miGroups = this.miGroups.groupsFromIds(groups.map(v => v.group));
+			return {miAccounts, miGroups};
+		}
+
+		await this.yumi.ActIX({
+			IX: this.yumi.UserAllStock, 
+			values: [
+				{ix: undefined, id: -stock.id}
+			]
+		});
+		let index = this.stocksMyAll.findIndex(v => v.id === stock.id);
+		if (index >= 0) this.stocksMyAll.splice(index, 1);
+		delete this.myAllColl[stock.id];
+	}
+
+	myAllCaption: string = '自选股';
+	myBlockCaption: string = '黑名单';
+
+	async loadMyAll() {
+		let ret = await this.yumi.IX<(Stock&StockValue)>({
+			IX: this.yumi.UserAllStock,
+			IDX: [this.yumi.Stock, this.yumi.StockValue],
+			ix: undefined,
+		});
+		ret.forEach(v => {
+			Store.buildStockValues(v);
+			this.myAllColl[v.id] = true;
+		});
+		this.stocksMyAll = observable(ret, {deep: false});
+	}
+
+	async loadMyBlock() {
+		let {yumi} = this;
+		let ret = await yumi.IX<(Stock&StockValue)>({
+			IX: yumi.UserBlockStock,
+			IDX: [yumi.Stock, yumi.StockValue],
+			ix: undefined,
+		});
+		ret.forEach(v => Store.buildStockValues(v));
+		this.stocksMyBlock = observable(ret, {deep: false});
+	}
+
+	async loadGroupStocks(groupId: number):Promise<(Stock&StockValue)[]> {
+		let ret = this.stocksMyAll.filter(v => {
+			let stockId = v.id;
+			let ok = this.groupIXs.findIndex(gs => {
+				let {ix, id:gStockId} = gs;
+				return ix===groupId && gStockId===stockId;
+			}) >= 0;
+			return ok;
+		});
+		return ret;
+	}
+
+
+	/*
+	stockFromId(stockId: number): Stock&StockValue {
+		return this.groupMyAll.stockFromId(stockId);
+	}
+	*/
 
 	@observable config: MiConfigs = { 
 		groupName: defaultGroupName, 
@@ -51,43 +170,62 @@ export class Store {
 		return this.stockGroups.groupFromName(name);
 	}
 
+	/*
 	stockFromId(stockId: number): Stock&StockValue {
 		return this.miGroups.stockFromId(stockId);
-	}
-
-	/*
-	@computed get tagID(): number {
-		if (this.stockGroups) {
-			let name = this.config.tagName;
-			let i = this.stockGroups.findIndex(v => v.groupName === name);
-			if (i >= 0) {
-				return this.stockGroups[i].groupId as number;
-			}
-		}
-		return -1;
 	}
 	*/
 
 	get findStockConfg(): StockFindConfig {
 		return this.config.stockFind;
 	}
-	/*
-	get blackListTagID(): number {
-		let group = this.stockGroups.groupFromName(defaultBlackListGroupName);
-		return group?.groupId;
-	}
-
-	get defaultListTagID(): number {
-		let group = this.stockGroups.groupFromName(defaultGroupName);
-		return group?.groupId;
-	}
-	*/
 
 	async load() {
-		await this.loadConfig();
-		//await this.loadHomeItems();
+		//await this.loadConfig();
 		await this.miAccounts.load();
+		await this.loadMyAll();
+		await this.loadGroupIXs();
 		await this.miGroups.load();
+	}
+
+	private async loadGroupIXs() {
+		let {yumi} = this;
+		let ret = await yumi.IX<IXBase>({
+			IX: yumi.UserGroup,
+			IX1: yumi.GroupStock,
+			ix: undefined,
+		});
+		this.groupIXs = ret;
+	}
+
+	stockInNGroup(stock:Stock): number {
+		let nGroup = 0;
+		let {groupIXs} = this;
+		let stockId = stock.id;
+		for (let i=0; i<groupIXs.length; i++) {
+			let {id} = groupIXs[i];
+			if (id === stockId) ++nGroup;
+		}
+		return nGroup;
+	}
+
+	calcGroupStockCount(groupId: number): number {
+		if (!this.groupIXs) return;
+		let count = 0;
+		for (let gs of this.groupIXs) {
+			let {ix} = gs;
+			if (ix === groupId) ++count;
+		}
+		return count;
+	}
+
+	buildInGroup(stockId: number): {[groupId:number]:boolean} {
+		let inGroup:{[groupId:number]:boolean} = {};
+		for (let gs of this.groupIXs) {
+			let {ix, id} = gs;
+			if (id === stockId) inGroup[ix] = true;
+		}
+		return inGroup;
 	}
 
 	async saveConfig() {
@@ -204,158 +342,14 @@ export class Store {
 		this.config.regression = cfg;
 		await this.saveConfig();
 	}
-	/*
-	protected async loadBlackList(): Promise<void> {
-		let blackid = this.blackListTagID;
-		if (blackid <= 0) {
-			this.blackList = [];
-			return;
-		}
-
-		let param = { user:this.user.id, tag:blackid};
-		try {
-			let ret = await this.miNet.t_tagstock$query(blackid, undefined);//await this.uqs.mi.TagStock.query(param);
-			let r = ret.map(item=> {
-			return item.stock;
-			});
-			this.blackList = r;
-		}
-		catch (error) {
-			let e = error;
-		}
-	}
-
-	protected async loadDefaultList(): Promise<void> {
-		let id = this.defaultListTagID;
-		if (id <= 0) {
-			this.defaultList = [];
-			return;
-		}
-
-		let param = { user:this.user.id, tag:id};
-		try {
-			let ret = await this.miNet.t_tagstock$query(id, undefined);//await this.uqs.mi.TagStock.query(param);
-			let r = ret.map(item => item.stock);
-			this.defaultList = r;
-		}
-		catch (error) {
-			let e = error;
-		}
-	}
-
-	private addBlackID(id:number) {
-		let i = this.blackList.findIndex(v=> v===id);
-		if (i < 0) {
-			this.blackList.push(id);
-		}
-	}
-
-	private removeBlackID(id:number) {
-		let i = this.blackList.findIndex(v=> v===id);
-		if (i >= 0) {
-			this.blackList.splice(i, 1);
-		}
-	}
-
-	private addDefaultID(id:number) {
-		let i = this.defaultList.findIndex(v=> v===id);
-		if (i < 0) {
-			this.defaultList.push(id);
-		}
-	}
-
-	private removeDefaultID(id:number) {
-		let i = this.defaultList.findIndex(v=> v===id);
-		if (i >= 0) {
-			this.defaultList.splice(i, 1);
-		}
-	}
-
-	async addStock(stockId:number) {
-		if (stockId <= 0) return;
-		let tagid = this.defaultListTagID;
-		await this.miNet.t_tagstock$add(tagid, stockId);
-		await this.addTagStockID(tagid, stockId);
-		let group = this.stockGroups.groupFromId(tagid);
-		//await this.loadHomeItems();
-		group.addStock(stockId);
-	}
-	*/
 
 	async addTagStock(stock: StockType) {
-		/*
-		if (this.userTag && this.userTag.tagID === tagid) {
-			if (tagid === this.blackListTagID) {
-				this.addBlackID(stockID);
-			}
-			else if (tagid === this.defaultListTagID) {
-				this.addDefaultID(stockID);
-			}
-		}
-		*/
 		await this.stockGroups.defaultGroup.addStock(stock);
 	}
 
-	/*
-	async addTagStockIDs(tagid: number, stockIDs: number[]) {
-		if (tagid === this.blackListTagID) {
-			stockIDs.map(v=>this.addBlackID(v));
-		}
-		else if (tagid === this.defaultListTagID) {
-			stockIDs.map(v=>this.addDefaultID(v));
-		}
-	}
-	*/
-
 	async removeTagStock(stock: StockType) {
 		await this.stockGroups.defaultGroup.removeStock(stock);
-		/*
-		if (tagid === this.blackListTagID) {
-			this.removeBlackID(stockID);
-		}
-		else if (tagid === this.defaultListTagID) {
-			this.removeDefaultID(stockID);
-		}
-		if (this.userTag && this.userTag.tagID === tagid) {
-			this.removeStock(stockID);
-		}
-		*/
 	}
-
-	/*
-	async loadHomeItems() {
-		// 距离上次
-		let queryName = 'taguser';
-
-		let query = {
-			name: queryName,
-			pageStart: 0,
-			pageSize: 1000,
-			user: this.user.id,
-			tag: this.tagID,
-			yearlen: 1,
-		};
-		let result = await this.miNet.process(query, []);
-		if (Array.isArray(result) === false) return;
-
-		let arr = result as {id:number, order:number, data?:string, v?:number, e:number, e3:number, ep:number, price:number, exprice:number, divyield:number, r2:number, lr2:number, predictpe?:number, dataArr?:number[]}[];
-		for (let item of arr) {
-			let dataArray = JSON.parse(item.data) as number[];
-			item.dataArr = dataArray;
-			let sl = new SlrForEarning(dataArray);
-			item.ep = (sl.predict(4) + item.e) / 2;
-			item.e3 = sl.predict(7);
-			item.v = GFunc.calculateVN(sl.slopeR, item.ep, item.divyield * item.price, item.exprice);
-			item.predictpe = item.price / item.e3;
-		}
-		this.sortStocks(arr);
-
-		runInAction(() => {
-			this.homeItems.clear();
-			this.homeItems.push(...arr);	
-		});
-	}
-	*/
 
 	async loadExportItems(queryName: string):Promise<any[]> {
 		//let sName = this.store.config.stockFind.selectType;
@@ -386,9 +380,11 @@ export class Store {
 		return rets;
 	}
 
+	/*
 	isMySelect(id:number): boolean {
 		return this.stockGroups.isMySelect(id);
 	}
+	*/
 
 	isMyBlack(id:number): boolean {
 		return this.stockGroups.isMyBlack(id);
