@@ -47,9 +47,10 @@ export class VMain extends VPage<CApp> {
 			{
 				name: 'find', label: '发现', icon: 'search', content: cFind.tab, load: cFind.load
 			},
+			/*
 			{
 				name: 'explorer', label: '选股', icon: 'search', content: cExporer.tab, load: cExporer.load
-			},
+			},*/
 			{
 				name: 'me', label: '我的', icon: 'user', content: cMe.tab, onShown: undefined
 			}
