@@ -147,6 +147,7 @@ export class CHome extends CUqBase {
 	}
 
 	renderPinStock(stock: Stock & StockValue) {
+		if (!stock) return null;
 		return this.renderView(VPinStock, stock);
 	}
 }

@@ -12,6 +12,7 @@ import { CSelectStock } from '../selectStock';
 import { Stock, StockValue } from 'uq-app/uqs/BruceYuMi';
 
 export class CStockInfo extends CUqBase {
+	stock: Stock & StockValue;
     @observable baseItem: NStockInfo;
     @observable protected loaded: boolean = false;
 
@@ -265,6 +266,7 @@ export class CStockInfo extends CUqBase {
 
     async internalStart(param: any) {
         this.baseItem = param as NStockInfo;
+		this.stock = param.stock;
         let { id } = this.baseItem;
         this.isMySelect = this.cApp.store.isMySelect(id);
         this.initLoad();
