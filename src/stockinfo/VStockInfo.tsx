@@ -165,8 +165,8 @@ export class VStockInfo extends VPage<CStockInfo> {
             let urlweek = `https://image.sinajs.cn/newchart/weekly/n/${symbol}.gif`;
             let urlmonth = `https://image.sinajs.cn/newchart/monthly/n/${symbol}.gif`
             return <div className="d-flex">
-                <div className="px-2" style={{ width: '50%' }}><img src={urlweek} /></div>
-                <div className="px-2" style={{ width: '50%' }}><img src={urlmonth} /></div>
+                <div className="px-2" style={{ width: '50%' }}><img alt="" src={urlweek} /></div>
+                <div className="px-2" style={{ width: '50%' }}><img alt="" src={urlmonth} /></div>
             </div>;
         }
     }

@@ -1,5 +1,5 @@
 import { IObservableArray, observable, runInAction } from "mobx";
-import { SlrForEarning } from "regression";
+//import { SlrForEarning } from "regression";
 import { GFunc } from "tool";
 import { MiNet } from "../net";
 import { sortStocks } from "./sortStocks";
