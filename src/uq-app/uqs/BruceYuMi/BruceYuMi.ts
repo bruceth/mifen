@@ -1,4 +1,4 @@
-//=== UqApp builder created on Tue Mar 23 2021 08:09:36 GMT-0400 (GMT-04:00) ===//
+//=== UqApp builder created on Tue Mar 23 2021 11:34:08 GMT-0400 (GMT-04:00) ===//
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { IDXValue, Uq, UqTuid, UqAction, UqQuery, UqID, UqIDX, UqIX } from "tonva-react";
 
@@ -77,7 +77,6 @@ export interface Param$poked {
 }
 interface Return$pokedRet {
 	poke: number;
-	$id: number;
 }
 interface Result$poked {
 	ret: Return$pokedRet[];
@@ -87,12 +86,11 @@ export interface ParamSearchStock {
 	$orderSwitch: string;
 	key: string;
 	market: string;
+	smooth: number;
 }
 interface ReturnSearchStock$page {
-	$order: number;
 	id: number;
-	market: string;
-	currency: string;
+	market: number;
 	code: string;
 	name: string;
 	rawId: number;
@@ -111,7 +109,6 @@ interface ReturnSearchStock$page {
 	preInc: number;
 	volumn: number;
 	smoothness: number;
-	$id: number;
 }
 interface ResultSearchStock {
 	$page: ReturnSearchStock$page[];
@@ -122,11 +119,9 @@ export interface ParamStockUsing {
 }
 interface ReturnStockUsingAccounts {
 	account: number;
-	$id: number;
 }
 interface ReturnStockUsingGroups {
 	group: number;
-	$id: number;
 }
 interface ResultStockUsing {
 	accounts: ReturnStockUsingAccounts[];

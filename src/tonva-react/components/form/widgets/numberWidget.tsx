@@ -16,20 +16,16 @@ export class NumberWidget extends TextWidget {
 				new RuleInt(res, min, max) :
 				new RuleNum(res, min, max)
         );
-        /*
-        if (this.itemSchema.type === 'integer') {
-            this.rules.push(new RuleInt);
-        }
-        let {min, max} = this.itemSchema;
-        if (min !== undefined) this.rules.push(new RuleMin(min));
-        if (max !== undefined) this.rules.push(new RuleMax(max));
-        */
     }
 
     protected parse(value:any):any {
-        if (value === undefined 
-			|| value === null 
-			|| (value as string).trim().length === 0) return;
-        return Number(value);
+		switch (typeof value) {
+			default: return;
+			case 'undefined': return;
+			case 'number': return value;
+			case 'string':
+				if ((value as string).trim().length === 0) return;
+				return Number(value);
+		}
     }
 }

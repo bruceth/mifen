@@ -5,8 +5,9 @@ import { Stock, StockValue } from "uq-app/uqs/BruceYuMi";
 import { CApp, CUqBase } from "../../uq-app";
 import { VAccount } from "./VAccount";
 import { VBuyExist, VBuyNew, VCashAdjust, VCashInit, VCashIn, VCashOut, VSell } from "./VForm";
-import { CHome } from "home/CHome";
+import { CHome } from "../CHome";
 import { VAccounts } from "./VAccounts";
+import { PickId, Context } from "tonva-react";
 
 export class CAccount extends CUqBase {
 	private cHome: CHome;
@@ -47,7 +48,15 @@ export class CAccount extends CUqBase {
 
 	createPickStockId() {
 		let yumi = this.uqs.BruceYuMi;
-		return createPickId(yumi, yumi.Stock);
+		let pagePickId = createPickId(yumi, yumi.Stock);
+		let ret:PickId = async (context:Context, name: string, value: number) => {
+			let v = await pagePickId(context, name, value);
+			let stock = await this.cApp.store.loadStock(v.id);
+			this.stock = stock;
+			context.setValue('price', String(stock.price));
+			return stock;
+		}
+		return ret;
 	}
 
 	showBuy = async (item?: HoldingStock) => {

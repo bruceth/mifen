@@ -6,18 +6,20 @@ import { CHome } from "./CHome";
 export class VHome extends VPage<CHome> {
 	header() { return '首页'; }
 	content() {
-		let {cApp, cAccount, cGroup, showStocksAll, showStocksBlock} = this.controller;
-		let {stocksMyAll, stocksMyBlock, myAllCaption, myBlockCaption} = cApp.store;
-		return <div className="pb-3">
-			{cAccount.renderAccounts()}
-			{cGroup.renderGroups()}
-			{this.renderSpec(stocksMyAll?.length, myAllCaption, 'home', 'text-primary', showStocksAll)}
-			{this.renderSpec(stocksMyBlock?.length, <>
-					<span className="mr-3">{myBlockCaption}</span>
-					<small className="text-muted">选股时不列出</small>
-				</>, 			
-				'ban', 'text-black', showStocksBlock)}
-		</div>
+		return React.createElement(observer(() => {
+			let {cApp, cAccount, cGroup, showStocksAll, showStocksBlock} = this.controller;
+			let {stocksMyAll, stocksMyBlock, myAllCaption, myBlockCaption} = cApp.store;
+			return <div className="pb-3">
+				{cAccount.renderAccounts()}
+				{cGroup.renderGroups()}
+				{this.renderSpec(stocksMyAll?.length, myAllCaption, 'home', 'text-primary', showStocksAll)}
+				{this.renderSpec(stocksMyBlock?.length, <>
+						<span className="mr-3">{myBlockCaption}</span>
+						<small className="text-muted">选股时不列出</small>
+					</>,
+					'ban', 'text-black', showStocksBlock)}
+			</div>;
+		}));
 	}
 
 	right() {
