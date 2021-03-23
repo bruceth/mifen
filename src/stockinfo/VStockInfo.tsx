@@ -142,7 +142,7 @@ export class VStockInfo extends VPage<CStockInfo> {
         let right = <label className="align-self-center px-3"> <input type="checkbox" name="checkDefaultList" defaultChecked={isMySelect}
             onChange={this.checkDefaultTag} />自选股</label>;
 		*/
-		let pinStock = <span className="mr-3">{this.controller.cApp.cHome.renderPinStock(stock)}</span>;
+		let pinStock = <span className="mr-3">{this.controller.cApp.cCommon.renderPinStock(stock)}</span>;
         return <LMR className="bg-white" right={pinStock}> <div className="px-3 py-2" >
             <div className="d-flex flex-wrap">
                 <div className="px-3 c8">{GFunc.caption('TTM')}{GFunc.numberToFixString(pe)}</div>

@@ -5,9 +5,12 @@ import { StockPageItems } from "./stockPageItems";
 import { VFind } from "./VFind";
 import { VStocksPage } from "./VStocksPage";
 
+type SearchOrder = 'miRateDesc' | 'miRateAsc' | 'dvRateDesc' | 'dvRateAsc' | 'roeDesc' | 'roeAsc';
+
 export class CFind extends  CUqBase {
 	header: string = null;
 	pageStocks: StockPageItems = null;
+	searchOrder: SearchOrder = 'miRateDesc';
 
 	constructor(cApp: CApp) {
 		super(cApp);
@@ -33,6 +36,7 @@ export class CFind extends  CUqBase {
 		await this.pageStocks.first({
 			key, 
 			market: market?.join('\n'),
+			$orderSwitch: this.searchOrder,
 		});
 		this.openVPage(VStocksPage);
 	}

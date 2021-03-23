@@ -33,7 +33,7 @@ export class VStockList extends VPage<CHome> {
 			let actions: DropdownAction[] = [
 				{
 					caption: '管理自选组',
-					action: this.controller.manageGroups,
+					action: this.controller.cApp.cCommon.manageGroups,
 					icon: 'object-group',
 				},
 			];

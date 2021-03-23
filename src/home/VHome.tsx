@@ -22,16 +22,17 @@ export class VHome extends VPage<CHome> {
 
 	right() {
 		return React.createElement(observer(() => {
+			let {cCommon} = this.controller.cApp;
 			let actions: DropdownAction[] = [
 				{
 					caption: '管理持仓账户',
-					action: this.controller.manageAccounts,
+					action: cCommon.manageAccounts,
 					icon: 'money',
 				},
 				undefined,
 				{
 					caption: '管理股票分组',
-					action: this.controller.manageGroups,
+					action: cCommon.manageGroups,
 					icon: 'object-group',
 				},
 			];

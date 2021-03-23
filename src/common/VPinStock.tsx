@@ -2,9 +2,9 @@ import { observer } from "mobx-react";
 import React from "react";
 import { DropdownActions, FA, View } from "tonva-react";
 import { Stock, StockValue } from "uq-app/uqs/BruceYuMi";
-import { CHome } from "./CHome";
+import { CCommon } from "./CCommon";
 
-export class VPinStock extends View<CHome> {
+export class VPinStock extends View<CCommon> {
 	render(stock: Stock & StockValue):JSX.Element {
 		return React.createElement(observer(() => {
 			let isSelected = this.controller.isMySelect(stock);
