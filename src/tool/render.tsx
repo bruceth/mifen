@@ -1,6 +1,6 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import { FA, LMR } from 'tonva-react';
-import { Stock, StockValue } from 'uq-app/uqs/BruceYuMi';
+import { Market, Stock, StockValue } from 'uq-app/uqs/BruceYuMi';
 import { NStockInfo } from '../stockinfo';
 import {percent0, percent1, number, numberToMarketValue, calculateZZ3} from '../tool';
 
@@ -52,7 +52,7 @@ function renderValue(caption:string, value:number, valueType:'p0'|'p1'|'n1'|'n2'
 export function renderStockInfoRow(row: NStockInfo, onClickName: (row:NStockInfo) => void, inputSelect:JSX.Element, right:JSX.Element):JSX.Element {
   	let { id, name, code, pe, roe, price, divyield, v, order, symbol, l, pshares } = row;
   	let zzl = calculateZZ3((row as any).dataArr);
-  	let left = <div className="cursor-pointer" onClick={()=>onClickName(row)}>
+  	let left = <div className="cursor-pointer" onClick={()=>onClickName?.(row)}>
 		<span className="text-primary">{name}</span>
 		&nbsp; 
 		<span className="text-info">{symbol}</span>
@@ -86,10 +86,12 @@ export function renderStockInfoRow(row: NStockInfo, onClickName: (row:NStockInfo
 }
 
 export function renderStockRow(order: number, stock: Stock&StockValue, onClickName: (stock:Stock&StockValue) => void, inputSelect:JSX.Element, right:JSX.Element):JSX.Element {
-	let { id, name, code, earning, roe, price, divident, miValue, miRate, volumn, inc1, inc2, inc3, inc4, preInc } = stock;
-	
-	let left = <div className="cursor-pointer" onClick={()=>onClickName(stock)}>
+	let { id, name, code, earning, roe, price, divident, miRate, volumn, ttm, inc1, inc2, inc3, inc4, preInc } = stock;
+	let $market = (stock as any).$market;
+	let left = <div className="cursor-pointer flex-grow-1 align-self-center" onClick={()=>onClickName(stock)}>
 		<small className="mr-2 text-danger">{order}</small>
+		&nbsp; 
+		{$market?.el}
 		&nbsp; 
 		<span className="text-primary">{name}</span>
 		&nbsp; 
@@ -99,7 +101,7 @@ export function renderStockRow(order: number, stock: Stock&StockValue, onClickNa
 	let rows:[string,number,'p0'|'p1'|'n1'|'n2'|'yi'][] = [
 		['米息分', Math.log2(miRate/100), 'n1'],
 		['米息率', miRate/100, 'n1'],
-		['TTM', earning/price, 'n1'],
+		['TTM', ttm/100, 'n1'],
 		['股息率', (divident as number), 'n1'],
 		['价格', price as number, 'n2'],
 		['ROE', roe as number, 'n1'],
@@ -110,13 +112,12 @@ export function renderStockRow(order: number, stock: Stock&StockValue, onClickNa
 		['增 3', inc4 as number/100, 'p0'],
 		['市值', volumn as number, 'yi'],
 	];
-	let inputSelectSpan:any;
-	if (inputSelect) {
-		inputSelectSpan = <span className="ml-4">{inputSelect}</span>
-	}
 	return <div className="d-block border-top">
-		<LMR className="px-2 py-1 bg-light align-items-end" left={left} right = {right}>{inputSelectSpan}</LMR>
-		<div className="d-flex flex-wrap p-1" >
+		<div className="d-flex px-2 py-1 bg-light">
+			{left}
+			{right}
+		</div>
+		<div className="d-flex flex-wrap p-1" onClick={()=>onClickName(stock)}>
 			{rows.map(v => renderValue(v[0], v[1], v[2]))}
 		</div>
 	</div>;

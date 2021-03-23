@@ -12,6 +12,9 @@ export class MidID<T extends IDBase> extends Mid {
 		this.ID = IDUI.ID;
 	}
 
+	listHeader: string|JSX.Element;
+	itemHeader: string|JSX.Element;
+
 	async init():Promise<void> {
 		await this.loadSchema();
 		this._itemSchema = await this.buildItemSchema(this.IDUI);
@@ -19,7 +22,9 @@ export class MidID<T extends IDBase> extends Mid {
 	}
 
 	createMidIDList():MidIDList<T> {
-		return new MidIDList(this.uq, this.ID);
+		let ret = new MidIDList<T>(this.uq, this.ID);
+		ret.header = this.listHeader;
+		return ret;
 	}
 
 	protected buildUISchema(IDUI:IDUI):UiSchema {
@@ -104,7 +109,9 @@ export class MidIXID<T extends IDBase> extends MidID<T> {
 	}
 
 	createMidIDList():MidIDList<T> {
-		return new MidIXIDList<any>(this.uq, this.ID, this.IX);
+		let ret = new MidIXIDList<any>(this.uq, this.ID, this.IX);
+		ret.header = this.listHeader;
+		return ret;
 	}
 
 	async saveID(data:any):Promise<number> {

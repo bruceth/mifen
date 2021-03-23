@@ -67,6 +67,13 @@ const fields = {
 		"widget": "updown",
 		"label": "DvRate"
 	} as FieldItemInt,
+	ttm: {
+		"name": "ttm",
+		"type": "integer",
+		"isKey": false,
+		"widget": "updown",
+		"label": "Ttm"
+	} as FieldItemInt,
 	inc1: {
 		"name": "inc1",
 		"type": "integer",
@@ -125,7 +132,7 @@ const fields = {
 /*==fields==*/
 
 export const fieldArr: FieldItem[] = [
-	fields.miValue, fields.earning, fields.divident, fields.price, fields.pvolumn, fields.roe, fields.miRate, fields.dvRate, fields.inc1, fields.inc2, fields.inc3, fields.inc4, fields.preInc, fields.volumn, fields.smoothness, fields.date, 
+	fields.miValue, fields.earning, fields.divident, fields.price, fields.pvolumn, fields.roe, fields.miRate, fields.dvRate, fields.ttm, fields.inc1, fields.inc2, fields.inc3, fields.inc4, fields.preInc, fields.volumn, fields.smoothness, fields.date, 
 ];
 
 export const ui: UI = {

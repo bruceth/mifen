@@ -105,7 +105,11 @@ export class CID<T extends IDBase> extends Controller {
 		return ret;
 	}
 
+	get itemHeader() {
+		return (this.midID.itemHeader as string ?? this.midID.ID.ui.label as string)
+	}
+
 	get editHeader() {
-		return this.t(this.item? 'edit' : 'new') + ' ' + this.midID.ID.ui.label;
+		return this.t(this.item? 'edit' : 'new') + ' ' + this.itemHeader;
 	}
 }

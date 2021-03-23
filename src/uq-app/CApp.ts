@@ -106,7 +106,8 @@ export class CApp extends CUqApp {
 		}
 	}
 
-	showStock = (item: NStockInfo) => {
+	showStock = async (item: NStockInfo) => {
+		await this.store.loadMyBlock();
 		let cStockInfo = this.newC(CStockInfo);
 		cStockInfo.start(item);
 	}

@@ -8,6 +8,7 @@ import { GFunc } from '../tool/GFunc';
 import { CStockInfo } from './CStockInfo'
 import { NStockInfo, StockCapitalearning, StockBonus } from './StockInfoType';
 import { ErForEarning, SlrForEarning } from 'regression';
+import { renderStockRow } from 'tool';
 
 export class VStockInfo extends VPage<CStockInfo> {
     private input: HTMLInputElement;
@@ -65,8 +66,8 @@ export class VStockInfo extends VPage<CStockInfo> {
 
     private pageContent = observer(() => {
         return <>
-            {this.dateHead()}
             {React.createElement(this.baseInfo)}
+            {this.dateHead()}
             {this.historyChart()}
             {React.createElement(this.predictInfo)}
             {React.createElement(this.predictSeasonEarning)}
@@ -107,7 +108,7 @@ export class VStockInfo extends VPage<CStockInfo> {
     private dateHead = () => {
         let { day } = this.controller.baseItem;
         let dayString = day === undefined || isNaN(day) ? '' : day.toString();
-        return <div className="px-3 py-2">
+        return <div className="px-3 py-2 bg-white">
             <form className="w-100" onSubmit={this.onSubmit} >
                 <div className="input-group input-group-sm">
                     <label className="input-group-addon mr-2 mb-0 align-self-center">{'日期'}</label>
@@ -133,16 +134,22 @@ export class VStockInfo extends VPage<CStockInfo> {
 
 
     private baseInfo = observer(() => {
-        let { stock, baseItem, isMySelect } = this.controller;
+        let { stock, baseItem } = this.controller;
         let { id, name, market, code, symbol, pe, roe, price, order, divyield, e, capital, bonus } = baseItem;
-        let url = market === 'HK' ? `https://xueqiu.com/S/${code}` : `https://finance.sina.com.cn/realstock/company/${symbol}/nc.shtml`;
-        let urlTitle = market === 'HK'? '雪球' : '新浪财经';
-
+		let {cCommon} = this.controller.cApp;
 		/*
         let right = <label className="align-self-center px-3"> <input type="checkbox" name="checkDefaultList" defaultChecked={isMySelect}
             onChange={this.checkDefaultTag} />自选股</label>;
 		*/
-		let pinStock = <span className="mr-3">{this.controller.cApp.cCommon.renderPinStock(stock)}</span>;
+		let pinStock = <span>
+			{cCommon.renderStockLink(stock)}
+			&nbsp;
+			{cCommon.renderPinStock(stock)}
+			&nbsp;
+			{cCommon.renderBlockStock(stock)}
+		</span>;
+		return renderStockRow(undefined, stock, undefined, undefined, pinStock);
+		/*
         return <LMR className="bg-white" right={pinStock}> <div className="px-3 py-2" >
             <div className="d-flex flex-wrap">
                 <div className="px-3 c8">{GFunc.caption('TTM')}{GFunc.numberToFixString(pe)}</div>
@@ -153,6 +160,7 @@ export class VStockInfo extends VPage<CStockInfo> {
             </div>
         </div>
         </LMR>;
+		*/
     });
 
     private historyChart = () => {
