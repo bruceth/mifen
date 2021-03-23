@@ -21,6 +21,7 @@ import { CHome } from '../home';
 import { CStockInfo, NStockInfo } from "stockinfo";
 import { CFind } from "find";
 import { Stock, StockValue } from "./uqs/BruceYuMi";
+import { CCommon } from "../common";
 
 const gaps = [10, 3,3,3,3,3,5,5,5,5,5,5,5,5,10,10,10,10,15,15,15,30,30,60];
 
@@ -34,6 +35,7 @@ export class CApp extends CUqApp {
 	cFind: CFind;
 	cExporer: CExplorer;
 	cWarning: CWarning;
+	cCommon: CCommon;
 	miNet: MiNet;
 	store: Store;
 
@@ -57,6 +59,7 @@ export class CApp extends CUqApp {
 		this.cFind = this.newC(CFind);
 		this.cMe = this.newC(CMe);
 		this.cWarning = this.newC(CWarning);
+		this.cCommon = this.newC(CCommon);
 		if (this.isDev === true) {
 			this.cBug = this.newC(CBug);
 			this.cUI = this.newC(CTester) as CTester;

@@ -1,9 +1,9 @@
 import { MiAccount, MiGroup } from "store";
 import { FA, VPage } from "tonva-react";
 import { Stock } from "uq-app/uqs/BruceYuMi";
-import { CHome } from "./CHome";
+import { CCommon } from "./CCommon";
 
-export class VKeepStock extends VPage<CHome> {
+export class VKeepStock extends VPage<CCommon> {
 	private param: {stock: Stock; miAccounts: MiAccount[]; miGroups: MiGroup[]};
 	init(param: any) {
 		this.param = param;

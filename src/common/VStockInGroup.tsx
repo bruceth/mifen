@@ -1,9 +1,9 @@
 import { observer } from "mobx-react";
 import React from "react";
 import { VPage } from "tonva-react";
-import { CGroup } from "./CGroup";
+import { CCommon } from "./CCommon";
 
-export class VStockInGroup extends VPage<CGroup> {
+export class VStockInGroup extends VPage<CCommon> {
 	header() {return '设置分组'}
 	right() {
 		return <button className="btn btn-sm btn-info mr-2" onClick={this.controller.manageGroups}>管理分组</button>;

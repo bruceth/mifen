@@ -21,6 +21,8 @@ IDX StockValue ver 0.1 (
 	price BIGINT,
 	pvolumn BIGINT,
 	roe INT,
+	miRate INT,
+	dvRate INT,
 	inc1 INT,
 	inc2 INT,
 	inc3 INT,
@@ -31,12 +33,12 @@ IDX StockValue ver 0.1 (
 	date DATE,
 );
 
-QUERY SearchStock (
+QUERY SearchStock ver 0.2 (
 	key CHAR(20),
 	market CHAR(100),
 )
-PAGE (
-	id ID ASC,
+PAGE ORDER Switch (miRateDesc, dvRateDesc, roeDesc, miRateAsc, dvRateAsc, roeAsc) (
+	id ID,							-- (SwitchOrder，第一列ID) 合并插入 tv_$pageOrder 表，然后直接提取
 	market CHAR(20),
 	currency CHAR(20),
 	code char(20),
@@ -47,6 +49,8 @@ PAGE (
 	divident INT,
 	price BIGINT,
 	roe INT,
+	miRate INT,
+	dvRate INT,	
 	inc1 INT,
 	inc2 INT,
 	inc3 INT,
@@ -63,15 +67,23 @@ PAGE (
 	TEXT market INTO tblm;
 	PAGE SELECT a.id, a.code, a.name, a.rawId,
 		c.name as market, c.currency,
-		b.miValue, b.earning, b.divident,
-		b.price, b.roe, b.inc1, b.inc2, b.inc3, b.inc4, b.preInc, b.volumn,
+		b.miValue, b.earning, b.divident, b.price, 
+		b.roe, b.miRate, b.dvRate,
+		b.inc1, b.inc2, b.inc3, b.inc4, b.preInc, b.volumn,
 		b.smoothness
 		FROM Stock as a 
 			LEFT JOIN StockValue as b on a.id=b.id
 			LEFT JOIN Market as c on a.market=c.id
-		WHERE a.id>$pageStart AND a.search LIKE key AND EXISTS(SELECT m FROM tblm WHERE m=c.name)
-		ORDER BY a.id ASC
-		LIMIT $pageSize;
+		WHERE a.search LIKE key AND EXISTS(SELECT m FROM tblm WHERE m=c.name)
+			-- AND a.id>$pageStart
+		ORDER WHEN miRateDesc BY b.miRate DESC
+			WHEN dvRateDesc BY b.dvRate DESC
+			WHEN roeDesc BY b.roe DESC
+			WHEN miRateAsc BY b.miRate DESC
+			WHEN dvRateAsc BY b.dvRate DESC
+			WHEN roeAsc BY b.roe DESC
+			ELSE a.id ASC;
+		-- LIMIT $pageSize;
 };
 
 OPEN ACT WriteStock ver 0.4 (
@@ -121,7 +133,11 @@ OPEN ACT WritePrice ver 0.1 (
 		VAR stock ID = ID(Stock, mId, code);
 		WITH Stock as a ID stock SET a.name=name, a.rawId=rawId, a.search=concat_ws('\t', name, code, market);
 		WITH StockValue as a ID stock 
-			SET a.price=price, a.pvolumn=pvolumn,
-				a.date=concat(date DIV 10000, '-', date DIV 100 MOD 100, '-', date MOD 100);
+			SET a.price=price, a.pvolumn=pvolumn
+				, a.date=concat(date DIV 10000, '-', (date DIV 100) MOD 100, '-', date MOD 100);
+		WITH StockValue as a ID stock 
+			SET a.miRate=(IFNULL(a.miValue, 0) + IFNULL(a.divident, 0)) * 100000 * a.volumn / a.price / IFNULL(a.pvolumn, a.volumn)
+				, a.dvRate=a.divident * a.volumn * 1000000 / a.price / IFNULL(a.pvolumn, a.volumn) /10
+			WHERE a.price>0 AND a.volumn>0;
 	}
 };

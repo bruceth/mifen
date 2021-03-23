@@ -3,14 +3,12 @@ import { MiAccount, MiGroup, HoldingStock } from "../../store";
 import { Stock, StockValue } from "uq-app/uqs/BruceYuMi";
 import { CApp, CUqBase } from "../../uq-app";
 import { VGroups } from "./VGroups";
-import { VStockInGroup } from "./VStockInGroup";
 import { CHome } from "home/CHome";
 
 export class CGroup extends CUqBase {
 	private readonly cHome: CHome;
 	miGroup: MiGroup = null;
 	stocks: IObservableArray<Stock & StockValue>;
-	stock: Stock & StockValue;
 	miAccount: MiAccount = null;
 	holdingStock: HoldingStock;
 	listCaption: string;
@@ -29,13 +27,6 @@ export class CGroup extends CUqBase {
 	}
 
 	renderGroups() {return this.renderView(VGroups);}
-
-	setStockToGroup = (stock: Stock&StockValue) => {
-		this.stock = stock;
-		this.openVPage(VStockInGroup);
-	}
-
-	manageGroups = async () => this.cHome.manageGroups();
 
 	showMiGroup = async (miGroup: MiGroup) => {
 		this.cHome.openStocksList(miGroup.name);
@@ -59,26 +50,4 @@ export class CGroup extends CUqBase {
 			stock
 		} as any);
 	}
-
-	setGroup = async (checked:boolean, group: MiGroup) => {
-		let {miGroups} = this.cApp.store;
-		if (checked === true) {
-			await miGroups.addStockToGroup(this.stock, group);
-		}
-		else {
-			await miGroups.removeStockFromGroup(this.stock, group);
-		}
-	}
-
-	setMyAll = async (checked: boolean) => {
-		alert('my All');
-	}
-
-	setBlock = async (checked: boolean) => {
-		let {store} = this.cApp;
-		// block 操作之前，确保载入。还有显示之前，确保载入
-		await store.loadMyBlock();
-		alert('block');
-	}
-
 }

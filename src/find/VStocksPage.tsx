@@ -36,8 +36,9 @@ export class VStocksPage extends VPage<CFind> {
 				<FA name="plus-square-o" className="small" /> 加自选
 			</button>;
 		*/
-		let pinStock = this.controller.cApp.cHome.renderPinStock(stock);
-		return renderStockRow(1, stock, this.onClickName, undefined, pinStock);
+		let pinStock = this.controller.cApp.cCommon.renderPinStock(stock);
+		let {$order} = (stock as unknown as any);
+		return renderStockRow($order, stock, this.onClickName, undefined, pinStock);
 	}
 
 	private onClickName = (stock: Stock & StockValue) => {

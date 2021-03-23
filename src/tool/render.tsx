@@ -86,17 +86,19 @@ export function renderStockInfoRow(row: NStockInfo, onClickName: (row:NStockInfo
 }
 
 export function renderStockRow(order: number, stock: Stock&StockValue, onClickName: (stock:Stock&StockValue) => void, inputSelect:JSX.Element, right:JSX.Element):JSX.Element {
-	let { id, name, code, earning, roe, price, divident, miValue, volumn, inc1, inc2, inc3, inc4, preInc } = stock;
+	let { id, name, code, earning, roe, price, divident, miValue, miRate, volumn, inc1, inc2, inc3, inc4, preInc } = stock;
 	
 	let left = <div className="cursor-pointer" onClick={()=>onClickName(stock)}>
+		<small className="mr-2 text-danger">{order}</small>
+		&nbsp; 
 		<span className="text-primary">{name}</span>
 		&nbsp; 
 		<span className="text-info">{code}</span>
 		&nbsp;
-		<small className="small ml-1"><span className="text-danger">{order}</span></small>
 	</div>;
 	let rows:[string,number,'p0'|'p1'|'n1'|'n2'|'yi'][] = [
-		['米息分', miValue/price, 'n1'],
+		['米息分', Math.log2(miRate/100), 'n1'],
+		['米息率', miRate/100, 'n1'],
 		['TTM', earning/price, 'n1'],
 		['股息率', (divident as number), 'n1'],
 		['价格', price as number, 'n2'],

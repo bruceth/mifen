@@ -13,7 +13,7 @@ export class StockPageItems extends PageItems<Stock & StockValue> {
 	}
 	
 	protected getPageId(item:Stock):any {
-		return item?.id;
+		return (item as unknown as any)?.$order;
 	}
 
 	protected async loadResults (param:any, pageStart:any, pageSize:number):Promise<{[name:string]:any[]}> {
