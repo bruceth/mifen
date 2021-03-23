@@ -40,7 +40,15 @@ export class CHome extends CUqBase {
 
 	setStocksList(stocks: IObservableArray<Stock&StockValue>) {
 		runInAction(() => {
-			this.stocks = stocks;
+			this.stocks = stocks.sort((a, b) => {
+				let am = a.miRate;
+				let bm = b.miRate;
+				if (am < bm) return 1;
+				if (am > bm) return -1;
+				return 0;
+			});
+			let len = this.stocks.length;
+			for (let i=0; i<len; i++) (this.stocks[i] as any).$order = i+1;
 		})
 	}
 

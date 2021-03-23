@@ -22,10 +22,11 @@ export class VStockList extends VPage<CHome> {
 
 	}
 
-	private renderStock = (stock:Stock, index:number) => {
+	private renderStock = (stock:Stock & StockValue, index:number) => {
 		let inputSelect = <>select</>;
 		let right = <>right</>;
-		return renderStockRow(1, stock as Stock & StockValue, this.onClickName, inputSelect, right);
+		let {$order} = stock as unknown as any;
+		return renderStockRow($order, stock as Stock & StockValue, this.onClickName, inputSelect, right);
 	}
 
 	right() {
