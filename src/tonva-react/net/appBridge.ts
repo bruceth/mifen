@@ -53,6 +53,7 @@ export function isBridged():boolean {
 
 window.addEventListener('message', async function(evt) {
     var message = evt.data;
+	if (!message) return;
     switch (message.type) {
         case 'sub-frame-started':
             subFrameStarted(evt);
