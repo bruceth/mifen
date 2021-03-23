@@ -52,7 +52,7 @@ export class CStockInfo extends CUqBase {
         return this._divideInfo;
     }
 
-    @observable isMySelect: boolean = false;
+    //@observable isMySelect: boolean = false;
 
     constructor(cApp: any) {
         super(cApp);
@@ -65,7 +65,7 @@ export class CStockInfo extends CUqBase {
     private load = async () => {
         if (!this.baseItem) return;
 
-        let { id, day } = this.baseItem;
+        let { id, day,  } = this.baseItem;
         let rets = await Promise.all([
             this.cApp.miNet.q_stockallinfo(id, day),
             this.cApp.miNet.t_tagstock$query(undefined, id),
@@ -95,7 +95,7 @@ export class CStockInfo extends CUqBase {
             await this.loadTTMEarning(ret[2]);
         }
 
-        this.isMySelect = this.cApp.store.isMySelect(id);
+        //this.isMySelect = this.cApp.store.isMyAll(this.stock);
         this.loaded = true;
     }
 
@@ -268,7 +268,7 @@ export class CStockInfo extends CUqBase {
         this.baseItem = param as NStockInfo;
 		this.stock = param.stock;
         let { id } = this.baseItem;
-        this.isMySelect = this.cApp.store.isMySelect(id);
+        //this.isMySelect = this.cApp.store.isMyAll(this.stock);
         this.initLoad();
         this.openVPage(VStockInfo);
     }

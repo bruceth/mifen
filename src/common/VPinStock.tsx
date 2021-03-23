@@ -7,7 +7,7 @@ import { CCommon } from "./CCommon";
 export class VPinStock extends View<CCommon> {
 	render(stock: Stock & StockValue):JSX.Element {
 		return React.createElement(observer(() => {
-			let isSelected = this.controller.isMySelect(stock);
+			let isSelected = this.controller.isMyAll(stock);
 			if (isSelected === true) {
 				return <DropdownActions actions={[
 					{
@@ -16,7 +16,7 @@ export class VPinStock extends View<CCommon> {
 					},
 					{
 						caption: '删除自选',
-						action: () => this.controller.removeMySelect(stock),
+						action: () => this.controller.removeMyAll(stock),
 					},
 					undefined,
 					{
@@ -27,7 +27,7 @@ export class VPinStock extends View<CCommon> {
 			}
 			else {
 				return <button className="btn btn-sm btn-outline-primary" 
-					onClick={() => this.controller.selectStock(stock)}>
+					onClick={() => this.controller.toggleMyAll(stock)}>
 					<FA name="plus-square-o" className="small" /> 加自选
 				</button>;
 			}	

@@ -8,14 +8,16 @@ import { Accounts } from "./accounts";
 import { UQs } from "uq-app";
 import { MiAccounts } from "./miAccounts";
 import { MiGroups } from "./miGroups";
-import { Stock, StockValue, UqExt } from "uq-app/uqs/BruceYuMi";
+import { Market, Stock, StockValue, UqExt } from "uq-app/uqs/BruceYuMi";
 import { MiGroup } from "./miGroup";
 import { MiAccount } from "./miAccount";
+import { marketElements } from "./market";
 
 export class Store {
 	private readonly miNet: MiNet;
 	readonly myAllColl: {[id:number]: boolean} = {};
 	readonly yumi: UqExt;
+	readonly markets: {[id:number]: {id?:number;name:string;currency:string;el:JSX.Element}} = {};
 	stockGroups: StockGroups;
 	accounts: Accounts;
 	miAccounts: MiAccounts;
@@ -50,32 +52,32 @@ export class Store {
 			id: stockId,
 		});
 		let stock = ret[0];
-		Store.buildStockValues(stock);
+		this.buildStockValues(stock);
 		return stock;
 	}
 
-	private static buildStockValues(stock: Stock & StockValue) {
+	private buildStockValues(stock: Stock & StockValue) {
 		if (stock === undefined) return;
-		let {miValue, earning, divident, price} = stock;
+		let {miValue, earning, divident, price, market} = stock;
 		if (miValue) stock.miValue = miValue;
 		if (earning) stock.earning = earning;
 		if (divident) stock.divident = divident * 1000 / price;
 		if (price) stock.price = price / 10000;
-		// if (roe) stock.roe = roe;
+		(stock as any).$market = this.markets[market];
 	}
 	
 	async searchStock(param:any, pageStart:any, pageSize:number):Promise<{[name:string]:any[]}> {
 		let ret = await this.yumi.SearchStock.page(param, pageStart, pageSize, true);
 		let {$page} = ret;
-		$page.forEach(v => Store.buildStockValues(v as unknown as (Stock & StockValue)));
+		$page.forEach(v => this.buildStockValues(v as unknown as (Stock & StockValue)));
 		return ret as any;
 	}
 
-	isMySelect(id:number): boolean {
-		return this.myAllColl[id] === true;
+	isMyAll(stock: Stock): boolean {
+		return this.myAllColl[stock.id] === true;
 	}
 	
-	async addStockToMyAll(stock:Stock&StockValue) {
+	async addMyAll(stock:Stock&StockValue) {
 		if (!stock) return;
 		await this.yumi.ActIX({
 			IX: this.yumi.UserAllStock, 
@@ -87,7 +89,7 @@ export class Store {
 		this.myAllColl[stock.id] = true;
 	}
 
-	async removeStockFromMyAll(stock: Stock&StockValue): Promise<{miAccounts: MiAccount[], miGroups: MiGroup[]}> {
+	async removeMyAll(stock: Stock&StockValue): Promise<{miAccounts: MiAccount[], miGroups: MiGroup[]}> {
 		if (!stock) return;
 
 		let ret = await this.yumi.StockUsing.query({stock: stock.id});
@@ -119,20 +121,21 @@ export class Store {
 			ix: undefined,
 		});
 		ret.forEach(v => {
-			Store.buildStockValues(v);
+			this.buildStockValues(v);
 			this.myAllColl[v.id] = true;
 		});
 		this.stocksMyAll = observable(ret, {deep: false});
 	}
 
 	async loadMyBlock() {
+		if (this.stocksMyBlock) return;
 		let {yumi} = this;
 		let ret = await yumi.IX<(Stock&StockValue)>({
 			IX: yumi.UserBlockStock,
 			IDX: [yumi.Stock, yumi.StockValue],
 			ix: undefined,
 		});
-		ret.forEach(v => Store.buildStockValues(v));
+		ret.forEach(v => this.buildStockValues(v));
 		this.stocksMyBlock = observable(ret, {deep: false});
 	}
 
@@ -148,12 +151,43 @@ export class Store {
 		return ret;
 	}
 
-
-	/*
-	stockFromId(stockId: number): Stock&StockValue {
-		return this.groupMyAll.stockFromId(stockId);
+	async loadMarkets() {
+		let {yumi} = this;
+		let ret = await yumi.ID<Market>({
+			IDX: [yumi.Market],
+			id: undefined,
+		});
+		for (let m of ret) {
+			let {id, name} = m;
+			this.markets[id] = {...m, el: marketElements[name]};
+		}
 	}
-	*/
+
+	isMyBlock(stock: Stock): boolean {
+		let index = this.stocksMyBlock.findIndex(v => v.id === stock.id);
+		return index >= 0;
+	}
+
+	async toggleBlock(stock: Stock&StockValue) {
+		if (!stock) return;
+		await this.loadMyBlock();
+		let {id} = stock;
+		let index = this.stocksMyBlock.findIndex(v => v.id === id);
+		if (index >= 0) {
+			await this.yumi.ActIX({
+				IX: this.yumi.UserBlockStock,
+				values: [{ix:undefined, id: -id}]
+			})
+			this.stocksMyBlock.splice(index, 1);
+		}
+		else {
+			await this.yumi.ActIX({
+				IX: this.yumi.UserBlockStock,
+				values: [{ix:undefined, id}]
+			})
+			this.stocksMyBlock.push(stock);
+		}
+	}
 
 	@observable config: MiConfigs = { 
 		groupName: defaultGroupName, 
@@ -182,10 +216,13 @@ export class Store {
 
 	async load() {
 		//await this.loadConfig();
-		await this.miAccounts.load();
-		await this.loadMyAll();
-		await this.loadGroupIXs();
-		await this.miGroups.load();
+		await this.loadMarkets();
+		await Promise.all([
+			this.miAccounts.load(),
+			this.loadMyAll(),
+			this.loadGroupIXs(),
+			this.miGroups.load(),
+		]);
 	}
 
 	private async loadGroupIXs() {
@@ -378,15 +415,5 @@ export class Store {
 			this.miNet.q_getlasttradeday(),
 		]);
 		return rets;
-	}
-
-	/*
-	isMySelect(id:number): boolean {
-		return this.stockGroups.isMySelect(id);
-	}
-	*/
-
-	isMyBlack(id:number): boolean {
-		return this.stockGroups.isMyBlack(id);
 	}
 }

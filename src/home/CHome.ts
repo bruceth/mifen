@@ -66,20 +66,6 @@ export class CHome extends CUqBase {
 	}
 
 	onStockClick = async (stock: Stock) => {
-		
-		let {name, code, market, rawId} = stock;
-		rawId = 1;
-		let date = new Date();
-		let year = date.getFullYear();
-		let month = date.getMonth() + 1;
-		let dt = date.getDate();
-		this.cApp.showStock({
-			id: rawId, 
-			name,
-			code,
-			symbol: market,
-			day: year*10000 + month*100 + dt,
-			stock
-		} as any);
+		this.cApp.cCommon.showStock(stock);
 	}
 }

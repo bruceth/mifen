@@ -70,7 +70,7 @@ export class MiAccount  implements Account, AccountValue {
 		let index = this.holdingStocks.findIndex(v => v.stock === stockId);
 		if (index < 0) {
 			holdingId = await this.saveHolding(stockId);
-			await this.store.addStockToMyAll(stock);
+			await this.store.addMyAll(stock);
 			let hs = new HoldingStock(holdingId, stock, quantity);
 			hs.setQuantity(price, quantity);
 			runInAction(() => {

@@ -30,7 +30,7 @@ export class CList<T> extends Controller {
 	}
 
 	protected get firstParam():any {return undefined;}
-	protected get header():string|JSX.Element {return 'List'}
+	protected get header():string|JSX.Element {return this.midList.header ?? 'List'}
 	protected renderItemContainer(content:any):JSX.Element {
 		return renderItemContainer(content);
 	}

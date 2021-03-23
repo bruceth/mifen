@@ -1,4 +1,4 @@
-//=== UqApp builder created on Mon Mar 22 2021 16:22:57 GMT-0400 (GMT-04:00) ===//
+//=== UqApp builder created on Tue Mar 23 2021 08:09:36 GMT-0400 (GMT-04:00) ===//
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { IDXValue, Uq, UqTuid, UqAction, UqQuery, UqID, UqIDX, UqIX } from "tonva-react";
 
@@ -77,17 +77,19 @@ export interface Param$poked {
 }
 interface Return$pokedRet {
 	poke: number;
+	$id: number;
 }
 interface Result$poked {
 	ret: Return$pokedRet[];
 }
 
 export interface ParamSearchStock {
+	$orderSwitch: string;
 	key: string;
 	market: string;
-	orderSwitch: string;
 }
 interface ReturnSearchStock$page {
+	$order: number;
 	id: number;
 	market: string;
 	currency: string;
@@ -101,6 +103,7 @@ interface ReturnSearchStock$page {
 	roe: number;
 	miRate: number;
 	dvRate: number;
+	ttm: number;
 	inc1: number;
 	inc2: number;
 	inc3: number;
@@ -119,9 +122,11 @@ export interface ParamStockUsing {
 }
 interface ReturnStockUsingAccounts {
 	account: number;
+	$id: number;
 }
 interface ReturnStockUsingGroups {
 	group: number;
+	$id: number;
 }
 interface ResultStockUsing {
 	accounts: ReturnStockUsingAccounts[];
@@ -199,6 +204,7 @@ export interface StockValue {
 	roe?: number;
 	miRate?: number;
 	dvRate?: number;
+	ttm?: number;
 	inc1?: number;
 	inc2?: number;
 	inc3?: number;
@@ -234,6 +240,7 @@ export interface ActParamStockValue {
 	roe?: number|IDXValue;
 	miRate?: number|IDXValue;
 	dvRate?: number|IDXValue;
+	ttm?: number|IDXValue;
 	inc1?: number|IDXValue;
 	inc2?: number|IDXValue;
 	inc3?: number|IDXValue;

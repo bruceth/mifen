@@ -3,7 +3,7 @@ import { FA, PropGrid, VPage } from "tonva-react";
 import { CID } from "./CID";
 
 export class VView extends VPage<CID<any>> {
-	header() {return 'View'}
+	header() {return this.controller.midID.itemHeader}
 	right() {
 		return <button
 			className="btn btn-sm btn-primary mr-2" 

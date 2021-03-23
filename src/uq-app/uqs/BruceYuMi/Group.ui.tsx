@@ -40,13 +40,9 @@ const fieldArr: FieldItem[] = [
 const resRaw: Res<any> = {
 	$zh: {
 		Group: '股票组',
-		myAll: '我的自选',
 		Name: '组名',
-		myBlack: '黑名单',
 	},
 	$en: {
-		myAll: 'My Selection',
-		myBlack: 'Block List',
 	}
 };
 

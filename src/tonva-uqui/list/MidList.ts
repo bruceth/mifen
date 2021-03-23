@@ -19,6 +19,7 @@ export abstract class MidList<T> extends Mid {
 	renderItem: (item:T, index:number)=>JSX.Element;
 	onItemClick: (item:T)=>any;
 	renderRight: ()=>JSX.Element;
+	header: string|JSX.Element;
 }
 
 export abstract class MidIDListBase<T extends IDBase> extends MidList<T> {

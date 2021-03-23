@@ -10,11 +10,11 @@ export class VStockInGroup extends VPage<CCommon> {
 	}
 	content() {
 		return React.createElement(observer(() => {
-			let {stock, cApp, setGroup, setMyAll, setBlock} = this.controller;
+			let {stock, cApp, setGroup} = this.controller;
 			if (!stock) return <div>no stock, can set group</div>;
 			let {id:stockId, name, code} = stock;
 			let {store} = cApp;
-			let {miGroups, myAllCaption, myBlockCaption} = store;
+			let {miGroups} = store;
 			let {groups} = miGroups;
 			let inGroup = store.buildInGroup(stockId);
 			return <div>
@@ -33,23 +33,6 @@ export class VStockInGroup extends VPage<CCommon> {
 							{name}
 						</label>;
 					})}
-				</div>
-				<div className="mt-2">
-					<label className="mb-0 w-8c px-3 py-2">
-						<input className="mr-1" type="checkbox"
-							disabled={true}
-							defaultChecked={true}
-							onChange={evt => setMyAll(evt.currentTarget.checked)} />
-						{myAllCaption}
-					</label>
-				</div>
-				<div className="mt-2">
-					<label className="mb-0 w-8c px-3 py-2">
-						<input className="mr-1" type="checkbox"
-							onChange={evt => setBlock(evt.currentTarget.checked)} />
-						{myBlockCaption}
-					</label>
-					<small className="text-muted">选股时不列出</small>
 				</div>
 			</div>;
 		}));

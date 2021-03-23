@@ -42,20 +42,7 @@ export class CAccount extends CUqBase {
 	
 	showHolding = async (item: HoldingStock) => {
 		let stock = item.stockObj;
-		let {name, code, market, rawId} = stock;
-		rawId = 1;
-		let date = new Date();
-		let year = date.getFullYear();
-		let month = date.getMonth() + 1;
-		let dt = date.getDate();
-		this.cApp.showStock({
-			id: rawId, 
-			name,
-			code,
-			symbol: market,
-			day: year*10000 + month*100 + dt,
-			stock
-		} as any);
+		this.cApp.cCommon.showStock(stock);
 	}
 
 	createPickStockId() {

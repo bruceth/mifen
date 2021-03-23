@@ -4,9 +4,11 @@ import { CID, MidIXID } from "tonva-uqui";
 import { renderGroup } from "tool";
 import { CUqBase } from "uq-app";
 import { Group, Stock, StockValue } from "uq-app/uqs/BruceYuMi";
+import { VBlockStock } from "./VBlockStock";
 import { VKeepStock } from "./VKeepStock";
 import { VPinStock } from "./VPinStock";
 import { VStockInGroup } from "./VStockInGroup";
+import { VStockLink } from "./VStockLink";
 
 export class CCommon extends CUqBase {
 	stock: Stock & StockValue;
@@ -14,34 +16,39 @@ export class CCommon extends CUqBase {
 	protected async internalStart(param: any) {
 	}
 
-	renderPinStock(stock: Stock & StockValue) {
-		if (!stock) return null;
-		return this.renderView(VPinStock, stock);
+	isMyAll(stock: Stock & StockValue):boolean {
+		return this.cApp.store.isMyAll(stock);
 	}
 
-	isMySelect(stock: Stock & StockValue):boolean {
-		return this.cApp.store.isMySelect(stock.id);
+	async addMyAll(stock: Stock & StockValue) {
+		await this.cApp.store.addMyAll(stock);
 	}
 
-	async addMySelect(stock: Stock & StockValue) {
-		await this.cApp.store.addStockToMyAll(stock);
-	}
-
-	async removeMySelect(stock: Stock & StockValue) {
-		let ret = await this.cApp.store.removeStockFromMyAll(stock);
+	async removeMyAll(stock: Stock & StockValue) {
+		let ret = await this.cApp.store.removeMyAll(stock);
 		if (ret) {
 			(ret as any).stock = stock;
 			this.openVPage(VKeepStock, ret);
 		}
 	}
 
-	selectStock(stock: Stock & StockValue) {
-		if (this.isMySelect(stock)) {
-			this.removeMySelect(stock);
+	toggleMyAll(stock: Stock & StockValue) {
+		if (this.isMyAll(stock)) {
+			this.removeMyAll(stock);
 		}
 		else {
-			this.addMySelect(stock);
+			this.addMyAll(stock);
 		}
+	}
+
+	isMyBlock(stock: Stock & StockValue):boolean {
+		return this.cApp.store.isMyBlock(stock);
+	}
+
+	toggleBlock = async (stock: Stock & StockValue) => {
+		let {store} = this.cApp;
+		// block 操作之前，确保载入。还有显示之前，确保载入
+		await store.toggleBlock(stock);
 	}
 
 	setStockToGroup = (stock: Stock&StockValue) => {
@@ -59,15 +66,14 @@ export class CCommon extends CUqBase {
 		}
 	}
 
-	setMyAll = async (checked: boolean) => {
-		alert('my All');
+	renderPinStock(stock: Stock & StockValue) {
+		if (!stock) return null;
+		return this.renderView(VPinStock, stock);
 	}
 
-	setBlock = async (checked: boolean) => {
-		let {store} = this.cApp;
-		// block 操作之前，确保载入。还有显示之前，确保载入
-		await store.loadMyBlock();
-		alert('block');
+	renderBlockStock(stock: Stock & StockValue) {
+		if (!stock) return null;
+		return this.renderView(VBlockStock, stock);
 	}
 
 	showStock = async (stock: Stock) => {
@@ -98,6 +104,8 @@ export class CCommon extends CUqBase {
 			t: this.t,
 		}
 		let mId = new MidIXID<Group>(uq, IDUI, uq.UserGroup);
+		mId.listHeader = '管理股票分组';
+		mId.itemHeader = '股票分组';
 		let cID = new CID(mId);
 		let {renderItem, onItemClick} = cID;
 		cID.renderItem = (item: Group, index:number) => renderGroup(item, index, renderItem);
@@ -118,10 +126,16 @@ export class CCommon extends CUqBase {
 			t: this.t,
 		}
 		let mId = new MidIXID(uq, IDUI, uq.UserAccount);
+		mId.listHeader = '管理持仓账号';
+		mId.itemHeader = '持仓账号';
 		let cID = new CID(mId);
 		let changed = await cID.call();
 		if (changed === true) {
 			await this.cApp.store.miAccounts.load();
 		}
+	}
+
+	renderStockLink(stock:Stock) {
+		return this.renderView(VStockLink, stock);
 	}
 }

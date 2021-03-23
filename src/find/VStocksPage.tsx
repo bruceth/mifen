@@ -37,7 +37,7 @@ export class VStocksPage extends VPage<CFind> {
 			</button>;
 		*/
 		let pinStock = this.controller.cApp.cCommon.renderPinStock(stock);
-		let {$order} = (stock as unknown as any);
+		let {$order} = stock as any;
 		return renderStockRow($order, stock, this.onClickName, undefined, pinStock);
 	}
 

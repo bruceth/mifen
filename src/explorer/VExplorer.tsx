@@ -62,9 +62,9 @@ export class VExplorer extends VPage<CExplorer> {
 	protected rowContent = (row: any): JSX.Element => {
 		let {store} = this.controller.cApp;
 		let { id, symbol } = row as NStockInfo;
-		if (store.isMyBlack(id) === true) return null;
+		//if (store.isMyBlack(id) === true) return null;
 		let labelId = 'vexl_' + id;
-		let isMySelect = store.isMySelect(id); // defList.findIndex(v=>v===id);
+		let isMySelect = store.isMyAll(undefined); // defList.findIndex(v=>v===id);
 		let middle = <label className="mb-0 cursor-pointer">
 			<input className="mr-1" type="checkbox" value="" id={labelId}
 			defaultChecked={isMySelect}
