@@ -108,7 +108,7 @@ export class MidIDX extends Mid {
 			let f = (fields as any[]).find(v => v.name === field);
 			if (f === undefined) continue;
 			let {name, type} = f;
-			if (['int', 'tinyint', 'smallint', 'bigint', 'dec'].indexOf(type) < 0) continue;
+			if (['int', 'tinyint', 'smallint', 'bigint', 'dec', 'float', 'double'].indexOf(type) < 0) continue;
 			valueFields.push(name);
 		}
 		return await Promise.all([

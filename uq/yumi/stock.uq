@@ -15,22 +15,22 @@ ID Stock (
 
 IDX StockValue ver 0.1 (
 	id,
-	miValue INT,
-	earning INT,
-	divident INT,
-	price BIGINT,
-	pvolumn BIGINT,
-	roe INT,
-	miRate INT,
-	dvRate INT,
-	ttm INT,
-	inc1 INT,
-	inc2 INT,
-	inc3 INT,
-	inc4 INT,
-	preInc INT LOG,
-	volumn BIGINT,
-	smoothness SMALLINT,
+	miValue FLOAT,
+	earning FLOAT,
+	divident FLOAT,
+	price FLOAT,
+	pvolumn FLOAT,
+	roe FLOAT,
+	miRate FLOAT,
+	dvRate FLOAT,
+	ttm FLOAT,
+	inc1 FLOAT,
+	inc2 FLOAT,
+	inc3 FLOAT,
+	inc4 FLOAT,
+	preInc FLOAT LOG,
+	volumn FLOAT,
+	smoothness TINYINT,
 	date DATE,
 );
 
@@ -45,21 +45,21 @@ PAGE ORDER Switch (miRateDesc, dvRateDesc, roeDesc, miRateAsc, dvRateAsc, roeAsc
 	code char(20),
 	name char(50),
 	rawId ID,
-	miValue INT,
-	earning INT,
-	divident INT,
-	price BIGINT,
-	roe INT,
-	miRate INT,
-	dvRate INT,	
-	ttm INT,
-	inc1 INT,
-	inc2 INT,
-	inc3 INT,
-	inc4 INT,
-	preInc INT,
-	volumn BIGINT,
-	smoothness SMALLINT,
+	miValue FLOAT,
+	earning FLOAT,
+	divident FLOAT,
+	price FLOAT,
+	roe FLOAT,
+	miRate FLOAT,
+	dvRate FLOAT,	
+	ttm FLOAT,
+	inc1 FLOAT,
+	inc2 FLOAT,
+	inc3 FLOAT,
+	inc4 FLOAT,
+	preInc FLOAT,
+	volumn FLOAT,
+	smoothness TINYINT,
 ) {
 	IF key is null {
 		SET key = '';
@@ -97,17 +97,17 @@ OPEN ACT WriteStock ver 0.4 (
 		code char(20),
 		name char(50),
 		rawId BIGINT,
-		miValue INT,
-		earning INT,
-		divident INT,
-		roe INT,
-		inc1 INT,
-		inc2 INT,
-		inc3 INT,
-		inc4 INT,
-		preInc INT,
-		volumn BIGINT,
-		smoothness SMALLINT,
+		miValue FLOAT,
+		earning FLOAT,
+		divident FLOAT,
+		roe FLOAT,
+		inc1 FLOAT,
+		inc2 FLOAT,
+		inc3 FLOAT,
+		inc4 FLOAT,
+		preInc FLOAT,
+		volumn FLOAT,
+		smoothness TINYINT,
 	)
 ) {
 	foreach stocks {
@@ -128,8 +128,8 @@ OPEN ACT WritePrice ver 0.1 (
 		code char(20),
 		name char(50),
 		rawId BIGINT,
-		price BIGINT,
-		pvolumn BIGINT,
+		price FLOAT,
+		pvolumn FLOAT,
 		date INT,
 	)
 ) {
@@ -141,9 +141,9 @@ OPEN ACT WritePrice ver 0.1 (
 			SET a.price=price, a.pvolumn=pvolumn
 				, a.date=concat(date DIV 10000, '-', (date DIV 100) MOD 100, '-', date MOD 100);
 		WITH StockValue as a ID stock 
-			SET a.miRate=(IFNULL(a.miValue,0) + IFNULL(a.divident,0)) * 100000 * a.volumn / a.price / IFNULL(a.pvolumn, a.volumn)
-				, a.dvRate=IFNULL(a.divident,0) * a.volumn * 1000000 / a.price / IFNULL(a.pvolumn, a.volumn) /10
-				, a.ttm=(a.price*IFNULL(a.pvolumn, a.volumn)*10)/(a.earning*a.volumn)
+			SET a.miRate=(IFNULL(a.miValue,0) + IFNULL(a.divident,0)) * a.volumn / a.price / IFNULL(a.pvolumn, a.volumn)
+				, a.dvRate=IFNULL(a.divident,0) * a.volumn / a.price / IFNULL(a.pvolumn, a.volumn)
+				, a.ttm=(a.price*IFNULL(a.pvolumn, a.volumn))/(a.earning*a.volumn)
 			WHERE a.price>0 AND a.volumn>0;
 	}
 };

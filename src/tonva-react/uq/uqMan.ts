@@ -18,7 +18,7 @@ import { CenterApi, centerApi, UqConfig } from '../app';
 import { ID, IX, IDX } from './ID';
 import { nav } from '../components';
 
-export type FieldType = 'id' | 'tinyint' | 'smallint' | 'int' | 'bigint' | 'dec' | 'char' | 'text'
+export type FieldType = 'id' | 'tinyint' | 'smallint' | 'int' | 'bigint' | 'dec' | 'float' | 'double' | 'char' | 'text'
     | 'datetime' | 'date' | 'time' | 'timestamp';
 
 export function fieldDefaultValue(type:FieldType) {
@@ -28,6 +28,8 @@ export function fieldDefaultValue(type:FieldType) {
         case 'int':
         case 'bigint':
         case 'dec':
+		case 'float':
+		case 'double':
             return 0;
         case 'char':
         case 'text':
