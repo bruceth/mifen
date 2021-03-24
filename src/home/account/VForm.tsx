@@ -4,6 +4,7 @@ import { Stock } from "uq-app/uqs/BruceYuMi";
 import { CAccount } from "./CAccount";
 
 abstract class VForm extends VPage<CAccount> {
+	protected form: Form;
 	protected get back(): 'close' | 'back' | 'none' {return 'close'}
 	protected onCheckValue(value:any): string[] | string {
 		return;
@@ -43,7 +44,7 @@ abstract class VForm extends VPage<CAccount> {
 				<b>{name}</b> <span className="ml-2 small text-muted">{code}</span>
 			</div>
 			<div className="d-flex my-2 py-2 border-top border-bottom justify-content-center text-center bg-white">
-				{this.renderValue('股数', quantity)}
+				{this.renderQuantity('股数', quantity)}
 				{this.renderValue('米值', quantity * miValue, 2)}
 				{this.renderValue('市值', quantity * (price as number), 2)}
 			</div>
@@ -57,11 +58,15 @@ abstract class VForm extends VPage<CAccount> {
 		</div>;
 	}
 
+	protected renderQuantity(caption:string, value: number, dec: number = 0) {
+		return this.renderValue(caption, value, dec);
+	}
+
 	protected beforeRender() {}
 
 	protected renderForm(): JSX.Element {
 		this.beforeRender();
-		return <Form className="mx-3"
+		return <Form ref={f => this.form = f} className="mx-3"
 			onButtonClick={this.onFormSubmit}
 			onEnter={this.onFormSubmit}
 			fieldLabelSize={3}
@@ -170,6 +175,18 @@ export class VSell extends VStock {
 	protected async onSubmit(data:any): Promise<void> {
 		let {price, value} = data;
 		await this.controller.submitSell(price, value);
+	}
+
+	protected renderQuantity(caption:string, value: number, dec: number = 0) {
+		return <div className="mx-1 border border-info rounded w-min-5c px-1 py-2 cursor-pointer"
+			onClick={this.onClickQuantity}>
+			<small className="text-muted">{caption}</small>
+			<div>{formatNumber(value??0)}</div>
+		</div>;
+	}
+
+	private onClickQuantity = () => {
+		this.form.formContext.setValue('value', this.controller.holdingStock.quantity);
 	}
 }
 

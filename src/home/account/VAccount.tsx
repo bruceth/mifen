@@ -1,18 +1,18 @@
 import { observer } from "mobx-react";
 import React from "react";
 import { DropdownAction, DropdownActions, FA, List, LMR, VPage } from "tonva-react";
-import { formatNumber } from "tool";
+import { nFormat0, nFormat1 } from "tool";
 import { HoldingStock } from "../../store";
 import { CAccount } from "./CAccount";
 
 export class VAccount extends VPage<CAccount> {
 	header() {return this.controller.miAccount.name}
 	content() {
-		return React.createElement(observer(() => {
-			function renderValue(caption:string, value:number) {
+		return React.createElement(observer(() => { 
+			function renderValue(caption:string, value:number, dec: number = 0) {
 				return <div className="m-1 border rounded w-min-5c px-1 py-2">
 					<small className="text-muted">{caption}</small>
-					<div>{formatNumber(value??0)}</div>
+					<div>{(value??0).toLocaleString(undefined, nFormat1)}</div>
 				</div>;
 			}
 			let renderCash = (value:number) => {
@@ -20,7 +20,7 @@ export class VAccount extends VPage<CAccount> {
 				if (typeof value === 'number') return renderValue(caption, value);
 				return <div className="m-1 border rounded w-min-5c px-1 py-2">
 					<small className="text-muted">{caption}</small>
-					<div className="text-danger small">无期初</div>
+					<div className="text-danger small mt-1">[无]</div>
 				</div>;
 			}
 			let {miAccount, showBuy, showCashIn, showCashOut, showCashAdjust} = this.controller;
@@ -49,10 +49,10 @@ export class VAccount extends VPage<CAccount> {
 						{name}
 					</LMR>
 					<div className="my-3 text-center d-flex justify-content-center flex-wrap">
-						{renderValue('米值', mi as number)}
-						{renderValue('市值', market as number)}
-						{renderCash(cash as number)}
-						{typeof cash === 'number' && renderValue('总值', (market as number) + (cash as number))}
+						{renderValue('米值', mi)}
+						{renderValue('市值', market)}
+						{renderCash(cash)}
+						{typeof cash === 'number' && renderValue('总值', market + cash)}
 					</div>
 				</div>
 
@@ -75,7 +75,7 @@ export class VAccount extends VPage<CAccount> {
 					item={{render: this.renderHolding}} />
 				{
 					holdings0 && holdings0.length > 0 && <>
-						<div className="small text-muted px-3 py-1 mt-3">0持仓股票</div>
+						<div className="small text-muted px-3 py-1 mt-3">已清仓</div>
 						<List items={holdings0}
 							item={{render: this.renderHolding}} />
 					</>
@@ -96,9 +96,9 @@ export class VAccount extends VPage<CAccount> {
 					<b>{name}</b> 
 				</div>
 				<div className="d-flex flex-sm-row flex-wrap justify-content-end">
-					{this.renderValue('股数', quantity)}
-					{this.renderValue('米值', mi)}
-					{this.renderValue('市值', market)}
+					{this.renderValue('股数', quantity, nFormat0)}
+					{this.renderValue('米值', mi, nFormat1)}
+					{this.renderValue('市值', market, nFormat1)}
 				</div>
 			</div>
 			<div className="flex-column flex-sm-row ml-3 ml-sm-5 d-flex w-min-3-5c">
@@ -110,10 +110,10 @@ export class VAccount extends VPage<CAccount> {
 		</div>;
 	}
 
-	private renderValue(caption:string, value: number, dec: number = 0) {
+	private renderValue(caption:string, value: number, format: Intl.NumberFormatOptions) {
 		return <div className="text-right ml-3 ml-sm-5 w-min-3c">
 			<div className="small text-muted">{caption}</div>
-			<div>{value?.toFixed(dec)}</div>
+			<div>{value?.toLocaleString(undefined, format)}</div>
 		</div>;
 	}
 }

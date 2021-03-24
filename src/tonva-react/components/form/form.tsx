@@ -34,7 +34,7 @@ export class Form extends React.Component<FormProps> {
     readonly itemSchemas: {[name:string]: ItemSchema};
     readonly uiSchema: UiSchema;
     readonly res?: FormRes;
-    protected formContext: FormContext;
+    formContext: FormContext;
     private disposer: IReactionDisposer;
     readonly data:any;
 
