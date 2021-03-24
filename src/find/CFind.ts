@@ -7,6 +7,7 @@ import { VSetting } from "./VSetting";
 import { VStocksPage } from "./VStocksPage";
 
 type SearchOrder = 'miRateDesc' | 'miRateAsc' | 'dvRateDesc' | 'dvRateAsc' | 'roeDesc' | 'roeAsc';
+const defaultSmooth = 0;
 
 export class CFind extends  CUqBase {
 	header: string = null;
@@ -33,13 +34,13 @@ export class CFind extends  CUqBase {
 
 	loadSmooth() {
 		let t = localStorage.getItem('smooth');
-		if (!t) this.smooth = 5;
+		if (!t) this.smooth = defaultSmooth;
 		else {
 			try {
 				this.smooth = Number.parseInt(t);
 			}
 			catch {
-				this.smooth = 5;
+				this.smooth = defaultSmooth;
 			}
 		}
 	}
