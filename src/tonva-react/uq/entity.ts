@@ -443,6 +443,8 @@ export abstract class Entity {
             case 'int':
             case 'bigint':
             case 'dec':
+			case 'float':
+			case 'double':
                 return Number(v);
             case 'id':
                 let id = Number(v);

@@ -61,8 +61,8 @@ export class Store {
 		let {miValue, earning, divident, price, market} = stock;
 		if (miValue) stock.miValue = miValue;
 		if (earning) stock.earning = earning;
-		if (divident) stock.divident = divident * 1000 / price;
-		if (price) stock.price = price / 10000;
+		if (divident) stock.divident = divident / price;
+		if (price) stock.price = price;
 		(stock as any).$market = this.markets[market];
 	}
 	

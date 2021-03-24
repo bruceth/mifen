@@ -108,6 +108,8 @@ const fieldTypeMap:{[type:string]:string} = {
 	"smallint": "number",
 	"tinyint": "number",
 	"dec": "number",
+	"float": "number",
+	"double": "number",
 };
 const sysFields = ['id', 'master', 'row', 'no', '$create', '$owner'];
 function buildField(field: Field, isInID:boolean, indent:number = 1) {

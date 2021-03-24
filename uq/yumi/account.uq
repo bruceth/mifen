@@ -19,8 +19,8 @@ ID Holding (
 
 IDX AccountValue ver 0.1 (
 	id,
-	mi BIGINT SUM,
-	market BIGINT SUM,
+	mi FLOAT SUM,
+	market FLOAT SUM,
 	count SMALLINT,
 	cash BIGINT SUM LOG TRACK,
 );

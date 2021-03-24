@@ -62,10 +62,10 @@ export function renderStockInfoRow(row: NStockInfo, onClickName: (row:NStockInfo
 	let rows:[string,number,'p0'|'p1'|'n1'|'n2'|'yi'][] = [
 		['米息分', Math.log2(v), 'n1'],
 		['米息率', v, 'n1'],
-		['股息率', divyield*100, 'n1'],
+		['股息率', divyield, 'n1'],
 		['TTM', pe, 'n1'],
 		['价格', price, 'n2'],
-		['ROE', roe*100, 'n1'],
+		['ROE', roe, 'n1'],
 		['预增', l, 'p0'],
 		['现增', zzl[3], 'p0'],
 		['增 1', zzl[2], 'p0'],
@@ -99,18 +99,18 @@ export function renderStockRow(order: number, stock: Stock&StockValue, onClickNa
 		&nbsp;
 	</div>;
 	let rows:[string,number,'p0'|'p1'|'n1'|'n2'|'yi'][] = [
-		['米息分', Math.log2(miRate/100), 'n1'],
-		['米息率', miRate/100, 'n1'],
-		['TTM', ttm/100, 'n1'],
-		['股息率', (divident as number), 'n1'],
-		['价格', price as number, 'n2'],
-		['ROE', roe as number, 'n1'],
-		['预增', preInc as number/100, 'p0'],
-		['现增', inc1 as number/100, 'p0'],
-		['增 1', inc2 as number/100, 'p0'],
-		['增 2', inc3 as number/100, 'p0'],
-		['增 3', inc4 as number/100, 'p0'],
-		['市值', volumn as number, 'yi'],
+		['米息分', Math.log2(miRate), 'n1'],
+		['米息率', miRate, 'n1'],
+		['TTM', ttm, 'n1'],
+		['股息率', divident, 'n1'],
+		['价格', price, 'n2'],
+		['ROE', roe, 'n1'],
+		['预增', preInc/100, 'p0'],
+		['现增', inc1/100, 'p0'],
+		['增 1', inc2/100, 'p0'],
+		['增 2', inc3/100, 'p0'],
+		['增 3', inc4/100, 'p0'],
+		['市值', volumn * price, 'yi'],
 	];
 	return <div className="d-block border-top">
 		<div className="d-flex px-2 py-1 bg-light">
