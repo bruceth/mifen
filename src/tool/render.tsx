@@ -106,10 +106,10 @@ export function renderStockRow(order: number, stock: Stock&StockValue, onClickNa
 		['价格', price, 'n2'],
 		['ROE', roe, 'n1'],
 		['预增', preInc/100, 'p0'],
-		['现增', inc1/100, 'p0'],
-		['增 1', inc2/100, 'p0'],
-		['增 2', inc3/100, 'p0'],
-		['增 3', inc4/100, 'p0'],
+		['现增', inc4/100, 'p0'],
+		['增 1', inc3/100, 'p0'],
+		['增 2', inc2/100, 'p0'],
+		['增 3', inc1/100, 'p0'],
 		['市值', volumn * price, 'yi'],
 	];
 	return <div className="d-block border-top">
