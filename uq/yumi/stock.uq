@@ -37,6 +37,7 @@ IDX StockValue ver 0.1 (
 QUERY SearchStock ver 0.3 (
 	key CHAR(20),
 	market CHAR(100),
+	smooth INT,
 )
 PAGE ORDER Switch (miRateDesc, dvRateDesc, roeDesc, miRateAsc, dvRateAsc, roeAsc) (
 	id ID,							-- (SwitchOrder，第一列ID) 合并插入 tv_$pageOrder 表，然后直接提取
@@ -78,6 +79,7 @@ PAGE ORDER Switch (miRateDesc, dvRateDesc, roeDesc, miRateAsc, dvRateAsc, roeAsc
 			LEFT JOIN UserBlockStock as d on d.ix=$user AND d.id=a.id
 		WHERE a.search LIKE key AND EXISTS(SELECT m FROM tblm WHERE m=c.name)
 			AND d.id IS NULL
+			AND (smooth is NULL OR smooth=0 OR b.smoothness>=smooth)
 			-- AND a.id>$pageStart
 		ORDER WHEN miRateDesc BY b.miRate DESC
 			WHEN dvRateDesc BY b.dvRate DESC

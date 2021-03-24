@@ -3,6 +3,7 @@ import { CApp, CUqBase } from "uq-app";
 import { Stock, StockValue } from "uq-app/uqs/BruceYuMi";
 import { StockPageItems } from "./stockPageItems";
 import { VFind } from "./VFind";
+import { VSetting } from "./VSetting";
 import { VStocksPage } from "./VStocksPage";
 
 type SearchOrder = 'miRateDesc' | 'miRateAsc' | 'dvRateDesc' | 'dvRateAsc' | 'roeDesc' | 'roeAsc';
@@ -11,6 +12,7 @@ export class CFind extends  CUqBase {
 	header: string = null;
 	pageStocks: StockPageItems = null;
 	searchOrder: SearchOrder = 'miRateDesc';
+	smooth: number;
 
 	constructor(cApp: CApp) {
 		super(cApp);
@@ -18,6 +20,7 @@ export class CFind extends  CUqBase {
 			header: observable,
 			//miAccount: observable,
 		});
+		this.loadSmooth();
 	}
 
 	tab = () => {
@@ -28,15 +31,34 @@ export class CFind extends  CUqBase {
 		this.openVPage(VFind);
 	}
 
+	loadSmooth() {
+		let t = localStorage.getItem('smooth');
+		if (!t) this.smooth = 5;
+		else {
+			try {
+				this.smooth = Number.parseInt(t);
+			}
+			catch {
+				this.smooth = 5;
+			}
+		}
+	}
+
+	changeSmooth(value: number) {
+		this.smooth = value;
+		localStorage.setItem('smooth', String(value));
+	}
+
 	load = async() => {}
 	
 	private async searchStock(header: string, market?:string[], key?:string) {
-		this.header = header;
+		this.header = header ;
 		this.pageStocks = new StockPageItems(this.cApp.store);
 		await this.pageStocks.first({
 			key, 
 			market: market?.join('\n'),
 			$orderSwitch: this.searchOrder,
+			smooth: this.smooth,
 		});
 		this.openVPage(VStocksPage);
 	}
@@ -63,5 +85,9 @@ export class CFind extends  CUqBase {
 
 	onClickStock = (stock: Stock & StockValue) => {
 
+	}
+
+	showSetting = () => {
+		this.openVPage(VSetting);
 	}
 }

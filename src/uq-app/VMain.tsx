@@ -28,7 +28,7 @@ export class VMain extends VPage<CApp> {
 		}
 		return {tabs};
 		*/
-		let { cHome, cFind, cExporer, cMe } = this.controller;
+		let { cHome, cFind, cMe } = this.controller;
 		let tabs: TabProp[] = [
 			/*{ 
 				name: 'home', label: '首页', icon: 'home', content: cHome.tab, 

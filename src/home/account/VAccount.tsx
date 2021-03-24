@@ -43,7 +43,7 @@ export class VAccount extends VPage<CAccount> {
 				{ caption: '调出资金', action: showCashOut, icon: 'sign-out' },
 				{ caption: '调整资金', action: showCashAdjust, icon: 'adjust' },
 			];
-			return <div>
+			return <div className="pb-3">
 				<div className="mb-3 px-3 py-2 bg-white">
 					<LMR right={<small className="text-muted">组合编号: {no}</small>}>
 						{name}
