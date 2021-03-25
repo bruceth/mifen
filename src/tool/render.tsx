@@ -110,7 +110,7 @@ export function renderStockRow(order: number, stock: Stock&StockValue, onClickNa
 		['股息率', divident, 'n1'],
 		['价格', price, 'n2'],
 		['ROE', roe, 'n1'],
-		['预增', preInc/100, 'p0'],
+		['均增', preInc/100, 'p0'],
 		['现增', inc4/100, 'p0'],
 		['增 1', inc3/100, 'p0'],
 		['增 2', inc2/100, 'p0'],
