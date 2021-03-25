@@ -23,7 +23,7 @@ export class VPickStock extends VPage<CAccount> {
 
 	private renderStock = (stock: Stock, index: number): JSX.Element => {
 		return <div className="px-3 py-2">
-			{renderStockName(undefined, stock)}
+			{renderStockName(stock)}
 		</div>;
 	}
 
