@@ -34,6 +34,18 @@ IDX StockValue ver 0.1 (
 	date DATE,
 );
 
+QUERY SearchStock1 ver 0.1 (
+	key CHAR(20),
+)
+PAGE (
+	id ID asc,
+) {
+	PAGE SELECT a.id
+		FROM Stock as a 
+		WHERE 1=1 AND a.id>$pageStart
+		LIMIT $pageSize;
+};
+
 QUERY SearchStock ver 0.3 (
 	key CHAR(20),
 	market CHAR(100),
@@ -61,10 +73,13 @@ PAGE ORDER Switch (miRateDesc, dvRateDesc, roeDesc, miRateAsc, dvRateAsc, roeAsc
 	volumn FLOAT,
 	smoothness TINYINT,
 ) {
+	VAR sKey CHAR(50);
 	IF key IS NULL {
-		SET key = '';
+		SET sKey = '%%';
 	}
-	SET key = concat('%', key, '%');
+	ELSE {
+		SET sKey = concat('%', key, '%');
+	}
 	TABLE tblm(m CHAR(20));
 	if NOT market IS NULL {
 		TEXT market INTO tblm;
@@ -78,11 +93,15 @@ PAGE ORDER Switch (miRateDesc, dvRateDesc, roeDesc, miRateAsc, dvRateAsc, roeAsc
 		FROM Stock as a 
 			LEFT JOIN StockValue as b on a.id=b.id
 			LEFT JOIN Market as c on a.market=c.id
-			LEFT JOIN UserBlockStock as d on d.ix=$user AND d.id=a.id
-		WHERE a.search LIKE key 
+			-- LEFT JOIN UserBlockStock as d on d.ix=$user AND d.id=a.id
+		WHERE a.search LIKE sKey 
 			AND (market IS NULL OR EXISTS(SELECT m FROM tblm WHERE m=c.name))
-			AND d.id IS NULL
+			-- AND d.id IS NULL
 			AND (smooth is NULL OR smooth=0 OR b.smoothness>=smooth)
+			AND (
+					key IS NULL AND NOT EXISTS(SELECT ub.id FROM UserBlockStock as ub WHERE ub.ix=$user AND ub.id=a.id)
+					OR NOT key IS NULL
+				)
 			-- AND a.id>$pageStart
 		ORDER WHEN miRateDesc BY b.miRate DESC
 			WHEN dvRateDesc BY b.dvRate DESC
@@ -146,7 +165,7 @@ OPEN ACT WritePrice ver 0.1 (
 		WITH StockValue as a ID stock 
 			SET a.miRate=100 * (IFNULL(a.miValue,0) + IFNULL(a.divident,0)) * a.volumn / a.price / IFNULL(a.pvolumn, a.volumn)
 				, a.dvRate=100 * IFNULL(a.divident,0) * a.volumn / a.price / IFNULL(a.pvolumn, a.volumn)
-				, a.ttm=IF(a.earning>=0.01, (a.price*IFNULL(a.pvolumn, a.volumn))/(a.earning*a.volumn), null)
+				, a.ttm=IF(a.earning>=0.01, (a.price*IFNULL(a.pvolumn, a.volumn))/a.earning/a.volumn, null)
 			WHERE a.price>0 AND a.volumn>0;
 	}
 };

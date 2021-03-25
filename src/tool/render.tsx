@@ -85,11 +85,10 @@ export function renderStockInfoRow(row: NStockInfo, onClickName: (row:NStockInfo
   	</div>;
 }
 
-export function renderStockName(order: number, stock: Stock):JSX.Element {
+export function renderStockName(stock: Stock):JSX.Element {
 	let { name, code } = stock;
 	let $market = (stock as any).$market;
 	return <>
-		{order && <><small className="mr-2 text-danger">{order}</small>&nbsp;</>}
 		{$market && <>{$market.el}&nbsp;</>}
 		<span className="text-primary">{name}</span>
 		&nbsp; 
@@ -101,7 +100,8 @@ export function renderStockName(order: number, stock: Stock):JSX.Element {
 export function renderStockRow(order: number, stock: Stock&StockValue, onClickName: (stock:Stock&StockValue) => void, inputSelect:JSX.Element, right:JSX.Element):JSX.Element {
 	let { roe, price, divident, miRate, volumn, ttm, inc1, inc2, inc3, inc4, preInc } = stock;
 	let left = <div className="cursor-pointer align-self-center flex-grow-1" onClick={()=>onClickName(stock)}>
-		{renderStockName(undefined, stock)}
+		{order && <><small className="mr-2 text-danger">{order}</small>&nbsp;</>}
+		{renderStockName(stock)}
 	</div>;
 	let rows:[string,number,'p0'|'p1'|'n1'|'n2'|'yi'][] = [
 		['米息分', Math.log2(miRate), 'n1'],
