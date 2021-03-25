@@ -1,1 +1,0 @@
-export { CWarning } from './CWarning'

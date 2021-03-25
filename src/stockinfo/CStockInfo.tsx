@@ -8,7 +8,6 @@ import { NStockInfo, StockPrice, StockCapitalearning, StockBonus, StockDivideInf
 import { VTags, VNewTag, VEditTag } from './VTags';
 import { ErForEarning, SlrForEarning } from 'regression';
 import { StockGroup } from '../store';
-import { CSelectStock } from '../selectStock';
 import { Stock, StockValue } from 'uq-app/uqs/BruceYuMi';
 
 export class CStockInfo extends CUqBase {
@@ -384,24 +383,5 @@ export class CStockInfo extends CUqBase {
             let i = this.stockTags.findIndex(v => v.tag.id === groupId);
             this.stockTags.splice(i, 1);
         }
-    }
-
-    showSelectStock = async (day: number): Promise<any> => {
-        let cStock = new CSelectStock(this.cApp);
-        let item = await cStock.call() as any;
-        let b = { ...item }
-        b.day = day;
-        this.baseItem = b;
-        this.loaded = false;
-        await this.load();
-    }
-
-    changeDay = async (day: number) => {
-        if (this.baseItem.day === day) return;
-        let { id, name, code, symbol, market } = this.baseItem;
-        let ni = { id: id, name: name, code: code, symbol: symbol, market: market, day: day === 0 ? undefined : day };
-        this.baseItem = ni;
-        this.loaded = false;
-        await this.load();
     }
 }

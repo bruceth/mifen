@@ -57,7 +57,7 @@ export class VStockInfo extends VPage<CStockInfo> {
         if (day !== undefined) {
             headStr += ' - ' + day;
         }
-        let head = <div onClick={() => this.controller.showSelectStock(day)}>{headStr}</div>
+        let head = <div >{headStr}</div>
         return <Page header={head}
             headerClassName='bg-primary'>
             {React.createElement(this.pageContent)}
@@ -67,7 +67,6 @@ export class VStockInfo extends VPage<CStockInfo> {
     private pageContent = observer(() => {
         return <>
             {React.createElement(this.baseInfo)}
-            {this.dateHead()}
             {this.historyChart()}
             {React.createElement(this.predictInfo)}
             {React.createElement(this.predictSeasonEarning)}
@@ -93,46 +92,6 @@ export class VStockInfo extends VPage<CStockInfo> {
         }
     }
 
-    private onSubmit = async (evt: React.FormEvent<any>) => {
-        evt.preventDefault();
-        if (this.key === undefined) this.key = '';
-        let n = Number(this.key);
-        if (!isNaN(n) && Number.isInteger((n))) {
-            if (n === 0 || (n >= 20000101 && n < 30000101)) {
-                await this.controller.changeDay(n);
-            }
-        }
-    }
-
-
-    private dateHead = () => {
-        let { day } = this.controller.baseItem;
-        let dayString = day === undefined || isNaN(day) ? '' : day.toString();
-        return <div className="px-3 py-2 bg-white">
-            <form className="w-100" onSubmit={this.onSubmit} >
-                <div className="input-group input-group-sm">
-                    <label className="input-group-addon mr-2 mb-0 align-self-center">{'日期'}</label>
-                    <input ref={v => this.input = v} onChange={this.onChange}
-                        type="text"
-                        name="key"
-                        defaultValue={dayString}
-                        className="form-control border-primary px-2"
-                        placeholder={'yyyymmdd'}
-                        maxLength={8} />
-                    <div className="input-group-append">
-                        <button className="btn btn-primary px-2"
-                            type="submit">
-                            <i className='fa fa-search' />
-                            <i className="fa" />
-                            {'跳转'}
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>;
-    }
-
-
     private baseInfo = observer(() => {
         let { stock, baseItem } = this.controller;
         let { id, name, market, code, symbol, pe, roe, price, order, divyield, e, capital, bonus } = baseItem;
@@ -149,34 +108,22 @@ export class VStockInfo extends VPage<CStockInfo> {
 			{cCommon.renderBlockStock(stock)}
 		</div>;
 		return renderStockRow(undefined, stock, undefined, undefined, pinStock);
-		/*
-        return <LMR className="bg-white" right={pinStock}> <div className="px-3 py-2" >
-            <div className="d-flex flex-wrap">
-                <div className="px-3 c8">{GFunc.caption('TTM')}{GFunc.numberToFixString(pe)}</div>
-                <div className="px-3 c8">{GFunc.caption('股息率')}{GFunc.percentToFixString(divyield)}</div>
-                <div className="px-3 c8">{GFunc.caption('ROE')}{GFunc.percentToFixString(roe)}</div>
-                <div className="px-3 c8">{GFunc.caption('价格')}{GFunc.numberToFixString(price)}</div>
-                <a className="px-3 text-info" href={url} target="_blank" rel="noopener noreferrer" onClick={(e) => { e.stopPropagation() }}>{urlTitle}</a>
-            </div>
-        </div>
-        </LMR>;
-		*/
     });
 
     private historyChart = () => {
         let { baseItem } = this.controller;
         let { market, code, symbol } = baseItem;
-        if (market === 'HK') {
-            return undefined;
-        }
-        else {
-            let urlweek = `https://image.sinajs.cn/newchart/weekly/n/${symbol}.gif`;
-            let urlmonth = `https://image.sinajs.cn/newchart/monthly/n/${symbol}.gif`
-            return <div className="d-flex">
-                <div className="px-2" style={{ width: '50%' }}><img alt="" src={urlweek} /></div>
-                <div className="px-2" style={{ width: '50%' }}><img alt="" src={urlmonth} /></div>
-            </div>;
-        }
+        // if (market === 'HK') {
+        //     return undefined;
+        // }
+        // else {
+        //     let urlweek = `https://image.sinajs.cn/newchart/weekly/n/${symbol}.gif`;
+        //     let urlmonth = `https://image.sinajs.cn/newchart/monthly/n/${symbol}.gif`
+        //     return <div className="d-flex">
+        //         <div className="px-2" style={{ width: '50%' }}><img alt="" src={urlweek} /></div>
+        //         <div className="px-2" style={{ width: '50%' }}><img alt="" src={urlmonth} /></div>
+        //     </div>;
+        // }
     }
 
     // protected historyChart = observer(() => {

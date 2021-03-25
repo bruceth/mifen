@@ -6,11 +6,7 @@ import { res } from "./res";
 import { VMain } from "./VMain";
 import { CTester } from "./test-uqui";
 import { setUI } from "./uqs";
-//import { CHome } from '../home';
 import { CMe } from '../me';
-import { CExplorer } from '../explorer';
-import { CWarning } from '../warning';
-import { CPredictHistory } from '../predicthistory';
 //import { CUqApp } from './CBase';
 //import { res } from './res';
 //import { CHolding } from 'holding';
@@ -33,8 +29,6 @@ export class CApp extends CUqApp {
 	//cGroup: CGroup;
 	cHome: CHome;
 	cFind: CFind;
-	cExporer: CExplorer;
-	cWarning: CWarning;
 	cCommon: CCommon;
 	miNet: MiNet;
 	store: Store;
@@ -53,12 +47,9 @@ export class CApp extends CUqApp {
 		this.store = new Store(this.miNet, this.uqs);
 		await this.store.load();
 		
-		//this.cHome = this.newC(CHome);
-		this.cExporer = this.newC(CExplorer);
 		this.cHome = this.newC(CHome);
 		this.cFind = this.newC(CFind);
 		this.cMe = this.newC(CMe);
-		this.cWarning = this.newC(CWarning);
 		this.cCommon = this.newC(CCommon);
 		if (this.isDev === true) {
 			this.cBug = this.newC(CBug);
@@ -70,11 +61,6 @@ export class CApp extends CUqApp {
 		// this.timer = setInterval(this.callTick, 1000);
 		// uq 里面加入这一句，会让相应的$Poked查询返回poke=1：
 		// TUID [$User] ID (member) SET poke=1;
-	}
-
-	openPredictAVG(param:any) {
-		let pc = this.newC(CPredictHistory);
-		pc.start(param);
 	}
 
 	private timer:any;
