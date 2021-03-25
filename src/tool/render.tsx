@@ -62,7 +62,7 @@ export function renderStockInfoRow(row: NStockInfo, onClickName: (row:NStockInfo
 	let rows:[string,number,'p0'|'p1'|'n1'|'n2'|'yi'][] = [
 		['米息分', Math.log2(v), 'n1'],
 		['米息率', v, 'n1'],
-		['股息率', divyield, 'n1'],
+		['股息率', divyield, 'p1'],
 		['TTM', pe, 'n1'],
 		['价格', price, 'n2'],
 		['ROE', roe, 'n1'],
@@ -99,7 +99,7 @@ export function renderStockName(stock: Stock):JSX.Element {
 
 export function renderStockRow(order: number, stock: Stock&StockValue, onClickName: (stock:Stock&StockValue) => void, inputSelect:JSX.Element, right:JSX.Element):JSX.Element {
 	let { roe, price, divident, miRate, volumn, ttm, inc1, inc2, inc3, inc4, preInc } = stock;
-	let left = <div className="cursor-pointer align-self-center flex-grow-1" onClick={()=>onClickName(stock)}>
+	let left = <div className="cursor-pointer align-self-center flex-grow-1" onClick={()=>onClickName?.(stock)}>
 		{order && <><small className="mr-2 text-danger">{order}</small>&nbsp;</>}
 		{renderStockName(stock)}
 	</div>;
@@ -107,14 +107,14 @@ export function renderStockRow(order: number, stock: Stock&StockValue, onClickNa
 		['米息分', Math.log2(miRate), 'n1'],
 		['米息率', miRate, 'n1'],
 		['TTM', ttm, 'n1'],
-		['股息率', divident, 'n1'],
+		['股息率', divident, 'p1'],
 		['价格', price, 'n2'],
 		['ROE', roe, 'n1'],
 		['均增', preInc/100, 'p0'],
-		['现增', inc1/100, 'p0'],
-		['增 1', inc2/100, 'p0'],
-		['增 2', inc3/100, 'p0'],
-		['增 3', inc4/100, 'p0'],
+		['现增', inc4/100, 'p0'],
+		['增 1', inc3/100, 'p0'],
+		['增 2', inc2/100, 'p0'],
+		['增 3', inc1/100, 'p0'],
 		['市值', volumn * price, 'yi'],
 	];
 	return <div className="d-block border-top">
