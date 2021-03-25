@@ -85,14 +85,17 @@ export class Store {
 				{ix: undefined, id: stock.id}
 			]
 		});
-		this.stocksMyAll.push(stock);
-		this.myAllColl[stock.id] = true;
+		let stockId = stock.id;
+		if (this.stocksMyAll.findIndex(v => v.id === stockId) < 0) {
+			this.stocksMyAll.push(stock);
+		}
+		this.myAllColl[stockId] = true;
 	}
 
 	async removeMyAll(stock: Stock&StockValue): Promise<{miAccounts: MiAccount[], miGroups: MiGroup[]}> {
 		if (!stock) return;
-
-		let ret = await this.yumi.StockUsing.query({stock: stock.id});
+		let stockId = stock.id;
+		let ret = await this.yumi.StockUsing.query({stock: stockId});
 		let {groups, accounts} = ret;
 		if (groups.length > 0 || accounts.length > 0) {
 			let miAccounts = this.miAccounts.accountsFromIds(accounts.map(v => v.account));
@@ -103,12 +106,12 @@ export class Store {
 		await this.yumi.ActIX({
 			IX: this.yumi.UserAllStock, 
 			values: [
-				{ix: undefined, id: -stock.id}
+				{ix: undefined, id: -stockId}
 			]
 		});
-		let index = this.stocksMyAll.findIndex(v => v.id === stock.id);
+		let index = this.stocksMyAll.findIndex(v => v.id === stockId);
 		if (index >= 0) this.stocksMyAll.splice(index, 1);
-		delete this.myAllColl[stock.id];
+		delete this.myAllColl[stockId];
 	}
 
 	myAllCaption: string = '自选股';
