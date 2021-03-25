@@ -1,10 +1,5 @@
 import { IObservableArray, makeObservable, observable } from "mobx";
 import { IXBase } from "tonva-uqui";
-import { MiNet } from "../net";
-import { defaultGroupName } from "../consts";
-import { MiConfigs, RegressionConfig, Stock as StockType, StockFindConfig } from "./types";
-import { StockGroups } from "./stockGroups";
-import { Accounts } from "./accounts";
 import { UQs } from "uq-app";
 import { MiAccounts } from "./miAccounts";
 import { MiGroups } from "./miGroups";
@@ -14,32 +9,24 @@ import { MiAccount } from "./miAccount";
 import { marketElements } from "./market";
 
 export class Store {
-	private readonly miNet: MiNet;
 	readonly myAllColl: {[id:number]: boolean} = {};
 	readonly yumi: UqExt;
 	readonly markets: {[id:number]: {id?:number;name:string;currency:string;el:JSX.Element}} = {};
-	stockGroups: StockGroups;
-	accounts: Accounts;
 	miAccounts: MiAccounts;
 	miGroups: MiGroups;
 	stocksMyAll: IObservableArray<Stock & StockValue> = null;
 	stocksMyBlock: IObservableArray<Stock & StockValue> = null;
 	groupIXs: IXBase[];
 	
-	constructor(miNet:MiNet, uqs: UQs) {
+	constructor(uqs: UQs) {
 		makeObservable(this, {
-			config: observable,
 			myAllColl: observable,
 			stocksMyAll: observable.shallow,
 			stocksMyBlock: observable.shallow,
 		});
-		this.miNet = miNet;
 		this.yumi = uqs.BruceYuMi;
 		this.miAccounts = new MiAccounts(this);
 		this.miGroups = new MiGroups(this);
-
-		this.stockGroups = new StockGroups(miNet);
-		this.accounts = new Accounts(miNet);
 	}
 
 	stockFromId(stockId: number): Stock&StockValue {
@@ -192,33 +179,16 @@ export class Store {
 		}
 	}
 
+	/*
 	@observable config: MiConfigs = { 
 		groupName: defaultGroupName, 
 		stockFind: { sortType:'pe' },
 		userStock: { sortType:'tagpe'},
 		regression: {bmin:0, bmax:0.5, r2:0.7, lmin:0.01, lmax:0.5, lr2:0.7, mcount:2, lr4: 3, r210:0.6, irate:0.04}
 	};
-	//@observable blackList: any[] = [];
-	//@observable defaultList: any[] = [];
-
-
-	getHomeStockGroup() {
-		let name = this.config.groupName;
-		return this.stockGroups.groupFromName(name);
-	}
-
-	/*
-	stockFromId(stockId: number): Stock&StockValue {
-		return this.miGroups.stockFromId(stockId);
-	}
 	*/
 
-	get findStockConfg(): StockFindConfig {
-		return this.config.stockFind;
-	}
-
 	async load() {
-		//await this.loadConfig();
 		await this.loadMarkets();
 		await Promise.all([
 			this.miAccounts.load(),
@@ -266,157 +236,5 @@ export class Store {
 			if (id === stockId) inGroup[ix] = true;
 		}
 		return inGroup;
-	}
-
-	async saveConfig() {
-		let v = JSON.stringify(this.config);
-		//await this.miApi.call('t_usersettings$save', [this.user.id, 'config', v]);
-		await this.miNet.t_usersettings$save(v);
-	}
-
-	protected async loadConfig() {
-		let rets = await Promise.all([
-			this.miNet.t_usersettings$query(),
-			this.stockGroups.load(),
-			this.accounts.load(),
-		]);
-		await this.stockGroups.init();
-		let r = rets[0];
-		if (r !== undefined) {
-			let ret = r;
-			if (ret !== undefined && ret.length > 0) {
-				let cStr = ret[0].value;
-				let c = JSON.parse(cStr);
-				if (this.stockGroups) {
-					let name = c.tagName;
-					let group = this.stockGroups.groupFromName(name);
-					if (!group) {
-						group = this.stockGroups.groupFromName(defaultGroupName);
-						if (group) {
-							c.tagName = defaultGroupName;
-						}
-						else {
-							c.tagName = this.stockGroups.group0;
-						}
-					}
-					c.groupName = c.tagName;
-				}
-				this.config = c;
-			}
-		}
-		if (this.config.stockFind === undefined) {
-			this.config.stockFind = { sortType: 'pe' };
-		}
-		else {
-			switch (this.config.stockFind.selectType) {
-			case 'all': break;
-			case 'peroe': break;
-			case 'pe': break;
-			case 'dp': break;
-			default:
-				this.config.stockFind.selectType = 'all';
-				break;
-			}
-		}
-		if (this.config.userStock === undefined) {
-			this.config.userStock = { sortType: 'tagpe' };
-		}
-		if (this.config.regression === undefined) {
-			this.config.regression = {bmin:0, bmax:0.5, r2:0.7, lmin:0.01, lmax:0.5, lr2:0.7, mcount:2, lr4: 3, r210:0.6, irate:0.04};
-		}
-		else {
-			if (this.config.regression.r210 === undefined) {
-				this.config.regression.r210 = 0.6;
-			}
-			if (this.config.regression.irate === undefined) {
-				this.config.regression.irate = 0.04;
-			}
-		}
-		/*
-		await Promise.all([
-			this.loadBlackList(), 
-			this.loadDefaultList(),
-		]);
-		*/
-	}
-
-	setStockSortType = async (type:string)=> {
-		if (this.config.stockFind.sortType === type)
-			return;
-		this.config.stockFind.sortType = type;
-		await this.saveConfig();
-	}
-
-	setStockSelectType = async (type:string) => {
-		if (this.config.stockFind.selectType === type)
-			return;
-		this.config.stockFind.selectType = type;
-		await this.saveConfig();
-	}
-
-	setUserSortType = async (type:string)=> {
-		if (this.config.userStock.sortType === type) return;
-		this.config.userStock.sortType = type;
-		await this.saveConfig();
-	}
-
-	selectTag = async (item:any) => {
-		let {name} = item as {name:string, id:number};
-		let group = this.stockGroups.groupFromName(name);
-		if (group) {
-			this.config.groupName = name;
-			this.saveConfig();
-		}
-	}
-
-	selectAccount = async (item:any) => {
-		let {name} = item as {name:string, id:number};
-		let account = this.accounts.setCurrentAccount(name);
-		if (account) {
-			this.config.accountName = name;
-			this.saveConfig();
-		}
-	}
-
-	setRegressionConfig = async (cfg: RegressionConfig) => {
-		this.config.regression = cfg;
-		await this.saveConfig();
-	}
-
-	async addTagStock(stock: StockType) {
-		await this.stockGroups.defaultGroup.addStock(stock);
-	}
-
-	async removeTagStock(stock: StockType) {
-		await this.stockGroups.defaultGroup.removeStock(stock);
-	}
-
-	async loadExportItems(queryName: string):Promise<any[]> {
-		//let sName = this.store.config.stockFind.selectType;
-		let {bmin, bmax, r2, lmin, lmax, lr2, mcount, lr4, r210} = this.config.regression;
-		//if (sName !== undefined)
-		//  queryName = sName;
-		let query = {
-			name: queryName,
-			pageStart: 0,
-			pageSize: 3000,
-			user: this.miNet.userId,
-			blackID: this.stockGroups.blackGroup.id,
-			bMin: bmin,
-			bMax: bmax,
-			r2: r2,
-			lMin: lmin,
-			lMax: lmax,
-			lr2: lr2,
-			mcount: mcount,
-			lr4: lr4,
-			r210: r210,
-		};
-		let rets = await Promise.all([
-			this.miNet.process(query, []),
-			//this.store.miApi.call('q_getlasttradeday', [])
-			this.miNet.q_getlasttradeday(),
-		]);
-		return rets;
 	}
 }

@@ -1,14 +1,13 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import { observable, IObservableArray, computed, makeObservable } from 'mobx';
-import { nav } from 'tonva-react';
 import { CUqBase } from "../uq-app";
-import { GFunc } from '../tool/GFunc';
+import { GFunc } from './GFunc';
 import { VStockInfo } from './VStockInfo'
 import { NStockInfo, StockPrice, StockCapitalearning, StockBonus, StockDivideInfo } from './StockInfoType';
-import { VTags, VNewTag, VEditTag } from './VTags';
-import { ErForEarning, SlrForEarning } from 'regression';
-import { StockGroup } from '../store';
 import { Stock, StockValue } from 'uq-app/uqs/BruceYuMi';
+import { ErForEarning } from './ErForEarning';
+import { SlrForEarning } from './SlrForEarning';
+import { MiNet } from './net';
 
 export class CStockInfo extends CUqBase {
 	stock: Stock & StockValue;
@@ -51,11 +50,11 @@ export class CStockInfo extends CUqBase {
         return this._divideInfo;
     }
 
-    //@observable isMySelect: boolean = false;
-
+	private miNet: MiNet;
     constructor(cApp: any) {
         super(cApp);
         makeObservable(this);
+		this.miNet = new MiNet(this.user);
     }
     initLoad = () => {
         this.load();
@@ -66,8 +65,8 @@ export class CStockInfo extends CUqBase {
 
         let { id, day,  } = this.baseItem;
         let rets = await Promise.all([
-            this.cApp.miNet.q_stockallinfo(id, day),
-            this.cApp.miNet.t_tagstock$query(undefined, id),
+            this.miNet.q_stockallinfo(id, day),
+            this.miNet.t_tagstock$query(undefined, id),
         ]);
         this.stockTags = rets[1];
         let ret = rets[0];
@@ -275,16 +274,10 @@ export class CStockInfo extends CUqBase {
     openMetaView = () => {
     }
 
+	/*
     onSelectTag = async () => {
         //await this.loadTags();
         this.selectedTags = this.cApp.store.stockGroups.getSelected(this.stockTags);
-        /*
-        this.cApp.store.stockGroups.filter(v => {
-            let i = this.stockTags.findIndex(st => st.tag === v.groupId);
-            return i >= 0;
-        });
-        */
-        //await this.loadTags();
         this.openVPage(VTags);
     }
 
@@ -300,14 +293,14 @@ export class CStockInfo extends CUqBase {
         let { name } = data;
         //let param = { id: undefined, name: name };
         //let ret = await this.cApp.store.miApi.call('t_tag$save', [this.user.id, undefined, name]);
-        let ret = await this.cApp.miNet.t_tag$save(name);
+        let ret = await this.miNet.t_tag$save(name);
         let { retId } = ret;
         if (retId < 0) {
             alert(name + ' 已经被使用了');
             return false;
         }
         this.cApp.store.stockGroups.add(
-            new StockGroup(name, name, this.cApp.miNet)
+            new StockGroup(name, name, this.miNet)
         );
         return true;
     }
@@ -321,7 +314,7 @@ export class CStockInfo extends CUqBase {
             alert(name + ' 已经被使用了');
             return false;
         }
-        let ret = await this.cApp.miNet.t_tag$save(name);
+        let ret = await this.miNet.t_tag$save(name);
         let { retId } = ret;
         if (retId === undefined || retId < 0) {
             alert(name + ' 已经被使用了');
@@ -384,4 +377,5 @@ export class CStockInfo extends CUqBase {
             this.stockTags.splice(i, 1);
         }
     }
+	*/
 }

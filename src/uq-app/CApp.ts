@@ -1,5 +1,3 @@
-//import { CHome } from "./home";
-//import { CMe } from "./me";
 import { CBug } from "./bug";
 import { CUqApp } from "./CBase";
 import { res } from "./res";
@@ -7,12 +5,7 @@ import { VMain } from "./VMain";
 import { CTester } from "./test-uqui";
 import { setUI } from "./uqs";
 import { CMe } from '../me';
-//import { CUqApp } from './CBase';
-//import { res } from './res';
-//import { CHolding } from 'holding';
-//import { VMain } from './VMain';
 import { Store } from 'store';
-import { MiNet } from '../net';
 import { CHome } from '../home';
 import { CStockInfo, NStockInfo } from "stockinfo";
 import { CFind } from "find";
@@ -30,21 +23,12 @@ export class CApp extends CUqApp {
 	cHome: CHome;
 	cFind: CFind;
 	cCommon: CCommon;
-	miNet: MiNet;
 	store: Store;
 
 	protected async internalStart(isUserLogin: boolean) {
 		this.setRes(res);
 		setUI(this.uqs);
-		/*
-		this.cHome = this.newC(CHome);
-		this.cBug = this.newC(CBug);
-		this.cMe = this.newC(CMe);
-		this.cUI = this.newC(CTester) as CTester;
-		this.cHome.load();
-		*/
-		this.miNet = new MiNet(this.user);
-		this.store = new Store(this.miNet, this.uqs);
+		this.store = new Store(this.uqs);
 		await this.store.load();
 		
 		this.cHome = this.newC(CHome);

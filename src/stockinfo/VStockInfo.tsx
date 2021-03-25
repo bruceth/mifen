@@ -1,14 +1,15 @@
 /*eslint @typescript-eslint/no-unused-vars: ["off", { "vars": "all" }]*/
 import * as React from 'react';
-import { VPage, Page, View, List, LMR, left0, FA } from 'tonva-react';
+import { VPage, Page, List } from 'tonva-react';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import RC2 from 'react-chartjs-2'
-import { GFunc } from '../tool/GFunc';
+import { GFunc } from './GFunc';
 import { CStockInfo } from './CStockInfo'
-import { NStockInfo, StockCapitalearning, StockBonus } from './StockInfoType';
-import { ErForEarning, SlrForEarning } from 'regression';
+import { StockCapitalearning, StockBonus } from './StockInfoType';
 import { renderStockRow } from 'tool';
+import { ErForEarning } from './ErForEarning';
+import { SlrForEarning } from './SlrForEarning';
 
 export class VStockInfo extends VPage<CStockInfo> {
     private input: HTMLInputElement;
@@ -31,29 +32,17 @@ export class VStockInfo extends VPage<CStockInfo> {
 
     checkShowLater = (e: any) => {
         let check = e.target.checked as boolean;
-        //this.controller.loadHistoryData(check);
-    }
-
-    checkDefaultTag = (e: any) => {
-        let check = e.target.checked as boolean;
-        this.controller.onClickDefaultTag(check);
     }
 
     private page = observer(() => {
-        let { openMetaView, baseItem, onSelectTag, stockTags, isLogined } = this.controller;
+        let { openMetaView, baseItem, isLogined } = this.controller;
         let { name, code, day } = baseItem;
         let viewMetaButton = <></>;
         if (isLogined) {
             viewMetaButton = <button type="button" className="btn w-100" onClick={openMetaView}>view</button>
         }
-		/*
-        let right = stockTags && <button
-            className="btn btn-sm mr-2 btn-outline-success bg-light align-self-center"
-            onClick={onSelectTag}>
-            {stockTags.length === 0 ? '加自选' : '设分组'}
-        </button>;
-		*/
-        let headStr = name + ' ' + code;
+
+		let headStr = name + ' ' + code;
         if (day !== undefined) {
             headStr += ' - ' + day;
         }
@@ -94,12 +83,7 @@ export class VStockInfo extends VPage<CStockInfo> {
 
     private baseInfo = observer(() => {
         let { stock, baseItem } = this.controller;
-        let { id, name, market, code, symbol, pe, roe, price, order, divyield, e, capital, bonus } = baseItem;
 		let {cCommon} = this.controller.cApp;
-		/*
-        let right = <label className="align-self-center px-3"> <input type="checkbox" name="checkDefaultList" defaultChecked={isMySelect}
-            onChange={this.checkDefaultTag} />自选股</label>;
-		*/
 		let pinStock = <div className="d-flex align-self-stretch">
 			{cCommon.renderStockLink(stock)}
 			&nbsp;
