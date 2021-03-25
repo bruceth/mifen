@@ -18,8 +18,8 @@ export class CHome extends CUqBase {
 			stocks: observable.ref,
 			listCaption: observable,
 		});
-		this.cAccount = new CAccount(this.cApp, this);
-		this.cGroup = new CGroup(this.cApp, this);
+		this.cAccount = this.newSub(CAccount);
+		this.cGroup = this.newSub(CGroup);
 	}
 
 	protected async internalStart(param: any) {

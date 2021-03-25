@@ -25,8 +25,8 @@ export class HoldingStock implements Holding, Portfolio {
 		let {miValue, divident} = this.stockObj;
 		if (miValue === undefined) miValue = 0;
 		if (divident === undefined) divident = 0;
-		this.mi = quantity * miValue / 100;
-		this.market = quantity * (price as number);
-		this.divident = quantity * (divident as number ?? 0);
+		this.mi = quantity * miValue;
+		this.market = quantity * price;
+		this.divident = quantity * (divident ?? 0);
 	}
 }

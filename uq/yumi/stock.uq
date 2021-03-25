@@ -28,7 +28,7 @@ IDX StockValue ver 0.1 (
 	inc2 FLOAT,
 	inc3 FLOAT,
 	inc4 FLOAT,
-	preInc FLOAT LOG,
+	preInc FLOAT,
 	volumn FLOAT,
 	smoothness TINYINT,
 	date DATE,
@@ -61,12 +61,14 @@ PAGE ORDER Switch (miRateDesc, dvRateDesc, roeDesc, miRateAsc, dvRateAsc, roeAsc
 	volumn FLOAT,
 	smoothness TINYINT,
 ) {
-	IF key is null {
+	IF key IS NULL {
 		SET key = '';
 	}
 	SET key = concat('%', key, '%');
 	TABLE tblm(m CHAR(20));
-	TEXT market INTO tblm;
+	if NOT market IS NULL {
+		TEXT market INTO tblm;
+	}
 	PAGE SELECT a.id, a.code, a.name, a.rawId,
 		a.market,
 		b.miValue, b.earning, b.divident, b.price, 
@@ -77,7 +79,8 @@ PAGE ORDER Switch (miRateDesc, dvRateDesc, roeDesc, miRateAsc, dvRateAsc, roeAsc
 			LEFT JOIN StockValue as b on a.id=b.id
 			LEFT JOIN Market as c on a.market=c.id
 			LEFT JOIN UserBlockStock as d on d.ix=$user AND d.id=a.id
-		WHERE a.search LIKE key AND EXISTS(SELECT m FROM tblm WHERE m=c.name)
+		WHERE a.search LIKE key 
+			AND (market IS NULL OR EXISTS(SELECT m FROM tblm WHERE m=c.name))
 			AND d.id IS NULL
 			AND (smooth is NULL OR smooth=0 OR b.smoothness>=smooth)
 			-- AND a.id>$pageStart
@@ -141,9 +144,9 @@ OPEN ACT WritePrice ver 0.1 (
 			SET a.price=price, a.pvolumn=pvolumn
 				, a.date=concat(date DIV 10000, '-', (date DIV 100) MOD 100, '-', date MOD 100);
 		WITH StockValue as a ID stock 
-			SET a.miRate=(IFNULL(a.miValue,0) + IFNULL(a.divident,0)) * a.volumn / a.price / IFNULL(a.pvolumn, a.volumn)
-				, a.dvRate=IFNULL(a.divident,0) * a.volumn / a.price / IFNULL(a.pvolumn, a.volumn)
-				, a.ttm=(a.price*IFNULL(a.pvolumn, a.volumn))/(a.earning*a.volumn)
+			SET a.miRate=100 * (IFNULL(a.miValue,0) + IFNULL(a.divident,0)) * a.volumn / a.price / IFNULL(a.pvolumn, a.volumn)
+				, a.dvRate=100 * IFNULL(a.divident,0) * a.volumn / a.price / IFNULL(a.pvolumn, a.volumn)
+				, a.ttm=IF(a.earning>=0.01, (a.price*IFNULL(a.pvolumn, a.volumn))/(a.earning*a.volumn), null)
 			WHERE a.price>0 AND a.volumn>0;
 	}
 };

@@ -2,7 +2,7 @@ import { observer } from "mobx-react";
 import React from "react";
 import { MiAccount } from "store";
 import { FA, List, LMR, View } from "tonva-react";
-import { formatNumber } from "tool";
+import { nFormat1 } from "tool";
 import { Account, AccountValue } from "uq-app/uqs/BruceYuMi";
 import { CAccount } from "./CAccount";
 
@@ -27,7 +27,7 @@ export class VAccounts extends View<CAccount> {
 		function renderValue(caption:string, value:number) {
 			return <span className="mr-3">
 				<small className="text-muted">{caption}: </small>
-				{formatNumber(value??0)}
+				{(value??0).toLocaleString(undefined, nFormat1)}
 			</span>;
 		}
 		let {name, mi, market, count} = item;
@@ -45,8 +45,8 @@ export class VAccounts extends View<CAccount> {
 							<small className="ml-3 text-danger">{count}</small>
 						</div>
 						<div className="mt-2">
-							{renderValue('总米值', mi as number)}
-							{renderValue('总市值', market as number)}
+							{renderValue('总米值', mi)}
+							{renderValue('总市值', market)}
 						</div>
 					</>
 					:

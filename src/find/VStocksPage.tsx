@@ -12,30 +12,6 @@ export class VStocksPage extends VPage<CFind> {
 		return <List items={pageStocks} item={{render: this.renderStock, onClick: onClickStock}} />
 	}
 	private renderStock = (stock: Stock & StockValue): JSX.Element => {
-	/*
-		let isSelected = this.controller.isMySelect(stock);
-		let setStock = isSelected === true? 
-			<DropdownActions actions={[
-				{
-					caption: '修改分组',
-					action: () => this.controller.setStockToGroup(stock),
-				},
-				{
-					caption: '删除自选',
-					action: () => this.controller.removeMySelect(stock),
-				},
-				undefined,
-				{
-					caption: '取消操作',
-					action: () => {},
-				}
-			]} icon="cog" content="设自选" className="cursor-pointer dropdown-toggle btn btn-sm btn-outline-info" />
-			:
-			<button className="btn btn-sm btn-outline-primary" 
-				onClick={() => this.controller.selectStock(stock)}>
-				<FA name="plus-square-o" className="small" /> 加自选
-			</button>;
-		*/
 		let pinStock = this.controller.cApp.cCommon.renderPinStock(stock);
 		let {$order} = stock as any;
 		return renderStockRow($order, stock, this.onClickName, undefined, pinStock);

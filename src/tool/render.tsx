@@ -66,7 +66,7 @@ export function renderStockInfoRow(row: NStockInfo, onClickName: (row:NStockInfo
 		['TTM', pe, 'n1'],
 		['价格', price, 'n2'],
 		['ROE', roe, 'n1'],
-		['预增', l, 'p0'],
+		['均增', l, 'p0'],
 		['现增', zzl[3], 'p0'],
 		['增 1', zzl[2], 'p0'],
 		['增 2', zzl[1], 'p0'],
@@ -85,18 +85,23 @@ export function renderStockInfoRow(row: NStockInfo, onClickName: (row:NStockInfo
   	</div>;
 }
 
-export function renderStockRow(order: number, stock: Stock&StockValue, onClickName: (stock:Stock&StockValue) => void, inputSelect:JSX.Element, right:JSX.Element):JSX.Element {
-	let { id, name, code, earning, roe, price, divident, miRate, volumn, ttm, inc1, inc2, inc3, inc4, preInc } = stock;
+export function renderStockName(order: number, stock: Stock):JSX.Element {
+	let { name, code } = stock;
 	let $market = (stock as any).$market;
-	let left = <div className="cursor-pointer flex-grow-1 align-self-center" onClick={()=>onClickName(stock)}>
-		<small className="mr-2 text-danger">{order}</small>
-		&nbsp; 
-		{$market?.el}
-		&nbsp; 
+	return <>
+		{order && <><small className="mr-2 text-danger">{order}</small>&nbsp;</>}
+		{$market && <>{$market.el}&nbsp;</>}
 		<span className="text-primary">{name}</span>
 		&nbsp; 
 		<span className="text-info">{code}</span>
 		&nbsp;
+	</>;
+}
+
+export function renderStockRow(order: number, stock: Stock&StockValue, onClickName: (stock:Stock&StockValue) => void, inputSelect:JSX.Element, right:JSX.Element):JSX.Element {
+	let { roe, price, divident, miRate, volumn, ttm, inc1, inc2, inc3, inc4, preInc } = stock;
+	let left = <div className="cursor-pointer align-self-center flex-grow-1" onClick={()=>onClickName(stock)}>
+		{renderStockName(undefined, stock)}
 	</div>;
 	let rows:[string,number,'p0'|'p1'|'n1'|'n2'|'yi'][] = [
 		['米息分', Math.log2(miRate), 'n1'],
@@ -117,7 +122,7 @@ export function renderStockRow(order: number, stock: Stock&StockValue, onClickNa
 			{left}
 			{right}
 		</div>
-		<div className="d-flex flex-wrap p-1" onClick={()=>onClickName(stock)}>
+		<div className="d-flex flex-wrap p-1" onClick={()=>onClickName?.(stock)}>
 			{rows.map(v => renderValue(v[0], v[1], v[2]))}
 		</div>
 	</div>;
@@ -127,6 +132,14 @@ const nFormat = new Intl.NumberFormat('zh-CN', { maximumSignificantDigits: 3 });
 export function formatNumber(num: number): string {
 	return nFormat.format(num);
 }
+export const nFormat0 = {
+	minimumFractionDigits: 0,
+	maximumFractionDigits: 0,
+};
+export const nFormat1 = { 
+	minimumFractionDigits: 1,
+	maximumFractionDigits: 1,
+};
 
 export function renderStockUrl(row: NStockInfo) {
     let { symbol, market, code } = row;

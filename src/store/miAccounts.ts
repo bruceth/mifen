@@ -1,4 +1,4 @@
-import { IObservableArray, makeObservable, observable, runInAction } from "mobx";
+import { action, IObservableArray, makeObservable, observable, runInAction } from "mobx";
 import { ParamIX } from "tonva-react";
 import { AccountValue, Account } from "uq-app/uqs/BruceYuMi";
 import { MiAccount } from "./miAccount";
@@ -11,6 +11,7 @@ export class MiAccounts {
 	constructor(store: Store) {
 		makeObservable(this, {
 			accounts: observable,
+			load: action,
 		});
 		this.store = store;
 	}
@@ -44,10 +45,8 @@ export class MiAccounts {
 				name: accountName,
 			} as any);
 		}
-		runInAction(() => {
-			let accounts = ret.map(v => new MiAccount(this.store, v));
-			this.accounts = observable(accounts);
-		});
+		let accounts = ret.map(v => new MiAccount(this.store, v));
+		this.accounts = observable(accounts);
 	}
 
 	accountsFromIds(ids: number[]): MiAccount[] {

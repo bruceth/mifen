@@ -65,5 +65,6 @@ export const res: Res<any> = {
 };
 
 export function render(item: Stock):JSX.Element {
-	return <>{JSON.stringify(item)}</>;
+	let {name, code} = item;
+	return <><span>{name}</span> <span>{code}</span></>;
 };

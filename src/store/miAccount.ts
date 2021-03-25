@@ -1,4 +1,4 @@
-import { IObservableArray, makeObservable, observable, runInAction } from "mobx";
+import { action, IObservableArray, makeObservable, observable, runInAction } from "mobx";
 import { Account, AccountValue, Holding, Portfolio } from "uq-app/uqs/BruceYuMi";
 import { HoldingStock } from "./holdingStock";
 import { Store } from "./store";
@@ -24,19 +24,20 @@ export class MiAccount  implements Account, AccountValue {
 			market: observable,
 			divident: observable,
 			cash: observable,
+			loadItems: action,
+			buyNewHolding: action,
+			buyHolding: action,
+			sellHolding: action,
 		})
 		this.store = store;
-		runInAction(() => {
-			Object.assign(this, account);
-			this.cash = undefined;
-		});
+		Object.assign(this, account);
+		this.cash = undefined;
 	}
 
 	async loadItems() {
 		if (this.holdingStocks) return;
 		let {yumi} = this.store;
 		let ret = await yumi.IX<Holding&Portfolio>({
-			// IX: yumi.UserAccount,
 			IX: yumi.AccountHolding,
 			ix: this.id,
 			IDX: [yumi.Holding, yumi.Portfolio]
@@ -56,7 +57,7 @@ export class MiAccount  implements Account, AccountValue {
 				let holdingStock = new HoldingStock(id, stock, v.quantity);
 				return holdingStock;
 			}));
-			this.count = this.holdingStocks.length;
+			this.count = this.holdingStocks.length;	
 		});
 	}
 
@@ -73,9 +74,7 @@ export class MiAccount  implements Account, AccountValue {
 			await this.store.addMyAll(stock);
 			let hs = new HoldingStock(holdingId, stock, quantity);
 			hs.setQuantity(price, quantity);
-			runInAction(() => {
-				this.holdingStocks.push(hs);
-			})
+			this.holdingStocks.push(hs);
 		}
 		else {
 			let orgHs = this.holdingStocks[index];
@@ -92,9 +91,7 @@ export class MiAccount  implements Account, AccountValue {
 		let orgHs = this.holdingStocks[index];
 		let holdingId = orgHs.id;
 		let holdingQuantity = orgHs.quantity + quantity;
-		runInAction(() => {
-			orgHs.setQuantity(price, holdingQuantity);
-		});
+		orgHs.setQuantity(price, holdingQuantity);
 		await this.bookHolding(holdingId, price, quantity);
 	}
 
@@ -135,9 +132,7 @@ export class MiAccount  implements Account, AccountValue {
 	async sellHolding(stockId: number, price: number, quantity: number) {
 		let holding = this.holdingStocks.find(v => v.stock === stockId);
 		if (holding === undefined) return;
-		runInAction(() => {
-			holding.setQuantity(price, holding.quantity - quantity);
-		});
+		holding.setQuantity(price, holding.quantity - quantity);
 		await this.bookHolding(holding.id, price, -quantity);
 	}
 
@@ -157,7 +152,7 @@ export class MiAccount  implements Account, AccountValue {
 
 	private async cashAct(amount: number, act: string):Promise<void> {
 		await this.store.yumi.Acts({
-			accountValue: [{id: this.id, cash: {value: amount, act:'+'}}]
+			accountValue: [{id: this.id, cash: amount}]
 		});
 	}
 
