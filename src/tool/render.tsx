@@ -41,7 +41,7 @@ export function renderStockName(stock: Stock):JSX.Element {
 	</>;
 }
 
-export function renderStockRow(order: number, stock: Stock&StockValue, onClickName: (stock:Stock&StockValue) => void, inputSelect:JSX.Element, right:JSX.Element):JSX.Element {
+export function renderStockRow(order: number, stock: Stock&StockValue, onClickName: (stock:Stock&StockValue) => void, right:JSX.Element):JSX.Element {
 	let { roe, price, divident, miRate, volumn, ttm, inc1, inc2, inc3, inc4, preInc } = stock;
 	let left = <div className="cursor-pointer align-self-center flex-grow-1" onClick={()=>onClickName?.(stock)}>
 		{order && <><small className="mr-2 text-danger">{order}</small>&nbsp;</>}

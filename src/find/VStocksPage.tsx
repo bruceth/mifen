@@ -14,7 +14,7 @@ export class VStocksPage extends VPage<CFind> {
 	private renderStock = (stock: Stock & StockValue): JSX.Element => {
 		let pinStock = this.controller.cApp.cCommon.renderPinStock(stock);
 		let {$order} = stock as any;
-		return renderStockRow($order, stock, this.onClickName, undefined, pinStock);
+		return renderStockRow($order, stock, this.onClickName, pinStock);
 	}
 
 	private onClickName = (stock: Stock & StockValue) => {

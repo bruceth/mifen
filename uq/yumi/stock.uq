@@ -21,9 +21,6 @@ IDX StockValue ver 0.1 (
 	price FLOAT,
 	pvolumn FLOAT,
 	roe FLOAT,
-	miRate FLOAT,
-	dvRate FLOAT,
-	ttm FLOAT,
 	inc1 FLOAT,
 	inc2 FLOAT,
 	inc3 FLOAT,
@@ -32,6 +29,9 @@ IDX StockValue ver 0.1 (
 	volumn FLOAT,
 	smoothness TINYINT,
 	date DATE,
+	miRate FLOAT,
+	dvRate FLOAT,
+	ttm FLOAT,
 );
 
 QUERY SearchStock1 ver 0.1 (
@@ -62,9 +62,6 @@ PAGE ORDER Switch (miRateDesc, dvRateDesc, roeDesc, miRateAsc, dvRateAsc, roeAsc
 	divident FLOAT,
 	price FLOAT,
 	roe FLOAT,
-	miRate FLOAT,
-	dvRate FLOAT,	
-	ttm FLOAT,
 	inc1 FLOAT,
 	inc2 FLOAT,
 	inc3 FLOAT,
@@ -72,6 +69,9 @@ PAGE ORDER Switch (miRateDesc, dvRateDesc, roeDesc, miRateAsc, dvRateAsc, roeAsc
 	preInc FLOAT,
 	volumn FLOAT,
 	smoothness TINYINT,
+	miRate FLOAT,
+	dvRate FLOAT,	
+	ttm FLOAT,
 ) {
 	VAR sKey CHAR(50);
 	IF key IS NULL {
@@ -136,11 +136,17 @@ OPEN ACT WriteStock ver 0.4 (
 		VAR mId ID = ID(Market, market);
 		VAR stock ID = ID(Stock, mId, code);
 		WITH Stock as a ID stock SET a.name=name, a.rawId=rawId, a.search=concat_ws('\t', name, code, market);
-		WITH StockValue as a ID stock SET a.miValue=miValue,
-			a.earning=earning, a.divident=divident,
-			a.roe=roe, a.inc1=inc1, a.inc2=inc2, a.inc3=inc3, a.inc4=inc4,
-			a.preInc=preInc, a.volumn=volumn,
-			a.smoothness=smoothness;
+		WITH StockValue as a ID stock
+			SET a.miValue=miValue
+				, a.earning=earning, a.divident=divident
+				, a.roe=roe, a.inc1=inc1, a.inc2=inc2, a.inc3=inc3, a.inc4=inc4
+				, a.preInc=preInc, a.volumn=volumn
+				, a.smoothness=smoothness;
+		WITH StockValue as a ID stock 
+			SET a.miRate=100 * (IFNULL(a.miValue,0) + IFNULL(a.divident,0)) * a.volumn / a.price / IFNULL(a.pvolumn, a.volumn)
+				, a.dvRate=100 * IFNULL(a.divident,0) * a.volumn / a.price / IFNULL(a.pvolumn, a.volumn)
+				, a.ttm=IF(a.earning>=0.01, (a.price*IFNULL(a.pvolumn, a.volumn))/a.earning/a.volumn, null)
+			WHERE a.price>0 AND a.volumn>0;
 	}
 };
 
@@ -160,7 +166,8 @@ OPEN ACT WritePrice ver 0.1 (
 		VAR stock ID = ID(Stock, mId, code);
 		WITH Stock as a ID stock SET a.name=name, a.rawId=rawId, a.search=concat_ws('\t', name, code, market);
 		WITH StockValue as a ID stock 
-			SET a.price=price, a.pvolumn=pvolumn
+			SET a.price=price
+				, a.pvolumn=pvolumn
 				, a.date=concat(date DIV 10000, '-', (date DIV 100) MOD 100, '-', date MOD 100);
 		WITH StockValue as a ID stock 
 			SET a.miRate=100 * (IFNULL(a.miValue,0) + IFNULL(a.divident,0)) * a.volumn / a.price / IFNULL(a.pvolumn, a.volumn)

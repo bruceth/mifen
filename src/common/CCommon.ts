@@ -66,12 +66,12 @@ export class CCommon extends CUqBase {
 		}
 	}
 
-	renderPinStock(stock: Stock & StockValue) {
+	renderPinStock = (stock: Stock & StockValue) => {
 		if (!stock) return null;
 		return this.renderView(VPinStock, stock);
 	}
 
-	renderBlockStock(stock: Stock & StockValue) {
+	renderBlockStock = (stock: Stock & StockValue) => {
 		if (!stock) return null;
 		return this.renderView(VBlockStock, stock);
 	}

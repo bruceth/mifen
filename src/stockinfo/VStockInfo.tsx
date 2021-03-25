@@ -91,7 +91,7 @@ export class VStockInfo extends VPage<CStockInfo> {
 			&nbsp;
 			{cCommon.renderBlockStock(stock)}
 		</div>;
-		return renderStockRow(undefined, stock, undefined, undefined, pinStock);
+		return renderStockRow(undefined, stock, undefined, pinStock);
     });
 
     private historyChart = () => {

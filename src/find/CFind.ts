@@ -5,11 +5,13 @@ import { StockPageItems } from "./stockPageItems";
 import { VFind } from "./VFind";
 import { VSetting } from "./VSetting";
 import { VStocksPage } from "./VStocksPage";
+import { CGroup } from "./group";
 
 type SearchOrder = 'miRateDesc' | 'miRateAsc' | 'dvRateDesc' | 'dvRateAsc' | 'roeDesc' | 'roeAsc';
 const defaultSmooth = 0;
 
 export class CFind extends  CUqBase {
+	readonly cGroup: CGroup;
 	header: string = null;
 	pageStocks: StockPageItems = null;
 	searchOrder: SearchOrder = 'miRateDesc';
@@ -21,6 +23,7 @@ export class CFind extends  CUqBase {
 			header: observable,
 			//miAccount: observable,
 		});
+		this.cGroup = this.newSub(CGroup);
 		this.loadSmooth();
 	}
 

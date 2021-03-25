@@ -51,9 +51,9 @@ export class VAccounts extends View<CAccount> {
 					</>
 					:
 					<>
-						<div className="pb-2">
+						<div className="py-1">
 							{name}
-							<small className="ml-3 text-muted mb-2">空仓</small>
+							<small className="ml-3 text-muted">空仓</small>
 						</div>
 					</>
 			}
