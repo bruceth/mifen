@@ -1,4 +1,4 @@
-import { makeObservable, observable } from 'mobx';
+import { makeObservable, observable, runInAction } from 'mobx';
 import {
     userApi, ItemSchema, StringSchema, ImageSchema, UiTextItem, UiImageItem, nav, Page,
     Edit, UiSchema, VPage, Prop, FA, IconText, PropGrid
@@ -37,9 +37,11 @@ export class VEditMe extends VPage<CMe>{
     private onItemChanged = async (itemSchema: ItemSchema, newValue: any, preValue: any) => {
         let { name } = itemSchema;
         await userApi.userSetProp(name, newValue);
-        this.data[name] = newValue;
-        (nav.user as any)[name] = newValue;
-        nav.saveLocalUser();
+		runInAction(() => {
+			this.data[name] = newValue;
+			(nav.user as any)[name] = newValue;
+			nav.saveLocalUser();
+		});
     }
 
 	private onExit = () => {

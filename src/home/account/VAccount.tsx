@@ -9,9 +9,12 @@ export class VAccount extends VPage<CAccount> {
 	header() {return this.controller.miAccount.name}
 	content() {
 		return React.createElement(observer(() => {
-			function valueToString(value:number, dec: number = 0):string {return (value??0).toLocaleString(undefined, nFormat1)}
+			function valueToString(value:number, suffix: string = ''):string {
+				if (isNaN(value) === true) return '-';
+				return (value??0).toLocaleString(undefined, nFormat1) + suffix;
+			}
 			function renderValue(caption:string, content:string, cn:string = '') {
-				return <div className={'m-1 border rounded w-min-5c px-1 py-2 ' + cn}>
+				return <div className={'my-1 mx-1 mx-sm-2 border rounded w-min-5c px-1 px-sm-2 py-2 ' + cn}>
 					<small className="text-muted">{caption}</small>
 					<div>{content}</div>
 				</div>;
@@ -19,7 +22,7 @@ export class VAccount extends VPage<CAccount> {
 			let renderCash = (value:number) => {
 				let caption = '现金';
 				if (typeof value === 'number') return renderValue(caption, valueToString(value));
-				return <div className="m-1 border rounded w-min-5c px-1 py-2">
+				return <div className="my-1 mx-1 mx-sm-2 border rounded w-min-5c px-1 px-sm-2 py-2">
 					<small className="text-muted">{caption}</small>
 					<div className="text-danger small mt-1">[无]</div>
 				</div>;
@@ -51,7 +54,7 @@ export class VAccount extends VPage<CAccount> {
 					</LMR>
 					<div className="my-3 text-center d-flex justify-content-center flex-wrap">
 						{renderValue('米息', valueToString(mi), 'd-none d-sm-block')}
-						{renderValue('米息率', valueToString(mi*100/market)+'%')}
+						{renderValue('米息率', valueToString(mi*100/market, '%'))}
 						{renderValue('市值', valueToString(market))}
 						{renderCash(cash)}
 						{typeof cash === 'number' && renderValue('总值', valueToString(market + cash))}
