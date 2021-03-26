@@ -17,6 +17,7 @@ export class CRoles extends Controller {
 
 	protected async internalStart() {
 		this.roles = await this.uq.$.getRoles();
+		if (!this.roles) this.roles = [];
 		this.openVPage(VRoles)
 	}
 

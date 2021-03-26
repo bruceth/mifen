@@ -1,8 +1,8 @@
-import { QueryPager, User } from "tonva-react";
-import { CUqBase } from "../uq-app";
+import { QueryPager, Uq, User } from "tonva-react";
+import { CRoles } from "tonva-uqui";
+import { CApp, CUqBase } from "../uq-app";
 import { VEditMe } from "./VEditMe";
 import { VMe } from "./VMe";
-//import { VAdmin } from "./VAdmin";
 
 export interface RootUnitItem {
 	id: number;					// root unit id
@@ -14,45 +14,33 @@ export interface RootUnitItem {
 }
 
 export class CMe extends CUqBase {
+	private uq: Uq;
 	role: number;
 	unitOwner: User;
 	rootUnits: QueryPager<any>;
+	roles: string[] = null;
+
+	constructor(cApp: CApp) {
+		super(cApp);
+		this.uq = this.uqs.BruceYuMi;
+	}
 
     protected async internalStart() {
 	}
 
 	tab = () => this.renderView(VMe);
 
+	load = async () => {
+		this.roles = await this.getUqRoles(this.uq.$.name);
+	}
+
 	showEditMe = async () => {
-		//let result = await this.uqs.Notes.GetSystemRole.query({});
 		this.role = undefined; // result.ret[0]?.role;
 		this.openVPage(VEditMe);
 	}
-	/*
-	showAdmin = async () => {
-		this.rootUnits = new QueryPager<any>(this.uqs.Notes.GetRootUnits, undefined, undefined, true);
-		this.rootUnits.first({});
-		this.openVPage(VAdmin);
-	}
 
-	async createRootUnit(param: {name:string; content:string; owner:number}): Promise<number> {
-		let result = await this.uqs.Notes.CreateRootUnit.submit(param);
-		return result.id;
+	backend = async () => {
+		let cRoles = new CRoles(this.uq);
+		await cRoles.start();
 	}
-
-	async changeRootUnitName(item:RootUnitItem, name:string) {
-		await this.uqs.Notes.ChangeRootUnitProp.submit({unit:item.id, prop:'name', value: name})
-		item.name = name;
-	}
-
-	async changeRootUnitTonva(item:RootUnitItem, tonvaUnit:any) {
-		await this.uqs.Notes.ChangeRootUnitProp.submit({unit:item.id, prop:'tonvaUnit', value: tonvaUnit})
-		item.tonvaUnit = tonvaUnit;
-	}
-
-	async changeRootUnitX(item:RootUnitItem, x:number) {
-		await this.uqs.Notes.ChangeRootUnitProp.submit({unit:item.id, prop:'x', value: x as any})
-		item.x = x;
-	}
-	*/
 }

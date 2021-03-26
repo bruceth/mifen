@@ -1,9 +1,6 @@
 import { observer } from "mobx-react";
 import { FA, LMR, VPage } from "tonva-react";
-//import { CMe } from "./CMe";
 import { CRoles } from "./CRoles";
-//import { VAccountant } from "./VAccountant";
-//import { VManager } from "./VManager";
 
 interface RoleItem {
 	caption: string;
