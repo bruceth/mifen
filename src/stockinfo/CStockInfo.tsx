@@ -10,13 +10,11 @@ import { SlrForEarning } from './SlrForEarning';
 import { MiNet } from './net';
 
 export class CStockInfo extends CUqBase {
-	stock: Stock & StockValue;
+    stock: Stock & StockValue;
     @observable baseItem: NStockInfo;
     @observable protected loaded: boolean = false;
 
     @observable price: StockPrice;
-    //@observable roe: StockRoe;
-    //@observable tags: any[] = undefined;
     @observable stockTags: any[];
     selectedTags: any[];
 
@@ -26,6 +24,7 @@ export class CStockInfo extends CUqBase {
     @observable predictSeasonData: { season: number, c: number, e: number, esum: number, corg: number, eorg: number, esumorg: number }[] = [];
     @observable predictSeasonDataFull: { season: number, c: number, e: number, esum: number, corg: number, eorg: number, esumorg: number }[] = [];
     @observable predictData: { e: number, b: number, r2: number, epre: number, l: number, lr2: number, lpre: number };
+    @observable predictBonusData: { season: number, bonus: number }[] = [];
     @observable ypredict: number[] = [];
     // @observable historyData:{day:number, price:number, ttm:number}[] =  [];
     // protected historyDataOrg:{day:number, price:number, dayno:number}[] = [];
@@ -34,6 +33,7 @@ export class CStockInfo extends CUqBase {
     protected _capitalearning: IObservableArray<StockCapitalearning> = observable.array<StockCapitalearning>([], { deep: true });
     protected _bonus: IObservableArray<StockBonus> = observable.array<StockBonus>([], { deep: true });
     protected _divideInfo: IObservableArray<StockDivideInfo> = observable.array<StockDivideInfo>([], { deep: true });
+    protected _sharesArr: { day: number, shares: number }[] = [];
 
     @computed get capitalearning(): IObservableArray<StockCapitalearning> {
         if (this.loaded === false) return undefined;
@@ -50,11 +50,11 @@ export class CStockInfo extends CUqBase {
         return this._divideInfo;
     }
 
-	private miNet: MiNet;
+    private miNet: MiNet;
     constructor(cApp: any) {
         super(cApp);
         makeObservable(this);
-		this.miNet = new MiNet(this.user);
+        this.miNet = new MiNet(this.user);
     }
     initLoad = () => {
         this.load();
@@ -63,7 +63,7 @@ export class CStockInfo extends CUqBase {
     private load = async () => {
         if (!this.baseItem) return;
 
-        let { id, day,  } = this.baseItem;
+        let { id, day, } = this.baseItem;
         let rets = await Promise.all([
             this.miNet.q_stockallinfo(id, day),
             this.miNet.t_tagstock$query(undefined, id),
@@ -82,19 +82,34 @@ export class CStockInfo extends CUqBase {
             let arr3 = ret[3];
             if (Array.isArray(arr3)) {
                 this._divideInfo.push(...arr3);
-                let barr = arr3.filter((v: any) =>　{
+                let barr = arr3.filter((v: any) => {
                     return v.派息 as number > 0;
                 }).map((v: any) => {
-                    return {day:v.day, bonus:v.派息};
+                    return { day: v.day, bonus: v.派息, shares: v.shares };
                 })
                 this._bonus.push(...barr);
             }
+            this._sharesArr = ret[5];
 
             await this.loadTTMEarning(ret[2]);
+            this.LoadBonusData();
         }
 
         //this.isMySelect = this.cApp.store.isMyAll(this.stock);
         this.loaded = true;
+    }
+
+    protected getTotalShares(day: number): number {
+        let ret: number = undefined;
+        for (let i = 0; i < this._sharesArr.length; ++i) {
+            let item = this._sharesArr[i];
+            ret = item.shares;
+            if (day >= item.day) {
+                break;
+            }
+        }
+
+        return ret;
     }
 
     protected async loadTTMEarning(list: { seasonno: number, capital: number, earning: number, es: number, shares: number }[]) {
@@ -117,7 +132,7 @@ export class CStockInfo extends CUqBase {
 
             let yearmonth = GFunc.GetSeasonnoYearMonth(no);
             if (yearmonth.month === 12) {
-                let ci = {year: yearmonth.year, capital: item.capital, earning: item.earning };
+                let ci = { year: yearmonth.year, capital: item.capital, earning: item.earning };
                 this._capitalearning.push(ci);
             }
         }
@@ -161,17 +176,77 @@ export class CStockInfo extends CUqBase {
         }
     }
 
-    protected ExrightEarning(endDay: number, season: number, item: { c: number, e: number, esum: number }) {
-        let { end } = GFunc.SeasonnoToBeginEnd(season);
-        for (let i = 0; i < this.exrightForEarning.length; ++i) {
-            let exitem = this.exrightForEarning[i];
-            let day = exitem.day;
-            if (day > endDay) break;
-            if (day < end) continue;
-            let factor = exitem.factor;
-            item.c = item.c * factor;
-            item.e = item.e * factor;
-            item.esum = item.esum * factor;
+    protected LoadBonusData() {
+        this.predictBonusData.splice(0);
+        let dt = new Date();
+        let maxNo = GFunc.SeasonnoFromYearMonth(dt.getFullYear(), dt.getMonth() - 1) - 2;
+        let minNo = -1;
+        let dataOrg: { [index: number]: { bonus: number, shares: number } } = {};
+        let seasonData: { [index: number]: { bonus: number, shares: number, bs: number, bp: number, bycount: number } } = {};
+        for (let item of this._bonus) {
+            let { day, bonus, shares } = item as { day: number, bonus: number, shares: number };
+            if (shares <= 0 || bonus <= 0) continue;
+            if (day < 19950101) continue;
+            let sno = GFunc.SeasonnoFromDay(day);
+            dataOrg[sno] = { bonus: bonus, shares: shares };
+            if (minNo < 0) {
+                minNo = sno;
+            }
+            else {
+                if (sno < minNo)
+                    minNo = sno;
+            }
+            if (sno > maxNo) {
+                maxNo = sno;
+            }
+        }
+
+        let getBonusPrev3 = (sno: number) => {
+            let r = 0;
+            for (let n = sno - 3; n < sno; ++n) {
+                let item = dataOrg[n];
+                if (item === undefined) continue;
+                r += item.bonus * item.shares;
+            }
+    
+            return r;
+        }
+    
+
+        for (let no = minNo; no <= maxNo; ++no) {
+            let item = dataOrg[no];
+            let bsum = 0;
+            if (item === undefined) {
+                let { end } = GFunc.SeasonnoToBeginEnd(no);
+                item = { bonus: 0, shares: this.getTotalShares(end) };
+            }
+            else {
+                bsum = item.bonus * item.shares;
+            }
+
+            bsum += getBonusPrev3(no);
+            bsum = bsum / item.shares;
+            seasonData[no] = { bonus: bsum, bs: item.bonus, bp: 0, shares: item.shares, bycount: undefined };
+        }
+
+        let lastItem = seasonData[maxNo];
+        if (lastItem === undefined) {
+            return;
+        }
+
+        let lastShares = lastItem.shares;
+        if (lastShares === undefined || lastShares <= 0) {
+            return;
+        }
+
+        for (let i = maxNo; i >= maxNo - 16; i -= 4) {
+            let ni = seasonData[i];
+            if (ni === undefined) break;
+            let b = 0;
+            if (ni.bonus > 0 && ni.shares > 0) {
+                b = ni.bonus * ni.shares / lastShares;
+            }
+            this.predictBonusData.unshift({season:i, bonus:b});
         }
     }
 
@@ -264,7 +339,7 @@ export class CStockInfo extends CUqBase {
 
     async internalStart(param: any) {
         this.baseItem = param as NStockInfo;
-		this.stock = param.stock;
+        this.stock = param.stock;
         let { id } = this.baseItem;
         //this.isMySelect = this.cApp.store.isMyAll(this.stock);
         this.initLoad();
@@ -274,7 +349,7 @@ export class CStockInfo extends CUqBase {
     openMetaView = () => {
     }
 
-	/*
+    /*
     onSelectTag = async () => {
         //await this.loadTags();
         this.selectedTags = this.cApp.store.stockGroups.getSelected(this.stockTags);
@@ -377,5 +452,5 @@ export class CStockInfo extends CUqBase {
             this.stockTags.splice(i, 1);
         }
     }
-	*/
+    */
 }

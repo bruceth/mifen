@@ -97,17 +97,14 @@ export class VStockInfo extends VPage<CStockInfo> {
     private historyChart = () => {
         let { baseItem } = this.controller;
         let { market, code, symbol } = baseItem;
-        // if (market === 'HK') {
-        //     return undefined;
-        // }
-        // else {
-        //     let urlweek = `https://image.sinajs.cn/newchart/weekly/n/${symbol}.gif`;
-        //     let urlmonth = `https://image.sinajs.cn/newchart/monthly/n/${symbol}.gif`
-        //     return <div className="d-flex">
-        //         <div className="px-2" style={{ width: '50%' }}><img alt="" src={urlweek} /></div>
-        //         <div className="px-2" style={{ width: '50%' }}><img alt="" src={urlmonth} /></div>
-        //     </div>;
-        // }
+        if (market === 'sh' || market === 'sz') {
+            let urlweek = `https://image.sinajs.cn/newchart/weekly/n/${symbol}.gif`;
+            let urlmonth = `https://image.sinajs.cn/newchart/monthly/n/${symbol}.gif`
+            return <div className="d-flex">
+                <div className="px-2" style={{ width: '50%' }}><img alt="" src={urlweek} /></div>
+                <div className="px-2" style={{ width: '50%' }}><img alt="" src={urlmonth} /></div>
+            </div>;
+        }
     }
 
     // protected historyChart = observer(() => {
