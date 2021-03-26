@@ -63,7 +63,6 @@ export function render(item: ${cName}):JSX.Element {
 };
 `;
 
-		//let path = `${uqFolder}/${file}.${suffix}`;
 		let path = `${uqFolder}/${cName}.ui.tsx`;
 		saveTsFileIfNotExists(path, tsUI);
 
@@ -190,7 +189,7 @@ function replaceTsFileFields(path: string, fields:{[name:string]:FieldItem}) {
 			let lBrace = text.indexOf('{', start + startStr.length);
 			let rBrace = text.lastIndexOf('}', end);
 			let oldText = text.substring(lBrace, rBrace+1);
-			let fieldsText = buildFieldsText(fields, oldText);
+			let fieldsText = buildFieldsFromOldText(fields, oldText);
 			text = text.substring(0, start)
 				+ startStr + '\nconst fields = {'
 				+ fieldsText
@@ -202,7 +201,7 @@ function replaceTsFileFields(path: string, fields:{[name:string]:FieldItem}) {
 }
 
 const fieldItemReplaceProps = ['label', 'placeholder', 'widget', 'type'];
-function buildFieldsText(fields:{[name:string]:FieldItem}, oldText:string):string {
+function buildFieldsFromOldText(fields:{[name:string]:FieldItem}, oldText:string):string {
 	let ret = '';
 	for (let i in fields) {
 		let field = fields[i];
@@ -227,6 +226,7 @@ function setFieldOldProp(field:FieldItem, text:string) {
 	fieldItemReplaceProps.forEach(v => {
 		let prop = obj[v];
 		if (!prop) return;
+		if (v === 'type') return; // 这个是由新的schema决定的
 		(field as any)[v] = prop;
 	});
 }

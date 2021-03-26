@@ -8,16 +8,17 @@ import { CAccount } from "./CAccount";
 export class VAccount extends VPage<CAccount> {
 	header() {return this.controller.miAccount.name}
 	content() {
-		return React.createElement(observer(() => { 
-			function renderValue(caption:string, value:number, dec: number = 0) {
+		return React.createElement(observer(() => {
+			function valueToString(value:number, dec: number = 0):string {return (value??0).toLocaleString(undefined, nFormat1)}
+			function renderValue(caption:string, content:string) {
 				return <div className="m-1 border rounded w-min-5c px-1 py-2">
 					<small className="text-muted">{caption}</small>
-					<div>{(value??0).toLocaleString(undefined, nFormat1)}</div>
+					<div>{content}</div>
 				</div>;
 			}
 			let renderCash = (value:number) => {
 				let caption = '现金';
-				if (typeof value === 'number') return renderValue(caption, value);
+				if (typeof value === 'number') return renderValue(caption, valueToString(value));
 				return <div className="m-1 border rounded w-min-5c px-1 py-2">
 					<small className="text-muted">{caption}</small>
 					<div className="text-danger small mt-1">[无]</div>
@@ -49,10 +50,11 @@ export class VAccount extends VPage<CAccount> {
 						{name}
 					</LMR>
 					<div className="my-3 text-center d-flex justify-content-center flex-wrap">
-						{renderValue('米值', mi)}
-						{renderValue('市值', market)}
+						{renderValue('米息率', valueToString(mi*100/market)+'%')}
+						{renderValue('米息', valueToString(mi))}
+						{renderValue('市值', valueToString(market))}
 						{renderCash(cash)}
-						{typeof cash === 'number' && renderValue('总值', market + cash)}
+						{typeof cash === 'number' && renderValue('总值', valueToString(market + cash))}
 					</div>
 				</div>
 
@@ -96,9 +98,9 @@ export class VAccount extends VPage<CAccount> {
 					<b>{name}</b> 
 				</div>
 				<div className="d-flex flex-sm-row flex-wrap justify-content-end">
-					{this.renderValue('股数', quantity, nFormat0)}
-					{this.renderValue('米值', mi, nFormat1)}
-					{this.renderValue('市值', market, nFormat1)}
+					{this.renderValue('股数', quantity, nFormat0, 5)}
+					{this.renderValue('米息率', mi*100/market, nFormat1, 4)}
+					{this.renderValue('市值', market, nFormat1, 6)}
 				</div>
 			</div>
 			<div className="flex-column flex-sm-row ml-3 ml-sm-5 d-flex w-min-3-5c">
@@ -110,8 +112,8 @@ export class VAccount extends VPage<CAccount> {
 		</div>;
 	}
 
-	private renderValue(caption:string, value: number, format: Intl.NumberFormatOptions) {
-		return <div className="text-right ml-3 ml-sm-5 w-min-3c">
+	private renderValue(caption:string, value: number, format: Intl.NumberFormatOptions, w: number) {
+		return <div className={`text-right pl-2 pl-sm-3 w-min-${w}c`}>
 			<div className="small text-muted">{caption}</div>
 			<div>{value?.toLocaleString(undefined, format)}</div>
 		</div>;

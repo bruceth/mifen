@@ -24,10 +24,11 @@ export class VAccounts extends View<CAccount> {
 	}
 
 	private renderAccount = (item:Account&AccountValue, index:number):JSX.Element => {
-		function renderValue(caption:string, value:number) {
+		function valueToString(value:number):string {return (value??0).toLocaleString(undefined, nFormat1)}
+		function renderValue(caption:string, content:string) {
 			return <span className="mr-3">
 				<small className="text-muted">{caption}: </small>
-				{(value??0).toLocaleString(undefined, nFormat1)}
+				{content}
 			</span>;
 		}
 		let {name, mi, market, count} = item;
@@ -45,8 +46,9 @@ export class VAccounts extends View<CAccount> {
 							<small className="ml-3 text-danger">{count}</small>
 						</div>
 						<div className="mt-2">
-							{renderValue('总米值', mi)}
-							{renderValue('总市值', market)}
+							{renderValue('米息率', valueToString(mi*100/market)+'%')}
+							{renderValue('米息', valueToString(mi))}
+							{renderValue('市值', valueToString(market))}
 						</div>
 					</>
 					:

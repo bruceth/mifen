@@ -1,5 +1,5 @@
 import { action, IObservableArray, makeObservable, observable, runInAction } from "mobx";
-import { Account, AccountValue, Holding, Portfolio } from "uq-app/uqs/BruceYuMi";
+import { Account, AccountValue, Holding, Portfolio, StockValue } from "uq-app/uqs/BruceYuMi";
 import { HoldingStock } from "./holdingStock";
 import { Store } from "./store";
 
@@ -35,7 +35,17 @@ export class MiAccount  implements Account, AccountValue {
 	}
 
 	async loadItems() {
-		if (this.holdingStocks) return;
+		let sorter = (a:HoldingStock, b:HoldingStock) => {
+			let aMiRate = a.mi/a.market;
+			let bMiRate = b.mi/b.market;
+			if (aMiRate < bMiRate) return 1;
+			if (aMiRate > bMiRate) return -1;
+			return 0;
+		}
+		if (this.holdingStocks) {
+			this.holdingStocks.sort(sorter);
+			return;
+		}
 		let {yumi} = this.store;
 		let ret = await yumi.IX<Holding&Portfolio>({
 			IX: yumi.AccountHolding,
@@ -51,12 +61,14 @@ export class MiAccount  implements Account, AccountValue {
 			await this.store.loadMyAll();
 		}
 		runInAction(() => {
-			this.holdingStocks = observable(ret.map(v => {
+			let list = ret.map(v => {
 				let {id, stock:stockId} = v;
 				let stock = this.store.stockFromId(stockId);
 				let holdingStock = new HoldingStock(id, stock, v.quantity);
 				return holdingStock;
-			}));
+			});
+			list.sort(sorter);
+			this.holdingStocks = observable(list);
 			this.count = this.holdingStocks.length;	
 		});
 	}
