@@ -71,7 +71,7 @@ export class CFind extends  CUqBase {
 	}
 
 	private async searchStock(header: string, market?:string[], key?:string) {
-		this.header = header ;
+		this.header = header;
 		this.searchParam = {
 			key, 
 			market: market?.join('\n'),

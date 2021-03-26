@@ -68,7 +68,7 @@ PAGE ORDER Switch (miRateDesc, dvRateDesc, roeDesc, miRateAsc, dvRateAsc, roeAsc
 	inc4 FLOAT,
 	preInc FLOAT,
 	volumn FLOAT,
-	smoothness TINYINT,
+	smoothness TINYINT DEFAULT 1,
 	miRate FLOAT,
 	dvRate FLOAT,	
 	ttm FLOAT,
