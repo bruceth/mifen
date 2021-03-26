@@ -52,7 +52,7 @@ export class VMain extends VPage<CApp> {
 				name: 'explorer', label: '选股', icon: 'search', content: cExporer.tab, load: cExporer.load
 			},*/
 			{
-				name: 'me', label: '我的', icon: 'user', content: cMe.tab, onShown: undefined
+				name: 'me', label: '我的', icon: 'user', content: cMe.tab, onShown: undefined, load: cMe.load
 			}
 		].map(v => {
 			let { name, label, icon, content, notify, load, onShown } = v;

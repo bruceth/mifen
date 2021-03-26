@@ -53,6 +53,14 @@ export class VMe extends VPage<CMe> {
                     type: 'component',
                     component: <this.meInfo />
                 },
+				'',
+				{
+					type: 'component',
+					component: <LMR className="w-100" onClick={this.controller.backend}
+						right={<FA className="align-self-center" name="angle-right" />}>
+						<IconText iconClass="text-info mr-2" icon="comments-o" text={this.t('用户角色')} />
+					</LMR>,
+				},	
             ]
             rows.push(...aboutRows, ...logOutRows);
         }

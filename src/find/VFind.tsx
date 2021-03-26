@@ -5,11 +5,6 @@ import { CFind } from "./CFind";
 
 export class VFind extends VPage<CFind> {
 	header() {return '发现'}
-	right() {
-		return <div className="text-white p-2 cursor-pointer" onClick={this.controller.showSetting}>
-			<FA name="cog" />
-		</div>
-	}
 	content() {
 		let {showA, showHK, showSH, showSZ, showAll, cGroup} = this.controller;
 		let buttons:[string, ()=>Promise<void>][] = [

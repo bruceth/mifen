@@ -1,27 +1,35 @@
-import { makeObservable, observable } from "mobx";
+import { action, makeObservable, observable } from "mobx";
 import { CApp, CUqBase } from "uq-app";
 import { Stock, StockValue } from "uq-app/uqs/BruceYuMi";
 import { StockPageItems } from "./stockPageItems";
 import { VFind } from "./VFind";
-import { VSetting } from "./VSetting";
 import { VStocksPage } from "./VStocksPage";
 import { CGroup } from "./group";
 
 type SearchOrder = 'miRateDesc' | 'miRateAsc' | 'dvRateDesc' | 'dvRateAsc' | 'roeDesc' | 'roeAsc';
 const defaultSmooth = 0;
+interface SearchParam {
+	key: string; 
+	market: string;
+	$orderSwitch: SearchOrder;
+	smooth: number;
+}
 
 export class CFind extends  CUqBase {
 	readonly cGroup: CGroup;
 	header: string = null;
 	pageStocks: StockPageItems = null;
 	searchOrder: SearchOrder = 'miRateDesc';
+	searchParam: SearchParam;
 	smooth: number;
 
 	constructor(cApp: CApp) {
 		super(cApp);
 		makeObservable(this, {
 			header: observable,
-			//miAccount: observable,
+			smooth: observable,
+			loadSmooth: action,
+			changeSmooth: action,
 		});
 		this.cGroup = this.newSub(CGroup);
 		this.loadSmooth();
@@ -48,22 +56,30 @@ export class CFind extends  CUqBase {
 		}
 	}
 
-	changeSmooth(value: number) {
+	async changeSmooth(value: number) {
+		if (this.smooth === value) return;
 		this.smooth = value;
 		localStorage.setItem('smooth', String(value));
+		this.searchParam['smooth'] = this.smooth + 1;
+		await this.research();
 	}
 
 	load = async() => {}
 	
+	async research(searchParam?: SearchParam) {
+		await this.pageStocks.first(searchParam ?? this.searchParam);
+	}
+
 	private async searchStock(header: string, market?:string[], key?:string) {
 		this.header = header ;
-		this.pageStocks = new StockPageItems(this.cApp.store);
-		await this.pageStocks.first({
+		this.searchParam = {
 			key, 
 			market: market?.join('\n'),
 			$orderSwitch: this.searchOrder,
-			smooth: this.smooth,
-		});
+			smooth: this.smooth + 1,
+		};
+		this.pageStocks = new StockPageItems(this.cApp.store);
+		await this.pageStocks.first(this.searchParam);
 		this.openVPage(VStocksPage);
 	}
 
@@ -89,9 +105,5 @@ export class CFind extends  CUqBase {
 
 	onClickStock = (stock: Stock & StockValue) => {
 
-	}
-
-	showSetting = () => {
-		this.openVPage(VSetting);
 	}
 }

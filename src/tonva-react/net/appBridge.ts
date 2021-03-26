@@ -18,34 +18,6 @@ export function logoutUqTokens() {
         uqTokens[i] = undefined;
     }
 }
-/*
-export interface AppInFrame {
-    hash: string;
-    //unit: number;       // unit id
-    page?: string;
-    param?: string[];
-    predefinedUnit?: number;  // 比如像Cart这样的应用，直接让用户访问的，就需要在unit.json里面定义unitName
-}
-const appsInFrame:{[key:string]:AppInFrame} = {};
-*/
-/*
-class AppInFrameClass implements AppInFrame {
-    hash: string;
-    private _unit: number;
-    get unit(): number {return this._unit;}       // unit id
-    set unit(val:number) { this._unit=val;}
-    page?: string;
-    param?: string[];
-}
-
-export let appInFrame:AppInFrame = new AppInFrameClass();
-*/
-/* {
-    hash: undefined,
-    get unit():number {return } undefined, //debugUnitId,
-    page: undefined;
-    param: undefined,
-}*/
 
 export function isBridged():boolean {
     return window.self !== window.parent;
@@ -116,11 +88,6 @@ async function initSubWin(message:any) {
     await nav.showAppView();
 }
 async function onReceiveAppApiMessage(hash: string, apiName: string): Promise<UqToken> {
-    //let appInFrame = appsInFrame[hash];
-    //if (appInFrame === undefined) return {name:apiName, db:undefined, url:undefined, token:undefined};
-    //let unit = getUnit();
-    //let {unit, predefinedUnit} = appInFrame;
-	//unit = unit || predefinedUnit;
 	let {unit} = env;
     if (!unit) {
         console.error('no unit defined in unit.json or in index.html, or not logined in', unit);
@@ -151,71 +118,7 @@ async function onAppApiReturn(message:any) {
         token: token,
     } as UqToken);
 }
-/*
-export function setAppInFrame(appHash: string):AppInFrame {
-    if (appHash) {
-        let parts = appHash.split('-');
-        let len = parts.length;
-        if (len > 0) {
-            let p = 1;
-            appInFrame.hash = parts[p++];
-            if (len>0) appInFrame.unit = Number(parts[p++]);
-            if (len>1) appInFrame.page = parts[p++];
-            if (len>2) appInFrame.param = parts.slice(p++);
-        }
-    }
-    return appInFrame;
-}
 
-export function getExHashPos():number {
-    let hash = document.location.hash;
-    if (hash !== undefined && hash.length > 0) {
-        let pos = hash.lastIndexOf('#tv-');
-        if (pos < 0) pos = hash.lastIndexOf('#tvdebug-');
-        return pos;
-    }
-    return -1;
-}
-
-export function getExHash():string {
-    let pos = getExHashPos();
-    if (pos < 0) return undefined;
-    return document.location.hash.substring(pos);
-}
-*/
-/*
-export function appUrl(url: string, unitId: number, page?:string, param?:any[]):{url:string; hash:string} {
-    let u:string;
-    for (;;) {
-        u = uid();
-        let a = appsInFrame[u];
-        if (a === undefined) {
-            appsInFrame[u] = {hash:u, unit:unitId};
-            break;
-        }
-    }
-    url += '#tv-' + u + '-' + unitId;
-    if (page !== undefined) {
-        url += '-' + page;
-        if (param !== undefined) {
-            for (let i=0; i<param.length; i++) {
-                url += '-' + param[i];
-            }
-        }
-    }
-    return {url: url, hash: u};
-}
-*/
-/*
-function getUnit():number {
-	let {unit, predefinedUnit} = appInFrame;
-    let realUnit = unit || predefinedUnit;
-    if (realUnit === undefined) {
-        throw new Error('no unit defined in unit.json or not logined in');
-	}
-    return realUnit;
-}
-*/
 interface UqTokenAction {
     resolve: (value?: UqToken | PromiseLike<UqToken>) => void;
     reject: (reason?: any) => void;
