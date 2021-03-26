@@ -8,7 +8,7 @@ import { CGroup } from "./group";
 
 type SearchOrder = 'miRateDesc' | 'miRateAsc' | 'dvRateDesc' | 'dvRateAsc' | 'roeDesc' | 'roeAsc';
 const defaultSmooth = 0;
-interface SearchParam {
+export interface SearchParam {
 	key: string; 
 	market: string;
 	$orderSwitch: SearchOrder;
@@ -60,14 +60,14 @@ export class CFind extends  CUqBase {
 		if (this.smooth === value) return;
 		this.smooth = value;
 		localStorage.setItem('smooth', String(value));
-		this.searchParam['smooth'] = this.smooth + 1;
+		this.searchParam['smooth'] = value;
 		await this.research();
 	}
 
 	load = async() => {}
 	
-	async research(searchParam?: SearchParam) {
-		await this.pageStocks.first(searchParam ?? this.searchParam);
+	async research() {
+		await this.pageStocks.first(this.searchParam);
 	}
 
 	private async searchStock(header: string, market?:string[], key?:string) {
@@ -76,7 +76,7 @@ export class CFind extends  CUqBase {
 			key, 
 			market: market?.join('\n'),
 			$orderSwitch: this.searchOrder,
-			smooth: this.smooth + 1,
+			smooth: key? 0 : this.smooth,
 		};
 		this.pageStocks = new StockPageItems(this.cApp.store);
 		await this.pageStocks.first(this.searchParam);
@@ -84,7 +84,7 @@ export class CFind extends  CUqBase {
 	}
 
 	onSearch = async (key:string) => {
-		await this.searchStock('搜索 - ' + key, ['sh', 'sz', 'hk'], key);
+		await this.searchStock('搜索', ['sh', 'sz', 'hk'], key);
 	}
 
 	showA = async () => {

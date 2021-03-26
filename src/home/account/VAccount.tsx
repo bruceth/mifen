@@ -10,8 +10,8 @@ export class VAccount extends VPage<CAccount> {
 	content() {
 		return React.createElement(observer(() => {
 			function valueToString(value:number, dec: number = 0):string {return (value??0).toLocaleString(undefined, nFormat1)}
-			function renderValue(caption:string, content:string) {
-				return <div className="m-1 border rounded w-min-5c px-1 py-2">
+			function renderValue(caption:string, content:string, cn:string = '') {
+				return <div className={'m-1 border rounded w-min-5c px-1 py-2 ' + cn}>
 					<small className="text-muted">{caption}</small>
 					<div>{content}</div>
 				</div>;
@@ -50,8 +50,8 @@ export class VAccount extends VPage<CAccount> {
 						{name}
 					</LMR>
 					<div className="my-3 text-center d-flex justify-content-center flex-wrap">
+						{renderValue('米息', valueToString(mi), 'd-none d-sm-block')}
 						{renderValue('米息率', valueToString(mi*100/market)+'%')}
-						{renderValue('米息', valueToString(mi))}
 						{renderValue('市值', valueToString(market))}
 						{renderCash(cash)}
 						{typeof cash === 'number' && renderValue('总值', valueToString(market + cash))}
@@ -90,17 +90,17 @@ export class VAccount extends VPage<CAccount> {
 		let {showHolding, showBuy, showSell} = this.controller;
 		let {stockObj, quantity, mi, market} = holding;
 		let {name, code} = stockObj;
-		return <div className="px-3 py-2">
+		return <div className="px-2 px-sm-3 py-2">
 			<div className="d-flex cursor-pointer flex-grow-1"
 				 onClick={() => showHolding(holding)}>
 				<div className="mr-auto w-min-4c">
 					<div className="small text-muted">{code}</div>
 					<b>{name}</b> 
 				</div>
-				<div className="d-flex flex-sm-row flex-wrap justify-content-end">
-					{this.renderValue('股数', quantity, nFormat0, 5)}
-					{this.renderValue('米息率', mi*100/market, nFormat1, 4)}
-					{this.renderValue('市值', market, nFormat1, 6)}
+				<div className="d-sm-flex flex-wrap justify-content-end">
+					{this.renderValue('股数', quantity, nFormat0, '', 'w-min-5c')}
+					{this.renderValue('市值', market, nFormat1, '', 'w-min-6c')}
+					{this.renderValue('米息率', mi*100/market, nFormat1, '%', 'w-min-4c')}
 				</div>
 			</div>
 			<div className="flex-column flex-sm-row ml-3 ml-sm-5 d-flex w-min-3-5c">
@@ -112,10 +112,16 @@ export class VAccount extends VPage<CAccount> {
 		</div>;
 	}
 
-	private renderValue(caption:string, value: number, format: Intl.NumberFormatOptions, w: number) {
-		return <div className={`text-right pl-2 pl-sm-3 w-min-${w}c`}>
-			<div className="small text-muted">{caption}</div>
-			<div>{value?.toLocaleString(undefined, format)}</div>
-		</div>;
+	private renderValue(caption:string, value: number, format: Intl.NumberFormatOptions, suffix:string, cn: string) {
+		return <>
+			<div className={'text-right pl-2 d-block d-sm-none'}>
+				<div className="d-inline-block small text-muted">{caption}:&nbsp;</div>
+				<div className={'d-inline-block w-min-6c'}>{value?.toLocaleString(undefined, format)}{suffix}</div>
+			</div>
+			<div className={'text-right pl-3 d-sm-block d-none ' + cn}>
+				<div className="small text-muted">{caption}</div>
+				<div>{value?.toLocaleString(undefined, format)}{suffix}</div>
+			</div>
+		</>;
 	}
 }

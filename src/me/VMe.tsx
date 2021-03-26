@@ -51,7 +51,7 @@ export class VMe extends VPage<CMe> {
                 '',
                 {
                     type: 'component',
-                    component: <this.meInfo />
+                    component: React.createElement(this.meInfo)
                 },
 				'',
 				{
@@ -69,7 +69,7 @@ export class VMe extends VPage<CMe> {
 
 	private meInfo = observer(() => {
         let { user } = nav;
-        if (user === undefined) return null;
+        if (!user) return null;
         let { id, name, nick, icon } = user;
         return <LMR className="py-2 cursor-pointer w-100"
             left={<Image className="w-3c h-3c mr-3" src={icon || '.user-o'} />}

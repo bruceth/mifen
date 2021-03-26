@@ -18,19 +18,16 @@ export class VStocksPage extends VPage<CFind> {
 	}
 	right():JSX.Element {
 		let {key} = this.controller.searchParam;
-		if (key) return null;
 		return <SearchBox className="mr-2"
 			onSearch={this.searchInGroup} 
-			placeholder={this.controller.header+'中搜索'} />;
+			initKey={key}
+			placeholder={key? '搜索' : this.controller.header+'中搜索'} />;
 	}
 
 	private searchInGroup = async (key: string) => {
-		let searchParam = {
-			...this.controller.searchParam,
-			key,
-			smooth: 0,
-		};
-		await this.controller.research(searchParam);
+		let {searchParam} = this.controller;
+		searchParam.key = key;
+		await this.controller.research();
 	}
 
 	private renderStars():JSX.Element {

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {observable} from 'mobx';
+import {makeObservable, observable} from 'mobx';
 import _ from 'lodash';
 import {User, Guest/*, UserInNav*/} from '../tool/user';
 import {Page} from './page/page';
@@ -393,19 +393,20 @@ export interface NavSettings {
 
 export class Nav {
     private navView:NavView;
-    //private ws: WsBase;
 	private wsHost: string;
     private local: LocalData = new LocalData();
 	private navigo: Navigo;
-	//isRouting: boolean = false;
 	navSettings: NavSettings;
-    @observable user: User/*InNav*/ = undefined;
+    user: User = null;
     testing: boolean;
     language: string;
     culture: string;
     resUrl: string;
 
     constructor() {
+		makeObservable(this, {
+			user: observable,
+		});
         let {lang, district} = resOptions;
         this.language = lang;
         this.culture = district;

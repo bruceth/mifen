@@ -1,5 +1,5 @@
 import { action, IObservableArray, makeObservable, observable, runInAction } from "mobx";
-import { Account, AccountValue, Holding, Portfolio, StockValue } from "uq-app/uqs/BruceYuMi";
+import { Account, AccountValue, Holding, Portfolio } from "uq-app/uqs/BruceYuMi";
 import { HoldingStock } from "./holdingStock";
 import { Store } from "./store";
 
@@ -8,7 +8,7 @@ export class MiAccount  implements Account, AccountValue {
 	id: number;
 	no: string;
 	name: string;
-	count: number = 0;
+	count: number = 0; 
 	mi: number = 0;
 	market: number = 0;
 	divident: number = 0;

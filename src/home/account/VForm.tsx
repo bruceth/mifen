@@ -29,7 +29,7 @@ abstract class VForm extends VPage<CAccount> {
 				rules: (value:any) => this.onCheckValue(value),
 			} as UiNumberItem,
 			submit: {
-				widget: 'button', className: 'btn btn-primary w-25', label: '提交', disabled: true,
+				widget: 'button', className: 'btn btn-primary w-25', label: '提交', disabled: false,
 			} as UiButton,
 		}
 	}
@@ -76,7 +76,9 @@ abstract class VForm extends VPage<CAccount> {
 	}
 
 	private onFormSubmit = async (name:string, context: Context):Promise<void> => {
+		context.setDisabled(name, true);
 		await this.onSubmit(context.data);
+		context.setDisabled(name, false);
 		this.closePage();
 	}
 
