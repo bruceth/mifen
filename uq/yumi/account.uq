@@ -8,6 +8,7 @@ ID Account (
 IX UserAccount (
 	ix user,
 	id Account,
+	sort,				-- id sort
 );
 
 ID Holding (
@@ -30,9 +31,10 @@ IX AccountHolding (
 	id,							-- Holding
 );
 
-IDX Portfolio (
+IDX Portfolio ver 0.1 (
 	id,							-- Holding
 	quantity BIGINT SUM LOG TRACK,
+	cost FLOAT SUM LOG TRACK,
 );
 
 ID Transaction (

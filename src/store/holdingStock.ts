@@ -7,6 +7,7 @@ export class HoldingStock implements Holding, Portfolio {
 	order: number;
 	price: number;
 	quantity: number;
+	cost: number;
 	mi: number;				// 米息
 	market: number;			// 市值
 	divident: number;		// 股息
@@ -16,17 +17,22 @@ export class HoldingStock implements Holding, Portfolio {
 		this.id = holdingId;
 		this.stock = stock.id;
 		this.stockObj = stock;
-		this.setQuantity(stock.price, quantity);
+		this.price = stock.price;
+		this.setQuantity(quantity);
 	}
 
-	setQuantity(price: number, quantity: number) {
-		this.price = price;
+	setQuantity(quantity: number) {
+		//this.price = price;
 		this.quantity = quantity;
 		let {miValue, divident} = this.stockObj;
 		if (miValue === undefined) miValue = 0;
 		if (divident === undefined) divident = 0;
 		this.mi = quantity * miValue;
-		this.market = quantity * price;
+		this.market = quantity * this.price;
 		this.divident = quantity * (divident ?? 0);
+	}
+
+	setCost(price: number, quantity: number) {
+		this.cost = (this.cost ?? 0) + price * quantity;
 	}
 }

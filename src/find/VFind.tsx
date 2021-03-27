@@ -1,6 +1,6 @@
 import { observer } from "mobx-react";
 import React from "react";
-import { FA, LMR, SearchBox, VPage } from "tonva-react";
+import { DropdownAction, DropdownActions, FA, LMR, SearchBox, VPage } from "tonva-react";
 import { CFind } from "./CFind";
 
 export class VFind extends VPage<CFind> {
@@ -64,6 +64,20 @@ export class VFind extends VPage<CFind> {
 					<div className="px-3 py-2">{text}</div>
 				</LMR>
 			</div>
+		}));
+	}
+
+	right() {
+		return React.createElement(observer(() => {
+			let {cCommon} = this.controller.cApp;
+			let actions: DropdownAction[] = [
+				{
+					caption: '管理股票分组',
+					action: cCommon.manageGroups,
+					icon: 'object-group',
+				},
+			];
+			return <DropdownActions actions={actions} icon="bars" className="mr-2 text-white bg-transparent border-0" />;
 		}));
 	}
 }
