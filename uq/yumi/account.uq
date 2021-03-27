@@ -15,7 +15,6 @@ ID Holding (
 	id,
 	KEY account ID Account,
 	KEY stock ID Stock,
-	order SMALLINT,
 );
 
 IDX AccountValue ver 0.1 (

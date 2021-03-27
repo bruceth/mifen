@@ -36,8 +36,10 @@ export class MiAccount  implements Account, AccountValue {
 
 	async loadItems() {
 		let sorter = (a:HoldingStock, b:HoldingStock) => {
-			let aMiRate = a.mi/a.market;
-			let bMiRate = b.mi/b.market;
+			let {stockObj:ao} = a;
+			let {stockObj:bo} = b;
+			let aMiRate = ao.miRate;
+			let bMiRate = bo.miRate;
 			if (aMiRate < bMiRate) return 1;
 			if (aMiRate > bMiRate) return -1;
 			return 0;
@@ -62,9 +64,9 @@ export class MiAccount  implements Account, AccountValue {
 		}
 		runInAction(() => {
 			let list = ret.map(v => {
-				let {id, stock:stockId} = v;
+				let {id, stock:stockId, cost} = v;
 				let stock = this.store.stockFromId(stockId);
-				let holdingStock = new HoldingStock(id, stock, v.quantity);
+				let holdingStock = new HoldingStock(id, stock, v.quantity, cost);
 				return holdingStock;
 			});
 			list.sort(sorter);
@@ -84,7 +86,7 @@ export class MiAccount  implements Account, AccountValue {
 		if (index < 0) {
 			holdingId = await this.saveHolding(stockId);
 			await this.store.addMyAll(stock);
-			let hs = new HoldingStock(holdingId, stock, quantity);
+			let hs = new HoldingStock(holdingId, stock, quantity, price*quantity);
 			hs.setQuantity(quantity);
 			hs.setCost(price, quantity);
 			this.holdingStocks.push(hs);
@@ -112,7 +114,7 @@ export class MiAccount  implements Account, AccountValue {
 
 	private async saveHolding(stock:number): Promise<number> {
 		let ret = await this.store.yumi.Acts({
-			holding: [{account: this.id, stock, order: undefined}]
+			holding: [{account: this.id, stock}]
 		});
 		return ret.holding[0];
 	}

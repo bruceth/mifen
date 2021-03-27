@@ -131,7 +131,7 @@ export class VAccount extends VPage<CAccount> {
 				</div>
 				<div className="d-flex flex-grow-1 justify-content-end">
 					<div className="w-5c text-right">{this.f0String(quantity)}</div>
-					<div className="w-4c text-right">{this.f1String(mi*100/market, '%')}</div>
+					<div className="w-4c text-right">{this.f1String(stockObj.miRate, '%')}</div>
 					<div className="w-5c text-right">
 						{this.f1String(market - cost)} <br/>
 						{this.f1String((market - cost)*100/cost, '%')}

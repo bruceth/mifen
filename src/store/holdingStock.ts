@@ -4,7 +4,6 @@ export class HoldingStock implements Holding, Portfolio {
 	id: number;
 	account: number;
 	stock: number;
-	order: number;
 	price: number;
 	quantity: number;
 	cost: number;
@@ -13,11 +12,12 @@ export class HoldingStock implements Holding, Portfolio {
 	divident: number;		// 股息
 	stockObj: Stock & StockValue;
 
-	constructor(holdingId: number, stock: Stock & StockValue, quantity: number) {
+	constructor(holdingId: number, stock: Stock & StockValue, quantity: number, cost: number) {
 		this.id = holdingId;
 		this.stock = stock.id;
 		this.stockObj = stock;
 		this.price = stock.price;
+		this.cost = cost;
 		this.setQuantity(quantity);
 	}
 
