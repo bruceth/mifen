@@ -23,12 +23,6 @@ export class VHome extends VPage<CHome> {
 					action: cCommon.manageAccounts,
 					icon: 'money',
 				},
-				undefined,
-				{
-					caption: '管理股票分组',
-					action: cCommon.manageGroups,
-					icon: 'object-group',
-				},
 			];
 			return <DropdownActions actions={actions} icon="bars" className="mr-2 text-white bg-transparent border-0" />;
 		}));

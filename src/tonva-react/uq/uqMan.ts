@@ -82,6 +82,13 @@ export interface ParamActIX<T> {
 	values: {ix:number, id:number|T}[];
 }
 
+export interface ParamActIXSort {
+	IX: IX;
+	ix: number;
+	id: number;					// id to be moved
+	after: number;				// insert after id. if before first, then 0
+}
+
 export interface ParamActDetail<M,D> {
 	master: {
 		ID: ID;
@@ -214,6 +221,7 @@ export interface Uq {
 	$: UqMan;
 	Acts(param:any): Promise<any>;
 	ActIX<T>(param: ParamActIX<T>): Promise<number[]>;
+	ActIXSort(param: ParamActIXSort): Promise<void>;
 	ActDetail<M,D>(param: ParamActDetail<M,D>): Promise<RetActDetail>;
 	ActDetail<M,D,D2>(param: ParamActDetail2<M,D,D2>): Promise<RetActDetail2>;
 	ActDetail<M,D,D2,D3>(param: ParamActDetail3<M,D,D2,D3>): Promise<RetActDetail3>;
@@ -684,6 +692,7 @@ export class UqMan {
 					default: debugger; break;
 					case 'Acts': return this.Acts;
 					case 'ActIX': return this.ActIX;
+					case 'ActIXSort': return this.ActIXSort;
 					case 'IDDetail': return this.ActDetail;
 					case 'IDNO': return this.IDNO;
 					case 'IDDetailGet': return this.IDDetailGet;
@@ -770,6 +779,17 @@ export class UqMan {
 		};
 		let ret = await this.uqApi.post(IDPath('act-ix'), apiParam);
 		return (ret[0].ret as string).split('\t').map(v => Number(v));
+	}
+
+	private ActIXSort = async (param: ParamActIXSort): Promise<void> => {
+		let {IX, ix, id, after} = param;
+		let apiParam:any = {
+			IX: entityName(IX),
+			ix,
+			id,
+			after,
+		};
+		await this.uqApi.post(IDPath('act-ix-sort'), apiParam);
 	}
 
 	private ActDetail = async (param: ParamActDetail<any, any>): Promise<any> => {

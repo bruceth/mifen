@@ -17,11 +17,18 @@ const fields = {
 		"isKey": false,
 		"label": "Id"
 	} as FieldItemId,
+	sort: {
+		"name": "sort",
+		"type": "integer",
+		"isKey": false,
+		"widget": "updown",
+		"label": "Sort"
+	} as FieldItemInt,
 };
 /*==fields==*/
 
 export const fieldArr: FieldItem[] = [
-	
+	fields.sort, 
 ];
 
 export const ui: UI = {
