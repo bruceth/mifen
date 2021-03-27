@@ -15,7 +15,7 @@ export class VFind extends VPage<CFind> {
 			['全部', showAll],
 		];
 		let renderButton = (caption:string, onClick:()=>void) => <button key={caption} 
-			className="btn btn-outline-info mr-3 mb-3" 
+			className="btn btn-outline-info mr-1 mr-sm-3 mb-3" 
 			onClick={onClick}>
 			{caption}
 		</button>;

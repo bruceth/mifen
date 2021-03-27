@@ -45,11 +45,15 @@ export class Store {
 
 	private buildStockValues(stock: Stock & StockValue) {
 		if (stock === undefined) return;
-		let {miValue, earning, divident, price, market} = stock;
+		let {market} = stock;
+		/*
+		let {miValue, incValue, earning, divident, price, market} = stock;
 		if (miValue) stock.miValue = miValue;
+		if (incValue) stock.incValue = incValue;
 		if (earning) stock.earning = earning;
 		if (divident) stock.divident = divident;
 		if (price) stock.price = price;
+		*/
 		(stock as any).$market = this.markets[market];
 	}
 	

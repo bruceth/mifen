@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { observable } from 'mobx';
+import { makeObservable, observable, runInAction } from 'mobx';
 import {
     userApi, ItemSchema, StringSchema, ImageSchema, UiTextItem, UiImageItem, nav, Page,
     Edit, UiSchema, VPage, Prop, FA, IconText, PropGrid
@@ -7,7 +6,6 @@ import {
 import { CMe } from './CMe';
 
 export class VEditMe extends VPage<CMe>{
-
     async open(param: any) {
         this.openPage(this.page);
     }
@@ -22,23 +20,28 @@ export class VEditMe extends VPage<CMe>{
             icon: { widget: 'image', label: '头像' } as UiImageItem,
         }
     }
-    @observable private data: any;
+    data: any;
 
     constructor(props: any) {
         super(props);
         let { nick, icon } = nav.user;
         this.data = {
-            nick: nick,
-            icon: icon,
+            nick,
+            icon,
         };
+		makeObservable(this, {
+			data: observable,
+		})
     }
 
     private onItemChanged = async (itemSchema: ItemSchema, newValue: any, preValue: any) => {
         let { name } = itemSchema;
         await userApi.userSetProp(name, newValue);
-        this.data[name] = newValue;
-        nav.user.name = newValue;
-        nav.saveLocalUser();
+		runInAction(() => {
+			this.data[name] = newValue;
+			(nav.user as any)[name] = newValue;
+			nav.saveLocalUser();
+		});
     }
 
 	private onExit = () => {

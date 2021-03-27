@@ -23,10 +23,11 @@ export class VPinStock extends View<CCommon> {
 						caption: '取消操作',
 						action: () => {},
 					}
-				]} icon="cog" content="设自选" className="cursor-pointer dropdown-toggle btn btn-sm btn-outline-info" />
+				]} icon="cog" content="设自选" 
+				className="cursor-pointer dropdown-toggle btn btn-sm btn-outline-info align-self-start" />
 			}
 			else {
-				return <button className="btn btn-sm btn-outline-primary" 
+				return <button className="btn btn-sm btn-outline-primary align-self-start" 
 					onClick={() => this.controller.toggleMyAll(stock)}>
 					<FA name="plus-square-o" className="small" /> 加自选
 				</button>;

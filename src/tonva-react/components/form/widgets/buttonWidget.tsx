@@ -42,7 +42,7 @@ export class ButtonWidget extends Widget {
         }
         let {form, hasError} = this.context;
         let context = this.context;
-        let disabled = type==='submit' && hasError;
+        let disabled = (type==='submit' && hasError) || this.disabled;
         let content:any;
         if (this.children !== undefined) content = this.children;
         else if (typeof Templet === 'function') content = Templet();

@@ -13,18 +13,18 @@ const fields = {
 	} as FieldItemId,
 	mi: {
 		"name": "mi",
-		"type": "integer",
+		"type": "number",
 		"isKey": false,
 		"widget": "updown",
 		"label": "Mi"
-	} as FieldItemInt,
+	} as FieldItemNum,
 	market: {
 		"name": "market",
-		"type": "integer",
+		"type": "number",
 		"isKey": false,
 		"widget": "updown",
 		"label": "Market"
-	} as FieldItemInt,
+	} as FieldItemNum,
 	count: {
 		"name": "count",
 		"type": "integer",

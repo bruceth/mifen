@@ -1,4 +1,4 @@
-//=== UqApp builder created on Tue Mar 23 2021 11:34:08 GMT-0400 (GMT-04:00) ===//
+//=== UqApp builder created on Fri Mar 26 2021 12:16:51 GMT-0400 (GMT-04:00) ===//
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { IDXValue, Uq, UqTuid, UqAction, UqQuery, UqID, UqIDX, UqIX } from "tonva-react";
 
@@ -41,7 +41,7 @@ export interface ParamWriteStock {
 		code: string;
 		name: string;
 		rawId: number;
-		miValue: number;
+		incValue: number;
 		earning: number;
 		divident: number;
 		roe: number;
@@ -89,19 +89,18 @@ export interface ParamSearchStock {
 	smooth: number;
 }
 interface ReturnSearchStock$page {
+	$order: number;
 	id: number;
 	market: number;
 	code: string;
 	name: string;
 	rawId: number;
 	miValue: number;
+	incValue: number;
 	earning: number;
 	divident: number;
 	price: number;
 	roe: number;
-	miRate: number;
-	dvRate: number;
-	ttm: number;
 	inc1: number;
 	inc2: number;
 	inc3: number;
@@ -109,6 +108,10 @@ interface ReturnSearchStock$page {
 	preInc: number;
 	volumn: number;
 	smoothness: number;
+	miRate: number;
+	dvRate: number;
+	ttm: number;
+	$id: number;
 }
 interface ResultSearchStock {
 	$page: ReturnSearchStock$page[];
@@ -126,6 +129,16 @@ interface ReturnStockUsingGroups {
 interface ResultStockUsing {
 	accounts: ReturnStockUsingAccounts[];
 	groups: ReturnStockUsingGroups[];
+}
+
+export interface ParamSearchStock1 {
+	key: string;
+}
+interface ReturnSearchStock1$page {
+	id: number;
+}
+interface ResultSearchStock1 {
+	$page: ReturnSearchStock1$page[];
 }
 
 export interface $Piecewise {
@@ -192,14 +205,12 @@ export interface Stock {
 export interface StockValue {
 	id: number;
 	miValue?: number;
+	incValue?: number;
 	earning?: number;
 	divident?: number;
 	price?: number;
 	pvolumn?: number;
 	roe?: number;
-	miRate?: number;
-	dvRate?: number;
-	ttm?: number;
 	inc1?: number;
 	inc2?: number;
 	inc3?: number;
@@ -208,6 +219,9 @@ export interface StockValue {
 	volumn?: number;
 	smoothness?: number;
 	date?: any;
+	miRate?: number;
+	dvRate?: number;
+	ttm?: number;
 }
 
 export interface AccountValue {
@@ -228,14 +242,12 @@ export interface Portfolio {
 export interface ActParamStockValue {
 	id: number|IDXValue;
 	miValue?: number|IDXValue;
+	incValue?: number|IDXValue;
 	earning?: number|IDXValue;
 	divident?: number|IDXValue;
 	price?: number|IDXValue;
 	pvolumn?: number|IDXValue;
 	roe?: number|IDXValue;
-	miRate?: number|IDXValue;
-	dvRate?: number|IDXValue;
-	ttm?: number|IDXValue;
 	inc1?: number|IDXValue;
 	inc2?: number|IDXValue;
 	inc3?: number|IDXValue;
@@ -244,6 +256,9 @@ export interface ActParamStockValue {
 	volumn?: number|IDXValue;
 	smoothness?: number|IDXValue;
 	date?: any|IDXValue;
+	miRate?: number|IDXValue;
+	dvRate?: number|IDXValue;
+	ttm?: number|IDXValue;
 }
 
 export interface ActParamAccountValue {
@@ -323,6 +338,7 @@ export interface UqExt extends Uq {
 	$poked: UqQuery<Param$poked, Result$poked>;
 	SearchStock: UqQuery<ParamSearchStock, ResultSearchStock>;
 	StockUsing: UqQuery<ParamStockUsing, ResultStockUsing>;
+	SearchStock1: UqQuery<ParamSearchStock1, ResultSearchStock1>;
 	$Piecewise: UqID<any>;
 	Market: UqID<any>;
 	Transaction: UqID<any>;

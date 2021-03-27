@@ -29,7 +29,7 @@ abstract class VForm extends VPage<CAccount> {
 				rules: (value:any) => this.onCheckValue(value),
 			} as UiNumberItem,
 			submit: {
-				widget: 'button', className: 'btn btn-primary w-25', label: '提交', disabled: true,
+				widget: 'button', className: 'btn btn-primary w-25', label: '提交', disabled: false,
 			} as UiButton,
 		}
 	}
@@ -45,7 +45,7 @@ abstract class VForm extends VPage<CAccount> {
 			</div>
 			<div className="d-flex my-2 py-2 border-top border-bottom justify-content-center text-center bg-white">
 				{this.renderQuantity('股数', quantity)}
-				{this.renderValue('米值', quantity * miValue, 2)}
+				{this.renderValue('米息', quantity * miValue, 2)}
 				{this.renderValue('市值', quantity * (price as number), 2)}
 			</div>
 		</div>;
@@ -76,7 +76,9 @@ abstract class VForm extends VPage<CAccount> {
 	}
 
 	private onFormSubmit = async (name:string, context: Context):Promise<void> => {
+		context.setDisabled(name, true);
 		await this.onSubmit(context.data);
+		context.setDisabled(name, false);
 		this.closePage();
 	}
 

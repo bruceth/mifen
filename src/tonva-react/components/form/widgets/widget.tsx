@@ -18,8 +18,8 @@ export abstract class Widget {
 	protected defaultValue: any;
     protected rules: Rule[];
     protected readOnly:boolean;
-	protected disabled:boolean;
 	
+	disabled:boolean = false;
     errors: string[] = [];
     contextErrors: string[] = [];
     get hasError():boolean {return (this.errors.length + this.contextErrors.length)>0}
@@ -33,6 +33,7 @@ export abstract class Widget {
 			hasError: computed,
 			visible: observable,
 			value: observable,
+			disabled: observable,
 		});
         this.context = context;
         let {name} = itemSchema;
@@ -50,7 +51,7 @@ export abstract class Widget {
             let {readOnly, disabled, visible} = this.ui;
             this.readOnly = (readOnly === true);
             this.disabled = (disabled === true);
-            this.visible = !(visible === false);            
+            this.visible = !(visible === false);
         }
         this.value = this.defaultValue =  context.getValue(name); //defaultValue;
         // this.init();
@@ -126,8 +127,6 @@ export abstract class Widget {
 
     setValue(value:any) {
         if (this.isChanging === true) return;
-        //this.setDataValue(value);
-        //this.setElementValue(value);
         this.changeValue(value, false);
     }
 
@@ -139,7 +138,9 @@ export abstract class Widget {
     getDisabled():boolean {return this.disabled}
     getVisible():boolean {return this.visible}
     setReadOnly(value:boolean) {this.readOnly = value}
-    setDisabled(value:boolean) {this.disabled = value}
+    setDisabled(value:boolean) {
+		this.disabled = value;
+	}
     setVisible(value:boolean) {this.visible = value}
 
     private isChanging: boolean;

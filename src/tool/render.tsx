@@ -4,7 +4,7 @@ import { Stock, StockValue } from 'uq-app/uqs/BruceYuMi';
 import { NStockInfo } from '../stockinfo';
 
 function renderValue(caption:string, value:number, valueType:'p0'|'p1'|'n1'|'n2'|'yi'):JSX.Element {
-	const _cn = 'px-2 mb-1 text-right '; 
+	const _cn = 'px-2 px-sm-3 mb-1 text-right '; 
 	let cn = _cn + 'c5';
 	let cnYI = _cn + 'c5'
 	let vStr:string;
@@ -42,16 +42,28 @@ export function renderStockName(stock: Stock):JSX.Element {
 }
 
 export function renderStockRow(order: number, stock: Stock&StockValue, onClickName: (stock:Stock&StockValue) => void, right:JSX.Element):JSX.Element {
-	let { roe, price, divident, miRate, volumn, ttm, inc1, inc2, inc3, inc4, preInc, smoothness } = stock;
+	let { roe, price, dvRate, miRate, volumn, ttm, inc1, inc2, inc3, inc4, preInc, smoothness } = stock;
+	let stars = [0,0,0,0];
+	for (let i=2; i<=smoothness; i++) stars[i-2] = 1;
 	let left = <div className="cursor-pointer align-self-center flex-grow-1" onClick={()=>onClickName?.(stock)}>
 		{order && <><small className="mr-2 text-danger">{order}</small>&nbsp;</>}
 		{renderStockName(stock)}
+		<div className="bg-light px-3 small d-block d-sm-inline-block">
+			{
+				stars.map((v, index) => v===1?
+					<FA key={index} 
+						name='star-o' 
+						className={'small px-1 ' + (v===1? 'text-warning':'text-muted')} />
+					:
+					null )
+			}
+		</div>
 	</div>;
 	let rows:[string,number,'p0'|'p1'|'n1'|'n2'|'yi'][] = [
 		['米息分', Math.log2(miRate), 'n1'],
 		['米息率', miRate, 'n1'],
 		['TTM', ttm, 'n1'],
-		['股息率', divident, 'p1'],
+		['股息率', dvRate/100, 'p1'],
 		['价格', price, 'n2'],
 		['ROE', roe, 'n1'],
 		['均增', preInc/100, 'p0'],
@@ -61,8 +73,6 @@ export function renderStockRow(order: number, stock: Stock&StockValue, onClickNa
 		['增 3', inc1/100, 'p0'],
 		['市值', volumn * price, 'yi'],
 	];
-	let stars = [0,0,0,0];
-	for (let i=2; i<=smoothness; i++) stars[i-2] = 1;
 	return <div className="d-block border-top">
 		<div className="d-flex px-2 py-1 bg-light">
 			{left}
@@ -70,16 +80,6 @@ export function renderStockRow(order: number, stock: Stock&StockValue, onClickNa
 		</div>
 		<div className="d-flex flex-wrap p-1" onClick={()=>onClickName?.(stock)}>
 			{rows.map(v => renderValue(v[0], v[1], v[2]))}
-		</div>
-		<div className="bg-light px-3 small">
-			{
-				stars.map((v, index) => v===1?
-					<FA key={index} 
-						name='star-o' 
-						className={'small px-1 ' + (v===1? 'text-warning':'text-muted')} />
-					:
-					null )
-			}
 		</div>
 	</div>;
 }
