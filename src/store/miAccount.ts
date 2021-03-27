@@ -9,7 +9,7 @@ export class MiAccount  implements Account, AccountValue {
 	no: string;
 	name: string;
 	count: number = 0; 
-	mi: number = 0;
+	miValue: number = 0;
 	market: number = 0;
 	divident: number = 0;
 	cash: number = null;
@@ -20,7 +20,7 @@ export class MiAccount  implements Account, AccountValue {
 		makeObservable(this, {
 			holdingStocks: observable,
 			count: observable,
-			mi: observable,
+			miValue: observable,
 			market: observable,
 			divident: observable,
 			cash: observable,
@@ -124,7 +124,7 @@ export class MiAccount  implements Account, AccountValue {
 		await this.store.yumi.Acts({
 			accountValue: [{
 				id: this.id,
-				mi: this.mi,
+				miValue: this.miValue,
 				market: this.market,
 				count: this.count,
 			}],
@@ -157,14 +157,17 @@ export class MiAccount  implements Account, AccountValue {
 
 	private recalc() {
 		this.count = this.holdingStocks.length;
-		let sumMi = 0, sumMarket = 0, sumDivident = 0;
-		for (let sh of this.holdingStocks) {
-			let {mi, market, divident} = sh;
-			sumMi += mi;
+		let sumMiValue = 0, sumMarket = 0, sumDivident = 0;
+		for (let hs of this.holdingStocks) {
+			let {stockObj, market, divident} = hs;
+			let {miRate} = stockObj;
+			let miValue = miRate * market / 100;
+			hs.miValue = miValue;
+			sumMiValue += miValue;
 			sumMarket += market;
 			sumDivident += divident;
 		}
-		this.mi = sumMi;
+		this.miValue = sumMiValue;
 		this.market = sumMarket;
 		this.divident = sumDivident;
 	}

@@ -6,6 +6,8 @@ import { HoldingStock } from "../../store";
 import { CAccount } from "./CAccount";
 
 export class VAccount extends VPage<CAccount> {
+	private actionsElement: ChildNode;
+
 	header() {return this.controller.miAccount.name}
 	content() {
 		return React.createElement(observer(() => {
@@ -28,7 +30,7 @@ export class VAccount extends VPage<CAccount> {
 				</div>;
 			}
 			let {miAccount, showBuy, showCashIn, showCashOut, showCashAdjust} = this.controller;
-			let {no, name, mi, market, cash, holdingStocks} = miAccount;
+			let {no, name, miValue: mi, market, cash, holdingStocks} = miAccount;
 
 			let holdings:HoldingStock[], holdings0:HoldingStock[];
 			if (holdingStocks) {
@@ -79,6 +81,7 @@ export class VAccount extends VPage<CAccount> {
 					<div className="w-6c">持仓市值</div>
 					<div className="w-5c text-right ml-auto">持仓</div>
 					<div className="w-4c text-right">米息率</div>
+					<div className="w-5c text-right">市价/成本价</div>
 					<div className="w-5c text-right">盈亏</div>
 				</div>
 				<List items={holdings}
@@ -104,34 +107,55 @@ export class VAccount extends VPage<CAccount> {
 		return v.toLocaleString(undefined, nFormat1) + suffix;
 	}
 
-	private row: ChildNode;
+	private hideActionsElement() {
+		if (this.actionsElement) {
+			(this.actionsElement as HTMLDivElement).className = 'd-none';
+			this.actionsElement = undefined;
+		}
+	}
+
 	private renderHolding = (holding: HoldingStock, index: number) => {
 		let {showHolding, showBuy, showSell} = this.controller;
-		let {stockObj, quantity, mi, market, cost} = holding;
-		let {name, code} = stockObj;
+		let {stockObj, quantity, market, cost} = holding;
+		let {name} = stockObj;
 		let onClick = (evt: React.MouseEvent) => {
-			if (this.row) {
-				(this.row as HTMLDivElement).className = 'd-none';
+			if (this.actionsElement) {
+				(this.actionsElement as HTMLDivElement).className = 'd-none';
 			}
-			let row = evt.currentTarget.nextSibling;
-			if (row !== this.row) {
-				this.row = row;
-				(this.row as HTMLDivElement).className = 'd-block';
+			let actionsElement = evt.currentTarget.nextSibling;
+			if (actionsElement !== this.actionsElement) {
+				this.actionsElement = actionsElement;
+				(this.actionsElement as HTMLDivElement).className = 'd-block';
 			}
 			else {
-				this.row = undefined;
+				this.actionsElement = undefined;
 			}
 		}
+		let {miRate, price} = stockObj;
+		let cn: string;
+		if (cost>market) {
+			cn = 'text-success';
+		}
+		else if (cost<market) {
+			cn = 'text-danger';
+		}
+		else {
+			cn = '';
+		}
 		return <div className="d-block">
-			<div className="px-2 px-sm-3 py-2 d-flex cursor-pointer" 
+			<div className={'px-2 px-sm-3 py-2 d-flex cursor-pointer ' + cn}
 				onClick={onClick}>
 				<div className="w-6c d-flex flex-column">
-					<div><b>{name}</b></div>
-					<div className="text-danger">{this.f1String(market)}</div>
+					<div>{name}</div>
+					<div className="">{this.f1String(market)}</div>
 				</div>
 				<div className="d-flex flex-grow-1 justify-content-end">
 					<div className="w-5c text-right">{this.f0String(quantity)}</div>
-					<div className="w-4c text-right">{this.f1String(stockObj.miRate, '%')}</div>
+					<div className="w-4c text-right">{this.f1String(miRate, '%')}</div>
+					<div className="w-4c text-right">
+						{this.f1String(price)} <br/>
+						{this.f1String(cost/quantity)} <br/>
+					</div>
 					<div className="w-5c text-right">
 						{this.f1String(market - cost)} <br/>
 						{this.f1String((market - cost)*100/cost, '%')}
@@ -139,7 +163,8 @@ export class VAccount extends VPage<CAccount> {
 				</div>
 			</div>
 			<div className="d-none">
-				<div className="d-flex border-top px-2 px-sm-3 py-1 justify-content-end">
+				<div className="d-flex border-top px-2 px-sm-3 py-1 justify-content-end" 
+					onClick={()=>this.hideActionsElement()}>
 					<button className="btn btn-sm btn-outline-info ml-3"
 						onClick={() => showBuy(holding)}>加买</button>
 					<button className="btn btn-sm btn-outline-info ml-3"
