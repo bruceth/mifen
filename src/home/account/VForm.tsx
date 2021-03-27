@@ -37,16 +37,16 @@ abstract class VForm extends VPage<CAccount> {
 	protected renderStock(): JSX.Element {
 		let {holdingStock} = this.controller;
 		if (!holdingStock) return null;
-		let {stockObj, quantity} = holdingStock;
-		let {name, code, miValue, price} = stockObj;
+		let {stockObj, quantity, mi, market} = holdingStock;
+		let {name, code} = stockObj;
 		return <div className="py-2">
 			<div className="mr-auto px-3 mb-2">
 				<b>{name}</b> <span className="ml-2 small text-muted">{code}</span>
 			</div>
 			<div className="d-flex my-2 py-2 border-top border-bottom justify-content-center text-center bg-white">
 				{this.renderQuantity('股数', quantity)}
-				{this.renderValue('米息', quantity * miValue, 2)}
-				{this.renderValue('市值', quantity * (price as number), 2)}
+				{this.renderValue('米息', mi, 2)}
+				{this.renderValue('市值', market, 2)}
 			</div>
 		</div>;
 	}

@@ -180,7 +180,6 @@ export interface Holding {
 	id?: number;
 	account: number;
 	stock: number;
-	order: number;
 }
 
 export interface $PiecewiseDetail {

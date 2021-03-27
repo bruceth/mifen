@@ -75,7 +75,12 @@ export class VAccount extends VPage<CAccount> {
 					}
 				</div>
 
-				<div className="small text-muted px-3 py-1">持仓明细</div>
+				<div className="small text-muted px-2 px-sm-3 py-1 d-flex">
+					<div className="w-6c">持仓市值</div>
+					<div className="w-5c text-right ml-auto">持仓</div>
+					<div className="w-4c text-right">米息率</div>
+					<div className="w-5c text-right">盈亏</div>
+				</div>
 				<List items={holdings}
 					item={{render: this.renderHolding}} />
 				{
@@ -89,31 +94,70 @@ export class VAccount extends VPage<CAccount> {
 		}));
 	}
 
+	private f0String(v:number, suffix:string = '') {
+		if (v === null || v === undefined || isNaN(v) === true) return '-';
+		return v.toLocaleString(undefined, nFormat0) + suffix;
+	}
+
+	private f1String(v:number, suffix:string = '') {
+		if (v === null || v === undefined || isNaN(v) === true) return '-';
+		return v.toLocaleString(undefined, nFormat1) + suffix;
+	}
+
+	private row: ChildNode;
 	private renderHolding = (holding: HoldingStock, index: number) => {
 		let {showHolding, showBuy, showSell} = this.controller;
-		let {stockObj, quantity, mi, market} = holding;
+		let {stockObj, quantity, mi, market, cost} = holding;
 		let {name, code} = stockObj;
-		return <div className="px-2 px-sm-3 py-2">
-			<div className="d-flex cursor-pointer flex-grow-1"
-				 onClick={() => showHolding(holding)}>
-				<div className="mr-auto w-min-4c">
-					<div className="small text-muted">{code}</div>
-					<b>{name}</b> 
+		let onClick = (evt: React.MouseEvent) => {
+			if (this.row) {
+				(this.row as HTMLDivElement).className = 'd-none';
+			}
+			let row = evt.currentTarget.nextSibling;
+			if (row !== this.row) {
+				this.row = row;
+				(this.row as HTMLDivElement).className = 'd-block';
+			}
+			else {
+				this.row = undefined;
+			}
+		}
+		return <div className="d-block">
+			<div className="px-2 px-sm-3 py-2 d-flex cursor-pointer" 
+				onClick={onClick}>
+				<div className="w-6c d-flex flex-column">
+					<div><b>{name}</b></div>
+					<div className="text-danger">{this.f1String(market)}</div>
 				</div>
-				<div className="d-sm-flex flex-wrap justify-content-end">
-					{this.renderValue('股数', quantity, nFormat0, '', 'w-min-5c')}
-					{this.renderValue('市值', market, nFormat1, '', 'w-min-6c')}
-					{this.renderValue('米息率', mi*100/market, nFormat1, '%', 'w-min-4c')}
+				<div className="d-flex flex-grow-1 justify-content-end">
+					<div className="w-5c text-right">{this.f0String(quantity)}</div>
+					<div className="w-4c text-right">{this.f1String(stockObj.miRate, '%')}</div>
+					<div className="w-5c text-right">
+						{this.f1String(market - cost)} <br/>
+						{this.f1String((market - cost)*100/cost, '%')}
+					</div>
 				</div>
 			</div>
-			<div className="flex-column flex-sm-row ml-3 ml-sm-5 d-flex w-min-3-5c">
-				<button className="btn btn-sm btn-outline-info mb-2 mb-sm-0"
-					onClick={() => showBuy(holding)}>加买</button>
-				<button className="ml-0 ml-sm-2 btn btn-sm btn-outline-info"
-					onClick={() => showSell(holding)}>卖出</button>
+			<div className="d-none">
+				<div className="d-flex border-top px-2 px-sm-3 py-1 justify-content-end">
+					<button className="btn btn-sm btn-outline-info ml-3"
+						onClick={() => showBuy(holding)}>加买</button>
+					<button className="btn btn-sm btn-outline-info ml-3"
+						onClick={() => showSell(holding)}>卖出</button>
+					<button className="btn btn-sm btn-outline-info ml-3 "
+						onClick={() => showHolding(holding)}>查看</button>
+				</div>
 			</div>
 		</div>;
 	}
+
+/*
+	<div className="d-sm-flex flex-wrap justify-content-end">
+	{this.renderValue('股数', quantity, nFormat0, '', 'w-min-5c')}
+	{this.renderValue('市值', market, nFormat1, '', 'w-min-6c')}
+	{this.renderValue('米息率', mi*100/market, nFormat1, '%', 'w-min-4c')}
+</div>
+*/
 
 	private renderValue(caption:string, value: number, format: Intl.NumberFormatOptions, suffix:string, cn: string) {
 		return <>
