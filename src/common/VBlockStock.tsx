@@ -17,7 +17,7 @@ export class VBlockStock extends View<CCommon> {
 				content = '拉黑';
 				cn = 'btn-outline-secondary';
 			}
-			return <button className={'btn btn-sm ' + cn}
+			return <button className={'btn btn-sm align-self-start ' + cn}
 				onClick={() => this.controller.toggleBlock(stock)}>
 				{content}
 			</button>;

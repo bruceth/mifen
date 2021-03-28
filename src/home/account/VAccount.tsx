@@ -1,7 +1,7 @@
 import { observer } from "mobx-react";
 import React from "react";
 import { DropdownAction, DropdownActions, FA, List, LMR, VPage } from "tonva-react";
-import { nFormat0, nFormat1 } from "tool";
+import { nFormat0, nFormat1, smallPercent } from "tool";
 import { HoldingStock } from "../../store";
 import { CAccount } from "./CAccount";
 
@@ -11,11 +11,11 @@ export class VAccount extends VPage<CAccount> {
 	header() {return this.controller.miAccount.name}
 	content() {
 		return React.createElement(observer(() => {
-			function valueToString(value:number, suffix: string = ''):string {
-				if (isNaN(value) === true) return '-';
-				return (value??0).toLocaleString(undefined, nFormat1) + suffix;
+			function valueToString(value:number, suffix: string|JSX.Element = undefined):JSX.Element {
+				if (isNaN(value) === true) return <>-</>;
+				return <>{(value??0).toLocaleString(undefined, nFormat1)}{suffix}</>;
 			}
-			function renderValue(caption:string, content:string, cn:string = '') {
+			function renderValue(caption:string, content:string|JSX.Element, cn:string = '') {
 				return <div className={'my-1 mx-1 mx-sm-2 border rounded w-min-5c px-1 px-sm-2 py-2 ' + cn}>
 					<small className="text-muted">{caption}</small>
 					<div>{content}</div>
@@ -56,7 +56,7 @@ export class VAccount extends VPage<CAccount> {
 					</LMR>
 					<div className="my-3 text-center d-flex justify-content-center flex-wrap">
 						{renderValue('米息', valueToString(mi), 'd-none d-sm-block')}
-						{renderValue('米息率', valueToString(mi*100/market, '%'))}
+						{renderValue('米息率', valueToString(mi*100/market, smallPercent))}
 						{renderValue('市值', valueToString(market))}
 						{renderCash(cash)}
 						{typeof cash === 'number' && renderValue('总值', valueToString(market + cash))}
@@ -150,7 +150,6 @@ export class VAccount extends VPage<CAccount> {
 		else {
 			cn = '';
 		}
-		let smallPercent = <small>%</small>;
 		return <div className="d-block px-2 px-sm-3 py-1 container">
 			<div className={'row mx-0 cursor-pointer ' + cn}
 				onClick={onClick}>

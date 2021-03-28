@@ -2,7 +2,7 @@ import { observer } from "mobx-react";
 import React from "react";
 import { MiAccount } from "store";
 import { FA, List, LMR, View } from "tonva-react";
-import { nFormat1 } from "tool";
+import { nFormat1, smallPercent } from "tool";
 import { Account, AccountValue } from "uq-app/uqs/BruceYuMi";
 import { CAccount } from "./CAccount";
 
@@ -24,12 +24,14 @@ export class VAccounts extends View<CAccount> {
 	}
 
 	private renderAccount = (item:Account&AccountValue, index:number):JSX.Element => {
-		function valueToString(value:number):string {return (value??0).toLocaleString(undefined, nFormat1)}
-		function renderValue(caption:string, content:string, cn:string='') {
-			return <span className={'mr-3 ' + cn}>
+		function valueToString(value:number, suffix?:string|JSX.Element):JSX.Element {
+			return <>{(value??0).toLocaleString(undefined, nFormat1)}{suffix}</>
+		}
+		function renderValue(caption:string, content:JSX.Element, cn:string='') {
+			return <div className={'pr-3 ' + cn}>
 				<small className="text-muted">{caption}: </small>
 				{content}
-			</span>;
+			</div>;
 		}
 		let {name, miValue: mi, market, count} = item;
 		let left = <FA name="money" className="text-warning align-self-start mt-3 ml-2 ml-sm-3" size="lg" fixWidth={true} />;
@@ -45,9 +47,9 @@ export class VAccounts extends View<CAccount> {
 							{name}
 							<small className="ml-3 text-danger">{count}</small>
 						</div>
-						<div className="mt-2">
-							{renderValue('米息率', valueToString(mi*100/market)+'%')}
-							{renderValue('米息', valueToString(mi), 'd-none d-sm-inline-block')}
+						<div className="mt-2 d-flex">
+							{renderValue('米息率', valueToString(mi*100/market, smallPercent), 'w-min-8c')}
+							{renderValue('米息', valueToString(mi), 'd-none d-sm-block w-min-8c')}
 							{renderValue('市值', valueToString(market))}
 						</div>
 					</>

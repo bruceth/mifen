@@ -1,4 +1,4 @@
-import { consts } from "consts";
+import { consts } from "stockinfo/net/consts";
 import { User } from "tonva-react";
 import { MiApi } from "./miApi";
 
