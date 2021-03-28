@@ -27,6 +27,7 @@ interface ScrollViewProps extends ScrollProps {
 	style?: React.CSSProperties;
 }
 const scrollTimeGap = 100;
+const scrollEdgeGap = 30;
 abstract class ScrollViewBase<T extends ScrollViewProps> extends React.Component<T, null> {
     private bottomTime:number = 0;
 	private topTime:number = 0;
@@ -52,7 +53,7 @@ abstract class ScrollViewBase<T extends ScrollViewProps> extends React.Component
         if (onScroll) onScroll(e);
         let el = e.target as HTMLBaseElement;
         let scroller = new Scroller(el);
-        if (el.scrollTop < 30) {
+        if (el.scrollTop < scrollEdgeGap) {
             if (onScrollTop !== undefined) {
                 let topTime = new Date().getTime();
                 if (topTime-this.topTime > scrollTimeGap) {
@@ -69,8 +70,7 @@ abstract class ScrollViewBase<T extends ScrollViewProps> extends React.Component
                 }
             }
         }
-        if (el.scrollTop + el.offsetHeight > el.scrollHeight - 30) {
-            //this.eachChild(this, 'bottom');
+        if (el.scrollTop + el.offsetHeight > el.scrollHeight - scrollEdgeGap) {
             if (onScrollBottom !== undefined) {
                 let bottomTime = new Date().getTime();
                 if (bottomTime - this.bottomTime > scrollTimeGap) {
