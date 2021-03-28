@@ -2,7 +2,7 @@ import { CBase, Context } from "tonva-react";
 import { CID, MidID, CIDX, MidIDX, MidTag, CIDTagList, CTagIDList
 	, SheetUI, MidIDTagList, CSheetNew, MidSheet } from "tonva-uqui";
 import { CApp, UQs } from "uq-app";
-import { OrderDetail, OrderMaster } from "uq-app/uqs/BzHelloTonva";
+//import { OrderDetail, OrderMaster } from "uq-app/uqs/BzHelloTonva";
 import { VTester } from "./VTest";
 import { isNumber } from "lodash";
 
@@ -14,6 +14,7 @@ export interface UIItem {
 
 export class CTester extends CBase<CApp,UQs> {
 	readonly uiItems:UIItem[] = [
+		/*
 		{
 			name: 'customer',
 			discription: '客户信息',
@@ -102,6 +103,7 @@ export class CTester extends CBase<CApp,UQs> {
 				await cSheetNew.start();
 			}
 		},
+		*/
 	];
 
 	protected async internalStart() {

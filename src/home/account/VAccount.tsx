@@ -77,12 +77,20 @@ export class VAccount extends VPage<CAccount> {
 					}
 				</div>
 
-				<div className="small text-muted px-2 px-sm-3 py-1 d-flex">
-					<div className="w-6c">持仓市值</div>
-					<div className="w-5c text-right ml-auto">持仓</div>
-					<div className="w-4c text-right">米息率</div>
-					<div className="w-5c text-right">市价/成本价</div>
-					<div className="w-5c text-right">盈亏</div>
+				<div className="px-2 px-sm-3 py-1 container">
+					<div className="small text-muted row mx-0">
+						<div className="col-3 pr-0">持仓市值</div>
+						<div className="col px-0 text-right">持仓</div>
+						<div className="col px-0 text-right">米息率</div>
+						<div className="col px-0 text-right">
+							市价<br/>
+							成本价
+						</div>
+						<div className="col pl-0 text-right">
+							盈亏<br/>
+							比例
+						</div>
+					</div>
 				</div>
 				<List items={holdings}
 					item={{render: this.renderHolding}} />
@@ -97,14 +105,14 @@ export class VAccount extends VPage<CAccount> {
 		}));
 	}
 
-	private f0String(v:number, suffix:string = '') {
+	private f0String(v:number, suffix:string|JSX.Element = ''):string|JSX.Element {
 		if (v === null || v === undefined || isNaN(v) === true) return '-';
-		return v.toLocaleString(undefined, nFormat0) + suffix;
+		return <>{v.toLocaleString(undefined, nFormat0)}{suffix}</>;
 	}
 
-	private f1String(v:number, suffix:string = '') {
+	private f1String(v:number, suffix:string|JSX.Element = ''):string|JSX.Element {
 		if (v === null || v === undefined || isNaN(v) === true) return '-';
-		return v.toLocaleString(undefined, nFormat1) + suffix;
+		return <>{v.toLocaleString(undefined, nFormat1)}{suffix}</>;
 	}
 
 	private hideActionsElement() {
@@ -142,28 +150,27 @@ export class VAccount extends VPage<CAccount> {
 		else {
 			cn = '';
 		}
-		return <div className="d-block">
-			<div className={'px-2 px-sm-3 py-2 d-flex cursor-pointer ' + cn}
+		let smallPercent = <small>%</small>;
+		return <div className="d-block px-2 px-sm-3 py-1 container">
+			<div className={'row mx-0 cursor-pointer ' + cn}
 				onClick={onClick}>
-				<div className="w-6c d-flex flex-column">
+				<div className="col-3 pr-0">
 					<div>{name}</div>
 					<div className="">{this.f1String(market)}</div>
 				</div>
-				<div className="d-flex flex-grow-1 justify-content-end">
-					<div className="w-5c text-right">{this.f0String(quantity)}</div>
-					<div className="w-4c text-right">{this.f1String(miRate, '%')}</div>
-					<div className="w-4c text-right">
-						{this.f1String(price)} <br/>
-						{this.f1String(cost/quantity)} <br/>
-					</div>
-					<div className="w-5c text-right">
-						{this.f1String(market - cost)} <br/>
-						{this.f1String((market - cost)*100/cost, '%')}
-					</div>
+				<div className="col px-0 text-right">{this.f0String(quantity)}</div>
+				<div className="col px-0 text-right">{this.f1String(miRate, smallPercent)}</div>
+				<div className="col px-0 text-right">
+					<div className="text-right">{this.f1String(price)}</div>
+					<div className="text-right">{this.f1String(cost/quantity)}</div>
+				</div>
+				<div className="col pl-0 text-right">
+					<div className="text-right">{this.f1String(market - cost)}</div>
+					<div className="text-right">{this.f1String((market - cost)*100/cost, smallPercent)}</div>
 				</div>
 			</div>
 			<div className="d-none">
-				<div className="d-flex border-top px-2 px-sm-3 py-1 justify-content-end" 
+				<div className="d-flex border-top justify-content-end" 
 					onClick={()=>this.hideActionsElement()}>
 					<button className="btn btn-sm btn-outline-info ml-3"
 						onClick={() => showBuy(holding)}>加买</button>

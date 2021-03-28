@@ -3,14 +3,14 @@ import * as BzHelloTonva from './BzHelloTonva';
 import * as BruceYuMi from './BruceYuMi';
 
 export interface UQs {
-	BzHelloTonva: BzHelloTonva.UqExt;
+	//BzHelloTonva: BzHelloTonva.UqExt;
 	BruceYuMi: BruceYuMi.UqExt;
 }
 
-export * as BzHelloTonva from './BzHelloTonva';
+//export * as BzHelloTonva from './BzHelloTonva';
 export * as BruceYuMi from './BruceYuMi';
 
 export function setUI(uqs:UQs) {
-	BzHelloTonva.setUI(uqs.BzHelloTonva);
+	//BzHelloTonva.setUI(uqs.BzHelloTonva);
 	BruceYuMi.setUI(uqs.BruceYuMi);
 }

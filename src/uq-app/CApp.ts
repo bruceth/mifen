@@ -55,6 +55,7 @@ export class CApp extends CUqApp {
 
 	private tick = 0;
 	private gapIndex = 0;
+	/*
 	private callTick = async () => {
 		try {
 			if (!this.user) return;
@@ -75,6 +76,7 @@ export class CApp extends CUqApp {
 		catch {
 		}
 	}
+	*/
 
 	showStock = async (item: NStockInfo) => {
 		await this.store.loadMyBlock();

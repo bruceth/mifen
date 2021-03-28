@@ -10,7 +10,7 @@ export class CFormDialog<T> extends CFormPage<T> {
 		this.returnCall(null);
 	}
 
-	submit(data:any) {
+	async submit(data:any) {
 		let item: any;
 		if (!this.item) item = this.item;
 		else item = {};
