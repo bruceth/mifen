@@ -33,16 +33,7 @@ export class VStockList extends VPage<CGroup> {
 		return renderStockRow($order, stock as Stock & StockValue, this.onClickName, right);
 	}
 
-	right() {
-		return React.createElement(observer(() => {
-			let actions: DropdownAction[] = [
-				{
-					caption: '管理自选组',
-					action: this.controller.cApp.cCommon.manageGroups,
-					icon: 'object-group',
-				},
-			];
-			return <DropdownActions actions={actions} icon="bars" className="mr-2 text-white bg-transparent border-0" />;
-		}));
+	right(): JSX.Element {
+		return null;
 	}
 }

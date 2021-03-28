@@ -38,8 +38,8 @@ export class CFormView<T> extends Controller {
 		}
 	}
 
-	submit(name:string, context: Context) {
-		this.onSubmit?.(name, context);
+	async submit(name:string, context: Context) {
+		await this.onSubmit?.(name, context);
 	}
 
 	protected buildItemSchema(fieldArr: FieldItems): Schema {

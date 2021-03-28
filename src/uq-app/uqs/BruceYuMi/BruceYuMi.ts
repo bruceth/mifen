@@ -1,4 +1,4 @@
-//=== UqApp builder created on Fri Mar 26 2021 21:51:48 GMT-0400 (GMT-04:00) ===//
+//=== UqApp builder created on Sat Mar 27 2021 11:58:05 GMT-0400 (GMT-04:00) ===//
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { IDXValue, Uq, UqTuid, UqAction, UqQuery, UqID, UqIDX, UqIX } from "tonva-react";
 
@@ -223,7 +223,7 @@ export interface StockValue {
 
 export interface AccountValue {
 	id: number;
-	mi?: number;
+	miValue?: number;
 	market?: number;
 	count?: number;
 	cash?: number;
@@ -261,7 +261,7 @@ export interface ActParamStockValue {
 
 export interface ActParamAccountValue {
 	id: number|IDXValue;
-	mi?: number|IDXValue;
+	miValue?: number|IDXValue;
 	market?: number|IDXValue;
 	count?: number|IDXValue;
 	cash?: number|IDXValue;

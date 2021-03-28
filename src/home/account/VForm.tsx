@@ -37,7 +37,7 @@ abstract class VForm extends VPage<CAccount> {
 	protected renderStock(): JSX.Element {
 		let {holdingStock} = this.controller;
 		if (!holdingStock) return null;
-		let {stockObj, quantity, mi, market} = holdingStock;
+		let {stockObj, quantity, miValue: mi, market} = holdingStock;
 		let {name, code} = stockObj;
 		return <div className="py-2">
 			<div className="mr-auto px-3 mb-2">

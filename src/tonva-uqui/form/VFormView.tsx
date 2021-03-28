@@ -11,6 +11,8 @@ export class VFormView<C extends CFormView<any>> extends View<C> {
 	}
 
 	private onSubmit = async (name:string, context: Context) => {
-		this.controller.submit(name, context);
+		context.setDisabled(name, true);
+		await this.controller.submit(name, context);
+		context.setDisabled(name, false);
 	}
 }

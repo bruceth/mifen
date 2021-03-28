@@ -23,13 +23,6 @@ const fields = {
 		"isKey": true,
 		"label": "Stock"
 	} as FieldItemId,
-	order: {
-		"name": "order",
-		"type": "integer",
-		"isKey": false,
-		"widget": "updown",
-		"label": "Order"
-	} as FieldItemInt,
 };
 /*==fields==*/
 

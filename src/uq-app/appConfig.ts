@@ -15,12 +15,14 @@ export const appConfig: AppConfig = {
 	version: '0.1.0',
 	app: undefined,
 	uqs: [
+		/*
 		{
 			dev: bz,
 			name: 'hello-tonva',
 			alias: 'HelloTonva',
 			version: '0.1.0',
 		},
+		*/
 		{
 			dev: bruce,
 			name: 'yumi',

@@ -21,28 +21,9 @@ export class UQsMan {
 		let retErrors:string[];
 		if (app) {
 		let {name, version/*, ownerMap*/} = app;
-			//UQsMan.uqOwnerMap = ownerMap || {};
-			//for (let i in ownerMap) ownerMap[i.toLowerCase()] = ownerMap[i];
 			retErrors = await UQsMan.load(name, version, tvs);
 		}
 		else if (uqs) {
-			/*
-			let uqNames:{owner:string; name:string; version:string}[] = [];
-			//let map:{[owner:string]: string} = UQsMan.uqOwnerMap = {};
-			for (let uq of uqs) {
-				//let ownerObj = uqs[owner];
-				let {dev, name, alias, version:uqVersion, memo} = uq;
-				for (let name in uq) {
-					let {name:owner} = dev;
-					//let v = ownerObj[name];
-					//if (name === '$') {
-					//	map[owner.toLowerCase()] = v;
-					//	continue;
-					//}
-					uqNames.push({owner, name, version:uqVersion});
-				}
-			}
-			*/
 			retErrors = await UQsMan.loadUqs(uqs, tvs);
 		}
 		else {
