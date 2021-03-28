@@ -27,7 +27,7 @@ interface ScrollViewProps extends ScrollProps {
 	style?: React.CSSProperties;
 }
 const scrollTimeGap = 100;
-const scrollEdgeGap = 100;
+const scrollEdgeGap = 30;
 abstract class ScrollViewBase<T extends ScrollViewProps> extends React.Component<T, null> {
     private bottomTime:number = 0;
 	private topTime:number = 0;
