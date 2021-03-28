@@ -1,7 +1,7 @@
 import {FetchError} from './fetchError';
 import {HttpChannelUI} from './httpChannelUI';
-import {nav} from 'tonva-react';
-import { consts } from '../../consts';
+import {env, nav} from 'tonva-react';
+import { consts } from './consts';
 
 export async function httpGet(url:string, params?:any):Promise<any> {
     let channel = new HttpChannel(url, undefined, undefined);
@@ -25,7 +25,7 @@ export class HttpChannel {
         this.hostUrl = hostUrl;
         this.apiToken = apiToken;
         this.ui = ui;
-        this.timeout = consts.isDevelopment === true? 500000:20000;
+        this.timeout = env.isDevelopment === true? 500000:20000;
     }
 
     private startWait = () => {

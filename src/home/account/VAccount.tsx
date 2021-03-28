@@ -1,7 +1,7 @@
 import { observer } from "mobx-react";
 import React from "react";
 import { DropdownAction, DropdownActions, FA, List, LMR, VPage } from "tonva-react";
-import { nFormat0, nFormat1 } from "tool";
+import { nFormat0, nFormat1, smallPercent } from "tool";
 import { HoldingStock } from "../../store";
 import { CAccount } from "./CAccount";
 
@@ -11,11 +11,11 @@ export class VAccount extends VPage<CAccount> {
 	header() {return this.controller.miAccount.name}
 	content() {
 		return React.createElement(observer(() => {
-			function valueToString(value:number, suffix: string = ''):string {
-				if (isNaN(value) === true) return '-';
-				return (value??0).toLocaleString(undefined, nFormat1) + suffix;
+			function valueToString(value:number, suffix: string|JSX.Element = undefined):JSX.Element {
+				if (isNaN(value) === true) return <>-</>;
+				return <>{(value??0).toLocaleString(undefined, nFormat1)}{suffix}</>;
 			}
-			function renderValue(caption:string, content:string, cn:string = '') {
+			function renderValue(caption:string, content:string|JSX.Element, cn:string = '') {
 				return <div className={'my-1 mx-1 mx-sm-2 border rounded w-min-5c px-1 px-sm-2 py-2 ' + cn}>
 					<small className="text-muted">{caption}</small>
 					<div>{content}</div>
@@ -56,7 +56,7 @@ export class VAccount extends VPage<CAccount> {
 					</LMR>
 					<div className="my-3 text-center d-flex justify-content-center flex-wrap">
 						{renderValue('米息', valueToString(mi), 'd-none d-sm-block')}
-						{renderValue('米息率', valueToString(mi*100/market, '%'))}
+						{renderValue('米息率', valueToString(mi*100/market, smallPercent))}
 						{renderValue('市值', valueToString(market))}
 						{renderCash(cash)}
 						{typeof cash === 'number' && renderValue('总值', valueToString(market + cash))}
@@ -72,21 +72,21 @@ export class VAccount extends VPage<CAccount> {
 								actions={actions} icon="money" content="资金" />
 							:
 							<button className="btn btn-outline-info ml-auto" onClick={this.controller.showCashInit}>
-								<FA name="cog" className="small text-info" /> 设置期初资金
+								<FA name="cog" className="small text-info" /> 初始资金
 							</button>
 					}
 				</div>
 
 				<div className="px-2 px-sm-3 py-1 container">
 					<div className="small text-muted row mx-0">
-						<div className="col-3 pr-0">持仓市值</div>
+						<div className="col-3 px-0">持仓市值</div>
 						<div className="col px-0 text-right">持仓</div>
 						<div className="col px-0 text-right">米息率</div>
 						<div className="col px-0 text-right">
 							市价<br/>
 							成本价
 						</div>
-						<div className="col pl-0 text-right">
+						<div className="col px-0 text-right">
 							盈亏<br/>
 							比例
 						</div>
@@ -150,11 +150,10 @@ export class VAccount extends VPage<CAccount> {
 		else {
 			cn = '';
 		}
-		let smallPercent = <small>%</small>;
 		return <div className="d-block px-2 px-sm-3 py-1 container">
 			<div className={'row mx-0 cursor-pointer ' + cn}
 				onClick={onClick}>
-				<div className="col-3 pr-0">
+				<div className="col-3 px-0">
 					<div>{name}</div>
 					<div className="">{this.f1String(market)}</div>
 				</div>
@@ -164,7 +163,7 @@ export class VAccount extends VPage<CAccount> {
 					<div className="text-right">{this.f1String(price)}</div>
 					<div className="text-right">{this.f1String(cost/quantity)}</div>
 				</div>
-				<div className="col pl-0 text-right">
+				<div className="col px-0 text-right">
 					<div className="text-right">{this.f1String(market - cost)}</div>
 					<div className="text-right">{this.f1String((market - cost)*100/cost, smallPercent)}</div>
 				</div>

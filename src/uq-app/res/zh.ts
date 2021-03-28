@@ -16,4 +16,6 @@ export const zh = {
 
 	myAll: '自选股',
 	myBlack: '黑名单',
+
+	
 }

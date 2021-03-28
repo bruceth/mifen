@@ -41,6 +41,8 @@ export function renderStockName(stock: Stock):JSX.Element {
 	</>;
 }
 
+export const smallPercent = <small>%</small>;
+
 export function renderStockRow(order: number, stock: Stock&StockValue, onClickName: (stock:Stock&StockValue) => void, right:JSX.Element):JSX.Element {
 	let { roe, price, dvRate, miRate, volumn, ttm, inc1, inc2, inc3, inc4, preInc, smoothness } = stock;
 	let stars = [0,0,0,0];
