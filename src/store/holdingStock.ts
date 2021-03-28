@@ -17,12 +17,11 @@ export class HoldingStock implements Holding, Portfolio {
 		this.stock = stock.id;
 		this.stockObj = stock;
 		this.price = stock.price;
-		this.cost = cost;
+		this.cost = cost? cost : quantity * this.price;
 		this.setQuantity(quantity);
 	}
 
 	setQuantity(quantity: number) {
-		//this.price = price;
 		this.quantity = quantity;
 		let {divident, miRate} = this.stockObj;
 		if (miRate === undefined) miRate = 0;
@@ -32,7 +31,7 @@ export class HoldingStock implements Holding, Portfolio {
 		this.divident = quantity * (divident ?? 0);
 	}
 
-	setCost(price: number, quantity: number) {
-		this.cost = (this.cost ?? 0) + price * quantity;
+	changeCost(price: number, quantity: number) {
+		this.cost = this.cost + price * quantity;
 	}
 }

@@ -86,9 +86,9 @@ export function renderStockRow(order: number, stock: Stock&StockValue, onClickNa
 	</div>;
 }
 
-const nFormat = new Intl.NumberFormat('zh-CN', { maximumSignificantDigits: 3 });
+//const nFormat = { maximumSignificantDigits: 3 };
 export function formatNumber(num: number): string {
-	return nFormat.format(num);
+	return num.toLocaleString(undefined, nFormat0); // nFormat.format(num);
 }
 export const nFormat0 = {
 	minimumFractionDigits: 0,
