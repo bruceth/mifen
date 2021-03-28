@@ -10,9 +10,9 @@ export class VGroups extends View<CGroup> {
 			let {cApp} = this.controller;
 			let {miGroups} = cApp.store;
 			let {groups } = miGroups;
-			let listHeader = (caption:string) => <div className="small text-muted pt-2 pb-1 px-3">{caption}</div>;
+			//let listHeader = (caption:string) => <div className="small text-muted pt-2 pb-1 px-3">{caption}</div>;
+			//{listHeader('分组')}
 			return <>
-				{listHeader('分组')}
 				<List items={groups} item={{render: this.renderGroup, onClick:this.controller.showMiGroup}} className="mb-3" />
 			</>;
 		}));

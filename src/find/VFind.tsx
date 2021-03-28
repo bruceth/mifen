@@ -20,7 +20,7 @@ export class VFind extends VPage<CFind> {
 			{caption}
 		</button>;
 		return <div>
-			<div className="p-3">
+			<div className="px-3 pt-3">
 				<SearchBox className="mb-3" onSearch={this.controller.onSearch} placeholder="股票代码，名称" />
 				<div className="d-flex flex-wrap">
 					{buttons.map(v => {

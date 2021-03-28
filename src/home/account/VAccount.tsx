@@ -72,21 +72,21 @@ export class VAccount extends VPage<CAccount> {
 								actions={actions} icon="money" content="资金" />
 							:
 							<button className="btn btn-outline-info ml-auto" onClick={this.controller.showCashInit}>
-								<FA name="cog" className="small text-info" /> 设置期初资金
+								<FA name="cog" className="small text-info" /> 初始资金
 							</button>
 					}
 				</div>
 
 				<div className="px-2 px-sm-3 py-1 container">
 					<div className="small text-muted row mx-0">
-						<div className="col-3 pr-0">持仓市值</div>
+						<div className="col-3 px-0">持仓市值</div>
 						<div className="col px-0 text-right">持仓</div>
 						<div className="col px-0 text-right">米息率</div>
 						<div className="col px-0 text-right">
 							市价<br/>
 							成本价
 						</div>
-						<div className="col pl-0 text-right">
+						<div className="col px-0 text-right">
 							盈亏<br/>
 							比例
 						</div>
@@ -154,7 +154,7 @@ export class VAccount extends VPage<CAccount> {
 		return <div className="d-block px-2 px-sm-3 py-1 container">
 			<div className={'row mx-0 cursor-pointer ' + cn}
 				onClick={onClick}>
-				<div className="col-3 pr-0">
+				<div className="col-3 px-0">
 					<div>{name}</div>
 					<div className="">{this.f1String(market)}</div>
 				</div>
@@ -164,7 +164,7 @@ export class VAccount extends VPage<CAccount> {
 					<div className="text-right">{this.f1String(price)}</div>
 					<div className="text-right">{this.f1String(cost/quantity)}</div>
 				</div>
-				<div className="col pl-0 text-right">
+				<div className="col px-0 text-right">
 					<div className="text-right">{this.f1String(market - cost)}</div>
 					<div className="text-right">{this.f1String((market - cost)*100/cost, smallPercent)}</div>
 				</div>
