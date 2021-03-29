@@ -12,7 +12,7 @@ const bruce: DevConfig = {
 }
 
 export const appConfig: AppConfig = {
-	version: '0.1.0',
+	version: '0.1.5',
 	app: undefined,
 	uqs: [
 		/*
