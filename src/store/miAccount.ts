@@ -11,6 +11,7 @@ export class MiAccount  implements Account, AccountValue {
 	portion: number = 20;
 	portionAmount: number = null;
 	count: number = 0; 
+	buyableCount: number = 0;
 	miValue: number = 0;
 	market: number = 0;
 	divident: number = 0;
@@ -33,6 +34,7 @@ export class MiAccount  implements Account, AccountValue {
 			buyNewHolding: action,
 			buyHolding: action,
 			sellHolding: action,
+			buyableCount: observable,
 		})
 		this.store = store;
 		Object.assign(this, account);
@@ -77,6 +79,7 @@ export class MiAccount  implements Account, AccountValue {
 			list.sort(sorter);
 			this.holdingStocks = observable(list);
 			this.count = this.holdingStocks.length;	
+			this.recalc();
 			this.setPortionAmount();
 		});
 	}
@@ -206,19 +209,21 @@ export class MiAccount  implements Account, AccountValue {
 
 	private recalc() {
 		this.count = this.holdingStocks.length;
-		let sumMiValue = 0, sumMarket = 0, sumDivident = 0;
+		let sumMiValue = 0, sumMarket = 0, sumDivident = 0, boughtCount = 0;
 		for (let hs of this.holdingStocks) {
-			let {stockObj, market, divident} = hs;
+			let {stockObj, market, divident, quantity} = hs;
 			let {miRate} = stockObj;
 			let miValue = miRate * market / 100;
 			hs.miValue = miValue;
 			sumMiValue += miValue;
 			sumMarket += market;
 			sumDivident += divident;
+			if (quantity > 0) ++boughtCount;
 		}
 		this.miValue = sumMiValue;
 		this.market = sumMarket;
 		this.divident = sumDivident;
+		this.buyableCount = this.portion - boughtCount;
 	}
 
 	private async cashAct(amount: number, act: string):Promise<void> {
