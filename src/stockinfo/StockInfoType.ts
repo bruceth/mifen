@@ -1,3 +1,5 @@
+import { Stock } from "uq-app/uqs/BruceYuMi";
+
 export interface BaseStockInfo {
     id: number,
     name: string,
@@ -8,28 +10,7 @@ export interface BaseStockInfo {
 };
 
 export interface NStockInfo extends BaseStockInfo {
-    pe?: number,
-    roe?: number,
-    price?: number,
-    pshares?: number,
-    order?: number,
-    divyield?: number,
-    v?: number,
-    b?: number,
-    r2?: number,
-    e?: number,
-    ev?: number,
-    eshares?: number,
-    l?: number,
-    lr2?: number,
-    b10?: number,
-    r210?: number,
-    l10?: number,
-    lr210?: number,
-    lr4?: number,
-    capital?: number,
-    bonus?: number,
-    bshares?: number,
+    stock?: Stock,
     day?: number,
 };
 
@@ -59,6 +40,7 @@ export interface StockCapitalearning {
 export interface StockBonus {
     day: number,
     bonus: number,
+    shares: number,
 }
 
 export interface StockDivideInfo {

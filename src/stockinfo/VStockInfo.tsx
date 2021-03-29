@@ -42,7 +42,7 @@ export class VStockInfo extends VPage<CStockInfo> {
             viewMetaButton = <button type="button" className="btn w-100" onClick={openMetaView}>view</button>
         }
 
-		let headStr = name + ' ' + code;
+        let headStr = name + ' ' + code;
         if (day !== undefined) {
             headStr += ' - ' + day;
         }
@@ -83,31 +83,28 @@ export class VStockInfo extends VPage<CStockInfo> {
 
     private baseInfo = observer(() => {
         let { stock, baseItem } = this.controller;
-		let {cCommon} = this.controller.cApp;
-		let pinStock = <div className="d-flex align-self-stretch">
-			{cCommon.renderStockLink(stock)}
+        let { cCommon } = this.controller.cApp;
+        let pinStock = <div className="d-flex align-self-stretch">
+            {cCommon.renderStockLink(stock)}
 			&nbsp;
 			{cCommon.renderPinStock(stock)}
 			&nbsp;
 			{cCommon.renderBlockStock(stock)}
-		</div>;
-		return renderStockRow(undefined, stock, undefined, pinStock);
+        </div>;
+        return renderStockRow(undefined, stock, undefined, pinStock);
     });
 
     private historyChart = () => {
         let { baseItem } = this.controller;
         let { market, code, symbol } = baseItem;
-        // if (market === 'HK') {
-        //     return undefined;
-        // }
-        // else {
-        //     let urlweek = `https://image.sinajs.cn/newchart/weekly/n/${symbol}.gif`;
-        //     let urlmonth = `https://image.sinajs.cn/newchart/monthly/n/${symbol}.gif`
-        //     return <div className="d-flex">
-        //         <div className="px-2" style={{ width: '50%' }}><img alt="" src={urlweek} /></div>
-        //         <div className="px-2" style={{ width: '50%' }}><img alt="" src={urlmonth} /></div>
-        //     </div>;
-        // }
+        if (market === 'sh' || market === 'sz') {
+            let urlweek = `https://image.sinajs.cn/newchart/weekly/n/${symbol}.gif`;
+            let urlmonth = `https://image.sinajs.cn/newchart/monthly/n/${symbol}.gif`
+            return <div className="d-flex">
+                <div className="px-2" style={{ width: '50%' }}><img alt="" src={urlweek} /></div>
+                <div className="px-2" style={{ width: '50%' }}><img alt="" src={urlmonth} /></div>
+            </div>;
+        }
     }
 
     // protected historyChart = observer(() => {
@@ -205,7 +202,7 @@ export class VStockInfo extends VPage<CStockInfo> {
                 labels: ['0', '1', '2', '3', '4'],
                 datasets: [
                     {
-                        label: '原值',
+                        label: '收益原值',
                         data: ypredict.map(v => GFunc.numberToPrecision(v)),
                         borderColor: 'black',
                         backgroundColor: 'skyBlue',
@@ -250,8 +247,9 @@ export class VStockInfo extends VPage<CStockInfo> {
             }
             chart1 = <RC2 data={chartdata1} type='line' />;
         }
-        let chart2 = this.predictChartFullInfo();
-        let chart3 = this.predictChartROE();
+        let chart2 = this.predictChartBonus();
+        let chart3 = this.predictChartFullInfo();
+        let chart4 = this.predictChartROE();
         return <><div className="px-3 py-2 bg-white">指数回归预测</div>
             <div className="d-flex flex-wrap">
                 <div className="px-3 c12">{GFunc.caption('e')}{GFunc.numberToString(e, 4)}</div>
@@ -272,6 +270,7 @@ export class VStockInfo extends VPage<CStockInfo> {
             </div>
             <div className="d-flex">
                 <div className="px-2" style={{ width: '50%' }}>{chart3}</div>
+                <div className="px-2" style={{ width: '50%' }}>{chart4}</div>
             </div>
         </>;
     });
@@ -296,7 +295,7 @@ export class VStockInfo extends VPage<CStockInfo> {
             labels: label,
             datasets: [
                 {
-                    label: '原值',
+                    label: '收益原值',
                     data: y.map(v => GFunc.numberToPrecision(v)),
                     borderColor: 'black',
                     backgroundColor: 'skyBlue',
@@ -388,6 +387,58 @@ export class VStockInfo extends VPage<CStockInfo> {
                     borderWidth: 1,
                     fill: false,
                 });
+        }
+        return <RC2 data={chartdataFull} type='line' />;
+    };
+
+    protected predictChartBonus = () => {
+        let { predictBonusData } = this.controller;
+        let len = predictBonusData.length;
+        if (len <= 0)
+            return <></>;
+        let label = [];
+        let y: number[] = [];
+        for (let i = 0; i < len; ++i) {
+            let item = predictBonusData[i];
+            if (item.bonus === undefined)
+                continue;
+            label.push(item.year);
+            y.push(item.bonus);
+        }
+
+        let chartdataFull = {
+            labels: label,
+            datasets: [
+                {
+                    label: '分红原值',
+                    data: y.map(v => GFunc.numberToPrecision(v)),
+                    borderColor: 'black',
+                    backgroundColor: 'skyBlue',
+                    showLine: false,
+                    pointStyle: "crossRot",
+                    borderWidth: 1,
+                    pointRadius: 5,
+                    fill: false,
+                } as any
+            ]
+        };
+        if (y.length >= 3) {
+            let lr = new SlrForEarning(y);
+            if (!(isNaN(lr.slope) || isNaN(lr.intercept))) {
+                let plr: number[] = [];
+                for (let i = 0; i < len; ++i) {
+                    plr.push(Number.parseFloat(lr.predict(i).toPrecision(4)));
+                }
+                chartdataFull.datasets.push(
+                    {
+                        label: '线性 R2:' + GFunc.numberToString(lr.r2, 4),
+                        data: plr,
+                        borderColor: 'blue',
+                        backgroundColor: 'pink',
+                        borderWidth: 1,
+                        fill: false,
+                    });
+            }
         }
         return <RC2 data={chartdataFull} type='line' />;
     };
