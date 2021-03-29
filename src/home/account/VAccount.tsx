@@ -66,11 +66,11 @@ export class VAccount extends VPage<CAccount> {
 						{name}
 					</LMR>
 					<div className="my-3 text-center d-flex justify-content-center flex-wrap">
-						{renderValue('米息', valueToString(miValue), 'd-none d-sm-block')}
 						{renderValue('米息率', valueToString(miValue*100/market, smallPercent))}
 						{renderValue('市值', valueToString(market))}
 						{renderCash(cash)}
-						{typeof cash === 'number' && renderValue('总值', valueToString(market + cash))}
+						{renderValue('米息', valueToString(miValue), 'd-none d-sm-block')}
+						{cash > 0 && renderValue('总值', valueToString(market + cash), 'd-none d-sm-block')}
 					</div>
 					<ul className="small text-muted mb-0">
 					{
