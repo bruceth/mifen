@@ -141,7 +141,8 @@ abstract class VBuy extends VStock {
 		return React.createElement(observer(() => {
 			let {miAccount, holdingStock, stock} = this.controller;
 			if (!stock && !holdingStock) return null;
-			let {portionAmount} = miAccount;
+			let {portionAmount, cash} = miAccount;
+			if (typeof cash !== 'number') return null;
 			if (!portionAmount) return null;
 			if (!stock) stock = holdingStock.stockObj;
 			let {price} = stock;

@@ -184,16 +184,21 @@ export class VAccount extends VPage<CAccount> {
 		if (cash) {
 			let buyable: number;
 			if (market < portionAmount * 0.9) {
-				buyable = Math.round((portionAmount - market) / price);
-				if (buyable > 0) {
-					vBuyable = <>{buyable} <FA name="check-circle-o" className="text-warning" /></>;
+				if (quantity > 0) {
+					buyable = Math.round((portionAmount - market) / price);
+					if (buyable > 0) {
+						vBuyable = <>{buyable} <FA name="arrow-circle-up" className="text-info" /></>;
+					}
 				}
 			}
 			else if (market > portionAmount * 1.1) {
 				buyable = Math.round((market - portionAmount) / price);
 				if (buyable > 0) {
-					vBuyable = <>{buyable} <FA name="times-circle-o" className="text-muted" /></>;
+					vBuyable = <>{buyable} <FA name="arrow-circle-down" className="text-muted" /></>;
 				}
+			}
+			else {
+				vBuyable = <><FA name="check-circle-o" className="text-warning" /></>;
 			}
 		}
 		return <div className="d-block px-2 px-sm-3 py-1 container">
@@ -210,11 +215,11 @@ export class VAccount extends VPage<CAccount> {
 				<div className="col px-0 text-right">{this.f1String(miRate, smallPercent)}</div>
 				<div className="col px-0 text-right">
 					<div className="text-right">{this.f1String(price)}</div>
-					<div className="text-right">{this.f1String(cost/quantity)}</div>
+					<div className="text-right small">{this.f1String(cost/quantity)}</div>
 				</div>
 				<div className="col px-0 text-right">
-					<div className="text-right">{this.f1String(market - cost)}</div>
 					<div className="text-right">{this.f1String((market - cost)*100/cost, smallPercent)}</div>
+					<div className="text-right small">{this.f1String(market - cost)}</div>
 				</div>
 			</div>
 			<div className="d-none">

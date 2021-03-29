@@ -1,4 +1,4 @@
-import { action, computed, IObservableArray, makeObservable, observable, runInAction } from "mobx";
+import { action, autorun, computed, IObservableArray, makeObservable, observable, runInAction } from "mobx";
 import { Account, AccountValue, Holding, Portfolio } from "uq-app/uqs/BruceYuMi";
 import { HoldingStock } from "./holdingStock";
 import { Store } from "./store";
@@ -36,6 +36,7 @@ export class MiAccount  implements Account, AccountValue {
 		})
 		this.store = store;
 		Object.assign(this, account);
+		autorun(this.setPortionAmount);
 	}
 
 	async loadItems() {
@@ -80,7 +81,7 @@ export class MiAccount  implements Account, AccountValue {
 		});
 	}
 
-	private setPortionAmount() {
+	private setPortionAmount = () => {
 		let v = (this.market + (this.cash??0));
 		let p = v / this.portion;
 		p = Math.round(p / 1000) * 1000;
@@ -112,7 +113,8 @@ export class MiAccount  implements Account, AccountValue {
 			await this.store.addMyAll(stock);
 			let hs = new HoldingStock(holdingId, stock, quantity, price*quantity);
 			hs.setQuantity(quantity);
-			hs.changeCost(price, quantity);
+			// 新买，cost已经有了，不需要再changeCost
+			// hs.changeCost(price, quantity);
 			this.holdingStocks.push(hs);
 		}
 		else {
