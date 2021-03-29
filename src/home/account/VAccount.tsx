@@ -41,7 +41,7 @@ export class VAccount extends VPage<CAccount> {
 				</div>;
 			}
 			let {miAccount, showBuy, showCashIn, showCashOut, showCashAdjust} = this.controller;
-			let {no, name, miValue: mi, market, cash, holdingStocks} = miAccount;
+			let {no, name, miValue, market, cash, holdingStocks, portion, portionAmount} = miAccount;
 
 			let holdings:HoldingStock[], holdings0:HoldingStock[];
 			if (holdingStocks) {
@@ -66,12 +66,29 @@ export class VAccount extends VPage<CAccount> {
 						{name}
 					</LMR>
 					<div className="my-3 text-center d-flex justify-content-center flex-wrap">
-						{renderValue('米息', valueToString(mi), 'd-none d-sm-block')}
-						{renderValue('米息率', valueToString(mi*100/market, smallPercent))}
+						{renderValue('米息', valueToString(miValue), 'd-none d-sm-block')}
+						{renderValue('米息率', valueToString(miValue*100/market, smallPercent))}
 						{renderValue('市值', valueToString(market))}
 						{renderCash(cash)}
 						{typeof cash === 'number' && renderValue('总值', valueToString(market + cash))}
 					</div>
+					<ul className="small text-muted mb-0">
+					{
+						cash?
+						portionAmount &&
+						<>
+							<li>
+								<small className="">份数:</small> {portion} &nbsp; 
+								<small className="">份额:</small> <span className="text-danger">{portionAmount}</span> &nbsp; 
+							</li>
+							<li className="">
+								<small className="text-info">保持分散，单只股票不超资金份额</small>
+							</li>
+						</>
+						:
+						<li className="">设置资金后，会根据分散要求，提供股数建议</li>
+					}
+					</ul>
 				</div>
 
 				<div className="mb-3 mx-3 d-flex">
@@ -134,7 +151,8 @@ export class VAccount extends VPage<CAccount> {
 	}
 
 	private renderHolding = (holding: HoldingStock, index: number) => {
-		let {showHolding, showBuy, showSell, showChangeCost, showTransactionDetail} = this.controller;
+		let {showHolding, showBuy, showSell, showChangeCost, showTransactionDetail, miAccount} = this.controller;
+		let {portionAmount, cash} = miAccount;
 		let {stockObj, quantity, market, cost} = holding;
 		let {name} = stockObj;
 		let onClick = (evt: React.MouseEvent) => {
@@ -162,6 +180,22 @@ export class VAccount extends VPage<CAccount> {
 		else {
 			cn = '';
 		}
+		let vBuyable: any;
+		if (cash) {
+			let buyable: number;
+			if (market < portionAmount * 0.9) {
+				buyable = Math.round((portionAmount - market) / price);
+				if (buyable > 0) {
+					vBuyable = <>{buyable} <FA name="check-circle-o" className="text-warning" /></>;
+				}
+			}
+			else if (market > portionAmount * 1.1) {
+				buyable = Math.round((market - portionAmount) / price);
+				if (buyable > 0) {
+					vBuyable = <>{buyable} <FA name="times-circle-o" className="text-muted" /></>;
+				}
+			}
+		}
 		return <div className="d-block px-2 px-sm-3 py-1 container">
 			<div className={'row mx-0 cursor-pointer ' + cn}
 				onClick={onClick}>
@@ -169,7 +203,10 @@ export class VAccount extends VPage<CAccount> {
 					<div>{name}</div>
 					<div className="">{this.f1String(market)}</div>
 				</div>
-				<div className="col px-0 text-right">{this.f0String(quantity)}</div>
+				<div className="col px-0 text-right">
+					<div>{this.f0String(quantity)}</div>
+					<div className="small">{vBuyable}</div>
+				</div>
 				<div className="col px-0 text-right">{this.f1String(miRate, smallPercent)}</div>
 				<div className="col px-0 text-right">
 					<div className="text-right">{this.f1String(price)}</div>

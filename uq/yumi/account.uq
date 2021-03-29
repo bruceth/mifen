@@ -2,6 +2,7 @@ ID Account (
 	id,
 	KEY no,
 	name char(50),
+	portion SMALLINT DEFAULT 20,
 );
 
 -- user 账号跟Account绑定

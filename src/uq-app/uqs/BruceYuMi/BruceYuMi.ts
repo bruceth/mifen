@@ -1,4 +1,4 @@
-//=== UqApp builder created on Sat Mar 27 2021 11:58:05 GMT-0400 (GMT-04:00) ===//
+//=== UqApp builder created on Mon Mar 29 2021 13:48:37 GMT-0400 (GMT-04:00) ===//
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { IDXValue, Uq, UqTuid, UqAction, UqQuery, UqID, UqIDX, UqIX } from "tonva-react";
 
@@ -6,12 +6,6 @@ import { IDXValue, Uq, UqTuid, UqAction, UqQuery, UqID, UqIDX, UqIX } from "tonv
 //===============================
 //======= UQ bruce/yumi ========
 //===============================
-
-export enum EnumGroupType {
-	normal = 0,
-	black = -1,
-	all = 1
-}
 
 export interface Tuid$user {
 	name: string;
@@ -89,6 +83,7 @@ export interface ParamSearchStock {
 	smooth: number;
 }
 interface ReturnSearchStock$page {
+	$order: number;
 	id: number;
 	market: number;
 	code: string;
@@ -173,6 +168,7 @@ export interface Account {
 	id?: number;
 	no?: string;
 	name: string;
+	portion: number;
 }
 
 export interface Holding {

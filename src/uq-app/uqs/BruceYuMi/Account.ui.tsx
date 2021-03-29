@@ -25,11 +25,18 @@ const fields = {
 		"widget": "string",
 		"label": "Name"
 	} as FieldItemString,
+	portion: {
+		"name": "portion",
+		"type": "integer",
+		"isKey": false,
+		"widget": "updown",
+		"label": "Portion"
+	} as FieldItemInt,
 };
 /*==fields==*/
 
 export const fieldArr: FieldItem[] = [
-	fields.no, fields.name, 
+	fields.no, fields.name, fields.portion, 
 ];
 
 export const ui: UI = {
@@ -42,6 +49,7 @@ export const resRaw: Res<any> = {
 	$zh: {
 		No: '编号',
 		Name: '名称',
+		Portion: '份数',
 	},
 	$en: {
 	}

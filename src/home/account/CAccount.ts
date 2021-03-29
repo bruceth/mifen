@@ -23,8 +23,8 @@ export class CAccount extends CUqSub<CApp, UQs, CHome> {
 			miGroup: observable,
 			miAccount: observable,
 			stocks: observable,
+			stock: observable,
 		});
-		//this.cHome = cHome;
 	}
 
 	async internalStart(param: any) {

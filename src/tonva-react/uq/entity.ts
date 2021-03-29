@@ -35,7 +35,7 @@ export abstract class Entity {
     readonly uqApi: UqApi;
     abstract get typeName(): string;
     get sName():string {return this.jName || this.name}
-    fields: Field[];
+	fields: Field[];
     arrFields: ArrFields[];
     returns: ArrFields[];
 
@@ -116,9 +116,12 @@ export abstract class Entity {
 
     public buildFieldsTuid() {
         let {fields, arrs, returns} = this.schema;
-        this.uq.buildFieldTuid(this.fields = fields);
-        this.uq.buildArrFieldsTuid(this.arrFields = arrs, fields);
-        this.uq.buildArrFieldsTuid(this.returns = returns, fields);
+		this.fields = fields;
+        this.uq.buildFieldTuid(fields);
+		this.arrFields = arrs;
+        this.uq.buildArrFieldsTuid(arrs, fields);
+		this.returns = returns;
+        this.uq.buildArrFieldsTuid(arrs, fields);
     }
 
     schemaStringify():string {

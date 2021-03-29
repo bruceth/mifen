@@ -25,16 +25,11 @@ const fields = {
 		"widget": "string",
 		"label": "Name"
 	} as FieldItemString,
-	type: {
-		"name": "type",
-		"isKey": false,
-		"label": "Type"
-	} as undefined,
 };
 /*==fields==*/
 
 const fieldArr: FieldItem[] = [
-	fields.no, fields.name, fields.type, 
+	fields.no, fields.name, 
 ];
 
 const resRaw: Res<any> = {

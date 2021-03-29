@@ -1,4 +1,7 @@
-import { IntSchema, ButtonSchema, UiNumberItem, UiButton, Form, Schema, VPage, UiSchema, Context, NumSchema, IdSchema, UiIdItem, ItemSchema } from "tonva-react";
+import { observer } from "mobx-react";
+import { Observer } from "mobx-react-lite";
+import React from "react";
+import { IntSchema, ButtonSchema, UiNumberItem, UiButton, Form, Schema, VPage, UiSchema, Context, NumSchema, IdSchema, UiIdItem, ItemSchema, FA } from "tonva-react";
 import { formatNumber } from "tool";
 import { Stock } from "uq-app/uqs/BruceYuMi";
 import { CAccount } from "./CAccount";
@@ -85,11 +88,16 @@ abstract class VForm extends VPage<CAccount> {
 		this.closePage();
 	}
 
+	protected renderFormTop():JSX.Element {
+		return null;
+	}
+
 	protected abstract onSubmit(data:any): Promise<void>;
 
 	content() {
 		return <div className="my-3">
 			{this.renderStock()}
+			{this.renderFormTop()}
 			{this.renderForm()}
 		</div>;
 	}
@@ -128,6 +136,39 @@ abstract class VBuy extends VStock {
 		if ((quantity as number) * (price as number) > (cash as number))
 			return `超过账户资金余额，无法买入`;
     }
+
+	protected renderFormTop():JSX.Element {
+		return React.createElement(observer(() => {
+			let {miAccount, holdingStock, stock} = this.controller;
+			if (!stock && !holdingStock) return null;
+			let {portionAmount} = miAccount;
+			if (!portionAmount) return null;
+			if (!stock) stock = holdingStock.stockObj;
+			let {price} = stock;
+			let quantity: number;
+			if (holdingStock) {
+				quantity = portionAmount / price -  holdingStock.quantity;
+				if (quantity < 0) quantity = 0;
+			}
+			else {
+				quantity = portionAmount / price;
+			}
+			return <div className="pb-3 px-3 text-center small text-muted">
+				{
+					quantity === 0?
+					<>
+						<FA name="times-circle-o mr-1 text-danger" />
+						每份金额{portionAmount}，已超单只股票份额，建议不要购买
+					</>
+					:
+					<>
+						<FA name="check-circle-o mr-1 text-warning" />
+						每份金额{portionAmount}，建议不超过：{Math.round(quantity)} 股
+					</>
+				}
+			</div>;
+		}));		
+	}
 }
 
 export class VBuyNew extends VBuy {
@@ -205,12 +246,13 @@ export class VChangeCost extends VForm {
 	protected beforeRender() {
 		let {holdingStock} = this.controller;
 		if (!holdingStock) return;
-		let {price} = holdingStock;
+		let {cost, quantity} = holdingStock;
 		let {value} = this.uiSchema.items;
 		let uiValue = value as UiNumberItem;
 		uiValue.min = 0.01;
 		uiValue.step = 0.01;
-		uiValue.defaultValue = price.toFixed(2);
+		let oldPrice = cost/quantity;
+		uiValue.defaultValue = oldPrice.toFixed(2);
 	}
 	protected async onSubmit(data:any): Promise<void> {
 		let {value} = data;

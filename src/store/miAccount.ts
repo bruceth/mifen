@@ -1,4 +1,4 @@
-import { action, IObservableArray, makeObservable, observable, runInAction } from "mobx";
+import { action, computed, IObservableArray, makeObservable, observable, runInAction } from "mobx";
 import { Account, AccountValue, Holding, Portfolio } from "uq-app/uqs/BruceYuMi";
 import { HoldingStock } from "./holdingStock";
 import { Store } from "./store";
@@ -8,6 +8,8 @@ export class MiAccount  implements Account, AccountValue {
 	id: number;
 	no: string;
 	name: string;
+	portion: number = 20;
+	portionAmount: number = null;
 	count: number = 0; 
 	miValue: number = 0;
 	market: number = 0;
@@ -19,6 +21,8 @@ export class MiAccount  implements Account, AccountValue {
 	constructor(store: Store, account: Account&AccountValue) {
 		makeObservable(this, {
 			name: observable,
+			portion: observable,
+			portionAmount: observable,
 			holdingStocks: observable,
 			count: observable,
 			miValue: observable,
@@ -32,7 +36,6 @@ export class MiAccount  implements Account, AccountValue {
 		})
 		this.store = store;
 		Object.assign(this, account);
-		this.cash = undefined;
 	}
 
 	async loadItems() {
@@ -73,7 +76,27 @@ export class MiAccount  implements Account, AccountValue {
 			list.sort(sorter);
 			this.holdingStocks = observable(list);
 			this.count = this.holdingStocks.length;	
+			this.setPortionAmount();
 		});
+	}
+
+	private setPortionAmount() {
+		let v = (this.market + (this.cash??0));
+		let p = v / this.portion;
+		p = Math.round(p / 1000) * 1000;
+		if (p > 0) {
+			this.portionAmount = p;
+			return;
+		}
+		this.portion = 5;
+		p = v / this.portion;
+		p = Math.round(p / 1000) * 1000;
+		if (p > 0) {
+			this.portionAmount = p;
+			return;
+		}
+		this.portion = 1;
+		this.portionAmount = undefined;
 	}
 
 	async buyNewHolding(stockId: number, price: number, quantity: number) {
