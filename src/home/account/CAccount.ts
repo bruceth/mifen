@@ -142,4 +142,8 @@ export class CAccount extends CUqSub<CApp, UQs, CHome> {
 	submitCashAdjust = async (value:number) => {
 		await this.miAccount.cashAdjust(value);
 	}
+
+	showTransactionDetail = async (item: HoldingStock) => {
+		alert('detail');
+	}
 }

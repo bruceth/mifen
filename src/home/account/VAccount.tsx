@@ -134,7 +134,7 @@ export class VAccount extends VPage<CAccount> {
 	}
 
 	private renderHolding = (holding: HoldingStock, index: number) => {
-		let {showHolding, showBuy, showSell, showChangeCost} = this.controller;
+		let {showHolding, showBuy, showSell, showChangeCost, showTransactionDetail} = this.controller;
 		let {stockObj, quantity, market, cost} = holding;
 		let {name} = stockObj;
 		let onClick = (evt: React.MouseEvent) => {
@@ -190,7 +190,7 @@ export class VAccount extends VPage<CAccount> {
 					<button className="btn btn-sm btn-link ml-auto "
 						onClick={() => showChangeCost(holding)}>改成本</button>
 					<button className="btn btn-sm btn-link ml-3 "
-						onClick={() => showHolding(holding)}>明细</button>
+						onClick={() => showTransactionDetail(holding)}>明细</button>
 					<button className="btn btn-sm btn-link ml-3 "
 						onClick={() => showHolding(holding)}>分析</button>
 				</div>
