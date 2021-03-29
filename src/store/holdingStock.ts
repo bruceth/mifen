@@ -34,4 +34,8 @@ export class HoldingStock implements Holding, Portfolio {
 	changeCost(price: number, quantity: number) {
 		this.cost = this.cost + price * quantity;
 	}
+
+	setCostPrice(costPrice: number) {
+		this.cost = this.quantity * costPrice;
+	}
 }

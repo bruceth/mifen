@@ -8,14 +8,14 @@
 			"type": "chrome",
 			"request": "launch",
 			"name": "Launch Chrome against localhost",
-			"url": "http://localhost:3391",
+			"url": "http://localhost:4310",
 			"webRoot": "${workspaceFolder}"
 		},
 		{
 			"type": "chrome",
 			"request": "launch",
 			"name": "Launch Chrome localdata",
-			"url": "http://localhost:3391#localmiserver",
+			"url": "http://localhost:4310#localmiserver",
 			"webRoot": "${workspaceFolder}"
 		},
 		{
