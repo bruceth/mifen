@@ -206,7 +206,11 @@ export class VChangeCost extends VForm {
 		let {holdingStock} = this.controller;
 		if (!holdingStock) return;
 		let {price} = holdingStock;
-		this.uiSchema.items.value.defaultValue = price.toFixed(2);
+		let {value} = this.uiSchema.items;
+		let uiValue = value as UiNumberItem;
+		uiValue.min = 0.01;
+		uiValue.step = 0.01;
+		uiValue.defaultValue = price.toFixed(2);
 	}
 	protected async onSubmit(data:any): Promise<void> {
 		let {value} = data;
