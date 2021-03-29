@@ -1,10 +1,10 @@
 import { IObservableArray, makeObservable, observable } from "mobx";
-import { PickId, Context } from "tonva-react";
+import { PickId, Context, IDUI } from "tonva-react";
 import { MiAccount, MiGroup, HoldingStock } from "../../store";
 import { Stock, StockValue } from "uq-app/uqs/BruceYuMi";
 import { CApp, CUqSub, UQs } from "../../uq-app";
 import { VAccount } from "./VAccount";
-import { VBuyExist, VBuyNew, VCashAdjust, VCashInit, VCashIn, VCashOut, VSell } from "./VForm";
+import { VBuyExist, VBuyNew, VCashAdjust, VCashInit, VCashIn, VCashOut, VSell, VChangeCost } from "./VForm";
 import { CHome } from "../CHome";
 import { VAccounts } from "./VAccounts";
 import { VPickStock } from "./VPickStock";
@@ -36,7 +36,11 @@ export class CAccount extends CUqSub<CApp, UQs, CHome> {
 
 	showAccount = async (item: MiAccount) => {
 		this.miAccount = item;
-		this.openVPage(VAccount);
+		let renderPageRight = () => {
+			let cID = this.cApp.cCommon.buildCIDUserAccount();
+			return cID.renderViewRight(item);
+		}
+		this.openVPage(VAccount, {renderPageRight});
 		await item.loadItems();
 	};
 	
@@ -46,8 +50,6 @@ export class CAccount extends CUqSub<CApp, UQs, CHome> {
 	}
 
 	createPickStockId() {
-		//let yumi = this.uqs.BruceYuMi;
-		//let pagePickId = createPickId(yumi, yumi.Stock);
 		let ret:PickId = async (context:Context, name: string, value: number) => {
 			this.stocks = this.cApp.store.stocksMyAll;
 			let v = await this.pickStock();
@@ -100,6 +102,15 @@ export class CAccount extends CUqSub<CApp, UQs, CHome> {
 		await this.miAccount.sellHolding(this.holdingStock.stock, price, quantity);
 	}
 	
+	showChangeCost = async (item: HoldingStock) => {
+		this.holdingStock = item;
+		this.openVPage(VChangeCost);
+	}
+	
+	submitChangeCost = async (costPrice:number) => {
+		await this.miAccount.changeCost(this.holdingStock.stock, costPrice);
+	}
+
 	showCashInit = async () => {
 		this.openVPage(VCashInit);
 	}

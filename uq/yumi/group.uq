@@ -1,10 +1,7 @@
-ENUM EnumGroupType (normal=0, black=-1, all=1);
-
 ID Group (
 	id,
 	key no,
 	name char(50),
-	type Enum EnumGroupType DEFAULT 0,
 );
 
 IX UserGroup (

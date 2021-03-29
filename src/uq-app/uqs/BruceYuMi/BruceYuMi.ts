@@ -167,7 +167,6 @@ export interface Group {
 	id?: number;
 	no?: string;
 	name: string;
-	type: any;
 }
 
 export interface Account {

@@ -8,8 +8,18 @@ import { CAccount } from "./CAccount";
 
 export class VAccount extends VPage<CAccount> {
 	private actionsElement: ChildNode;
+	private renderPageRight: () => JSX.Element;
+	init(param: {
+		renderPageRight: () => JSX.Element;
+	}) {
+		let {renderPageRight} = param;
+		this.renderPageRight = renderPageRight;
+	}
 
-	header() {return this.controller.miAccount.name}
+	header() {
+		return React.createElement(observer(() => <>{this.controller.miAccount.name}</>));
+	}
+	right() {return this.renderPageRight?.()}
 	content() {
 		return React.createElement(observer(() => {
 			function valueToString(value:number, suffix: string|JSX.Element = undefined):JSX.Element {
@@ -124,7 +134,7 @@ export class VAccount extends VPage<CAccount> {
 	}
 
 	private renderHolding = (holding: HoldingStock, index: number) => {
-		let {showHolding, showBuy, showSell} = this.controller;
+		let {showHolding, showBuy, showSell, showChangeCost} = this.controller;
 		let {stockObj, quantity, market, cost} = holding;
 		let {name} = stockObj;
 		let onClick = (evt: React.MouseEvent) => {
@@ -171,26 +181,22 @@ export class VAccount extends VPage<CAccount> {
 				</div>
 			</div>
 			<div className="d-none">
-				<div className="d-flex justify-content-end py-1" 
+				<div className="d-flex mt-2 px-2 pt-2 pb-1 align-items-center border-top" 
 					onClick={()=>this.hideActionsElement()}>
-					<button className="btn btn-sm btn-outline-info ml-3"
-						onClick={() => showBuy(holding)}>加买</button>
-					<button className="btn btn-sm btn-outline-info ml-3"
+					<button className="btn btn-sm btn-outline-info mr-3 "
+						onClick={() => showBuy(holding)}>买入</button>
+					<button className="btn btn-sm btn-outline-info mr-3 "
 						onClick={() => showSell(holding)}>卖出</button>
-					<button className="btn btn-sm btn-outline-info ml-3 "
-						onClick={() => showHolding(holding)}>查看</button>
+					<button className="btn btn-sm btn-link ml-auto "
+						onClick={() => showChangeCost(holding)}>改成本</button>
+					<button className="btn btn-sm btn-link ml-3 "
+						onClick={() => showHolding(holding)}>明细</button>
+					<button className="btn btn-sm btn-link ml-3 "
+						onClick={() => showHolding(holding)}>分析</button>
 				</div>
 			</div>
 		</div>;
 	}
-
-/*
-	<div className="d-sm-flex flex-wrap justify-content-end">
-	{this.renderValue('股数', quantity, nFormat0, '', 'w-min-5c')}
-	{this.renderValue('市值', market, nFormat1, '', 'w-min-6c')}
-	{this.renderValue('米息率', mi*100/market, nFormat1, '%', 'w-min-4c')}
-</div>
-*/
 
 	private renderValue(caption:string, value: number, format: Intl.NumberFormatOptions, suffix:string, cn: string) {
 		return <>

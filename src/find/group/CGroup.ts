@@ -1,4 +1,4 @@
-import { IObservableArray, makeObservable, observable, runInAction } from "mobx";
+import { computed, IObservableArray, makeObservable, observable, runInAction } from "mobx";
 import { MiAccount, MiGroup, HoldingStock } from "../../store";
 import { Stock, StockValue } from "uq-app/uqs/BruceYuMi";
 import { CApp, CUqSub, UQs } from "../../uq-app";
@@ -10,7 +10,6 @@ export class CGroup extends CUqSub<CApp, UQs, CFind> {
 	miGroup: MiGroup = null;
 	miAccount: MiAccount = null;
 	holdingStock: HoldingStock;
-	listCaption: string;
 	stocks: IObservableArray<Stock & StockValue>;
 
 	constructor(cFind: CFind) {
@@ -19,39 +18,57 @@ export class CGroup extends CUqSub<CApp, UQs, CFind> {
 			miGroup: observable,
 			miAccount: observable,
 			stocks: observable,
+			listCaption: computed,
 		});
 	}
 
 	async internalStart(param: any) {
 	}
 
+	private _listCaption: string;
+	get listCaption(): string {
+		return this._listCaption?? this.miGroup?.name;
+	}
+
 	renderGroups() {return this.renderView(VGroups);}
 
 	showMiGroup = async (miGroup: MiGroup) => {
-		this.openStocksList(miGroup.name);
+		this._listCaption = undefined;
+		this.miGroup = miGroup;
+
+		let renderPageRight = () => {
+			let cID = this.cApp.cCommon.buildCIDUserGroup();
+			return cID.renderViewRight(miGroup);
+		}
+		this.openStocksList(undefined, renderPageRight);
 		await miGroup.loadItems();
 		this.setStocksList(miGroup.stocks);
 	}
 
 	showStocksAll = async () => {
 		let {store} = this.cApp;
-		this.openStocksList(store.myAllCaption);
+		this._listCaption = store.myAllCaption;
+		this.miGroup = undefined;
+		this.openStocksList();
 		this.setStocksList(store.stocksMyAll);
 	}
 
 	showStocksBlock = async () => {
 		let {store} = this.cApp;
 		let renderRowRight = this.cApp.cCommon.renderBlockStock;
-		this.openStocksList(store.myBlockCaption, renderRowRight);
+		this._listCaption = store.myBlockCaption;
+		this.miGroup = undefined;
+		this.openStocksList(renderRowRight);
 		await this.cApp.store.loadMyBlock();
 		this.setStocksList(store.stocksMyBlock);
 	}
 
-	private openStocksList(caption: string, renderRowRight?: (stock:Stock & StockValue) => JSX.Element) {
+	private openStocksList(renderRowRight?: (stock:Stock & StockValue) => JSX.Element, 
+		renderPageRight?: () => JSX.Element) {
 		runInAction(() => {
-			this.listCaption = caption;
+			//this.listCaption = caption;
 			this.stocks = undefined;
-			this.openVPage(VStockList, renderRowRight);
+			this.openVPage(VStockList, {renderRowRight, renderPageRight});
 		});
 	}
 

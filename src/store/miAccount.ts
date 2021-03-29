@@ -18,6 +18,7 @@ export class MiAccount  implements Account, AccountValue {
 
 	constructor(store: Store, account: Account&AccountValue) {
 		makeObservable(this, {
+			name: observable,
 			holdingStocks: observable,
 			count: observable,
 			miValue: observable,
@@ -147,12 +148,35 @@ export class MiAccount  implements Account, AccountValue {
 		});
 	}
 
+	private async bookSetCost(holdingId:number, cost:number): Promise<void> {
+		this.recalc();
+		await this.store.yumi.Acts({
+			accountValue: [{
+				id: this.id,
+				miValue: this.miValue,
+				market: this.market,
+				count: this.count,
+			}],
+			portfolio: [{
+				id: holdingId,
+				cost: {value:cost, act: '='},
+			}],
+		});
+	}
+
 	async sellHolding(stockId: number, price: number, quantity: number) {
 		let holding = this.holdingStocks.find(v => v.stock === stockId);
 		if (holding === undefined) return;
 		holding.setQuantity(holding.quantity - quantity);
 		holding.changeCost(-price, quantity);
 		await this.bookHolding(holding.id, price, -quantity);
+	}
+
+	async changeCost(stockId: number, costPrice: number) {
+		let holding = this.holdingStocks.find(v => v.stock === stockId);
+		if (holding === undefined) return;
+		holding.setCostPrice(costPrice);
+		await this.bookSetCost(holding.id, costPrice * holding.quantity);
 	}
 
 	private recalc() {

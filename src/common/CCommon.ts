@@ -3,7 +3,7 @@ import { IDUI } from "tonva-react";
 import { CID, MidIXID } from "tonva-uqui";
 import { renderGroup } from "tool";
 import { CUqBase } from "uq-app";
-import { Group, Stock, StockValue } from "uq-app/uqs/BruceYuMi";
+import { Account, Group, Stock, StockValue } from "uq-app/uqs/BruceYuMi";
 import { VBlockStock } from "./VBlockStock";
 import { VKeepStock } from "./VKeepStock";
 import { VPinStock } from "./VPinStock";
@@ -94,7 +94,7 @@ export class CCommon extends CUqBase {
 		} as any);
 	}
 
-	manageGroups = async () => {
+	buildCIDUserGroup(): CID<Group> {
 		let uq = this.uqs.BruceYuMi;
 		let IDUI: IDUI = {
 			ID: uq.Group,
@@ -108,6 +108,11 @@ export class CCommon extends CUqBase {
 		mId.listHeader = '管理股票分组';
 		mId.itemHeader = '股票分组';
 		let cID = new CID(mId);
+		return cID;
+	}
+
+	manageGroups = async () => {
+		let cID = this.buildCIDUserGroup();
 		let {renderItem, onItemClick} = cID;
 		cID.renderItem = (item: Group, index:number) => renderGroup(item, index, renderItem);
 		cID.onItemClick = (item: Group):void => onItemClick(item);
@@ -117,7 +122,7 @@ export class CCommon extends CUqBase {
 		}
 	}
 
-	manageAccounts = async () => {
+	buildCIDUserAccount(): CID<Account> {
 		let uq = this.uqs.BruceYuMi;
 		let IDUI:IDUI = {
 			ID: uq.Account,
@@ -126,10 +131,15 @@ export class CCommon extends CUqBase {
 			},
 			t: this.t,
 		}
-		let mId = new MidIXID(uq, IDUI, uq.UserAccount);
+		let mId = new MidIXID<Account>(uq, IDUI, uq.UserAccount);
 		mId.listHeader = '管理持仓账号';
 		mId.itemHeader = '持仓账号';
 		let cID = new CID(mId);
+		return cID;
+	}
+
+	manageAccounts = async () => {
+		let cID = this.buildCIDUserAccount();
 		let changed = await cID.call();
 		if (changed === true) {
 			await this.cApp.store.miAccounts.load();

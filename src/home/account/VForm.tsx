@@ -1,4 +1,4 @@
-import { IntSchema, ButtonSchema, UiNumberItem, UiButton, Form, Schema, VPage, UiSchema, Context, NumSchema, IdSchema, UiIdItem } from "tonva-react";
+import { IntSchema, ButtonSchema, UiNumberItem, UiButton, Form, Schema, VPage, UiSchema, Context, NumSchema, IdSchema, UiIdItem, ItemSchema } from "tonva-react";
 import { formatNumber } from "tool";
 import { Stock } from "uq-app/uqs/BruceYuMi";
 import { CAccount } from "./CAccount";
@@ -12,9 +12,12 @@ abstract class VForm extends VPage<CAccount> {
 
 	protected get valueLabel(): string {return '股票数量'}
 	protected get placeholder(): string {return '股票数量'}
+	protected get valueSchema(): ItemSchema {
+		return { name: 'value', type: 'integer', min: 0, required: true } as IntSchema;
+	}
 
 	protected schema: Schema = [
-		{ name: 'value', type: 'integer', min: 0, required: true } as IntSchema,
+		this.valueSchema,
 		{ name: 'submit', type: 'submit'} as ButtonSchema,
 	];
 
@@ -189,6 +192,25 @@ export class VSell extends VStock {
 
 	private onClickQuantity = () => {
 		this.form.formContext.setValue('value', this.controller.holdingStock.quantity);
+	}
+}
+
+export class VChangeCost extends VForm {
+	header() {return '修改成本'}
+	protected get valueLabel(): string {return '新成本'}
+	protected get placeholder(): string {return '新股票成本'}
+	protected get valueSchema(): ItemSchema {
+		return { name: 'value', type: 'number', min: 0.01, required: true } as NumSchema;
+	}
+	protected beforeRender() {
+		let {holdingStock} = this.controller;
+		if (!holdingStock) return;
+		let {price} = holdingStock;
+		this.uiSchema.items.value.defaultValue = price.toFixed(2);
+	}
+	protected async onSubmit(data:any): Promise<void> {
+		let {value} = data;
+		await this.controller.submitChangeCost(value);
 	}
 }
 
