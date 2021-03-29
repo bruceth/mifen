@@ -25,7 +25,7 @@ export class MidIDX extends Mid {
 		let IDUI = {ID: this.ID};
 		this._itemSchema = await this.buildItemSchema(IDUI);
 		this._uiSchema = this.buildUISchema(IDUI);
-		this._props = this.buildGridProps(this.IDX.ui);
+		this._props = this.buildGridProps(this.IDX);
 		let {exFields} = this.IDX.schema;
 		for (let prop of this._props) {
 			let {name} = prop as any;

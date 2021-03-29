@@ -1,5 +1,5 @@
 import { IObservableArray, makeObservable, observable, runInAction} from "mobx";
-import { EnumGroupType, Group, Stock, StockValue } from "uq-app/uqs/BruceYuMi";
+import { Group, Stock, StockValue } from "uq-app/uqs/BruceYuMi";
 import { Store } from "./store";
 
 export class MiGroup implements Group {
@@ -7,13 +7,13 @@ export class MiGroup implements Group {
 	id: number;
 	name: string;
 	count: number;
-	type: EnumGroupType;
 	stocks: IObservableArray<Stock & StockValue> = null;
 
 	constructor(store:Store, group:Group, stockCount:number) {
 		makeObservable(this, {
 			stocks: observable,
 			count: observable,
+			name: observable,
 		});
 		this.store = store;
 		Object.assign(this, group);

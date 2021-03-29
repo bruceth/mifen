@@ -39,9 +39,11 @@ export const ui: UI = {
 };
 
 export const resRaw: Res<any> = {
-	zh: {
+	$zh: {
+		No: '编号',
+		Name: '名称',
 	},
-	en: {
+	$en: {
 	}
 };
 

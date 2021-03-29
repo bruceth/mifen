@@ -8,8 +8,18 @@ import { CAccount } from "./CAccount";
 
 export class VAccount extends VPage<CAccount> {
 	private actionsElement: ChildNode;
+	private renderPageRight: () => JSX.Element;
+	init(param: {
+		renderPageRight: () => JSX.Element;
+	}) {
+		let {renderPageRight} = param;
+		this.renderPageRight = renderPageRight;
+	}
 
-	header() {return this.controller.miAccount.name}
+	header() {
+		return React.createElement(observer(() => <>{this.controller.miAccount.name}</>));
+	}
+	right() {return this.renderPageRight?.()}
 	content() {
 		return React.createElement(observer(() => {
 			function valueToString(value:number, suffix: string|JSX.Element = undefined):JSX.Element {

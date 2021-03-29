@@ -86,7 +86,7 @@ export class MidID<T extends IDBase> extends Mid {
 	private _props: Prop[];
 	get props():Prop[] {
 		if (this._props !== undefined) return this._props;
-		return this._props = this.buildGridProps(this.IDUI.ID.ui);
+		return this._props = this.buildGridProps(this.IDUI.ID);
 	}
 
 	/*

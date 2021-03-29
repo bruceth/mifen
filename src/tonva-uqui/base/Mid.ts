@@ -1,4 +1,4 @@
-import { ButtonSchema, FieldItem, FieldItemId, FieldItemString, IDUI, PickId, Prop, Schema, UI, UiButton, UiSchema, Uq } from "tonva-react";
+import { ButtonSchema, FieldItem, FieldItemId, FieldItemString, IDUI, IDXEntity, PickId, Prop, Schema, UI, UiButton, UiSchema, Uq } from "tonva-react";
 
 export abstract class Mid {
 	readonly uq: Uq;
@@ -51,12 +51,14 @@ export abstract class Mid {
 		return ret;
 	}
 
-	protected buildGridProps(ui: UI):Prop[] {
+	protected buildGridProps(IDX: IDXEntity<any>):Prop[] {
 		let ret:Prop[] = [];
+		let {ui, t} = IDX;
 		let {fieldArr } = ui;
 		for (let f of fieldArr) {
 			let prop = {
-				...f
+				...f,
+				label: t(f.label),
 			};
 			ret.push(prop as any);
 		}

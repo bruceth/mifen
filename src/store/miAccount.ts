@@ -18,6 +18,7 @@ export class MiAccount  implements Account, AccountValue {
 
 	constructor(store: Store, account: Account&AccountValue) {
 		makeObservable(this, {
+			name: observable,
 			holdingStocks: observable,
 			count: observable,
 			miValue: observable,

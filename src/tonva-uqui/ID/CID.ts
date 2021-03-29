@@ -7,7 +7,7 @@ import { CFormView, FormUI } from "../form";
 import { MidID } from "./MidID";
 import { MidIDList } from "./MidIDList";
 import { VEdit } from "./VEdit";
-import { VView } from "./VView";
+import { VView, VViewRight } from "./VView";
 import { res } from "./res";
 
 export class CID<T extends IDBase> extends Controller {
@@ -71,6 +71,9 @@ export class CID<T extends IDBase> extends Controller {
 	}
 
 	onItemEdit = async (): Promise<void> => {
+		this.valueChanged = false;
+		await this.midID.init();
+		this.createFormView();
 		this.openVPage(VEdit);
 	}
 
@@ -111,5 +114,10 @@ export class CID<T extends IDBase> extends Controller {
 
 	get editHeader() {
 		return this.t(this.item? 'edit' : 'new') + ' ' + this.itemHeader;
+	}
+
+	renderViewRight(item?: T) {
+		if (item) this.item = item;
+		return this.renderView(VViewRight);
 	}
 }
