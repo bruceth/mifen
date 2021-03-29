@@ -88,7 +88,7 @@ export class MiAccount  implements Account, AccountValue {
 			await this.store.addMyAll(stock);
 			let hs = new HoldingStock(holdingId, stock, quantity, price*quantity);
 			hs.setQuantity(quantity);
-			hs.setCost(price, quantity);
+			hs.changeCost(price, quantity);
 			this.holdingStocks.push(hs);
 		}
 		else {
@@ -96,7 +96,7 @@ export class MiAccount  implements Account, AccountValue {
 			holdingId = orgHs.id;
 			let holdingQuantity = orgHs.quantity + quantity;
 			orgHs.setQuantity(holdingQuantity);
-			orgHs.setCost(price, quantity);
+			orgHs.changeCost(price, quantity);
 		}
 		await this.bookHolding(holdingId, price, quantity);
 	}
@@ -108,7 +108,7 @@ export class MiAccount  implements Account, AccountValue {
 		let holdingId = orgHs.id;
 		let holdingQuantity = orgHs.quantity + quantity;
 		orgHs.setQuantity(holdingQuantity);
-		orgHs.setCost(price, quantity);
+		orgHs.changeCost(price, quantity);
 		await this.bookHolding(holdingId, price, quantity);
 	}
 
@@ -151,7 +151,7 @@ export class MiAccount  implements Account, AccountValue {
 		let holding = this.holdingStocks.find(v => v.stock === stockId);
 		if (holding === undefined) return;
 		holding.setQuantity(holding.quantity - quantity);
-		holding.setCost(-price, quantity);
+		holding.changeCost(-price, quantity);
 		await this.bookHolding(holding.id, price, -quantity);
 	}
 

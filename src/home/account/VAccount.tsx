@@ -1,5 +1,6 @@
 import { observer } from "mobx-react";
 import React from "react";
+import scrollIntoView from 'scroll-into-view-if-needed';
 import { DropdownAction, DropdownActions, FA, List, LMR, VPage } from "tonva-react";
 import { nFormat0, nFormat1, smallPercent } from "tool";
 import { HoldingStock } from "../../store";
@@ -134,6 +135,7 @@ export class VAccount extends VPage<CAccount> {
 			if (actionsElement !== this.actionsElement) {
 				this.actionsElement = actionsElement;
 				(this.actionsElement as HTMLDivElement).className = 'd-block';
+				scrollIntoView(this.actionsElement as HTMLDivElement, { scrollMode: 'if-needed', behavior: 'smooth' });
 			}
 			else {
 				this.actionsElement = undefined;
@@ -169,7 +171,7 @@ export class VAccount extends VPage<CAccount> {
 				</div>
 			</div>
 			<div className="d-none">
-				<div className="d-flex border-top justify-content-end" 
+				<div className="d-flex justify-content-end py-1" 
 					onClick={()=>this.hideActionsElement()}>
 					<button className="btn btn-sm btn-outline-info ml-3"
 						onClick={() => showBuy(holding)}>加买</button>
