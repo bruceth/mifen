@@ -201,13 +201,13 @@ export class VAccount extends VPage<CAccount> {
 			if (market < portionAmount * 0.9) {
 				if (quantity > 0) {
 					if (neg === false) {
-						vBuyable = <>{buyable} <FA name="plus" className="text-info" /></>;
+						vBuyable = <>{buyable} <FA name="plus-square-o" className="text-info" /></>;
 					}
 				}
 			}
 			else if (market > portionAmount * 1.1) {
-				if (neg === false) {
-					vBuyable = <>{buyable} <FA name="minus" className="text-muted" /></>;
+				if (neg === true) {
+					vBuyable = <>{buyable} <FA name="minus-square-o" className="text-muted" /></>;
 				}
 			}
 			else {
