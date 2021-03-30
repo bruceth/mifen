@@ -140,33 +140,43 @@ abstract class VBuy extends VStock {
 	protected renderFormTop():JSX.Element {
 		return React.createElement(observer(() => {
 			let {miAccount, holdingStock, stock} = this.controller;
-			if (!stock && !holdingStock) return null;
 			let {portionAmount, cash} = miAccount;
 			if (typeof cash !== 'number') return null;
 			if (!portionAmount) return null;
-			if (!stock) stock = holdingStock.stockObj;
-			let {price} = stock;
-			let quantity: number;
-			if (holdingStock) {
-				quantity = portionAmount / price -  holdingStock.quantity;
-				if (quantity < 0) quantity = 0;
+			let vComment: any;
+			if (!stock && !holdingStock) {
+				vComment = <>
+					<FA name="bell-o mr-1 text-warning" />
+					建议不超过每份金额{portionAmount}
+				</>;
 			}
 			else {
-				quantity = portionAmount / price;
-			}
-			return <div className="pb-3 px-3 text-center small text-muted">
-				{
-					quantity === 0?
-					<>
-						<FA name="times-circle-o mr-1 text-danger" />
-						每份金额{portionAmount}，已超单只股票份额，建议不要购买
-					</>
-					:
-					<>
-						<FA name="check-circle-o mr-1 text-warning" />
-						每份金额{portionAmount}，建议不超过：{Math.round(quantity)} 股
-					</>
+				if (!stock) {
+					stock = holdingStock.stockObj;
 				}
+				let {price} = stock;
+				let quantity: number;
+				if (holdingStock) {
+					quantity = portionAmount / price -  holdingStock.quantity;
+					if (quantity < 0) quantity = 0;
+				}
+				else {
+					quantity = portionAmount / price;
+				}
+				vComment = quantity === 0?
+				<>
+					<FA name="times-circle-o mr-1 text-danger" />
+					每份金额{portionAmount}，已超单只股票份额，建议不要购买
+				</>
+				:
+				<>
+					<FA name="check-circle-o mr-1 text-warning" />
+					每份金额{portionAmount}，建议不超过：{Math.round(quantity)} 股
+				</>
+			}
+			
+			return <div className="pb-3 px-3 text-center small text-muted">
+				{vComment}
 			</div>;
 		}));		
 	}
