@@ -131,7 +131,7 @@ abstract class VBuy extends VStock {
 		let {cash} = miAccount;
 		if (typeof cash !== 'number') return;
 		let stock = holdingStock?.stockObj || this.controller.stock;
-		let quantity = context.data.quantity;
+		let quantity = context.data.value;
 		let {price} = stock;
 		if ((quantity as number) * (price as number) > (cash as number))
 			return `超过账户资金余额，无法买入`;

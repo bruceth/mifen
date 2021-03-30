@@ -127,6 +127,9 @@ export class MiAccount  implements Account, AccountValue {
 			orgHs.setQuantity(holdingQuantity);
 			orgHs.changeCost(price, quantity);
 		}
+		if (this.cash) {
+			this.cash -= price * quantity;
+		}
 		await this.bookHolding(holdingId, price, quantity);
 	}
 
@@ -138,6 +141,9 @@ export class MiAccount  implements Account, AccountValue {
 		let holdingQuantity = orgHs.quantity + quantity;
 		orgHs.setQuantity(holdingQuantity);
 		orgHs.changeCost(price, quantity);
+		if (this.cash) {
+			this.cash -= price * quantity;
+		}
 		await this.bookHolding(holdingId, price, quantity);
 	}
 
@@ -197,6 +203,9 @@ export class MiAccount  implements Account, AccountValue {
 		if (holding === undefined) return;
 		holding.setQuantity(holding.quantity - quantity);
 		holding.changeCost(-price, quantity);
+		if (this.cash) {
+			this.cash += price * quantity;
+		}
 		await this.bookHolding(holding.id, price, -quantity);
 	}
 
