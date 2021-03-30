@@ -183,19 +183,31 @@ export class VAccount extends VPage<CAccount> {
 		}
 		let vBuyable: any;
 		if (cash) {
-			let buyable: number;
+			let buyable: number = (portionAmount - market) / price;
+			let neg: boolean = false;
+			if (buyable < 0) {
+				neg = true;
+				buyable = -buyable;
+			}
+			if (buyable < 10) {
+				buyable = Math.round(buyable);
+			}
+			else if (buyable < 100) {
+				buyable = Math.round(buyable / 10) * 10;
+			}
+			else {
+				buyable = Math.round(buyable / 100) * 100;
+			}
 			if (market < portionAmount * 0.9) {
 				if (quantity > 0) {
-					buyable = Math.round((portionAmount - market) / price);
-					if (buyable > 0) {
-						vBuyable = <>{buyable} <FA name="plus-circle" className="text-info" /></>;
+					if (neg === false) {
+						vBuyable = <>{buyable} <FA name="plus" className="text-info" /></>;
 					}
 				}
 			}
 			else if (market > portionAmount * 1.1) {
-				buyable = Math.round((market - portionAmount) / price);
-				if (buyable > 0) {
-					vBuyable = <>{buyable} <FA name="minus-circle" className="text-muted" /></>;
+				if (neg === false) {
+					vBuyable = <>{buyable} <FA name="minus" className="text-muted" /></>;
 				}
 			}
 			else {
