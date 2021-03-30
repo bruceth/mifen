@@ -80,7 +80,12 @@ export class VAccount extends VPage<CAccount> {
 							<li>
 								<small className="">份数:</small> {portion} &nbsp; 
 								<small className="">份额:</small> <span className="text-danger">{portionAmount}</span> &nbsp; 
-								<small className="">可加</small> {buyableCount}只 &nbsp; 
+								{
+									buyableCount > 0?
+									<><small className="">可加</small> {buyableCount}只</>
+									:
+									<><small className="">已超</small> {-buyableCount}只</>
+								}
 							</li>
 							<li className="">
 								<small className="text-info">保持分散，单只股票不超资金份额</small>
