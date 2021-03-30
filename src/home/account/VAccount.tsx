@@ -2,7 +2,7 @@ import { observer } from "mobx-react";
 import React from "react";
 import scrollIntoView from 'scroll-into-view-if-needed';
 import { DropdownAction, DropdownActions, FA, List, LMR, VPage } from "tonva-react";
-import { nFormat0, nFormat1, smallPercent } from "tool";
+import { NFormat, nFormat0, nFormat1, nFormat2, smallPercent } from "tool";
 import { HoldingStock } from "../../store";
 import { CAccount } from "./CAccount";
 
@@ -134,14 +134,9 @@ export class VAccount extends VPage<CAccount> {
 		}));
 	}
 
-	private f0String(v:number, suffix:string|JSX.Element = ''):string|JSX.Element {
+	private fString(v:number, nFormat:NFormat, suffix:string|JSX.Element = ''):string|JSX.Element {
 		if (v === null || v === undefined || isNaN(v) === true) return '-';
-		return <>{v.toLocaleString(undefined, nFormat0)}{suffix}</>;
-	}
-
-	private f1String(v:number, suffix:string|JSX.Element = ''):string|JSX.Element {
-		if (v === null || v === undefined || isNaN(v) === true) return '-';
-		return <>{v.toLocaleString(undefined, nFormat1)}{suffix}</>;
+		return <>{v.toLocaleString(undefined, nFormat)}{suffix}</>;
 	}
 
 	private hideActionsElement() {
@@ -207,20 +202,20 @@ export class VAccount extends VPage<CAccount> {
 				onClick={onClick}>
 				<div className="col-3 px-0">
 					<div>{name}</div>
-					<div className="">{this.f1String(market)}</div>
+					<div className="">{this.fString(market, nFormat1)}</div>
 				</div>
 				<div className="col px-0 text-right">
-					<div>{this.f0String(quantity)}</div>
+					<div>{this.fString(quantity, nFormat0)}</div>
 					<div className="small">{vBuyable}</div>
 				</div>
-				<div className="col px-0 text-right">{this.f1String(miRate, smallPercent)}</div>
+				<div className="col px-0 text-right">{this.fString(miRate, nFormat1, smallPercent)}</div>
 				<div className="col px-0 text-right">
-					<div className="text-right">{this.f1String(price)}</div>
-					<div className="text-right small">{this.f1String(cost/quantity)}</div>
+					<div className="text-right">{this.fString(price, nFormat2)}</div>
+					<div className="text-right small">{this.fString(cost/quantity, nFormat2)}</div>
 				</div>
 				<div className="col px-0 text-right">
-					<div className="text-right">{this.f1String((market - cost)*100/cost, smallPercent)}</div>
-					<div className="text-right small">{this.f1String(market - cost)}</div>
+					<div className="text-right">{this.fString((market - cost)*100/cost, nFormat1, smallPercent)}</div>
+					<div className="text-right small">{this.fString(market - cost, nFormat1)}</div>
 				</div>
 			</div>
 			<div className="d-none">

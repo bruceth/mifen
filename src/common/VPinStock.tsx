@@ -9,6 +9,7 @@ export class VPinStock extends View<CCommon> {
 		return React.createElement(observer(() => {
 			let isSelected = this.controller.isMyAll(stock);
 			if (isSelected === true) {
+				/*
 				return <DropdownActions actions={[
 					{
 						caption: '修改分组',
@@ -25,7 +26,11 @@ export class VPinStock extends View<CCommon> {
 					}
 				]} icon="cog" content="分组"
 				className="cursor-pointer btn btn-sm btn-outline-info align-self-start" />;
-				// dropdown-toggle 
+				*/
+				return <button className="btn btn-sm btn-outline-info align-self-start" 
+					onClick={() => this.controller.setStockToGroup(stock)}>
+					<FA name="cog" className="small mr-1" fixWidth={true} />分组
+				</button>;
 			}
 			else {
 				return <button className="btn btn-sm btn-outline-primary align-self-start" 

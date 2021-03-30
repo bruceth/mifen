@@ -1,3 +1,4 @@
+import { makeObservable, observable } from "mobx";
 import { Holding, Portfolio, Stock, StockValue } from "uq-app/uqs/BruceYuMi";
 
 export class HoldingStock implements Holding, Portfolio {
@@ -13,6 +14,9 @@ export class HoldingStock implements Holding, Portfolio {
 	stockObj: Stock & StockValue;
 
 	constructor(holdingId: number, stock: Stock & StockValue, quantity: number, cost: number) {
+		makeObservable(this, {
+			cost: observable,
+		});
 		this.id = holdingId;
 		this.stock = stock.id;
 		this.stockObj = stock;

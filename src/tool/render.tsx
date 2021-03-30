@@ -90,13 +90,23 @@ export function renderStockRow(order: number, stock: Stock&StockValue, onClickNa
 export function formatNumber(num: number): string {
 	return num.toLocaleString(undefined, nFormat0); // nFormat.format(num);
 }
-export const nFormat0 = {
+
+export interface NFormat {
+	minimumFractionDigits: number;
+	maximumFractionDigits: number;
+}
+
+export const nFormat0:NFormat = {
 	minimumFractionDigits: 0,
 	maximumFractionDigits: 0,
 };
-export const nFormat1 = { 
+export const nFormat1:NFormat = {
 	minimumFractionDigits: 1,
 	maximumFractionDigits: 1,
+};
+export const nFormat2:NFormat = {
+	minimumFractionDigits: 2,
+	maximumFractionDigits: 2,
 };
 
 export function renderStockUrl(row: NStockInfo) {

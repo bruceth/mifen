@@ -5,6 +5,7 @@ import { renderGroup } from "tool";
 import { CUqBase } from "uq-app";
 import { Account, Group, Stock, StockValue } from "uq-app/uqs/BruceYuMi";
 import { VBlockStock } from "./VBlockStock";
+import { VEmpty } from "./VEmpty";
 import { VKeepStock } from "./VKeepStock";
 import { VPinStock } from "./VPinStock";
 import { VStockInGroup } from "./VStockInGroup";
@@ -64,6 +65,10 @@ export class CCommon extends CUqBase {
 		else {
 			await miGroups.removeStockFromGroup(this.stock, group);
 		}
+	}
+
+	showEmptyPage = () => {
+		this.openVPage(VEmpty);
 	}
 
 	renderPinStock = (stock: Stock & StockValue) => {

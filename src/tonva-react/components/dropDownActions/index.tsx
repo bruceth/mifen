@@ -34,6 +34,7 @@ export class DropdownActions extends React.Component<DropdownActionsProps, Dropd
         };
     }
 
+	/*
     componentDidMount() {
         document.addEventListener('click', this.handleDocumentClick);
         document.addEventListener('touchstart', this.handleDocumentClick);
@@ -43,19 +44,28 @@ export class DropdownActions extends React.Component<DropdownActionsProps, Dropd
         document.removeEventListener('click', this.handleDocumentClick);
         document.removeEventListener('touchstart', this.handleDocumentClick);
     }
+	*/
 
     private handleDocumentClick = (evt:any) => {
-        if (this.state.dropdownOpen === false) return;
-        if (this.button && this.button.contains(evt.target)) return;
+		document.removeEventListener('click', this.handleDocumentClick);
+		document.removeEventListener('touchstart', this.handleDocumentClick);
+		if (this.state.dropdownOpen === false) return;
+        //if (this.button && this.button.contains(evt.target)) return;
         if (!this.menu) return;
         //if (!this.menu.contains(evt.target)) 
         this.toggle();
     }
 
     private toggle = () => {
-        this.setState({
-            dropdownOpen: !this.state.dropdownOpen
-        });
+		let {dropdownOpen} = this.state;
+		dropdownOpen = !dropdownOpen;
+        this.setState({dropdownOpen});
+		if (dropdownOpen === true) {
+			setTimeout(() => {
+				document.addEventListener('click', this.handleDocumentClick);
+				document.addEventListener('touchstart', this.handleDocumentClick);	
+			},10)
+		}
     }
 
     render() {

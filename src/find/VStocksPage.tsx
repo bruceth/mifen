@@ -59,6 +59,7 @@ export class VStocksPage extends VPage<CFind> {
 					}
 				</div>
 				<div className="text-muted small py-1 ml-auto align-self-center">
+					<button onClick={this.controller.cApp.cCommon.showEmptyPage}>test</button>
 					<FA name="star-o" /> 近五年分红增长持续度
 				</div>
 			</div>;
