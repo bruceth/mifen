@@ -188,14 +188,14 @@ export class VAccount extends VPage<CAccount> {
 				if (quantity > 0) {
 					buyable = Math.round((portionAmount - market) / price);
 					if (buyable > 0) {
-						vBuyable = <>{buyable} <FA name="arrow-circle-up" className="text-info" /></>;
+						vBuyable = <>{buyable} <FA name="plus-circle" className="text-info" /></>;
 					}
 				}
 			}
 			else if (market > portionAmount * 1.1) {
 				buyable = Math.round((market - portionAmount) / price);
 				if (buyable > 0) {
-					vBuyable = <>{buyable} <FA name="arrow-circle-down" className="text-muted" /></>;
+					vBuyable = <>{buyable} <FA name="minus-circle" className="text-muted" /></>;
 				}
 			}
 			else {
