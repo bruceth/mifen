@@ -46,14 +46,6 @@ export class Store {
 	private buildStockValues(stock: Stock & StockValue) {
 		if (stock === undefined) return;
 		let {market} = stock;
-		/*
-		let {miValue, incValue, earning, divident, price, market} = stock;
-		if (miValue) stock.miValue = miValue;
-		if (incValue) stock.incValue = incValue;
-		if (earning) stock.earning = earning;
-		if (divident) stock.divident = divident;
-		if (price) stock.price = price;
-		*/
 		(stock as any).$market = this.markets[market];
 	}
 	
@@ -134,6 +126,28 @@ export class Store {
 	}
 
 	async loadGroupStocks(groupId: number):Promise<(Stock&StockValue)[]> {
+		let unloadArr: number[] = [];
+		let ret: (Stock&StockValue)[] = [];
+		this.groupIXs.forEach(gs => {
+			let {ix, id:gStockId} = gs;
+			if (ix !== groupId) return;
+			let stock = this.stocksMyAll.find(v => v.id === gStockId);
+			if (stock) ret.push(stock);
+			else unloadArr.push(gStockId);
+		});
+		if (unloadArr.length > 0) {
+			let stockArr = await this.yumi.ID<Stock&StockValue>({
+				IDX: [this.yumi.Stock, this.yumi.StockValue],
+				id: unloadArr,
+			});
+			for (let stock of stockArr) {
+				this.buildStockValues(stock);
+				this.stocksMyAll.push(stock);
+				ret.push(stock);
+			}
+		}
+
+		/*
 		let ret = this.stocksMyAll.filter(v => {
 			let stockId = v.id;
 			let ok = this.groupIXs.findIndex(gs => {
@@ -142,6 +156,7 @@ export class Store {
 			}) >= 0;
 			return ok;
 		});
+		*/
 		return ret;
 	}
 

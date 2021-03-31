@@ -155,7 +155,7 @@ export class VAccount extends VPage<CAccount> {
 		let {showHolding, showBuy, showSell, showChangeCost, showTransactionDetail, miAccount} = this.controller;
 		let {portionAmount, cash} = miAccount;
 		let {stockObj, quantity, market, cost} = holding;
-		let {name} = stockObj;
+		let {name, no} = stockObj;
 		let onClick = (evt: React.MouseEvent) => {
 			if (this.actionsElement) {
 				(this.actionsElement as HTMLDivElement).className = 'd-none';
@@ -219,11 +219,11 @@ export class VAccount extends VPage<CAccount> {
 				onClick={onClick}>
 				<div className="col-3 px-0">
 					<div>{name}</div>
-					<div className="">{this.fString(market, nFormat1)}</div>
+					<div className="small">{no}</div>
 				</div>
 				<div className="col px-0 text-right">
 					<div>{this.fString(quantity, nFormat0)}</div>
-					<div className="small">{vBuyable}</div>
+					<div className="">{this.fString(market, nFormat1)}</div>
 				</div>
 				<div className="col px-0 text-right">{this.fString(miRate, nFormat1, smallPercent)}</div>
 				<div className="col px-0 text-right">
@@ -238,6 +238,7 @@ export class VAccount extends VPage<CAccount> {
 			<div className="d-none">
 				<div className="d-flex mt-2 px-2 pt-2 pb-1 align-items-center border-top" 
 					onClick={()=>this.hideActionsElement()}>
+					<div className="mr-5">{vBuyable}</div>
 					<button className="btn btn-sm btn-outline-info mr-3 "
 						onClick={() => showBuy(holding)}>买入</button>
 					<button className="btn btn-sm btn-outline-info mr-3 "
