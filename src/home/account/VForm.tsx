@@ -44,10 +44,10 @@ abstract class VForm extends VPage<CAccount> {
 		let {holdingStock} = this.controller;
 		if (!holdingStock) return null;
 		let {stockObj, quantity, miValue, market} = holdingStock;
-		let {name, code} = stockObj;
+		let {name, no} = stockObj;
 		return <div className="py-2">
 			<div className="mr-auto px-3 mb-2">
-				<b>{name}</b> <span className="ml-2 small text-muted">{code}</span>
+				<b>{name}</b> <span className="ml-2 small text-muted">{no}</span>
 			</div>
 			<div className="d-flex my-2 py-2 border-top border-bottom justify-content-center text-center bg-white">
 				{this.renderQuantity('股数', quantity)}
@@ -199,8 +199,8 @@ export class VBuyNew extends VBuy {
 	}
 
 	private renderStockPick = (values: Stock):JSX.Element => {
-		let {name, code} = values;
-		return <>{name} <small className="text-muted">{code}</small></>;
+		let {name, no} = values;
+		return <>{name} <small className="text-muted">{no}</small></>;
 	}
 
 	protected async onSubmit(data:any): Promise<void> {

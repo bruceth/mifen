@@ -1,6 +1,6 @@
 import { observer } from "mobx-react";
 import React from "react";
-import { DropdownActions, FA, View } from "tonva-react";
+import { FA, View } from "tonva-react";
 import { Stock, StockValue } from "uq-app/uqs/BruceYuMi";
 import { CCommon } from "./CCommon";
 

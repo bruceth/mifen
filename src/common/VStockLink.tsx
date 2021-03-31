@@ -4,14 +4,14 @@ import { CCommon } from "./CCommon";
 
 export class VStockLink extends View<CCommon> {
 	render(stock: Stock & StockValue):JSX.Element {
-		let {code} = stock;
+		let {no} = stock;
 		let $market = (stock as any).$market;
 		let mn = $market.name;
-		let symbol = mn + code;
+		let symbol = mn + no;
 		let url:string, title:string;
 		switch (mn) {
 			case 'hk':
-				url = `https://xueqiu.com/S/${code}`;
+				url = `https://xueqiu.com/S/${no}`;
 				title = '雪球';
 				break;
 			default:
@@ -19,7 +19,7 @@ export class VStockLink extends View<CCommon> {
 				title = '新浪财经';
 				break;
 		}
-		return <a className="btn btn-link d-sm-inline d-none" href={url} target="_blank" rel="noreferrer">
+		return <a className="btn btn-sm btn-link d-sm-inline d-none" href={url} target="_blank" rel="noreferrer">
 			{title}
 		</a>;
 	}

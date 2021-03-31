@@ -85,7 +85,7 @@ export class CApp extends CUqApp {
 	}
 
 	openStock = (stock: Stock & StockValue) => {
-		let {name, code, rawId} = stock;
+		let {name, no, rawId} = stock;
         let market = (stock as any).$market;
 		let date = new Date();
 		let year = date.getFullYear();
@@ -94,9 +94,9 @@ export class CApp extends CUqApp {
 		this.showStock({
 			id: rawId, 
 			name,
-			code,
+			code: no,
             market: market.name,
-			symbol: market.name + code,
+			symbol: market.name + no,
 			day: year*10000 + month*100 + dt,
 			stock
 		} as any);

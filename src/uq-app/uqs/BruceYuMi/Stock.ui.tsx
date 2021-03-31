@@ -17,8 +17,8 @@ const fields = {
 		"isKey": true,
 		"label": "Market"
 	} as FieldItemId,
-	code: {
-		"name": "code",
+	no: {
+		"name": "no",
 		"type": "string",
 		"isKey": true,
 		"widget": "string",
@@ -48,7 +48,7 @@ const fields = {
 /*==fields==*/
 
 export const fieldArr: FieldItem[] = [
-	fields.market, fields.code, fields.name, fields.search, fields.rawId, 
+	fields.market, fields.no, fields.name, fields.search, fields.rawId, 
 ];
 
 export const ui: UI = {
@@ -65,6 +65,6 @@ export const res: Res<any> = {
 };
 
 export function render(item: Stock):JSX.Element {
-	let {name, code} = item;
-	return <><span>{name}</span> <span>{code}</span></>;
+	let {name, no} = item;
+	return <><span>{name}</span> <span>{no}</span></>;
 };

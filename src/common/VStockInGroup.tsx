@@ -12,7 +12,7 @@ export class VStockInGroup extends VPage<CCommon> {
 		return React.createElement(observer(() => {
 			let {stock, cApp, setGroup} = this.controller;
 			if (!stock) return <div>no stock, can set group</div>;
-			let {id:stockId, name, code} = stock;
+			let {id:stockId, name, no} = stock;
 			let {store} = cApp;
 			let {miGroups} = store;
 			let {groups} = miGroups;
@@ -20,7 +20,7 @@ export class VStockInGroup extends VPage<CCommon> {
 			return <div>
 				<div className="p-3">
 					<b>{name}</b> 
-					<span className="ml-3">{code}</span>
+					<span className="ml-3">{no}</span>
 				</div>
 				<div className="d-flex flex-wrap py-1 border-top border-bottom">
 					{groups.map(v => {

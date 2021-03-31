@@ -30,13 +30,13 @@ function renderValue(caption:string, value:number, valueType:'p0'|'p1'|'n1'|'n2'
 }
 
 export function renderStockName(stock: Stock):JSX.Element {
-	let { name, code } = stock;
+	let { name, no } = stock;
 	let $market = (stock as any).$market;
 	return <>
 		{$market && <>{$market.el}&nbsp;</>}
 		<span className="text-primary">{name}</span>
 		&nbsp; 
-		<span className="text-info">{code}</span>
+		<span className="text-info">{no}</span>
 		&nbsp;
 	</>;
 }

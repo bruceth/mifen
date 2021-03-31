@@ -84,7 +84,7 @@ export class VStockInfo extends VPage<CStockInfo> {
     private baseInfo = observer(() => {
         let { stock, baseItem } = this.controller;
         let { cCommon } = this.controller.cApp;
-        let pinStock = <div className="d-flex align-self-stretch">
+        let pinStock = <div className="d-flex align-self-stretch align-items-center">
             {cCommon.renderStockLink(stock)}
 			&nbsp;
 			{cCommon.renderPinStock(stock)}

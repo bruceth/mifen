@@ -32,7 +32,7 @@ export interface Tuid$sheet {
 export interface ParamWriteStock {
 	stocks: {
 		market: string;
-		code: string;
+		no: string;
 		name: string;
 		rawId: number;
 		incValue: number;
@@ -55,7 +55,7 @@ interface ResultWriteStock {
 export interface ParamWritePrice {
 	prices: {
 		market: string;
-		code: string;
+		no: string;
 		name: string;
 		rawId: number;
 		price: number;
@@ -86,7 +86,7 @@ interface ReturnSearchStock$page {
 	$order: number;
 	id: number;
 	market: number;
-	code: string;
+	no: string;
 	name: string;
 	rawId: number;
 	miValue: number;
@@ -188,7 +188,7 @@ export interface $PiecewiseDetail {
 export interface Stock {
 	id?: number;
 	market: number;
-	code: string;
+	no: string;
 	name: string;
 	search: string;
 	rawId: number;
