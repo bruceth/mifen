@@ -219,36 +219,44 @@ export class VAccount extends VPage<CAccount> {
 				onClick={onClick}>
 				<div className="col-3 px-0">
 					<div>{name}</div>
-					<div className="small">{no}</div>
+					<div>{no}</div>
 				</div>
 				<div className="col px-0 text-right">
 					<div>{this.fString(quantity, nFormat0)}</div>
-					<div className="">{this.fString(market, nFormat1)}</div>
+					<div className="small">{this.fString(market, nFormat1)}</div>
 				</div>
 				<div className="col px-0 text-right">{this.fString(miRate, nFormat1, smallPercent)}</div>
 				<div className="col px-0 text-right">
-					<div className="text-right">{this.fString(price, nFormat2)}</div>
-					<div className="text-right small">{this.fString(cost/quantity, nFormat2)}</div>
+					<div className="">{this.fString(price, nFormat2)}</div>
+					<div className="small">{this.fString(cost/quantity, nFormat2)}</div>
 				</div>
 				<div className="col px-0 text-right">
-					<div className="text-right">{this.fString((market - cost)*100/cost, nFormat1, smallPercent)}</div>
-					<div className="text-right small">{this.fString(market - cost, nFormat1)}</div>
+					<div className="">{this.fString((market - cost)*100/cost, nFormat1, smallPercent)}</div>
+					<div className="small">{this.fString(market - cost, nFormat1)}</div>
 				</div>
 			</div>
 			<div className="d-none">
-				<div className="d-flex mt-2 px-2 pt-2 pb-1 align-items-center border-top" 
+				<div className="row mt-2 mx-0 pt-2 pb-1 align-items-center border-top" 
 					onClick={()=>this.hideActionsElement()}>
-					<div className="mr-5">{vBuyable}</div>
-					<button className="btn btn-sm btn-outline-info mr-3 "
-						onClick={() => showBuy(holding)}>买入</button>
-					<button className="btn btn-sm btn-outline-info mr-3 "
-						onClick={() => showSell(holding)}>卖出</button>
-					<button className="btn btn-sm btn-link ml-auto "
-						onClick={() => showChangeCost(holding)}>改成本</button>
-					<button className="btn btn-sm btn-link ml-3 "
-						onClick={() => showTransactionDetail(holding)}>明细</button>
-					<button className="btn btn-sm btn-link ml-3 "
-						onClick={() => showHolding(holding)}>分析</button>
+					<div className="col-sm-3 col-auto px-0">
+						<button className="btn btn-sm btn-outline-info mr-1 mr-sm-3 "
+							onClick={() => showBuy(holding)}>买入</button>
+						<button className="btn btn-sm btn-outline-info mr-1 mr-sm-3 "
+							onClick={() => showSell(holding)}>卖出</button>
+					</div>
+					<div className="col-sm col-auto px-0 text-right ml-auto ">{vBuyable}</div>
+					<div className="col-sm col-auto px-0 text-right ml-sm-0 ml-3">
+						<button className="btn btn-sm btn-link"
+							onClick={() => showHolding(holding)}>分析</button>
+					</div>
+					<div className="col-sm col-auto px-0 text-right">
+						<button className="btn btn-sm btn-link"
+							onClick={() => showChangeCost(holding)}>改成本</button>
+					</div>
+					<div className="col-sm col-auto px-0 text-right">
+						<button className="btn btn-sm btn-link"
+							onClick={() => showTransactionDetail(holding)}>明细</button>
+					</div>
 				</div>
 			</div>
 		</div>;
