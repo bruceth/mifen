@@ -1,4 +1,4 @@
-import { ButtonSchema, FieldItem, FieldItemId, FieldItemString, IDUI, IDXEntity, PickId, Prop, Schema, UI, UiButton, UiSchema, Uq } from "tonva-react";
+import { ButtonSchema, FieldItem, FieldItemId, FieldItemString, IDUI, IDXEntity, PickId, Prop, Schema, UiButton, UiSchema, Uq } from "tonva-react";
 
 export abstract class Mid {
 	readonly uq: Uq;

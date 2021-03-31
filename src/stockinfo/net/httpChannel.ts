@@ -1,7 +1,6 @@
 import {FetchError} from './fetchError';
 import {HttpChannelUI} from './httpChannelUI';
 import {env, nav} from 'tonva-react';
-import { consts } from './consts';
 
 export async function httpGet(url:string, params?:any):Promise<any> {
     let channel = new HttpChannel(url, undefined, undefined);

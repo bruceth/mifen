@@ -1,5 +1,4 @@
 import { observer } from "mobx-react";
-import { Observer } from "mobx-react-lite";
 import React from "react";
 import { IntSchema, ButtonSchema, UiNumberItem, UiButton, Form, Schema, VPage, UiSchema, Context, NumSchema, IdSchema, UiIdItem, ItemSchema, FA } from "tonva-react";
 import { formatNumber } from "tool";

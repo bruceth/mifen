@@ -1,5 +1,5 @@
-import { action, IObservableArray, makeObservable, observable } from "mobx";
-import { PickId, Context, IDUI } from "tonva-react";
+import { IObservableArray, makeObservable, observable } from "mobx";
+import { PickId, Context } from "tonva-react";
 import { MiAccount, MiGroup, HoldingStock } from "../../store";
 import { Stock, StockValue } from "uq-app/uqs/BruceYuMi";
 import { CApp, CUqSub, UQs } from "../../uq-app";

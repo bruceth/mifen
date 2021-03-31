@@ -1,4 +1,4 @@
-import { action, autorun, computed, IObservableArray, makeObservable, observable, runInAction } from "mobx";
+import { action, autorun, IObservableArray, makeObservable, observable, runInAction } from "mobx";
 import { Account, AccountValue, Holding, Portfolio } from "uq-app/uqs/BruceYuMi";
 import { HoldingStock } from "./holdingStock";
 import { Store } from "./store";

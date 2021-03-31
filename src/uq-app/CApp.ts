@@ -12,7 +12,7 @@ import { CFind } from "find";
 import { Stock, StockValue } from "./uqs/BruceYuMi";
 import { CCommon } from "../common";
 
-const gaps = [10, 3,3,3,3,3,5,5,5,5,5,5,5,5,10,10,10,10,15,15,15,30,30,60];
+//const gaps = [10, 3,3,3,3,3,5,5,5,5,5,5,5,5,10,10,10,10,15,15,15,30,30,60];
 
 export class CApp extends CUqApp {
 	//cHome: CHome;
