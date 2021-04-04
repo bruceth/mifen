@@ -4,7 +4,7 @@ ID Market (
 	currency char(20),
 );
 
-ID Stock (
+ID Stock ver 0.2 (
 	id,
 	KEY market ID Market,
 	KEY no,
@@ -114,7 +114,7 @@ PAGE ORDER Switch (miRateDesc, dvRateDesc, roeDesc, miRateAsc, dvRateAsc, roeAsc
 		-- LIMIT $pageSize;
 };
 
-OPEN ACT WriteStock ver 0.1 (
+OPEN ACT WriteStock ver 0.2 (
 	ARR stocks (
 		market char(100),
 		no char(20),
@@ -153,7 +153,7 @@ OPEN ACT WriteStock ver 0.1 (
 	}
 };
 
-OPEN ACT WritePrice ver 0.1 (
+OPEN ACT WritePrice ver 0.2 (
 	ARR prices (
 		market char(100),
 		no char(20),

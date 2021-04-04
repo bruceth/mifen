@@ -193,7 +193,7 @@ export class MiAccount  implements Account, AccountValue {
 			}],
 			portfolio: [{
 				id: holdingId,
-				cost: {value:cost, act: '='},
+				cost: {value:cost, setAdd: '='},
 			}],
 		});
 	}
@@ -222,7 +222,7 @@ export class MiAccount  implements Account, AccountValue {
 		for (let hs of this.holdingStocks) {
 			let {stockObj, market, divident, quantity} = hs;
 			let {miRate} = stockObj;
-			let miValue = miRate * market / 100;
+			let miValue = (miRate??0) * market / 100;
 			hs.miValue = miValue;
 			sumMiValue += miValue;
 			sumMarket += market;

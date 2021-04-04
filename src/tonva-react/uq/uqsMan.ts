@@ -134,7 +134,8 @@ export class UQsMan {
 
     async init(uqsData:UqData[]):Promise<void> {
         let promiseInits: PromiseLike<void>[] = uqsData.map(uqData => {
-			let {uqOwner, uqName} = uqData;
+			let {uqOwner, uqName, uqAlias} = uqData;
+			if (uqAlias) uqName = uqAlias;
 			let uqFullName = uqOwner + '/' + uqName;
 			let uq = new UqMan(this, uqData, undefined, this.tvs[uqFullName] || this.tvs[uqName]);
 			this.uqMans.push(uq);
@@ -271,14 +272,17 @@ async function loadAppUqs(appOwner:string, appName:string): Promise<UqAppData> {
 }
 
 async function loadUqs(uqConfigs: UqConfig[]): Promise<UqData[]> {
-	let uqs: {owner:string; name:string; version:string}[] = uqConfigs.map(
+	let uqs: {owner:string; name:string; alias:string; version:string}[] = uqConfigs.map(
 		v => {
-			let {dev, name, version} =v;
+			let {dev, name, version, alias} =v;
 			let {name:owner} = dev;
-			return {owner, name, version};
+			return {owner, name, version, alias};
 		}
 	);
     let centerAppApi = new CenterAppApi('tv/', undefined);
-    let ret = await centerAppApi.uqs(uqs);
+    let ret:UqData[] = await centerAppApi.uqs(uqs);
+	for (let i=0; i<uqs.length; i++) {
+		ret[i].uqAlias = uqs[i].alias;
+	}
     return ret;
 }

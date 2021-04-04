@@ -291,6 +291,7 @@ export interface UqData {
     id: number;
     uqOwner: string;
     uqName: string;
+	uqAlias: string;
     access: string;
     newVersion: boolean;
 }

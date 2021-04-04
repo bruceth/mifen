@@ -197,7 +197,7 @@ export interface ParamIDxID {
 export interface IDXValue {
 	value: number;
 	time?: number|Date;
-	act: '='|'+';
+	setAdd: '='|'+';
 }
 
 export interface ParamIDinIX {
@@ -670,11 +670,10 @@ export class UqMan {
 	}
 
 	getUqKey() {
-		//let l = this.uqName.toLowerCase();
 		let uqKey:string = this.uqName.split(/[-._]/).join('').toLowerCase();
 		if (this.config) {
-			let {dev} = this.config;
-			uqKey = capitalCase(dev.alias || dev.name) + capitalCase(uqKey);
+			let {dev, alias} = this.config;
+			uqKey = capitalCase(dev.alias || dev.name) + capitalCase(alias??uqKey);
 		}
 		return uqKey;
 	}
