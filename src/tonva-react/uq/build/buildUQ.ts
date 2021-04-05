@@ -380,6 +380,8 @@ function buildIDXInterface(idx: IDX):string {
 		ts += `: ${s};`;
 	}
 
+	ts += `\n\t$act?: number;`;
+
 	let hasTrack:boolean = false;
 	let hasMemo:boolean = false;
 	if (exFields) {
@@ -410,14 +412,10 @@ function buildIDXActParamInterface(idx: IDX):string {
 		if (!s) s = 'any';
 		ts += `\n${'\t'.repeat(indent)}${name}`;
 		if (name !== 'id') ts += '?';
-		//let exField = (exFields as any[])?.find(v => v.name === name);
-		//if (exField) {
-			ts += `: ${s}|IDXValue;`;
-		//}
-		//else {
-		//	ts += `: ${s};`;
-		//}
+		ts += `: ${s}|IDXValue;`;
 	}
+
+	ts += `\n\t$act?: number;`;
 
 	let hasTrack:boolean = false;
 	let hasMemo:boolean = false;

@@ -45,8 +45,8 @@ export class MiAccount  implements Account, AccountValue {
 		let sorter = (a:HoldingStock, b:HoldingStock) => {
 			let {stockObj:ao} = a;
 			let {stockObj:bo} = b;
-			let aMiRate = ao.miRate;
-			let bMiRate = bo.miRate;
+			let aMiRate = ao.miRate ?? 0;
+			let bMiRate = bo.miRate ?? 0;
 			if (aMiRate < bMiRate) return 1;
 			if (aMiRate > bMiRate) return -1;
 			return 0;
