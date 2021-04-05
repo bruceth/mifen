@@ -6,7 +6,7 @@ import { MidIDX } from "./MidIDX";
 import { MidIDXList } from "./MidIDXList";
 import { res } from "./res";
 import { VEdit } from "./VEdit";
-import { VHistory } from "./VHistory";
+import { VHistory, VHistoryPage } from "./VHistory";
 import { VView } from "./VView";
 
 export class CIDX extends Controller {
@@ -14,6 +14,7 @@ export class CIDX extends Controller {
 	spanValues: any = null;
 	dayValues: number[] = null;
 	midIDX: MidIDX;
+	private cList: CList<any>;
 	private historyPageItems: HistoryPageItems<any>
 	constructor(midIDX: MidIDX) {
 		super();
@@ -28,13 +29,17 @@ export class CIDX extends Controller {
 		this.historyPageItems = new HistoryPageItems<any>(midIDX.historyLoader);
 	}
 
-	protected async internalStart() {
+	protected async beforeStart():Promise<boolean> {
 		await this.midIDX.init();
 		let {uq, ID, IDX} = this.midIDX;
 		let midIDXList = new MidIDXList(uq, ID, IDX);
 		midIDXList.onItemClick = this.onItemClick;
-		let cList = new CList(midIDXList);
-		await cList.start();
+		this.cList = new CList(midIDXList);
+		return true;
+	}
+
+	protected async internalStart() {
+		await this.cList.start();
 	}
 
 	item:any;
@@ -80,16 +85,27 @@ export class CIDX extends Controller {
 
 	get historyItems():PageItems<any> {return this.historyPageItems;}
 	field:string;
-	async onFieldHistory(field:string) {
+
+	async startFieldHistory(item: any, field:string) {
+		this.item = item;
 		this.field = field;
 		await this.midIDX.init();
+		await this.setTimeSpan('year');
 		this.historyPageItems.first({
 			id: this.item.id,
 			far: this.timeSpan.far,
-			near: this.timeSpan.near,
+			near: 1817507137000, //this.timeSpan.near,
 			field
 		});
-		this.openVPage(VHistory);
+	}
+
+	renderFieldHistory() {
+		return this.renderView(VHistory);
+	}
+
+	async showFieldHistory(field:string) {
+		await this.startFieldHistory(this.item, field);
+		this.openVPage(VHistoryPage);
 	}
 
 	async loadDayValues() {

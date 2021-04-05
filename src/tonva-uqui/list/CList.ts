@@ -6,13 +6,14 @@ import { MidList } from "./MidList";
 export class CList<T> extends Controller {
 	protected readonly midList: MidList<T>;
 	protected selectedItem: T;
+	protected listPageProps: ListPageProps;
 	constructor(midList: MidList<T>) {
 		super();
 		this.setRes(midList.res);
 		this.midList = midList;
 	}
 
-	protected async internalStart() {
+	async init() {
 		await this.midList.init();
 		let pageItems = this.midList.pageItems;
 		let props:ListPageProps = {
@@ -25,7 +26,12 @@ export class CList<T> extends Controller {
 			renderItemContainer: (content:any) => this.renderItemContainer(content),
 		};
 		pageItems.first(this.firstParam);
-		let page = new ListPage(props);
+		this.listPageProps = props;
+	}
+
+	protected async internalStart() {
+		await this.init();
+		let page = new ListPage(this.listPageProps);
 		this.openPage(page.render(), () => this.returnCall(this.selectedItem));
 	}
 

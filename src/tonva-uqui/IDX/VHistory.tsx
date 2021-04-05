@@ -1,10 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { VPage, List, LMR, EasyTime, UserView, User } from "tonva-react";
+import { VPage, List, LMR, EasyTime, UserView, User, View } from "tonva-react";
 import { CIDX } from "./CIDX";
 
-export class VHistory extends VPage<CIDX> {
-	header() {return this.controller.field}
-	content() {
+export class VHistory extends View<CIDX> {
+	render() {
 		return <div>
 			<List items={this.controller.historyItems} item={{render: this.renderItem, key:(item)=>item.t}} />
 		</div>
@@ -22,4 +21,12 @@ export class VHistory extends VPage<CIDX> {
 			<LMR className="w-100" left={left} right={right}>{v}</LMR>
 		</div>
 	}
+}
+
+export class VHistoryPage extends VPage<CIDX> {
+	header() {return this.controller.field}
+	content() {
+		return this.renderVm(VHistory);
+	}
+
 }

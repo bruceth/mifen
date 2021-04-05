@@ -31,16 +31,18 @@ export class MidIDList<T extends IDBase> extends MidIDListBase<T> {
 
 export class MidIXIDList<T extends IXBase> extends MidIDList<T> {
 	readonly IX:IX;
-	constructor(uq:Uq, ID:ID, IX:IX) {
+	private ix?:number|(number[]);
+	constructor(uq:Uq, ID:ID, IX:IX, ix:number|(number[])) {
 		super(uq, ID);
 		this.IX = IX;
+		this.ix = ix;
 	}
 
 	protected async loadPageItems(pageStart:any, pageSize:number):Promise<T[]> {
 		let ret = await this.uq.IX<T>({
 			IX: this.IX,
 			IDX: [this.ID],
-			ix: undefined,
+			ix: this.ix,
 			page: {start:pageStart, size:pageSize},
 		});
 		/*

@@ -7,13 +7,14 @@ import { CFormView, FormUI } from "../form";
 import { MidID } from "./MidID";
 import { MidIDList } from "./MidIDList";
 import { VEdit } from "./VEdit";
-import { VView, VViewRight } from "./VView";
+import { VContent, VViewRight } from "./VContent";
 import { res } from "./res";
 
 export class CID<T extends IDBase> extends Controller {
 	item:T = null;
 	midID: MidID<T>;
 	cFormView: CFormView<T>;
+	private cList: CList<T>;
 	private midIDList: MidIDList<T>;
 	private valueChanged: boolean;
 
@@ -27,17 +28,23 @@ export class CID<T extends IDBase> extends Controller {
 		this.midID = midID;
 	}
 
-	protected async internalStart() {
-		this.valueChanged = false;
+    protected async beforeStart():Promise<boolean> {
 		await this.midID.init();
 		this.createFormView();
 		this.midIDList =  this.midID.createMidIDList();
 		this.midIDList.onRightClick = this.onItemNew;
 		this.midIDList.renderItem = this.renderItem;
 		this.midIDList.onItemClick = this.onItemClick;
-		this.midIDList.renderRight = undefined;
-		let cList = this.createCList();
-		await cList.call();
+		this.midIDList.renderRight = this.renderListRight;
+		this.midIDList.renderTop = this.renderListTop;
+		this.midIDList.renderBottom = this.renderListBottom;
+		this.cList = this.createCList();
+        return true;
+	}
+
+	protected async internalStart() {
+		this.valueChanged = false;
+		await this.cList.call();
 		this.returnCall(this.valueChanged);
 	}
 
@@ -47,11 +54,15 @@ export class CID<T extends IDBase> extends Controller {
 		let formUI = new FormUI(ID.ui, fieldCustoms, ID.t);
 		this.cFormView = new CFormView(formUI);
 		this.cFormView.onSubmit = this.onSubmit;
-	} 
+	}
 
 	protected createCList() {
 		return new CList(this.midIDList);
 	}
+
+	protected renderListRight: () => JSX.Element;
+	protected renderListTop: () => JSX.Element;
+	protected renderListBottom: () => JSX.Element;
 
 	private onSubmit = async (name:string, context: Context) => {
 		await this.saveID(context.data);
@@ -66,7 +77,7 @@ export class CID<T extends IDBase> extends Controller {
 	onItemClick: (item: T) => void = (item:any) => {
 		runInAction(() => {
 			this.item = item;
-			this.onItemView();	
+			this.onItemView();
 		});
 	}
 
@@ -77,8 +88,8 @@ export class CID<T extends IDBase> extends Controller {
 		this.openVPage(VEdit);
 	}
 
-	onItemView():void {
-		this.openVPage(VView);
+	async onItemView():Promise<void> {
+		this.openVPage(VContent);
 	}
 
 	onItemNew = async (): Promise<void> => {

@@ -122,7 +122,7 @@ export class VView extends VPage<CIDX> {
 		if (this.currentIndex === index) {
 			let curProp = props[this.currentIndex] as NumberProp;
 			let {name} = curProp;
-			await this.controller.onFieldHistory(name);
+			await this.controller.showFieldHistory(name);
 			return;
 		}
 		runInAction(() => {
@@ -134,6 +134,6 @@ export class VView extends VPage<CIDX> {
 	}
 
 	private async onFieldHistory(field:string) {
-		await this.controller.onFieldHistory(field);
+		await this.controller.showFieldHistory(field);
 	}
 }
