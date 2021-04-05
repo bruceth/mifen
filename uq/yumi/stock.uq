@@ -100,7 +100,7 @@ PAGE ORDER Switch (miRateDesc, dvRateDesc, roeDesc, miRateAsc, dvRateAsc, roeAsc
 			-- AND d.id IS NULL
 			AND (smooth is NULL OR smooth=0 OR b.smoothness>=smooth)
 			AND (
-					key IS NULL AND NOT EXISTS(SELECT ub.id FROM UserBlockStock as ub WHERE ub.ix=$user AND ub.id=a.id)
+					key IS NULL AND NOT EXISTS(SELECT ub.xi FROM UserBlockStock as ub WHERE ub.ix=$user AND ub.xi=a.id)
 					OR NOT key IS NULL
 				)
 			-- AND a.id>$pageStart

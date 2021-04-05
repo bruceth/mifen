@@ -65,7 +65,7 @@ export class MiAccount  implements Account, AccountValue {
 		if (noneStocks.length > 0) {
 			await yumi.ActIX({
 				IX: yumi.UserAllStock,
-				values: noneStocks.map(v => ({ix:undefined, id: v.stock}))
+				values: noneStocks.map(v => ({ix:undefined, xi: v.stock}))
 			});
 			await this.store.loadMyAll();
 		}

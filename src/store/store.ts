@@ -65,7 +65,7 @@ export class Store {
 		await this.yumi.ActIX({
 			IX: this.yumi.UserAllStock, 
 			values: [
-				{ix: undefined, id: stock.id}
+				{ix: undefined, xi: stock.id}
 			]
 		});
 		let stockId = stock.id;
@@ -89,7 +89,7 @@ export class Store {
 		await this.yumi.ActIX({
 			IX: this.yumi.UserAllStock, 
 			values: [
-				{ix: undefined, id: -stockId}
+				{ix: undefined, xi: -stockId}
 			]
 		});
 		let index = this.stocksMyAll.findIndex(v => v.id === stockId);
@@ -185,14 +185,14 @@ export class Store {
 		if (index >= 0) {
 			await this.yumi.ActIX({
 				IX: this.yumi.UserBlockStock,
-				values: [{ix:undefined, id: -id}]
+				values: [{ix:undefined, xi: -id}]
 			})
 			this.stocksMyBlock.splice(index, 1);
 		}
 		else {
 			await this.yumi.ActIX({
 				IX: this.yumi.UserBlockStock,
-				values: [{ix:undefined, id}]
+				values: [{ix:undefined, xi: id}]
 			})
 			this.stocksMyBlock.push(stock);
 		}

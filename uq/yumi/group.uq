@@ -6,22 +6,22 @@ ID Group (
 
 IX UserGroup (
 	ix user,
-	id Group,
+	xi Group,
 );
 
 IX UserAllStock (
 	ix user,
-	id Stock,
+	xi Stock,
 );
 
 IX UserBlockStock (
 	ix user,
-	id Stock,
+	xi Stock,
 );
 
 IX GroupStock (
 	ix,				-- group
-	id,			-- Stock
+	xi,			-- Stock
 	order SMALLINT,
 );
 
@@ -34,18 +34,18 @@ RETURNS accounts (
 RETURNS groups (
 	group ID,
 ) {
-	INTO accounts SELECT a.id as account
+	INTO accounts SELECT a.xi as account
 		FROM UserAccount as a
 		WHERE a.ix=$user 
 			AND exists(
-				SELECT b.id 
+				SELECT b.xi 
 					FROM AccountHolding as b 
-					JOIN Holding as c ON b.id=c.id 
-					WHERE b.ix=a.id AND c.stock=stock
+					JOIN Holding as c ON b.xi=c.id 
+					WHERE b.ix=a.xi AND c.stock=stock
 			);
 
-	INTO groups SELECT a.id as [group]
+	INTO groups SELECT a.xi as [group]
 		FROM UserGroup as a
 		WHERE a.ix=$user 
-			AND exists(SELECT b.id FROM GroupStock as b WHERE b.ix=a.id AND b.id=stock);
+			AND exists(SELECT b.xi FROM GroupStock as b WHERE b.ix=a.xi AND b.xi=stock);
 };

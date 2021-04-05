@@ -8,7 +8,7 @@ ID Account (
 -- user 账号跟Account绑定
 IX UserAccount (
 	ix user,
-	id Account,
+	xi Account,
 	sort,				-- id sort
 );
 
@@ -28,7 +28,7 @@ IDX AccountValue ver 0.1 (
 
 IX AccountHolding (
 	ix,							-- account
-	id,							-- Holding
+	xi,							-- Holding
 );
 
 IDX Portfolio ver 0.1 (
