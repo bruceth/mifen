@@ -62,8 +62,8 @@ export function renderStockRow(order: number, stock: Stock&StockValue, onClickNa
 		</div>
 	</div>;
 	let rows:[string,number,'p0'|'p1'|'n1'|'n2'|'yi'][] = [
-		['米息分', Math.log2(miRate), 'n1'],
-		['米息率', miRate, 'n1'],
+		// ['米息分', Math.log2(miRate), 'n1'],
+		// ['米息率', miRate, 'n1'],
 		['TTM', ttm, 'n1'],
 		['股息率', dvRate/100, 'p1'],
 		['价格', price, 'n2'],
@@ -81,6 +81,10 @@ export function renderStockRow(order: number, stock: Stock&StockValue, onClickNa
 			{right}
 		</div>
 		<div className="d-flex flex-wrap p-1" onClick={()=>onClickName?.(stock)}>
+			<div className="px-2 px-sm-3 mb-1 text-right c5">
+				<span className="small">米息率</span><br />
+				{number(miRate, 1)}
+			</div>
 			{rows.map(v => renderValue(v[0], v[1], v[2]))}
 		</div>
 	</div>;

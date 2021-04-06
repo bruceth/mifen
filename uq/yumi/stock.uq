@@ -96,8 +96,8 @@ PAGE ORDER Switch (miRateDesc, dvRateDesc, roeDesc, miRateAsc, dvRateAsc, roeAsc
 			LEFT JOIN Market as c on a.market=c.id
 			-- LEFT JOIN UserBlockStock as d on d.ix=$user AND d.id=a.id
 		WHERE a.$ LIKE sKey 
+			AND b.ttm>=3 AND NOT b.preInc IS NULL
 			AND (market IS NULL OR EXISTS(SELECT m FROM tblm WHERE m=c.name))
-			-- AND d.id IS NULL
 			AND (smooth is NULL OR smooth=0 OR b.smoothness>=smooth)
 			AND (
 					key IS NULL AND NOT EXISTS(SELECT ub.xi FROM UserBlockStock as ub WHERE ub.ix=$user AND ub.xi=a.id)
