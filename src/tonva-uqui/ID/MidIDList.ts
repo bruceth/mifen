@@ -1,5 +1,5 @@
 import { ID, IX, Uq } from "tonva-react";
-import { IDBase, IXBase } from "../base";
+import { IDBase } from "../base";
 import { MidIDListBase } from "../list";
 
 export class MidIDList<T extends IDBase> extends MidIDListBase<T> {
@@ -29,7 +29,7 @@ export class MidIDList<T extends IDBase> extends MidIDListBase<T> {
 	}
 }
 
-export class MidIXIDList<T extends IXBase> extends MidIDList<T> {
+export class MidIXIDList<T extends IDBase> extends MidIDList<T> {
 	readonly IX:IX;
 	private ix?:number|(number[]);
 	constructor(uq:Uq, ID:ID, IX:IX, ix:number|(number[])) {

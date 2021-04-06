@@ -36,10 +36,10 @@ export class MiGroups {
 		let stockId = stock.id;
 		let groupId = group.id;
 		await yumi.Acts({
-			groupStock: [{ix: groupId, id: stockId, order: undefined}],
-			userAllStock: [{ix: undefined, id: stockId}],
+			groupStock: [{ix: groupId, xi: stockId, order: undefined}],
+			userAllStock: [{ix: undefined, xi: stockId}],
 		});
-		groupIXs.push({ix:groupId, id:stockId});
+		groupIXs.push({ix:groupId, xi:stockId});
 		let index = stocksMyAll.findIndex(v => v.id === stockId);
 		if (index < 0) stocksMyAll.push(stock);
 		let stockCount = this.store.calcGroupStockCount(groupId);
@@ -51,12 +51,12 @@ export class MiGroups {
 		let stockId = stock.id;
 		let groupId = group.id;
 		await yumi.Acts({
-			groupStock: [{ix: groupId, id: -stockId, order: undefined}],
+			groupStock: [{ix: groupId, xi: -stockId, order: undefined}],
 		});
 		let {groupIXs} = this.store;
 		for (let i=0; i<groupIXs.length; i++) {
-			let {ix, id} = groupIXs[i];
-			if (id !== stockId) continue;
+			let {ix, xi} = groupIXs[i];
+			if (xi !== stockId) continue;
 			if (ix !== groupId) continue;
 			groupIXs.splice(i, 1);
 			let stockCount = this.store.calcGroupStockCount(groupId);

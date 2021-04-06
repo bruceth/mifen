@@ -11,11 +11,11 @@ const fields = {
 		"isKey": false,
 		"label": "Ix"
 	} as FieldItemId,
-	id: {
-		"name": "id",
+	xi: {
+		"name": "xi",
 		"type": "id",
 		"isKey": false,
-		"label": "Id"
+		"label": "Xi"
 	} as FieldItemId,
 	order: {
 		"name": "order",

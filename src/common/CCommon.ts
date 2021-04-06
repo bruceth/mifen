@@ -109,7 +109,8 @@ export class CCommon extends CUqBase {
 			},
 			t: this.t,
 		}
-		let mId = new MidIXID<Group>(uq, IDUI, uq.UserGroup);
+		let ix = undefined;
+		let mId = new MidIXID<Group>(uq, IDUI, uq.UserGroup, ix);
 		mId.listHeader = '管理股票分组';
 		mId.itemHeader = '股票分组';
 		let cID = new CID(mId);
@@ -136,7 +137,8 @@ export class CCommon extends CUqBase {
 			},
 			t: this.t,
 		}
-		let mId = new MidIXID<Account>(uq, IDUI, uq.UserAccount);
+		let ix = undefined;
+		let mId = new MidIXID<Account>(uq, IDUI, uq.UserAccount, ix);
 		mId.listHeader = '管理持仓账号';
 		mId.itemHeader = '持仓账号';
 		let cID = new CID(mId);

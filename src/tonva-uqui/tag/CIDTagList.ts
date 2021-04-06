@@ -131,7 +131,7 @@ export class MidIDTagList<T extends IDBase> extends MidList<ItemTags<T>> {
 		let {item} = itemTags;
 		let {id:itemId} = item;
 		let {id, parent} = tag;
-		let ix:IXBase = {ix:undefined, id};
+		let ix:IXBase = {ix:undefined, xi:id};
 		let acts:{[name:string]: IXBase[]} = {};
 		acts[this.midTag.tag.name] = [ix];
 		if (selected === true) {

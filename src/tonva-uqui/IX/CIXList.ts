@@ -4,9 +4,9 @@ import { ID, IX, Uq } from "tonva-react";
 import { CList, MidIDListBase } from "../list";
 import { IXBase } from "../base";
 
-export class CIXList<T2 extends IXBase> extends CList<T2> {
-	protected midIXList: MidIXList<T2>;
-	constructor(midIXList: MidIXList<T2>) {
+export class CIXList<T extends IXBase> extends CList<T> {
+	protected midIXList: MidIXList<T>;
+	constructor(midIXList: MidIXList<T>) {
 		super(midIXList);
 		this.setRes(midIXList.res);
 		this.midIXList = midIXList;
@@ -48,15 +48,15 @@ export class MidIXList<T extends IXBase> extends MidIDListBase<T> {
 		runInAction(() => {
 			let {_items} = this.listPageItems;
 			if (!_items) return;
-			let {ix, id} = item;
-			if (id < 0) {
-				let index = _items.findIndex(v => v.id === -id && v.id === id);
+			let {ix, xi} = item;
+			if (xi < 0) {
+				let index = _items.findIndex(v => v.xi === -xi && v.xi === xi);
 				if (index >= 0) _items.splice(index, 1);
 			}
 			else {
-				let ret = _items.find(v => v.id === id && v.id === id);
+				let ret = _items.find(v => v.xi === xi && v.xi === xi);
 				if (!ret) {
-					_items.unshift({ix, id} as T);
+					_items.unshift({ix, xi} as T);
 				}
 			}
 		});

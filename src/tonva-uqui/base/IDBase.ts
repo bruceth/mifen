@@ -6,6 +6,7 @@ export interface IDBase {
 
 export interface IXBase extends IDBase {
 	ix: number;
+	xi: number;
 }
 
 export interface Master {

@@ -31,13 +31,6 @@ const fields = {
 		"widget": "string",
 		"label": "Name"
 	} as FieldItemString,
-	search: {
-		"name": "search",
-		"type": "string",
-		"isKey": false,
-		"widget": "string",
-		"label": "Search"
-	} as FieldItemString,
 	rawId: {
 		"name": "rawId",
 		"type": "id",
@@ -48,7 +41,7 @@ const fields = {
 /*==fields==*/
 
 export const fieldArr: FieldItem[] = [
-	fields.market, fields.no, fields.name, fields.search, fields.rawId, 
+	fields.market, fields.no, fields.name, fields.rawId, 
 ];
 
 export const ui: UI = {

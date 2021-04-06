@@ -165,7 +165,7 @@ export class MiAccount  implements Account, AccountValue {
 			}],
 			accountHolding: [{
 				ix: this.id,
-				id: holdingId
+				xi: holdingId
 			}],
 			portfolio: [{
 				id: holdingId,

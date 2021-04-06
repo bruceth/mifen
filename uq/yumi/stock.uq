@@ -46,7 +46,7 @@ PAGE (
 		LIMIT $pageSize;
 };
 
-QUERY SearchStock ver 0.2 (
+QUERY SearchStock ver 0.5 (
 	key CHAR(20),
 	market CHAR(100),
 	smooth INT,

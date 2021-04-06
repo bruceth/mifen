@@ -79,13 +79,14 @@ interface ParamPage {
 export interface ParamActIX<T> {
 	IX: IX;
 	ID?: ID;
+	IXs?:{IX:IX, ix:number}[];				// 一次写入多个IX
 	values: {ix:number, xi:number|T}[];
 }
 
 export interface ParamActIXSort {
 	IX: IX;
 	ix: number;
-	xi: number;					// id to be moved
+	id: number;					// id to be moved
 	after: number;				// insert after id. if before first, then 0
 }
 
@@ -770,10 +771,11 @@ export class UqMan {
 	}
 
 	private ActIX = async (param: ParamActIX<any>): Promise<number[]> => {
-		let {IX, ID, values} = param;
+		let {IX, ID, values, IXs} = param;
 		let apiParam:any = {
 			IX: entityName(IX),
 			ID: entityName(ID),
+			IXs: IXs?.map(v => ({IX:entityName(v.IX), ix:v.ix})),
 			values,
 		};
 		let ret = await this.uqApi.post(IDPath('act-ix'), apiParam);
@@ -781,7 +783,7 @@ export class UqMan {
 	}
 
 	private ActIXSort = async (param: ParamActIXSort): Promise<void> => {
-		let {IX, ix, xi: id, after} = param;
+		let {IX, ix, id, after} = param;
 		let apiParam:any = {
 			IX: entityName(IX),
 			ix,

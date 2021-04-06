@@ -1,4 +1,4 @@
-//=== UqApp builder created on Mon Mar 29 2021 13:48:37 GMT-0400 (GMT-04:00) ===//
+//=== UqApp builder created on Mon Apr 05 2021 23:32:57 GMT-0400 (GMT-04:00) ===//
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { IDXValue, Uq, UqTuid, UqAction, UqQuery, UqID, UqIDX, UqIX } from "tonva-react";
 
@@ -105,6 +105,7 @@ interface ReturnSearchStock$page {
 	miRate: number;
 	dvRate: number;
 	ttm: number;
+	$id: number;
 }
 interface ResultSearchStock {
 	$page: ReturnSearchStock$page[];
@@ -188,9 +189,8 @@ export interface $PiecewiseDetail {
 export interface Stock {
 	id?: number;
 	market: number;
-	no: string;
+	no?: string;
 	name: string;
-	search: string;
 	rawId: number;
 }
 
@@ -214,6 +214,7 @@ export interface StockValue {
 	miRate?: number;
 	dvRate?: number;
 	ttm?: number;
+	$act?: number;
 }
 
 export interface AccountValue {
@@ -222,6 +223,7 @@ export interface AccountValue {
 	market?: number;
 	count?: number;
 	cash?: number;
+	$act?: number;
 	$track?: number;
 }
 
@@ -229,6 +231,7 @@ export interface Portfolio {
 	id: number;
 	quantity?: number;
 	cost?: number;
+	$act?: number;
 	$track?: number;
 }
 
@@ -252,6 +255,7 @@ export interface ActParamStockValue {
 	miRate?: number|IDXValue;
 	dvRate?: number|IDXValue;
 	ttm?: number|IDXValue;
+	$act?: number;
 }
 
 export interface ActParamAccountValue {
@@ -260,6 +264,7 @@ export interface ActParamAccountValue {
 	market?: number|IDXValue;
 	count?: number|IDXValue;
 	cash?: number|IDXValue;
+	$act?: number;
 	$track?: number;
 }
 
@@ -267,38 +272,39 @@ export interface ActParamPortfolio {
 	id: number|IDXValue;
 	quantity?: number|IDXValue;
 	cost?: number|IDXValue;
+	$act?: number;
 	$track?: number;
 }
 
 export interface UserBlockStock {
 	ix: number;
-	id: number;
+	xi: number;
 }
 
 export interface UserAccount {
 	ix: number;
-	id: number;
+	xi: number;
 	sort: number;
 }
 
 export interface UserGroup {
 	ix: number;
-	id: number;
+	xi: number;
 }
 
 export interface UserAllStock {
 	ix: number;
-	id: number;
+	xi: number;
 }
 
 export interface AccountHolding {
 	ix: number;
-	id: number;
+	xi: number;
 }
 
 export interface GroupStock {
 	ix: number;
-	id: number;
+	xi: number;
 	order: number;
 }
 

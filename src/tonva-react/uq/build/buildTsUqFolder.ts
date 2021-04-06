@@ -81,7 +81,7 @@ export function render(item: ${cName}):JSX.Element {
 			}
 		);
 		replaceTsFileString(path, 
-			{begin:'export const fieldArr: FieldItem[] = [\n', end: '\n];\n', content:tsFieldArr}
+			{begin:'\nconst fieldArr: FieldItem[] = [\n', end: '\n];\n', content:tsFieldArr}
 		);
 	}
 
@@ -138,7 +138,7 @@ function buildIXFields(IX:IX):{[name:string]:FieldItem} {
 };
 
 function buildFieldArr(i:ID|IDX|IX):string {
-	let ts = 'export const fieldArr: FieldItem[] = [\n\t';
+	let ts = '\nconst fieldArr: FieldItem[] = [\n\t';
 	switch (i.typeName) {
 		case 'id': ts += buildIDFieldArr(i as ID); break;
 		case 'idx': ts += buildIDXFieldArr(i); break;

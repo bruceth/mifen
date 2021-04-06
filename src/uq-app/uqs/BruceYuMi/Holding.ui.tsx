@@ -27,6 +27,7 @@ const fields = {
 /*==fields==*/
 
 const fieldArr: FieldItem[] = [
+	fields.account, fields.stock, 
 ];
 
 export const ui: UI = {

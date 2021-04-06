@@ -129,7 +129,7 @@ export class Store {
 		let unloadArr: number[] = [];
 		let ret: (Stock&StockValue)[] = [];
 		this.groupIXs.forEach(gs => {
-			let {ix, id:gStockId} = gs;
+			let {ix, xi:gStockId} = gs;
 			if (ix !== groupId) return;
 			let stock = this.stocksMyAll.find(v => v.id === gStockId);
 			if (stock) ret.push(stock);
@@ -232,8 +232,8 @@ export class Store {
 		let {groupIXs} = this;
 		let stockId = stock.id;
 		for (let i=0; i<groupIXs.length; i++) {
-			let {id} = groupIXs[i];
-			if (id === stockId) ++nGroup;
+			let {xi} = groupIXs[i];
+			if (xi === stockId) ++nGroup;
 		}
 		return nGroup;
 	}
@@ -251,8 +251,8 @@ export class Store {
 	buildInGroup(stockId: number): {[groupId:number]:boolean} {
 		let inGroup:{[groupId:number]:boolean} = {};
 		for (let gs of this.groupIXs) {
-			let {ix, id} = gs;
-			if (id === stockId) inGroup[ix] = true;
+			let {ix, xi} = gs;
+			if (xi === stockId) inGroup[ix] = true;
 		}
 		return inGroup;
 	}
