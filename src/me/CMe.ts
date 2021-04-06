@@ -1,7 +1,9 @@
 import { QueryPager, Uq, User } from "tonva-react";
 import { CRoles } from "tonva-uqui";
 import { CApp, CUqBase } from "../uq-app";
+import { VAbout } from "./VAbout";
 import { VEditMe } from "./VEditMe";
+import { VFaq } from "./VFaq";
 import { VMe } from "./VMe";
 
 export interface RootUnitItem {
@@ -42,5 +44,13 @@ export class CMe extends CUqBase {
 	backend = async () => {
 		let cRoles = new CRoles(this.uq);
 		await cRoles.start();
+	}
+
+	showFaq = () => {
+		this.openVPage(VFaq);
+	}
+
+	showAbout = () => {
+		this.openVPage(VAbout);
 	}
 }

@@ -2,7 +2,7 @@ import { VPage } from "tonva-react";
 import { CMe } from "./CMe";
 
 export class VFaq extends VPage<CMe> {
-	header() {return '基本概念'}
+	header() {return '米投体系'}
 	content() {
 		return <ul>
 			<li className="my-3">

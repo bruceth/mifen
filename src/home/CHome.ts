@@ -3,6 +3,7 @@ import { CApp, CUqBase } from "uq-app";
 import { Stock, StockValue } from "uq-app/uqs/BruceYuMi";
 import { VHome } from "./VHome";
 import { CAccount } from "./account";
+import { VBlogs } from "./VBlogs";
 
 export class CHome extends CUqBase {
 	readonly cAccount: CAccount;
@@ -28,5 +29,13 @@ export class CHome extends CUqBase {
 
 	onStockClick = async (stock: Stock) => {
 		this.cApp.cCommon.showStock(stock);
+	}
+
+	showBlogs = () => {
+		this.openVPage(VBlogs);
+	}
+
+	showIntroduction = () => {
+		this.cApp.cMe.showFaq();
 	}
 }
