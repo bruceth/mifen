@@ -21,12 +21,12 @@ export class VStockInGroup extends VPage<CCommon> {
 			let del = <button className="btn btn-sm btn-outline-info align-self-center"
 				onClick={() => this.controller.removeMyAll(stock)}>删除自选</button>;
 			return <div>
-				<LMR className="p-3" right={del}>
+				<LMR className="p-3 align-items-center" right={del}>
 					<b>{name}</b> 
 					<span className="ml-3">{no}</span>
 				</LMR>
 				<div className="d-flex flex-wrap py-1 border-top border-bottom">
-					{groups.length === 0 && <small className="text-muted">无分组</small>}
+					{groups.length === 0 && <small className="px-3 py-2 text-muted">[无分组]</small>}
 					{groups.map(v => {
 						let {id, name} = v;
 						return <label key={id} className="mb-0 w-8c px-3 py-2">
