@@ -6,7 +6,11 @@ import { Stock, StockValue } from "uq-app/uqs/BruceYuMi";
 import { CCommon } from "./CCommon";
 
 export class VStockInGroup extends VPage<CCommon> {
-	private btnDel: HTMLButtonElement;
+	private closeLevelWhenRemoved: number;
+	init(param: number) {
+		this.closeLevelWhenRemoved = param;
+	}
+
 	header() {return '设置分组'}
 	right() {
 		return <button className="btn btn-sm btn-info mr-2" onClick={this.controller.manageGroups}>管理分组</button>;
@@ -21,8 +25,7 @@ export class VStockInGroup extends VPage<CCommon> {
 			let {groups} = miGroups;
 			let inGroup = store.buildInGroup(stockId);
 			let del = <button className="btn btn-sm btn-outline-info"
-				ref = {b => this.btnDel = b}
-				onClick={() => this.removeMyAll(stock)}>删除自选</button>;
+				onClick={e => this.removeMyAll(stock, e.currentTarget)}>删除自选</button>;
 			return <div>
 				<LMR className="p-3 align-items-center" right={del}>
 					<b>{name}</b> 
@@ -45,12 +48,12 @@ export class VStockInGroup extends VPage<CCommon> {
 		}));
 	}
 
-	private async removeMyAll(stock: Stock & StockValue) {
-		if (this.btnDel) this.btnDel.disabled = true;
+	private async removeMyAll(stock: Stock & StockValue, btn: HTMLButtonElement) {
+		btn.disabled = true;
 		let callbackWhenRemoved = () => {
-			this.closePage(2);
+			this.closePage(this.closeLevelWhenRemoved);
 		}
 		await this.controller.removeMyAll(stock,  callbackWhenRemoved);
-		if (this.btnDel) this.btnDel.disabled = false;
+		btn.disabled = false;
 	}
 }

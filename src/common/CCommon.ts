@@ -55,9 +55,9 @@ export class CCommon extends CUqBase {
 		await store.toggleBlock(stock);
 	}
 
-	setStockToGroup = (stock: Stock&StockValue) => {
+	setStockToGroup = (stock: Stock&StockValue, closeLevelWhenRemoved: number) => {
 		this.stock = stock;
-		this.openVPage(VStockInGroup);
+		this.openVPage(VStockInGroup, closeLevelWhenRemoved);
 	}
 
 	setGroup = async (checked:boolean, group: MiGroup) => {
@@ -74,9 +74,9 @@ export class CCommon extends CUqBase {
 		this.openVPage(VEmpty);
 	}
 
-	renderPinStock = (stock: Stock & StockValue) => {
+	renderPinStock = (stock: Stock & StockValue, closeLevelWhenRemoved: number) => {
 		if (!stock) return null;
-		return this.renderView(VPinStock, stock);
+		return this.renderView(VPinStock, {stock, closeLevelWhenRemoved});
 	}
 
 	renderBlockStock = (stock: Stock & StockValue) => {

@@ -5,7 +5,8 @@ import { Stock, StockValue } from "uq-app/uqs/BruceYuMi";
 import { CCommon } from "./CCommon";
 
 export class VPinStock extends View<CCommon> {
-	render(stock: Stock & StockValue):JSX.Element {
+	render(param: {stock: Stock & StockValue; closeLevelWhenRemoved: number}):JSX.Element {
+		let {stock, closeLevelWhenRemoved} = param;
 		return React.createElement(observer(() => {
 			let isSelected = this.controller.isMyAll(stock);
 			if (isSelected === true) {
@@ -28,7 +29,7 @@ export class VPinStock extends View<CCommon> {
 				className="cursor-pointer btn btn-sm btn-outline-info align-self-start" />;
 				*/
 				return <button className="btn btn-sm btn-outline-info align-self-start" 
-					onClick={() => this.controller.setStockToGroup(stock)}>
+					onClick={() => this.controller.setStockToGroup(stock, closeLevelWhenRemoved)}>
 					<FA name="cog" className="small mr-1" fixWidth={true} />分组
 				</button>;
 			}
