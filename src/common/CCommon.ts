@@ -25,11 +25,14 @@ export class CCommon extends CUqBase {
 		await this.cApp.store.addMyAll(stock);
 	}
 
-	async removeMyAll(stock: Stock & StockValue) {
+	async removeMyAll(stock: Stock & StockValue, callbackWhenRemoved?: () => any) {
 		let ret = await this.cApp.store.removeMyAll(stock);
 		if (ret) {
 			(ret as any).stock = stock;
 			this.openVPage(VKeepStock, ret);
+		}
+		else {
+			callbackWhenRemoved?.();
 		}
 	}
 

@@ -2,9 +2,11 @@ import { observer } from "mobx-react";
 import { group } from "node:console";
 import React from "react";
 import { LMR, VPage } from "tonva-react";
+import { Stock, StockValue } from "uq-app/uqs/BruceYuMi";
 import { CCommon } from "./CCommon";
 
 export class VStockInGroup extends VPage<CCommon> {
+	private btnDel: HTMLButtonElement;
 	header() {return '设置分组'}
 	right() {
 		return <button className="btn btn-sm btn-info mr-2" onClick={this.controller.manageGroups}>管理分组</button>;
@@ -19,7 +21,8 @@ export class VStockInGroup extends VPage<CCommon> {
 			let {groups} = miGroups;
 			let inGroup = store.buildInGroup(stockId);
 			let del = <button className="btn btn-sm btn-outline-info"
-				onClick={() => this.controller.removeMyAll(stock)}>删除自选</button>;
+				ref = {b => this.btnDel = b}
+				onClick={() => this.removeMyAll(stock)}>删除自选</button>;
 			return <div>
 				<LMR className="p-3 align-items-center" right={del}>
 					<b>{name}</b> 
@@ -40,5 +43,14 @@ export class VStockInGroup extends VPage<CCommon> {
 				</div>
 			</div>;
 		}));
+	}
+
+	private async removeMyAll(stock: Stock & StockValue) {
+		if (this.btnDel) this.btnDel.disabled = true;
+		let callbackWhenRemoved = () => {
+			this.closePage(2);
+		}
+		await this.controller.removeMyAll(stock,  callbackWhenRemoved);
+		if (this.btnDel) this.btnDel.disabled = false;
 	}
 }
