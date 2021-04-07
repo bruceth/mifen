@@ -1,4 +1,4 @@
-ID Account (
+ID Account ver 0.1 (
 	id,
 	KEY no,
 	name char(50),

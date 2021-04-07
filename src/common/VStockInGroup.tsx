@@ -1,6 +1,6 @@
 import { observer } from "mobx-react";
 import React from "react";
-import { VPage } from "tonva-react";
+import { LMR, VPage } from "tonva-react";
 import { CCommon } from "./CCommon";
 
 export class VStockInGroup extends VPage<CCommon> {
@@ -17,11 +17,13 @@ export class VStockInGroup extends VPage<CCommon> {
 			let {miGroups} = store;
 			let {groups} = miGroups;
 			let inGroup = store.buildInGroup(stockId);
+			let del = <button className="btn btn-sm btn-outline-info align-self-center"
+				onClick={() => this.controller.removeMyAll(stock)}>删除自选</button>;
 			return <div>
-				<div className="p-3">
+				<LMR className="p-3" right={del}>
 					<b>{name}</b> 
 					<span className="ml-3">{no}</span>
-				</div>
+				</LMR>
 				<div className="d-flex flex-wrap py-1 border-top border-bottom">
 					{groups.map(v => {
 						let {id, name} = v;
