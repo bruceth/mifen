@@ -18,7 +18,7 @@ export class VStockInGroup extends VPage<CCommon> {
 			let {miGroups} = store;
 			let {groups} = miGroups;
 			let inGroup = store.buildInGroup(stockId);
-			let del = <button className="btn btn-sm btn-outline-info align-self-center"
+			let del = <button className="btn btn-sm btn-outline-info"
 				onClick={() => this.controller.removeMyAll(stock)}>删除自选</button>;
 			return <div>
 				<LMR className="p-3 align-items-center" right={del}>
