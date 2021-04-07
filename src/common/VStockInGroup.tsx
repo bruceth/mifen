@@ -1,4 +1,5 @@
 import { observer } from "mobx-react";
+import { group } from "node:console";
 import React from "react";
 import { LMR, VPage } from "tonva-react";
 import { CCommon } from "./CCommon";
@@ -25,6 +26,7 @@ export class VStockInGroup extends VPage<CCommon> {
 					<span className="ml-3">{no}</span>
 				</LMR>
 				<div className="d-flex flex-wrap py-1 border-top border-bottom">
+					{groups.length === 0 && <small className="text-muted">无分组</small>}
 					{groups.map(v => {
 						let {id, name} = v;
 						return <label key={id} className="mb-0 w-8c px-3 py-2">
