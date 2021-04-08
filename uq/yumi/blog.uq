@@ -1,0 +1,7 @@
+ID Blog (
+	id,
+	key no,
+	caption char(100),
+	content text,
+	sys (create, update, owner),
+);

@@ -1,5 +1,4 @@
 import { observer } from "mobx-react";
-import { group } from "node:console";
 import React from "react";
 import { LMR, VPage } from "tonva-react";
 import { Stock, StockValue } from "uq-app/uqs/BruceYuMi";

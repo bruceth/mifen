@@ -156,6 +156,23 @@ export class VAccount extends VPage<CAccount> {
 		let {portionAmount, cash} = miAccount;
 		let {stockObj, quantity, market, cost} = holding;
 		let {name, no} = stockObj;
+		let profit: number, profitRate: number, costPrice: number;
+		if (quantity < 1) { // = 0
+			profit = -cost;
+			if (profit>=-0.01 && profit <= 0.01) profit = 0;
+			profitRate = 0;
+			costPrice = 0;
+		}
+		else {
+			profit = market - cost;
+			profitRate = cost<0.1? 999: profit*100/cost;
+			costPrice = cost/quantity;
+		}
+		if (profit>=-0.01 && profit <= 0.01) {
+			profit = 0;
+			profitRate = 0;
+		}
+
 		let onClick = (evt: React.MouseEvent) => {
 			if (this.actionsElement) {
 				(this.actionsElement as HTMLDivElement).className = 'd-none';
@@ -172,10 +189,10 @@ export class VAccount extends VPage<CAccount> {
 		}
 		let {miRate, price} = stockObj;
 		let cn: string;
-		if (cost>market) {
+		if (profit < 0) {
 			cn = 'text-success';
 		}
-		else if (cost<market) {
+		else if (profit > 0) {
 			cn = 'text-danger';
 		}
 		else {
@@ -228,11 +245,11 @@ export class VAccount extends VPage<CAccount> {
 				<div className="col px-0 text-right">{this.fString(miRate, nFormat1, smallPercent)}</div>
 				<div className="col px-0 text-right">
 					<div className="">{this.fString(price, nFormat2)}</div>
-					<div className="small">{this.fString(cost/quantity, nFormat2)}</div>
+					<div className="small">{this.fString(costPrice, nFormat2)}</div>
 				</div>
 				<div className="col px-0 text-right">
-					<div className="">{this.fString((market - cost)*100/cost, nFormat1, smallPercent)}</div>
-					<div className="small">{this.fString(market - cost, nFormat1)}</div>
+					<div className="">{this.fString(profitRate, nFormat1, smallPercent)}</div>
+					<div className="small">{this.fString(profit, nFormat1)}</div>
 				</div>
 			</div>
 			<div className="d-none">

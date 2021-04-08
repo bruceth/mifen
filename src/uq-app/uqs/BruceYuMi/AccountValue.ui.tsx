@@ -34,11 +34,11 @@ const fields = {
 	} as FieldItemInt,
 	cash: {
 		"name": "cash",
-		"type": "integer",
+		"type": "number",
 		"isKey": false,
 		"widget": "updown",
 		"label": "Cash"
-	} as FieldItemInt,
+	} as FieldItemNum,
 };
 /*==fields==*/
 

@@ -23,7 +23,7 @@ IDX AccountValue ver 0.1 (
 	miValue FLOAT,
 	market FLOAT,
 	count SMALLINT,
-	cash BIGINT SUM LOG TRACK,
+	cash DEC(16, 4) SUM LOG TRACK,
 );
 
 IX AccountHolding (

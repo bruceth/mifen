@@ -111,7 +111,7 @@ const fieldTypeMap:{[type:string]:string} = {
 	"float": "number",
 	"double": "number",
 };
-const sysFields = ['id', 'master', 'row', 'no', '$create', '$owner'];
+const sysFields = ['id', 'master', 'row', 'no', '$create', '$update', '$owner'];
 function buildField(field: Field, isInID:boolean, indent:number = 1) {
 	let {name, type} = field;
 	let s = fieldTypeMap[type];

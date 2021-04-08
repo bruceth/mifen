@@ -162,6 +162,7 @@ export class MiAccount  implements Account, AccountValue {
 				miValue: this.miValue,
 				market: this.market,
 				count: this.count,
+				cash: {value: this.cash, setAdd: '='},
 			}],
 			accountHolding: [{
 				ix: this.id,

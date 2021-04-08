@@ -1,5 +1,6 @@
 import { QueryPager, Uq, User } from "tonva-react";
 import { CRoles } from "tonva-uqui";
+import { ParamActs } from "uq-app/uqs/BruceYuMi";
 import { CApp, CUqBase } from "../uq-app";
 import { VAbout } from "./VAbout";
 import { VEditMe } from "./VEditMe";
@@ -44,6 +45,12 @@ export class CMe extends CUqBase {
 	backend = async () => {
 		let cRoles = new CRoles(this.uq);
 		await cRoles.start();
+		/*
+		let paramActs: ParamActs = {
+			blog: [{caption: 'test', content: 'bbb'}]
+		};
+		await this.uq.Acts(paramActs);
+		*/
 	}
 
 	showFaq = () => {

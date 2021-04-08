@@ -143,6 +143,7 @@ export interface ParamIDDetailGet {
 export interface ParamID {
 	IDX: (ID|IDX) | (ID|IDX)[];
 	id: number | number[];
+	order?: 'asc' | 'desc',
 	page?: ParamPage;
 }
 
