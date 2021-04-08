@@ -215,6 +215,7 @@ export class Store {
 			this.loadGroupIXs(),
 			this.miGroups.load(),
 		]);
+		this.miGroups.calcStockCount();
 	}
 
 	private async loadGroupIXs() {

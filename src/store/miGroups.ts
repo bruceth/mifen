@@ -1,4 +1,4 @@
-import { IObservableArray, observable } from "mobx";
+import { makeObservable, observable } from "mobx";
 import { ID } from "tonva-react";
 import { BruceYuMi } from "uq-app";
 import { Stock, StockValue } from "uq-app/uqs/BruceYuMi";
@@ -8,12 +8,16 @@ import { Store } from "./store";
 export class MiGroups {
 	private store: Store;
 	private readonly ID: ID;
-	readonly groups: IObservableArray<MiGroup>;
+	//readonly groups: IObservableArray<MiGroup>;
+	groups: MiGroup[];
 
 	constructor(store: Store) {
 		this.store = store;
 		this.ID = store.yumi.Group;
-		this.groups = observable.array<MiGroup>([], { deep: true });
+		makeObservable(this, {
+			groups: observable,
+		})
+		//this.groups = observable.array<MiGroup>([], { deep: true });
 	}
 
 	async load(): Promise<void> {
@@ -23,11 +27,14 @@ export class MiGroups {
 			IDX: [yumi.Group],
 			ix: undefined,
 		});
-		let miGroups = ret.map(v => {
+		this.groups = ret.map(v => new MiGroup(this.store, v));
+	}
+
+	calcStockCount() {
+		this.groups.forEach(v => {
 			let stockCount = this.store.calcGroupStockCount(v.id);
-			return new MiGroup(this.store, v, stockCount);
+			v.count = stockCount;
 		});
-		this.groups.splice(0, this.groups.length, ...miGroups);
 	}
 
 	async addStockToGroup(stock:Stock&StockValue, group: MiGroup) {

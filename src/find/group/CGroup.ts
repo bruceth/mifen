@@ -1,4 +1,4 @@
-import { computed, IObservableArray, makeObservable, observable, runInAction } from "mobx";
+import { action, computed, IObservableArray, makeObservable, observable, runInAction } from "mobx";
 import { MiAccount, MiGroup, HoldingStock } from "../../store";
 import { Stock, StockValue } from "uq-app/uqs/BruceYuMi";
 import { CApp, CUqSub, UQs } from "../../uq-app";
@@ -19,6 +19,8 @@ export class CGroup extends CUqSub<CApp, UQs, CFind> {
 			miAccount: observable,
 			stocks: observable,
 			listCaption: computed,
+			showMiGroup: action,
+			showStocksAll: action,
 		});
 	}
 

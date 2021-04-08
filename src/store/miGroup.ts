@@ -5,11 +5,11 @@ import { Store } from "./store";
 export class MiGroup implements Group {
 	protected readonly store: Store;
 	id: number;
-	name: string;
-	count: number;
+	name: string = null;
+	count: number = null;
 	stocks: IObservableArray<Stock & StockValue> = null;
 
-	constructor(store:Store, group:Group, stockCount:number) {
+	constructor(store:Store, group:Group) {
 		makeObservable(this, {
 			stocks: observable,
 			count: observable,
@@ -17,7 +17,6 @@ export class MiGroup implements Group {
 		});
 		this.store = store;
 		Object.assign(this, group);
-		this.count = stockCount;
 	}
 
 	async loadItems() {
