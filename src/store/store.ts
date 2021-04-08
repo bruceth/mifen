@@ -2,9 +2,9 @@ import { IObservableArray, makeObservable, observable } from "mobx";
 import { IXBase } from "tonva-uqui";
 import { UQs } from "uq-app";
 import { MiAccounts } from "./miAccounts";
-import { MiGroups } from "./miGroups";
+import { MGroups, MIndustries, MiGroups } from "./mGroups";
 import { Market, Stock, StockValue, UqExt } from "uq-app/uqs/BruceYuMi";
-import { MiGroup } from "./miGroup";
+import { MGroup, MiGroup, MIndustry } from "./mGroup";
 import { MiAccount } from "./miAccount";
 import { marketElements } from "./market";
 
@@ -14,6 +14,8 @@ export class Store {
 	readonly markets: {[id:number]: {id?:number;name:string;currency:string;el:JSX.Element}} = {};
 	miAccounts: MiAccounts;
 	miGroups: MiGroups;
+	industries: MIndustries;
+
 	stocksMyAll: IObservableArray<Stock & StockValue> = null;
 	stocksMyBlock: IObservableArray<Stock & StockValue> = null;
 	groupIXs: IXBase[];
@@ -27,6 +29,7 @@ export class Store {
 		this.yumi = uqs.BruceYuMi;
 		this.miAccounts = new MiAccounts(this);
 		this.miGroups = new MiGroups(this);
+		this.industries = new MIndustries(this);
 	}
 
 	stockFromId(stockId: number): Stock&StockValue {
@@ -75,7 +78,7 @@ export class Store {
 		this.myAllColl[stockId] = true;
 	}
 
-	async removeMyAll(stock: Stock&StockValue): Promise<{miAccounts: MiAccount[], miGroups: MiGroup[]}> {
+	async removeMyAll(stock: Stock&StockValue): Promise<{miAccounts: MiAccount[], miGroups: MGroup[]}> {
 		if (!stock) return;
 		let stockId = stock.id;
 		let ret = await this.yumi.StockUsing.query({stock: stockId});
@@ -146,19 +149,17 @@ export class Store {
 				ret.push(stock);
 			}
 		}
-
-		/*
-		let ret = this.stocksMyAll.filter(v => {
-			let stockId = v.id;
-			let ok = this.groupIXs.findIndex(gs => {
-				let {ix, id:gStockId} = gs;
-				return ix===groupId && gStockId===stockId;
-			}) >= 0;
-			return ok;
-		});
-		*/
 		return ret;
 	}
+
+	async loadIndustryStocks(industryId: number):Promise<(Stock&StockValue)[]> {
+		let stockArr = await this.yumi.IX<Stock&StockValue>({			
+			IX: this.yumi.GroupStock,
+			IDX: [this.yumi.Stock, this.yumi.StockValue],
+			ix: industryId,
+		});
+		return stockArr;
+}
 
 	async loadMarkets() {
 		let {yumi} = this;
@@ -198,15 +199,6 @@ export class Store {
 		}
 	}
 
-	/*
-	@observable config: MiConfigs = { 
-		groupName: defaultGroupName, 
-		stockFind: { sortType:'pe' },
-		userStock: { sortType:'tagpe'},
-		regression: {bmin:0, bmax:0.5, r2:0.7, lmin:0.01, lmax:0.5, lr2:0.7, mcount:2, lr4: 3, r210:0.6, irate:0.04}
-	};
-	*/
-
 	async load() {
 		await this.loadMarkets();
 		await Promise.all([
@@ -214,6 +206,7 @@ export class Store {
 			this.loadMyAll(),
 			this.loadGroupIXs(),
 			this.miGroups.load(),
+			this.industries.load(),
 		]);
 		this.miGroups.calcStockCount();
 	}

@@ -1,6 +1,6 @@
 import { IObservableArray, makeObservable, observable } from "mobx";
 import { PickId, Context } from "tonva-react";
-import { MiAccount, MiGroup, HoldingStock } from "../../store";
+import { MiAccount, MGroup, HoldingStock } from "../../store";
 import { Stock, StockValue } from "uq-app/uqs/BruceYuMi";
 import { CApp, CUqSub, UQs } from "../../uq-app";
 import { VAccount } from "./VAccount";
@@ -10,7 +10,7 @@ import { VAccounts } from "./VAccounts";
 import { VPickStock } from "./VPickStock";
 
 export class CAccount extends CUqSub<CApp, UQs, CHome> {
-	miGroup: MiGroup = null;
+	miGroup: MGroup = null;
 	stocks: IObservableArray<Stock & StockValue>;
 	stock: Stock & StockValue;
 	miAccount: MiAccount = null;

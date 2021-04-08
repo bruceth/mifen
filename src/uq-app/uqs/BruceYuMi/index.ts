@@ -8,6 +8,7 @@ import * as Holding from './Holding.ui';
 import * as $PiecewiseDetail from './$PiecewiseDetail.ui';
 import * as Stock from './Stock.ui';
 import * as Blog from './Blog.ui';
+import * as Industry from './Industry.ui';
 import * as StockValue from './StockValue.ui';
 import * as AccountValue from './AccountValue.ui';
 import * as Portfolio from './Portfolio.ui';
@@ -28,6 +29,7 @@ export function setUI(uq: Uq) {
 	Object.assign(uq.$PiecewiseDetail, $PiecewiseDetail);
 	Object.assign(uq.Stock, Stock);
 	Object.assign(uq.Blog, Blog);
+	Object.assign(uq.Industry, Industry);
 	Object.assign(uq.StockValue, StockValue);
 	Object.assign(uq.AccountValue, AccountValue);
 	Object.assign(uq.Portfolio, Portfolio);

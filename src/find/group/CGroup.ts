@@ -1,5 +1,5 @@
 import { action, computed, IObservableArray, makeObservable, observable, runInAction } from "mobx";
-import { MiAccount, MiGroup, HoldingStock } from "../../store";
+import { MiAccount, MGroup, HoldingStock } from "../../store";
 import { Stock, StockValue } from "uq-app/uqs/BruceYuMi";
 import { CApp, CUqSub, UQs } from "../../uq-app";
 import { CFind } from "../CFind";
@@ -7,7 +7,7 @@ import { VGroups } from "./VGroups";
 import { VStockList } from "./VStockList";
 
 export class CGroup extends CUqSub<CApp, UQs, CFind> {
-	miGroup: MiGroup = null;
+	miGroup: MGroup = null;
 	miAccount: MiAccount = null;
 	holdingStock: HoldingStock;
 	stocks: IObservableArray<Stock & StockValue>;
@@ -32,9 +32,19 @@ export class CGroup extends CUqSub<CApp, UQs, CFind> {
 		return this._listCaption?? this.miGroup?.name;
 	}
 
-	renderGroups() {return this.renderView(VGroups);}
+	renderIndustries() {
+		let {industries} = this.cApp.store;
+		let {groups} = industries;
+		return this.renderView(VGroups, groups);
+	}
 
-	showMiGroup = async (miGroup: MiGroup) => {
+	renderGroups() {
+		let {miGroups} = this.cApp.store;
+		let {groups } = miGroups;
+		return this.renderView(VGroups, groups);
+	}
+
+	showMiGroup = async (miGroup: MGroup) => {
 		this._listCaption = undefined;
 		this.miGroup = miGroup;
 

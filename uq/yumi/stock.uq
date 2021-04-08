@@ -4,12 +4,18 @@ ID Market (
 	currency char(20),
 );
 
+ID Industry (
+	id,
+	KEY name CHAR(50),
+);
+
 ID Stock ver 0.2 (
 	id,
 	KEY market ID Market,
 	KEY no,
 	name char(50),
 	rawId ID,
+	uno char(12),			-- market.no unique no
 );
 
 IDX StockValue ver 0.1 (
@@ -137,7 +143,7 @@ OPEN ACT WriteStock ver 0.2 (
 	foreach stocks {
 		VAR mId ID = ID(Market, market);
 		VAR stock ID = ID(Stock, mId, no);
-		WITH Stock as a ID stock SET a.name=name, a.rawId=rawId; -- , a.$=concat_ws('\n', name, no);
+		WITH Stock as a ID stock SET a.name=name, a.rawId=rawId, a.uno=concat(market, '.', no);
 		WITH StockValue as a ID stock
 			SET a.incValue=incValue
 				, a.miValue=incValue+IFNULL(divident,0)
@@ -168,7 +174,7 @@ OPEN ACT WritePrice ver 0.2 (
 	foreach prices {
 		VAR mId ID = ID(Market, market);
 		VAR stock ID = ID(Stock, mId, no);
-		WITH Stock as a ID stock SET a.name=name, a.rawId=rawId; --, a.$=concat_ws('\n', name, no);
+		WITH Stock as a ID stock SET a.name=name, a.rawId=rawId, a.uno=concat(market, '.', no);
 		WITH StockValue as a ID stock 
 			SET a.price=price
 				, a.pvolumn=pvolumn
@@ -178,5 +184,29 @@ OPEN ACT WritePrice ver 0.2 (
 				, a.dvRate=100 * a.divident * a.volumn / a.price / IFNULL(a.pvolumn, a.volumn)
 				, a.ttm=IF(a.earning>=0.01, (a.price*IFNULL(a.pvolumn, a.volumn))/a.earning/a.volumn, null)
 			WHERE a.price>0 AND a.volumn>0;
+	}
+};
+
+OPEN ACT WriteIndustryStock (
+	industry CHAR(20),
+	ARR stocks (
+		rawId BIGINT,
+	)
+) {
+	VAR iId ID = ID(Industry, industry);
+	foreach stocks {
+		WITH GroupStock ix=iId xi=rawId;
+	}
+};
+
+OPEN ACT WriteStockIndustry (
+	rawId BIGINT,
+	ARR industries (
+		industry CHAR(20),
+	)
+) {
+	foreach industries {
+		VAR iId ID = ID(Industry, industry);
+		WITH GroupStock ix=iId xi=rawId;
 	}
 };

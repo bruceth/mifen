@@ -15,21 +15,29 @@ export class VFind extends VPage<CFind> {
 			['全部', showAll],
 		];
 		let renderButton = (caption:string, onClick:()=>void) => <button key={caption} 
-			className="btn btn-outline-info mr-1 mr-sm-3 mb-3" 
+			className="btn btn-outline-info m-1" 
 			onClick={onClick}>
 			{caption}
 		</button>;
-		return <div>
-			<div className="px-3 pt-3">
-				<SearchBox className="mb-3" onSearch={this.controller.onSearch} placeholder="股票代码，名称" />
-				<div className="d-flex flex-wrap">
-					{buttons.map(v => {
-						let [caption, show] = v;
-						return renderButton(caption, show);
-					})}
-				</div>
+		return <div className="bg-light">
+			<div className="p-3">
+				<SearchBox className="mb-0" onSearch={this.controller.onSearch} placeholder="股票代码，名称" />
 			</div>
-			{cGroup.renderGroups()}
+			<div className="p-2 mb-2 d-flex flex-wrap bg-white border-top border-bottom">
+				{buttons.map(v => {
+					let [caption, show] = v;
+					return renderButton(caption, show);
+				})}
+			</div>
+
+			<div className="small text-muted px-3 mt-2 mb-1">行业</div>
+			<div className=" mb-2 px-1 pb-1 bg-white border-top border-bottom">
+				{cGroup.renderIndustries()}
+			</div>
+			<div className="small text-muted px-3 mb-1">分组</div>
+			<div className=" mb-4 px-1 pb-1 bg-white border-top border-bottom">
+				{cGroup.renderGroups()}
+			</div>
 			{this.renderMyAll()}
 			{this.renderMyBlock()}
 		</div>

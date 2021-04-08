@@ -1,4 +1,4 @@
-import { MiGroup } from "store";
+import { MGroup, MiGroup } from "store";
 import { IDUI } from "tonva-react";
 import { CID, MidIXID } from "tonva-uqui";
 import { renderGroup } from "tool";

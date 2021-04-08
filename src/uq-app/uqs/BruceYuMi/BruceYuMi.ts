@@ -1,4 +1,4 @@
-//=== UqApp builder created on Wed Apr 07 2021 14:53:42 GMT-0400 (GMT-04:00) ===//
+//=== UqApp builder created on Thu Apr 08 2021 10:28:58 GMT-0400 (GMT-04:00) ===//
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { IDXValue, Uq, UqTuid, UqAction, UqQuery, UqID, UqIDX, UqIX } from "tonva-react";
 
@@ -65,6 +65,26 @@ export interface ParamWritePrice {
 
 }
 interface ResultWritePrice {
+}
+
+export interface ParamWriteIndustryStock {
+	industry: string;
+	stocks: {
+		rawId: number;
+	}[];
+
+}
+interface ResultWriteIndustryStock {
+}
+
+export interface ParamWriteStockIndustry {
+	rawId: number;
+	industries: {
+		industry: string;
+	}[];
+
+}
+interface ResultWriteStockIndustry {
 }
 
 export interface Param$poked {
@@ -191,6 +211,7 @@ export interface Stock {
 	no?: string;
 	name: string;
 	rawId: number;
+	uno: string;
 }
 
 export interface Blog {
@@ -201,6 +222,11 @@ export interface Blog {
 	$owner?: number;
 	$create?: any;
 	$update?: any;
+}
+
+export interface Industry {
+	id?: number;
+	name: string;
 }
 
 export interface StockValue {
@@ -327,6 +353,7 @@ export interface ParamActs {
 	$PiecewiseDetail?: $PiecewiseDetail[];
 	stock?: Stock[];
 	blog?: Blog[];
+	industry?: Industry[];
 	stockValue?: ActParamStockValue[];
 	accountValue?: ActParamAccountValue[];
 	portfolio?: ActParamPortfolio[];
@@ -346,6 +373,8 @@ export interface UqExt extends Uq {
 	$sheet: UqTuid<Tuid$sheet>;
 	WriteStock: UqAction<ParamWriteStock, ResultWriteStock>;
 	WritePrice: UqAction<ParamWritePrice, ResultWritePrice>;
+	WriteIndustryStock: UqAction<ParamWriteIndustryStock, ResultWriteIndustryStock>;
+	WriteStockIndustry: UqAction<ParamWriteStockIndustry, ResultWriteStockIndustry>;
 	$poked: UqQuery<Param$poked, Result$poked>;
 	SearchStock: UqQuery<ParamSearchStock, ResultSearchStock>;
 	StockUsing: UqQuery<ParamStockUsing, ResultStockUsing>;
@@ -359,6 +388,7 @@ export interface UqExt extends Uq {
 	$PiecewiseDetail: UqID<any>;
 	Stock: UqID<any>;
 	Blog: UqID<any>;
+	Industry: UqID<any>;
 	StockValue: UqIDX<any>;
 	AccountValue: UqIDX<any>;
 	Portfolio: UqIDX<any>;

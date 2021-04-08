@@ -19,9 +19,10 @@ IX UserBlockStock (
 	xi Stock,
 );
 
+-- Industry stock, Market stock,
 IX GroupStock (
-	ix,				-- group
-	xi,			-- Stock
+	ix,					-- group
+	xi,					-- Stock
 	order SMALLINT,
 );
 

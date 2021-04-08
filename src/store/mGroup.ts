@@ -2,7 +2,7 @@ import { IObservableArray, makeObservable, observable, runInAction} from "mobx";
 import { Group, Stock, StockValue } from "uq-app/uqs/BruceYuMi";
 import { Store } from "./store";
 
-export class MiGroup implements Group {
+export abstract class MGroup implements Group {
 	protected readonly store: Store;
 	id: number;
 	name: string = null;
@@ -19,13 +19,26 @@ export class MiGroup implements Group {
 		Object.assign(this, group);
 	}
 
+	abstract get type(): string;
+
 	async loadItems() {
 		if (this.stocks) return;
-		let ret = await this.store.loadGroupStocks(this.id);
+		let ret = await this.internalLoadItems();
 		runInAction(() => {
 			this.stocks = observable(ret, {deep: false});
 			this.count = this.stocks.length;
 		});
+	}
+
+	protected abstract internalLoadItems(): Promise<any[]>;
+}
+
+export class MiGroup extends MGroup {
+	get type(): string {return 'group'}
+
+	protected async internalLoadItems() {
+		let ret = await this.store.loadGroupStocks(this.id);
+		return ret;
 	}
 
 	addStock(stock: Stock & StockValue, stockCount: number) {
@@ -45,5 +58,13 @@ export class MiGroup implements Group {
 
 	exists(stockId: number) {
 		return this.stocks?.findIndex(v => v.id === stockId) 
+	}
+}
+
+export class MIndustry extends MGroup {
+	get type(): string {return 'industry'}
+	protected async internalLoadItems() {
+		let ret = await this.store.loadIndustryStocks(this.id);
+		return ret;
 	}
 }

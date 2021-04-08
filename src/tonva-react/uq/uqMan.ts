@@ -50,7 +50,7 @@ export interface Field {
     null?: boolean;
     size?: number;
     owner?: string;
-    _tuid: TuidBox;
+    _tuid?: TuidBox;
 }
 export interface ArrFields {
     name: string;

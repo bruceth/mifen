@@ -2,24 +2,40 @@ import { makeObservable, observable } from "mobx";
 import { ID } from "tonva-react";
 import { BruceYuMi } from "uq-app";
 import { Stock, StockValue } from "uq-app/uqs/BruceYuMi";
-import { MiGroup } from "./miGroup";
+import { MGroup, MiGroup, MIndustry } from "./mGroup";
 import { Store } from "./store";
 
-export class MiGroups {
-	private store: Store;
-	private readonly ID: ID;
-	//readonly groups: IObservableArray<MiGroup>;
-	groups: MiGroup[];
+export abstract class MGroups<T extends MGroup> {
+	protected store: Store;
+	//private readonly ID: ID;
+	groups: T[];
 
 	constructor(store: Store) {
 		this.store = store;
-		this.ID = store.yumi.Group;
+		//this.ID = store.yumi.Group;
 		makeObservable(this, {
 			groups: observable,
 		})
-		//this.groups = observable.array<MiGroup>([], { deep: true });
 	}
 
+	abstract load(): Promise<void>;
+
+	groupsFromIds(ids: number[]): MGroup[] {
+		let ret:MGroup[] = [];
+		let len = this.groups.length;
+		for (let i=0; i<len; i++) {			
+			let group = this.groups[i];
+			if (ids.findIndex(v => v === group.id) >= 0) {
+				ret.push(group);
+			}
+		}
+		return ret;
+	}
+
+	calcStockCount() {}
+}
+
+export class MiGroups extends MGroups<MiGroup> {
 	async load(): Promise<void> {
 		let {yumi} = this.store;
 		let ret = await yumi.IX<BruceYuMi.Group>({
@@ -71,16 +87,15 @@ export class MiGroups {
 			break;
 		}
 	}
+}
 
-	groupsFromIds(ids: number[]): MiGroup[] {
-		let ret:MiGroup[] = [];
-		let len = this.groups.length;
-		for (let i=0; i<len; i++) {			
-			let group = this.groups[i];
-			if (ids.findIndex(v => v === group.id) >= 0) {
-				ret.push(group);
-			}
-		}
-		return ret;
+export class MIndustries extends MGroups<MIndustry> {
+	async load(): Promise<void> {
+		let {yumi} = this.store;
+		let ret = await yumi.ID<BruceYuMi.Group>({
+			IDX: [yumi.Industry],
+			id: undefined,
+		});
+		this.groups = ret.map(v => new MIndustry(this.store, v));
 	}
 }

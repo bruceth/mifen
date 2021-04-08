@@ -11,6 +11,9 @@ export abstract class IDXEntity<M> extends Entity {
 
 export class UqID<M> extends IDXEntity<M> {
 	get typeName() {return 'id'}
+	create: boolean;
+	update: boolean;
+	owner: boolean;
 	async NO(): Promise<string> {
 		let ret = await this.uqApi.post('id-no', {ID:this.name});
 		return ret;

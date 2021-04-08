@@ -37,6 +37,13 @@ const fields = {
 		"isKey": false,
 		"label": "RawId"
 	} as FieldItemId,
+	uno: {
+		"name": "uno",
+		"type": "string",
+		"isKey": false,
+		"widget": "string",
+		"label": "Uno"
+	} as FieldItemString,
 };
 /*==fields==*/
 

@@ -349,7 +349,7 @@ function buildTagInterface(tag: Tag):string {
 }
 
 function buildIDInterface(idEntity: ID):string {
-	let {sName, fields, schema} = idEntity;
+	let {sName, fields, schema, create, update, owner} = idEntity;
 	let {keys:schemaKeys} = schema;
 	let keys:Field[] = [], others:Field[] = [];
 	for (let f of fields) {
@@ -362,6 +362,15 @@ function buildIDInterface(idEntity: ID):string {
 	ts += `\n\tid?: number;`;
 	ts += buildFields(keys, true);
 	ts += buildFields(others, true);
+	if (create === true) {
+		ts += buildField({name: '$create', type: 'timestamp'}, true);
+	}
+	if (update === true) {
+		ts += buildField({name: '$update', type: 'timestamp'}, true);
+	}
+	if (owner === true) {
+		ts += buildField({name: '$owner', type: 'id'}, true);
+	}
 	ts += '\n}';
 	return ts;
 }
