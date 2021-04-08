@@ -91,7 +91,7 @@ export class VStockInfo extends VPage<CStockInfo> {
 			&nbsp;
 			{cCommon.renderBlockStock(stock)}
         </div>;
-        return renderStockRow(undefined, stock, undefined, pinStock);
+        return <div className="bg-white">{renderStockRow(undefined, stock, undefined, pinStock)}</div>;
     });
 
     private historyChart = () => {
@@ -100,9 +100,9 @@ export class VStockInfo extends VPage<CStockInfo> {
         if (market === 'sh' || market === 'sz') {
             let urlweek = `https://image.sinajs.cn/newchart/weekly/n/${symbol}.gif`;
             let urlmonth = `https://image.sinajs.cn/newchart/monthly/n/${symbol}.gif`
-            return <div className="d-flex">
-                <div className="px-2" style={{ width: '50%' }}><img alt="" src={urlweek} /></div>
-                <div className="px-2" style={{ width: '50%' }}><img alt="" src={urlmonth} /></div>
+            return <div className="row">
+                <div className="col-md"><img className="w-100" alt="" src={urlweek} /></div>
+                <div className="col-md"><img className="w-100" alt="" src={urlmonth} /></div>
             </div>;
         }
     }
@@ -264,13 +264,13 @@ export class VStockInfo extends VPage<CStockInfo> {
                 <div className="px-3 c12">{GFunc.caption('r2')}{GFunc.numberToString(lr2, 4)}</div>
                 <div className="px-3 c12">{GFunc.caption('e预测')}{GFunc.numberToString(lpre)}</div>
             </div>
-            <div className="d-flex">
-                <div className="px-2" style={{ width: '50%' }}>{chart1}</div>
-                <div className="px-2" style={{ width: '50%' }}>{chart2}</div>
+            <div className="row">
+                <div className="col">{chart1}</div>
+                <div className="col">{chart2}</div>
             </div>
-            <div className="d-flex">
-                <div className="px-2" style={{ width: '50%' }}>{chart3}</div>
-                <div className="px-2" style={{ width: '50%' }}>{chart4}</div>
+            <div className="row">
+                <div className="col">{chart3}</div>
+                <div className="col">{chart4}</div>
             </div>
         </>;
     });

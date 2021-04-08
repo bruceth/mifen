@@ -88,7 +88,8 @@ PAGE ORDER Switch (miRateDesc, dvRateDesc, roeDesc, miRateAsc, dvRateAsc, roeAsc
 	PAGE SELECT a.id, a.no, a.name, a.rawId,
 		a.market,
 		b.miValue, b.incValue, b.earning, b.divident, b.price, 
-		b.roe, b.miRate, b.dvRate, b.ttm,
+		case when b.ttm>=3 then b.miRate else null end as miRate, 
+		b.roe, b.dvRate, b.ttm,
 		b.inc1, b.inc2, b.inc3, b.inc4, b.preInc, b.volumn,
 		b.smoothness
 		FROM Stock as a 
@@ -96,7 +97,7 @@ PAGE ORDER Switch (miRateDesc, dvRateDesc, roeDesc, miRateAsc, dvRateAsc, roeAsc
 			LEFT JOIN Market as c on a.market=c.id
 			-- LEFT JOIN UserBlockStock as d on d.ix=$user AND d.id=a.id
 		WHERE a.$ LIKE sKey 
-			AND b.ttm>=3 AND NOT b.preInc IS NULL
+			-- AND NOT b.preInc IS NULL
 			AND (market IS NULL OR EXISTS(SELECT m FROM tblm WHERE m=c.name))
 			AND (smooth is NULL OR smooth=0 OR b.smoothness>=smooth)
 			AND (
@@ -104,10 +105,10 @@ PAGE ORDER Switch (miRateDesc, dvRateDesc, roeDesc, miRateAsc, dvRateAsc, roeAsc
 					OR NOT key IS NULL
 				)
 			-- AND a.id>$pageStart
-		ORDER WHEN miRateDesc BY b.miRate DESC
+		ORDER WHEN miRateDesc BY case when b.ttm>=3 then b.miRate else null end DESC
 			WHEN dvRateDesc BY b.dvRate DESC
 			WHEN roeDesc BY b.roe DESC
-			WHEN miRateAsc BY b.miRate DESC
+			WHEN miRateAsc BY case when b.ttm>=3 then b.miRate else null end DESC
 			WHEN dvRateAsc BY b.dvRate DESC
 			WHEN roeAsc BY b.roe DESC
 			ELSE a.id ASC;

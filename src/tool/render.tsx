@@ -122,7 +122,7 @@ export function renderStockUrl(row: NStockInfo) {
 }
 
 function number(n: number, w = 2) {
-    return n === undefined ? '' : n.toFixed(w);
+    return n === undefined || n === null ? '-' : n.toFixed(w);
 }
 
 function numberToMarketValue(n: number) {
