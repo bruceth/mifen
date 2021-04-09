@@ -158,6 +158,7 @@ export class Store {
 			IDX: [this.yumi.Stock, this.yumi.StockValue],
 			ix: industryId,
 		});
+		stockArr.forEach(v => this.buildStockValues(v));
 		return stockArr;
 }
 

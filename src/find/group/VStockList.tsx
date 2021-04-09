@@ -25,7 +25,7 @@ export class VStockList extends VPage<CGroup> {
 	}
 	content() {
 		return React.createElement(observer(() => {
-			let {stocks} = this.controller;
+			let {stocks, onStockClick} = this.controller;
 			return <div>
 				<List items={stocks} item={{render: this.renderStock}} />
 			</div>;
