@@ -30,16 +30,20 @@ export class VFind extends VPage<CFind> {
 				})}
 			</div>
 
-			<div className="small text-muted px-3 mt-2 mb-1">行业</div>
-			<div className=" mb-2 px-1 pb-1 bg-white border-top border-bottom">
-				{cGroup.renderIndustries()}
+			<div className="mb-3">
+				{this.renderMyAll()}
 			</div>
 			<div className="small text-muted px-3 mb-1">分组</div>
-			<div className=" mb-4 px-1 pb-1 bg-white border-top border-bottom">
+			<div className=" mb-3 px-1 pb-1 bg-white border-top border-bottom">
 				{cGroup.renderGroups()}
 			</div>
-			{this.renderMyAll()}
-			{this.renderMyBlock()}
+			<div className="small text-muted px-3 mt-2 mb-1">行业</div>
+			<div className=" mb-3 px-1 pb-1 bg-white border-top border-bottom">
+				{cGroup.renderIndustries()}
+			</div>
+			<div className="mb-3">
+				{this.renderMyBlock()}
+			</div>
 		</div>
 	}
 
