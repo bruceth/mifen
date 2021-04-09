@@ -24,7 +24,7 @@ export class VGroups extends View<CGroup> {
 				left = <FA name="list-alt" className="text-info align-self-center" />;
 				break;
 			case 'industry':
-				left = <FA name="flag-o" className="text-danger align-self-center" />;
+				left = <FA name="anchor" className="text-danger align-self-center" />;
 				break;
 		}
 		let right = count > 0 && <small className="text-muted position-absolute" style={pos}>{count}</small>;
