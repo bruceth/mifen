@@ -48,10 +48,14 @@ export class CGroup extends CUqSub<CApp, UQs, CFind> {
 		this._listCaption = undefined;
 		this.miGroup = miGroup;
 
-		let renderPageRight = () => {
-			let cID = this.cApp.cCommon.buildCIDUserGroup();
-			return cID.renderViewRight(miGroup);
+		let renderPageRight: () => JSX.Element;
+		if (miGroup.type === 'group') {
+			renderPageRight = () => {
+				let cID = this.cApp.cCommon.buildCIDUserGroup();
+				return cID.renderViewRight(miGroup);
+			}
 		}
+
 		this.openStocksList(undefined, renderPageRight);
 		await miGroup.loadItems();
 		this.setStocksList(miGroup.stocks);

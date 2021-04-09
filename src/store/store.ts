@@ -7,6 +7,7 @@ import { Market, Stock, StockValue, UqExt } from "uq-app/uqs/BruceYuMi";
 import { MGroup, MiGroup, MIndustry } from "./mGroup";
 import { MiAccount } from "./miAccount";
 import { marketElements } from "./market";
+import { stockMiRateSorter } from "./sorter";
 
 export class Store {
 	readonly myAllColl: {[id:number]: boolean} = {};
@@ -159,6 +160,7 @@ export class Store {
 			ix: industryId,
 		});
 		stockArr.forEach(v => this.buildStockValues(v));
+		stockArr.sort(stockMiRateSorter);
 		return stockArr;
 }
 

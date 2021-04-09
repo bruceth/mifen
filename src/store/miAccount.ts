@@ -1,6 +1,7 @@
 import { action, autorun, IObservableArray, makeObservable, observable, runInAction } from "mobx";
 import { Account, AccountValue, Holding, Portfolio } from "uq-app/uqs/BruceYuMi";
 import { HoldingStock } from "./holdingStock";
+import { holdingMiRateSorter } from "./sorter";
 import { Store } from "./store";
 
 export class MiAccount  implements Account, AccountValue {
@@ -42,17 +43,8 @@ export class MiAccount  implements Account, AccountValue {
 	}
 
 	async loadItems() {
-		let sorter = (a:HoldingStock, b:HoldingStock) => {
-			let {stockObj:ao} = a;
-			let {stockObj:bo} = b;
-			let aMiRate = ao.miRate ?? 0;
-			let bMiRate = bo.miRate ?? 0;
-			if (aMiRate < bMiRate) return 1;
-			if (aMiRate > bMiRate) return -1;
-			return 0;
-		}
 		if (this.holdingStocks) {
-			this.holdingStocks.sort(sorter);
+			this.holdingStocks.sort(holdingMiRateSorter);
 			return;
 		}
 		let {yumi} = this.store;
@@ -76,7 +68,7 @@ export class MiAccount  implements Account, AccountValue {
 				let holdingStock = new HoldingStock(id, stock, v.quantity, cost);
 				return holdingStock;
 			});
-			list.sort(sorter);
+			list.sort(holdingMiRateSorter);
 			this.holdingStocks = observable(list);
 			this.count = this.holdingStocks.length;	
 			this.recalc();
