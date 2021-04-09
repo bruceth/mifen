@@ -9,13 +9,15 @@ ID Industry (
 	KEY name CHAR(50),
 );
 
-ID Stock ver 0.2 (
+ID Stock ver 0.5 (
 	id,
 	KEY market ID Market,
 	KEY no,
 	name char(50),
 	rawId ID,
 	uno char(12),			-- market.no unique no
+	index rawId (rawId) unique,
+	index uno (uno) unique,
 );
 
 IDX StockValue ver 0.1 (
@@ -141,8 +143,8 @@ OPEN ACT WriteStock ver 0.2 (
 	)
 ) {
 	foreach stocks {
-		VAR mId ID = ID(Market, market);
-		VAR stock ID = ID(Stock, mId, no);
+		VAR mId ID = ID(Market new, market);
+		VAR stock ID = ID(Stock new, mId, no);
 		WITH Stock as a ID stock SET a.name=name, a.rawId=rawId, a.uno=concat(market, '.', no);
 		WITH StockValue as a ID stock
 			SET a.incValue=incValue
@@ -172,8 +174,8 @@ OPEN ACT WritePrice ver 0.2 (
 	)
 ) {
 	foreach prices {
-		VAR mId ID = ID(Market, market);
-		VAR stock ID = ID(Stock, mId, no);
+		VAR mId ID = ID(Market new, market);
+		VAR stock ID = ID(Stock new, mId, no);
 		WITH Stock as a ID stock SET a.name=name, a.rawId=rawId, a.uno=concat(market, '.', no);
 		WITH StockValue as a ID stock 
 			SET a.price=price
@@ -193,9 +195,12 @@ OPEN ACT WriteIndustryStock (
 		rawId BIGINT,
 	)
 ) {
-	VAR iId ID = ID(Industry, industry);
+	VAR iId ID = ID(Industry new, industry);
 	foreach stocks {
-		WITH GroupStock ix=iId xi=rawId;
+		VAR stockId ID = (SELECT a.id FROM Stock as a WHERE a.rawId=rawId);
+		if NOT stockID IS NULL {
+			WITH GroupStock ix=iId xi=stockId;
+		}
 	}
 };
 
@@ -205,8 +210,10 @@ OPEN ACT WriteStockIndustry (
 		industry CHAR(20),
 	)
 ) {
+	VAR stockId ID = (SELECT a.id FROM Stock as a WHERE a.rawId=rawId);
+	IF stockId IS NULL {RETURN;}
 	foreach industries {
-		VAR iId ID = ID(Industry, industry);
-		WITH GroupStock ix=iId xi=rawId;
+		VAR iId ID = ID(Industry new, industry);
+		WITH GroupStock ix=iId xi=stockId;
 	}
 };

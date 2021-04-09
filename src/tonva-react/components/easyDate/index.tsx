@@ -104,7 +104,7 @@ function renderDate(vDate:Date|number, withTime:boolean, always:boolean = false)
     }
 	return tt('ymd')(year, month, _date);
 	*/
-	if (appendTime === true || always === true) {
+	if (appendTime === true && always === true) {
 		return dPart + ' ' + hm;
 	}
 	return dPart;
