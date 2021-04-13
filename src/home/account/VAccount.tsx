@@ -118,7 +118,7 @@ export class VAccount extends VPage<CAccount> {
 						<div className="col px-0 text-right">米息率</div>
 						<div className="col px-0 text-right">
 							市价<br/>
-							成本价
+							成本
 						</div>
 						<div className="col px-0 text-right">
 							盈亏<br/>
@@ -130,7 +130,7 @@ export class VAccount extends VPage<CAccount> {
 					item={{render: this.renderHolding}} />
 				{
 					holdings0 && holdings0.length > 0 && <>
-						<div className="small text-muted px-3 py-1 mt-3">已清仓</div>
+						<div className="small text-muted px-3 py-1 mt-3">空仓</div>
 						<List items={holdings0}
 							item={{render: this.renderHolding}} />
 					</>

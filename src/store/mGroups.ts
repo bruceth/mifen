@@ -1,8 +1,7 @@
 import { makeObservable, observable } from "mobx";
-import { ID } from "tonva-react";
 import { BruceYuMi } from "uq-app";
 import { Stock, StockValue } from "uq-app/uqs/BruceYuMi";
-import { MGroup, MiGroup, MIndustry } from "./mGroup";
+import { MGroup, MiGroup, MIndustry, MRootIndustry } from "./mGroup";
 import { Store } from "./store";
 
 export abstract class MGroups<T extends MGroup> {
@@ -97,5 +96,17 @@ export class MIndustries extends MGroups<MIndustry> {
 			id: undefined,
 		});
 		this.groups = ret.map(v => new MIndustry(this.store, v));
+	}
+}
+
+export class MRootIndustries extends MGroups<MRootIndustry> {
+	async load(): Promise<void> {
+		let {yumi} = this.store;
+		let ret = await yumi.IX<BruceYuMi.Group>({
+			IX: yumi.IXIndustry,
+			IDX: [yumi.Industry],
+			ix: 0,
+		});
+		this.groups = ret.map(v => new MRootIndustry(this.store, v));
 	}
 }

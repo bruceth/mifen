@@ -12,6 +12,7 @@ export class HoldingStock implements Holding, Portfolio {
 	market: number;			// 市值
 	divident: number;		// 股息
 	stockObj: Stock & StockValue;
+	everBought: number;
 
 	constructor(holdingId: number, stock: Stock & StockValue, quantity: number, cost: number) {
 		makeObservable(this, {

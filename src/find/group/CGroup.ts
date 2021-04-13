@@ -5,6 +5,7 @@ import { CApp, CUqSub, UQs } from "../../uq-app";
 import { CFind } from "../CFind";
 import { VGroups } from "./VGroups";
 import { VStockList } from "./VStockList";
+import { VRootIndustry } from "./VRootIndustry";
 
 export class CGroup extends CUqSub<CApp, UQs, CFind> {
 	miGroup: MGroup = null;
@@ -32,16 +33,22 @@ export class CGroup extends CUqSub<CApp, UQs, CFind> {
 		return this._listCaption?? this.miGroup?.name;
 	}
 
+	renderGroups() {
+		let {miGroups} = this.cApp.store;
+		let {groups } = miGroups;
+		return this.renderView(VGroups, groups);
+	}
+
 	renderIndustries() {
 		let {industries} = this.cApp.store;
 		let {groups} = industries;
 		return this.renderView(VGroups, groups);
 	}
 
-	renderGroups() {
-		let {miGroups} = this.cApp.store;
-		let {groups } = miGroups;
-		return this.renderView(VGroups, groups);
+	renderRootIndustries() {
+		let {rootIndustries} = this.cApp.store;
+		let {groups} = rootIndustries;
+		return this.renderView(VRootIndustry, groups);
 	}
 
 	showMiGroup = async (miGroup: MGroup) => {
@@ -59,6 +66,17 @@ export class CGroup extends CUqSub<CApp, UQs, CFind> {
 		this.openStocksList(undefined, renderPageRight);
 		await miGroup.loadItems();
 		this.setStocksList(miGroup.stocks);
+	}
+
+	showRootIndustry = async (miGroup: MGroup) => {
+		let cGroup = this.owner.newSub(CGroup);
+		await cGroup.showMiGroup(miGroup); //.start();
+		/*
+		this._listCaption = undefined;
+		this.openStocksList(undefined);
+		await miGroup.loadItems();
+		this.setStocksList(miGroup.stocks);
+		*/
 	}
 
 	showStocksAll = async () => {

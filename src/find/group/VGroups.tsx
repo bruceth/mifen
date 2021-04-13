@@ -10,12 +10,16 @@ export class VGroups extends View<CGroup> {
 	render(groups: MGroup[]):JSX.Element {
 		return React.createElement(observer(() => {
 			return <List items={groups} 
-				item={{render: this.renderGroup, onClick:this.controller.showMiGroup}} 
+				item={{render: this.renderGroup, onClick:(group) => this.onGroupClick(group)}} 
 				className="d-flex flex-wrap bg-white p-1" />;
 		}));
 	}
 
-	private renderGroup = (group:MGroup, index: number):JSX.Element => {
+	protected onGroupClick(group: MGroup) {
+		this.controller.showMiGroup(group);
+	}
+
+	protected renderGroup = (group:MGroup, index: number):JSX.Element => {
 		let {name, count, type} = group;
 		let left:any;
 		switch (type) {

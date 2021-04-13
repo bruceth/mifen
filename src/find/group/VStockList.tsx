@@ -4,6 +4,8 @@ import { List, VPage } from "tonva-react";
 import { Stock, StockValue } from "uq-app/uqs/BruceYuMi";
 import { renderStockRow } from "tool";
 import { CGroup } from "./CGroup";
+import { VGroups } from "./VGroups";
+import { VRootIndustry } from "./VRootIndustry";
 
 export class VStockList extends VPage<CGroup> {
 	private renderRowRight: (stock: Stock & StockValue) => JSX.Element;
@@ -25,8 +27,10 @@ export class VStockList extends VPage<CGroup> {
 	}
 	content() {
 		return React.createElement(observer(() => {
-			let {stocks, onStockClick} = this.controller;
+			let {miGroup, stocks} = this.controller;
+			let {groups} = miGroup;
 			return <div>
+				{groups && this.renderVm(VRootIndustry, groups)}
 				<List items={stocks} item={{render: this.renderStock}} />
 			</div>;
 		}));

@@ -2,9 +2,9 @@ import { IObservableArray, makeObservable, observable } from "mobx";
 import { IXBase } from "tonva-uqui";
 import { UQs } from "uq-app";
 import { MiAccounts } from "./miAccounts";
-import { MGroups, MIndustries, MiGroups } from "./mGroups";
-import { Market, Stock, StockValue, UqExt } from "uq-app/uqs/BruceYuMi";
-import { MGroup, MiGroup, MIndustry } from "./mGroup";
+import { MIndustries, MiGroups, MRootIndustries } from "./mGroups";
+import { Industry, Market, Stock, StockValue, UqExt } from "uq-app/uqs/BruceYuMi";
+import { MGroup, MIndustry } from "./mGroup";
 import { MiAccount } from "./miAccount";
 import { marketElements } from "./market";
 import { stockMiRateSorter } from "./sorter";
@@ -16,6 +16,7 @@ export class Store {
 	miAccounts: MiAccounts;
 	miGroups: MiGroups;
 	industries: MIndustries;
+	rootIndustries: MRootIndustries;
 
 	stocksMyAll: IObservableArray<Stock & StockValue> = null;
 	stocksMyBlock: IObservableArray<Stock & StockValue> = null;
@@ -31,6 +32,7 @@ export class Store {
 		this.miAccounts = new MiAccounts(this);
 		this.miGroups = new MiGroups(this);
 		this.industries = new MIndustries(this);
+		this.rootIndustries = new MRootIndustries(this);
 	}
 
 	stockFromId(stockId: number): Stock&StockValue {
@@ -154,7 +156,7 @@ export class Store {
 	}
 
 	async loadIndustryStocks(industryId: number):Promise<(Stock&StockValue)[]> {
-		let stockArr = await this.yumi.IX<Stock&StockValue>({			
+		let stockArr = await this.yumi.IX<Stock&StockValue>({
 			IX: this.yumi.GroupStock,
 			IDX: [this.yumi.Stock, this.yumi.StockValue],
 			ix: industryId,
@@ -162,7 +164,28 @@ export class Store {
 		stockArr.forEach(v => this.buildStockValues(v));
 		stockArr.sort(stockMiRateSorter);
 		return stockArr;
-}
+	}
+
+	async loadRootIndustry(rootIndustryId: number): Promise<[Industry[], (Stock&StockValue)[]]> {
+		let ret = await Promise.all([
+			this.yumi.IX<Stock&StockValue>({
+				IX: this.yumi.IXIndustry,
+				IDX: [this.yumi.Industry],
+				ix: rootIndustryId,
+			}),
+			this.yumi.IX<Stock&StockValue>({
+				IX: this.yumi.IXIndustry,
+				IX1: this.yumi.GroupStock,
+				IDX: [this.yumi.Stock, this.yumi.StockValue],
+				ix: rootIndustryId,
+			}),
+		]);
+		let [industries, stockArr] = ret;
+		stockArr.forEach(v => this.buildStockValues(v));
+		stockArr.sort(stockMiRateSorter);
+		let miGroups = industries.map(v => new MIndustry(this, v));
+		return [miGroups, stockArr];
+	}
 
 	async loadMarkets() {
 		let {yumi} = this;
@@ -210,6 +233,7 @@ export class Store {
 			this.loadGroupIXs(),
 			this.miGroups.load(),
 			this.industries.load(),
+			this.rootIndustries.load(),
 		]);
 		this.miGroups.calcStockCount();
 	}
@@ -245,12 +269,17 @@ export class Store {
 		return count;
 	}
 
-	buildInGroup(stockId: number): {[groupId:number]:boolean} {
+	inAnyGroup(stockId: number): {[groupId:number]:boolean} {
 		let inGroup:{[groupId:number]:boolean} = {};
 		for (let gs of this.groupIXs) {
 			let {ix, xi} = gs;
 			if (xi === stockId) inGroup[ix] = true;
 		}
 		return inGroup;
+	}
+
+	inAnyAccount(stockId: number): {[accountId:number]:[inAccount:boolean, everBought:boolean]} {
+		let inAccount:{[accountId:number]:[inAccount:boolean, everBought:boolean]} = {};
+		return inAccount;
 	}
 }

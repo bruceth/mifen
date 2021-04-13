@@ -6,7 +6,7 @@ import { CFind } from "./CFind";
 export class VFind extends VPage<CFind> {
 	header() {return '发现'}
 	content() {
-		let {showA, showHK, showSH, showSZ, showAll, cGroup} = this.controller;
+		let {showA, showHK, showSH, showSZ, showAll, cGroup, cIndustries} = this.controller;
 		let buttons:[string, ()=>Promise<void>][] = [
 			['A股', showA],
 			['港股', showHK],
@@ -40,6 +40,10 @@ export class VFind extends VPage<CFind> {
 			<div className="small text-muted px-3 mt-2 mb-1">行业</div>
 			<div className=" mb-3 px-1 pb-1 bg-white border-top border-bottom">
 				{cGroup.renderIndustries()}
+			</div>
+			<div className="small text-muted px-3 mt-2 mb-1">门类</div>
+			<div className=" mb-3 px-1 pb-1 bg-white border-top border-bottom">
+				{cIndustries.renderRootIndustries()}
 			</div>
 			<div className="mb-3">
 				{this.renderMyBlock()}

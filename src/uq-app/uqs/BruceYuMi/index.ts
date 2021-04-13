@@ -18,6 +18,7 @@ import * as UserGroup from './UserGroup.ui';
 import * as UserAllStock from './UserAllStock.ui';
 import * as AccountHolding from './AccountHolding.ui';
 import * as GroupStock from './GroupStock.ui';
+import * as IXIndustry from './IXIndustry.ui';
 
 export function setUI(uq: Uq) {
 	Object.assign(uq.$Piecewise, $Piecewise);
@@ -39,5 +40,6 @@ export function setUI(uq: Uq) {
 	Object.assign(uq.UserAllStock, UserAllStock);
 	Object.assign(uq.AccountHolding, AccountHolding);
 	Object.assign(uq.GroupStock, GroupStock);
+	Object.assign(uq.IXIndustry, IXIndustry);
 }
 export * from './BruceYuMi';

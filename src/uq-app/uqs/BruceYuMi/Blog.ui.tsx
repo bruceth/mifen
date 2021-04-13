@@ -30,28 +30,11 @@ const fields = {
 		"isKey": false,
 		"label": "Content"
 	} as undefined,
-	$owner: {
-		"name": "$owner",
-		"type": "integer",
-		"isKey": false,
-		"widget": "updown",
-		"label": "$owner"
-	} as FieldItemInt,
-	$create: {
-		"name": "$create",
-		"isKey": false,
-		"label": "$create"
-	} as undefined,
-	$update: {
-		"name": "$update",
-		"isKey": false,
-		"label": "$update"
-	} as undefined,
 };
 /*==fields==*/
 
 const fieldArr: FieldItem[] = [
-	fields.no, fields.caption, fields.content, fields.$owner, fields.$create, fields.$update, 
+	fields.no, fields.caption, fields.content, 
 ];
 
 export const ui: UI = {

@@ -141,7 +141,7 @@ export class MiAccount  implements Account, AccountValue {
 
 	private async saveHolding(stock:number): Promise<number> {
 		let ret = await this.store.yumi.Acts({
-			holding: [{account: this.id, stock}]
+			holding: [{account: this.id, stock, everBought: 1}]
 		});
 		return ret.holding[0];
 	}

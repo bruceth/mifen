@@ -17,6 +17,7 @@ export interface SearchParam {
 
 export class CFind extends  CUqBase {
 	readonly cGroup: CGroup;
+	readonly cIndustries: CGroup;
 	header: string = null;
 	pageStocks: StockPageItems = null;
 	searchOrder: SearchOrder = 'miRateDesc';
@@ -32,6 +33,7 @@ export class CFind extends  CUqBase {
 			changeSmooth: action,
 		});
 		this.cGroup = this.newSub(CGroup);
+		this.cIndustries = this.newSub(CGroup);
 		this.loadSmooth();
 	}
 

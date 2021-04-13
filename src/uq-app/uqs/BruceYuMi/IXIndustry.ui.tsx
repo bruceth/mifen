@@ -1,42 +1,31 @@
 import { Res, setRes, TFunc, UI } from "tonva-react";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { FieldItem, FieldItemInt, FieldItemNum, FieldItemString, FieldItemId } from "tonva-react";
-import { Holding } from "./BruceYuMi";
+import { IXIndustry } from "./BruceYuMi";
 
 /*--fields--*/
 const fields = {
-	id: {
-		"name": "id",
+	ix: {
+		"name": "ix",
 		"type": "id",
 		"isKey": false,
-		"label": "Id"
+		"label": "Ix"
 	} as FieldItemId,
-	account: {
-		"name": "account",
+	xi: {
+		"name": "xi",
 		"type": "id",
-		"isKey": true,
-		"label": "Account"
-	} as FieldItemId,
-	stock: {
-		"name": "stock",
-		"type": "id",
-		"isKey": true,
-		"label": "Stock"
-	} as FieldItemId,
-	everBought: {
-		"name": "everBought",
 		"isKey": false,
-		"label": "EverBought"
-	} as undefined,
+		"label": "Xi"
+	} as FieldItemId,
 };
 /*==fields==*/
 
 const fieldArr: FieldItem[] = [
-	fields.account, fields.stock, fields.everBought, 
+	fields.xi, 
 ];
 
 export const ui: UI = {
-	label: "Holding",
+	label: "IXIndustry",
 	fieldArr,
 	fields,
 };
@@ -54,6 +43,6 @@ export const t:TFunc = (str:string|JSX.Element): string|JSX.Element => {
 	return res[str as string] ?? str;
 }
 
-export function render(item: Holding):JSX.Element {
+export function render(item: IXIndustry):JSX.Element {
 	return <>{JSON.stringify(item)}</>;
 };

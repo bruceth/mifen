@@ -1,4 +1,4 @@
-//=== UqApp builder created on Thu Apr 08 2021 10:28:58 GMT-0400 (GMT-04:00) ===//
+//=== UqApp builder created on Mon Apr 12 2021 21:30:10 GMT-0400 (GMT-04:00) ===//
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { IDXValue, Uq, UqTuid, UqAction, UqQuery, UqID, UqIDX, UqIX } from "tonva-react";
 
@@ -195,6 +195,7 @@ export interface Holding {
 	id?: number;
 	account: number;
 	stock: number;
+	everBought: number;
 }
 
 export interface $PiecewiseDetail {
@@ -219,9 +220,7 @@ export interface Blog {
 	no?: string;
 	caption: string;
 	content: string;
-	$owner?: number;
-	$create?: any;
-	$update?: any;
+	$create: any;
 }
 
 export interface Industry {
@@ -343,6 +342,11 @@ export interface GroupStock {
 	order: number;
 }
 
+export interface IXIndustry {
+	ix: number;
+	xi: number;
+}
+
 export interface ParamActs {
 	$Piecewise?: $Piecewise[];
 	market?: Market[];
@@ -363,6 +367,7 @@ export interface ParamActs {
 	userAllStock?: UserAllStock[];
 	accountHolding?: AccountHolding[];
 	groupStock?: GroupStock[];
+	iXIndustry?: IXIndustry[];
 }
 
 
@@ -398,4 +403,5 @@ export interface UqExt extends Uq {
 	UserAllStock: UqIX<any>;
 	AccountHolding: UqIX<any>;
 	GroupStock: UqIX<any>;
+	IXIndustry: UqIX<any>;
 }

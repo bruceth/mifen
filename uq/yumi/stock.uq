@@ -42,6 +42,11 @@ IDX StockValue ver 0.1 (
 	ttm FLOAT,
 );
 
+IX IXIndustry (
+	ix,
+	xi,
+);
+
 QUERY SearchStock1 ver 0.1 (
 	key CHAR(20),
 )

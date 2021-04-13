@@ -1,4 +1,4 @@
-import { Stock, StockValue } from "uq-app/uqs/BruceYuMi";
+import { StockValue } from "uq-app/uqs/BruceYuMi";
 import { HoldingStock } from "./holdingStock";
 
 function miRateSorter(a:number, b:number): number {
