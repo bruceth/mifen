@@ -16,7 +16,7 @@ export class VStockInGroup extends VPage<CCommon> {
 	}
 	content() {
 		return React.createElement(observer(() => {
-			let {stock, cApp, setGroup, setStockToAccount} = this.controller;
+			let {stock, cApp, setGroup, setStockToAccount, stockInAccounts} = this.controller;
 			if (!stock) return <div>no stock, can set group</div>;
 			let {id:stockId, name, no} = stock;
 			let {store} = cApp;
@@ -24,7 +24,7 @@ export class VStockInGroup extends VPage<CCommon> {
 			let {groups} = miGroups;
 			let {accounts} = miAccounts;
 			let inGroup = store.inAnyGroup(stockId);
-			let inAnyAccount = store.inAnyAccount(stockId);
+			//let inAnyAccount = store.inAnyAccount(stockId);
 			let del = <button className="btn btn-sm btn-outline-info"
 				onClick={e => this.removeMyAll(stock, e.currentTarget)}>删除自选</button>;
 			return <div>
@@ -53,7 +53,7 @@ export class VStockInGroup extends VPage<CCommon> {
 					{accounts.map(v => {
 						let {id, name} = v;
 						let inAccount: boolean, everBought: boolean;
-						let iaa = inAnyAccount[id];
+						let iaa = stockInAccounts[id];
 						if (iaa === undefined) {
 							inAccount = false;
 							everBought = false;

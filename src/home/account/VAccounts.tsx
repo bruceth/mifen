@@ -33,7 +33,8 @@ export class VAccounts extends View<CAccount> {
 				{content}
 			</div>;
 		}
-		let {name, miValue: mi, market, count} = item;
+		let {name, miValue, market, count} = item;
+		let miRate = market > 1? miValue*100/market : 0;
 		let left = <FA name="money" className="text-warning align-self-start mt-3 ml-2 ml-sm-3" size="lg" fixWidth={true} />;
 		let right = <div className="px-2 d-flex align-items-center">
 			<FA className="align-" name="angle-right" />
@@ -48,8 +49,8 @@ export class VAccounts extends View<CAccount> {
 							<small className="ml-3 text-danger">{count}</small>
 						</div>
 						<div className="mt-2 d-flex">
-							{renderValue('米息率', valueToString(mi*100/market, smallPercent), 'w-min-8c')}
-							{renderValue('米息', valueToString(mi), 'd-none d-sm-block w-min-8c')}
+							{renderValue('米息率', valueToString(miRate, smallPercent), 'w-min-8c')}
+							{renderValue('米息', valueToString(miValue), 'd-none d-sm-block w-min-8c')}
 							{renderValue('市值', valueToString(market))}
 						</div>
 					</>

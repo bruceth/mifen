@@ -17,6 +17,7 @@ ID Holding (
 	KEY account ID Account,
 	KEY stock ID Stock,
 	everBought TINYINT DEFAULT 1,
+	index stock_account (stock, account) unique,
 );
 
 IDX AccountValue ver 0.1 (

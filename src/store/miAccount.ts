@@ -63,9 +63,10 @@ export class MiAccount  implements Account, AccountValue {
 		}
 		runInAction(() => {
 			let list = ret.map(v => {
-				let {id, stock:stockId, cost} = v;
+				let {id, stock:stockId, cost, everBought} = v;
 				let stock = this.store.stockFromId(stockId);
 				let holdingStock = new HoldingStock(id, stock, v.quantity, cost);
+				holdingStock.everBought = everBought;
 				return holdingStock;
 			});
 			list.sort(holdingMiRateSorter);
@@ -209,11 +210,29 @@ export class MiAccount  implements Account, AccountValue {
 		await this.bookSetCost(holding.id, costPrice * holding.quantity);
 	}
 
+	addHoldingStock(holdingStock: HoldingStock) {
+		if (this.holdingStocks) {
+			this.holdingStocks.push(holdingStock);
+			this.recalc();
+		}
+	}
+
+	removeHoldingStock(stockId: number) {
+		if (this.holdingStocks) {
+			let index = this.holdingStocks.findIndex(v => v.stock === stockId);
+			if (index >= 0) {
+				this.holdingStocks.splice(index, 1);
+				this.recalc();
+			}
+		}
+	}
+
 	private recalc() {
 		this.count = this.holdingStocks.length;
 		let sumMiValue = 0, sumMarket = 0, sumDivident = 0, boughtCount = 0;
 		for (let hs of this.holdingStocks) {
-			let {stockObj, market, divident, quantity} = hs;
+			let {stockObj, market, divident, quantity, everBought} = hs;
+			if (everBought === 0) continue;
 			let {miRate} = stockObj;
 			let miValue = (miRate??0) * market / 100;
 			hs.miValue = miValue;

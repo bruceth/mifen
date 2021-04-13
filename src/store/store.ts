@@ -3,7 +3,7 @@ import { IXBase } from "tonva-uqui";
 import { UQs } from "uq-app";
 import { MiAccounts } from "./miAccounts";
 import { MIndustries, MiGroups, MRootIndustries } from "./mGroups";
-import { Industry, Market, Stock, StockValue, UqExt } from "uq-app/uqs/BruceYuMi";
+import { Holding, Industry, Market, Stock, StockValue, UqExt } from "uq-app/uqs/BruceYuMi";
 import { MGroup, MIndustry } from "./mGroup";
 import { MiAccount } from "./miAccount";
 import { marketElements } from "./market";
@@ -280,6 +280,33 @@ export class Store {
 
 	inAnyAccount(stockId: number): {[accountId:number]:[inAccount:boolean, everBought:boolean]} {
 		let inAccount:{[accountId:number]:[inAccount:boolean, everBought:boolean]} = {};
+		this.miAccounts.accounts.forEach(v => {
+			let {holdingStocks} = v;
+			if (!holdingStocks) return;
+			let len = holdingStocks.length;
+			for (let i=0; i<len; i++) {
+				let hs = holdingStocks[i];
+				if (hs.stock === stockId) {
+					inAccount[v.id] = [true, hs.everBought > 0];
+					break;
+				}
+			}
+		});
 		return inAccount;
+	}
+
+	async loadStockInAccounts(stockId: number): Promise<{[accountId:number]:[inAccount:boolean, everBought:boolean]}> {
+		let ret = await this.yumi.QueryID<Holding>({
+			IX: [this.yumi.UserAccount, this.yumi.AccountHolding],
+			IDX: [this.yumi.Holding],
+			ix: undefined,
+			keyx: {account:undefined, stock: stockId},
+		});
+		let val:{[accountId:number]:[inAccount:boolean, everBought:boolean]} = {};
+		for (let r of ret) {
+			let {account, everBought} = r;
+			val[account] =[true, everBought>0];
+		}
+		return val;
 	}
 }

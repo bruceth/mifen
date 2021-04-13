@@ -1,6 +1,7 @@
 import { action, IObservableArray, makeObservable, observable } from "mobx";
 import { ParamIX } from "tonva-react";
-import { AccountValue, Account } from "uq-app/uqs/BruceYuMi";
+import { AccountValue, Account, Stock, StockValue } from "uq-app/uqs/BruceYuMi";
+import { HoldingStock } from "./holdingStock";
 import { MiAccount } from "./miAccount";
 import { Store } from "./store";
 
@@ -59,5 +60,31 @@ export class MiAccounts {
 			}
 		}
 		return ret;
+	}
+
+	async addStockToAccount(stock: Stock & StockValue, account: MiAccount) {
+		let {yumi} = this.store;
+		let {holdingStocks} = account;
+		if (holdingStocks) {
+			let index = holdingStocks.findIndex(v => v.stock === stock.id);
+			if (index >= 0) return;
+		}
+		let ret = await yumi.ActIX({
+			IX: yumi.AccountHolding,
+			ID: yumi.Holding,
+			values: [{ix: account.id, xi: {account:account.id, stock:stock.id, everBought: 0}}],
+		});
+		let hs = new HoldingStock(ret[0], stock, 0, 0);
+		hs.everBought = 0;
+		account.addHoldingStock(hs);
+	}
+
+	async removeStockFromAccount(stock: Stock & StockValue, account: MiAccount) {
+		let {yumi} = this.store;
+		await yumi.ActIX({
+			IX: yumi.AccountHolding,
+			values: [{ix: account.id, xi: -stock.id}],
+		});
+		account.removeHoldingStock(stock.id);
 	}
 }

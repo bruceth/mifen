@@ -13,6 +13,7 @@ import { VStockLink } from "./VStockLink";
 
 export class CCommon extends CUqBase {
 	stock: Stock & StockValue;
+	stockInAccounts: {[accountId:number]: [inAccount:boolean, everBought:boolean]};
 	
 	protected async internalStart(param: any) {
 	}
@@ -55,8 +56,10 @@ export class CCommon extends CUqBase {
 		await store.toggleBlock(stock);
 	}
 
-	setStockToGroup = (stock: Stock&StockValue, closeLevelWhenRemoved: number) => {
+	setStockToGroup = async (stock: Stock&StockValue, closeLevelWhenRemoved: number) => {
 		this.stock = stock;
+		let {store} = this.cApp;
+		this.stockInAccounts = await store.loadStockInAccounts(stock.id);
 		this.openVPage(VStockInGroup, closeLevelWhenRemoved);
 	}
 
@@ -71,6 +74,13 @@ export class CCommon extends CUqBase {
 	}
 
 	setStockToAccount = async (checked:boolean, account: MiAccount) => {
+		let {miAccounts} = this.cApp.store;
+		if (checked === true) {
+			await miAccounts.addStockToAccount(this.stock, account);
+		}
+		else {
+			await miAccounts.removeStockFromAccount(this.stock, account);
+		}
 	}
 
 	showEmptyPage = () => {

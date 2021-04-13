@@ -4,7 +4,6 @@ import { List, VPage } from "tonva-react";
 import { Stock, StockValue } from "uq-app/uqs/BruceYuMi";
 import { renderStockRow } from "tool";
 import { CGroup } from "./CGroup";
-import { VGroups } from "./VGroups";
 import { VRootIndustry } from "./VRootIndustry";
 
 export class VStockList extends VPage<CGroup> {
