@@ -22,24 +22,48 @@ ID Stock ver 0.5 (
 
 IDX StockValue ver 0.1 (
 	id,
-	miValue FLOAT,
-	incValue FLOAT,
 	earning FLOAT,
 	divident FLOAT,
 	price FLOAT,
 	pvolumn FLOAT,
 	roe FLOAT,
+	volumn FLOAT,
+	date DATE,
+	dvRate FLOAT,
+	ttm FLOAT,
+
+	-- net profit
+	miRate FLOAT,
+	miValue FLOAT,
+	incValue FLOAT,
 	inc1 FLOAT,
 	inc2 FLOAT,
 	inc3 FLOAT,
 	inc4 FLOAT,
 	preInc FLOAT,
-	volumn FLOAT,
 	smoothness TINYINT DEFAULT 1,
-	date DATE,
-	miRate FLOAT,
-	dvRate FLOAT,
-	ttm FLOAT,
+
+	-- gross margin
+	gMiRate FLOAT,
+	gMiValue FLOAT,
+	gIncValue FLOAT,
+	gInc1 FLOAT,
+	gInc2 FLOAT,
+	gInc3 FLOAT,
+	gInc4 FLOAT,
+	gPreInc FLOAT,
+	gSmoothness TINYINT DEFAULT 1,
+
+	-- revenue
+	rMiRate FLOAT,
+	rMiValue FLOAT,
+	rIncValue FLOAT,
+	rInc1 FLOAT,
+	rInc2 FLOAT,
+	rInc3 FLOAT,
+	rInc4 FLOAT,
+	rPreInc FLOAT,
+	rSmoothness TINYINT DEFAULT 1,
 );
 
 IX IXIndustry (
@@ -128,7 +152,7 @@ PAGE ORDER Switch (miRateDesc, dvRateDesc, roeDesc, miRateAsc, dvRateAsc, roeAsc
 		-- LIMIT $pageSize;
 };
 
-OPEN ACT WriteStock ver 0.2 (
+OPEN ACT WriteStock ver 0.3 (
 	ARR stocks (
 		market char(100),
 		no char(20),
@@ -167,7 +191,46 @@ OPEN ACT WriteStock ver 0.2 (
 	}
 };
 
-OPEN ACT WritePrice ver 0.2 (
+OPEN ACT WriteGrossAndRevenue ver 0.3 (
+	ARR stocks (
+		rawId BIGINT,
+		gIncValue FLOAT,
+		gInc1 FLOAT,
+		gInc2 FLOAT,
+		gInc3 FLOAT,
+		gInc4 FLOAT,
+		gPreInc FLOAT,
+		gSmoothness TINYINT,
+		rIncValue FLOAT,
+		rInc1 FLOAT,
+		rInc2 FLOAT,
+		rInc3 FLOAT,
+		rInc4 FLOAT,
+		rPreInc FLOAT,
+		rSmoothness TINYINT,
+	)
+) {
+	foreach stocks {
+		VAR stock ID = (SELECT a.id FROM Stock as a WHERE a.rawId=rawId);
+		WITH StockValue as a ID stock
+			SET a.gIncValue=gIncValue
+				, a.gMiValue=gIncValue+IFNULL(a.divident,0)
+				, a.gInc1=gInc1, a.gInc2=gInc2, a.gInc3=gInc3, a.gInc4=gInc4
+				, a.gPreInc=gPreInc
+				, a.gSmoothness=gSmoothness
+				, a.rIncValue=rIncValue
+				, a.rMiValue=rIncValue+IFNULL(a.divident,0)
+				, a.rInc1=rInc1, a.rInc2=rInc2, a.rInc3=rInc3, a.rInc4=rInc4
+				, a.rPreInc=rPreInc
+				, a.rSmoothness=rSmoothness;
+		WITH StockValue as a ID stock 
+			SET a.gMiRate=100 * a.gMiValue * a.volumn / a.price / IFNULL(a.pvolumn, a.volumn)
+				, a.rMiRate=100 * a.rMiValue * a.volumn / a.price / IFNULL(a.pvolumn, a.volumn)
+			WHERE a.price>0 AND a.volumn>0;
+	}
+};
+
+OPEN ACT WritePrice ver 0.3 (
 	ARR prices (
 		market char(100),
 		no char(20),
