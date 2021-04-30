@@ -27,9 +27,15 @@ export class VStockList extends VPage<CGroup> {
 	content() {
 		return React.createElement(observer(() => {
 			let {miGroup, stocks} = this.controller;
-			let {groups} = miGroup;
+			let vGroups: any;
+			if (miGroup) {
+				let {groups} = miGroup;
+				if (groups) {
+					vGroups = this.renderVm(VRootIndustry, groups);
+				}
+			}
 			return <div>
-				{groups && this.renderVm(VRootIndustry, groups)}
+				{vGroups}
 				<List items={stocks} item={{render: this.renderStock}} />
 			</div>;
 		}));

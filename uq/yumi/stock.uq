@@ -71,18 +71,6 @@ IX IXIndustry (
 	xi,
 );
 
-QUERY SearchStock1 ver 0.1 (
-	key CHAR(20),
-)
-PAGE (
-	id ID asc,
-) {
-	PAGE SELECT a.id
-		FROM Stock as a 
-		WHERE 1=1 AND a.id>$pageStart
-		LIMIT $pageSize;
-};
-
 QUERY SearchStock ver 0.5 (
 	key CHAR(20),
 	market CHAR(100),
@@ -94,22 +82,43 @@ PAGE ORDER Switch (miRateDesc, dvRateDesc, roeDesc, miRateAsc, dvRateAsc, roeAsc
 	no char(20),
 	name char(50),
 	rawId ID,
-	miValue FLOAT,
-	incValue FLOAT,
 	earning FLOAT,
 	divident FLOAT,
 	price FLOAT,
 	roe FLOAT,
+	volumn FLOAT,
+	dvRate FLOAT,	
+	ttm FLOAT,
+
+	miRate FLOAT,
+	miValue FLOAT,
+	incValue FLOAT,
 	inc1 FLOAT,
 	inc2 FLOAT,
 	inc3 FLOAT,
 	inc4 FLOAT,
 	preInc FLOAT,
-	volumn FLOAT,
 	smoothness TINYINT,
-	miRate FLOAT,
-	dvRate FLOAT,	
-	ttm FLOAT,
+
+	gMiRate FLOAT,
+	gMiValue FLOAT,
+	gIncValue FLOAT,
+	gInc1 FLOAT,
+	gInc2 FLOAT,
+	gInc3 FLOAT,
+	gInc4 FLOAT,
+	gPreInc FLOAT,
+	gSmoothness TINYINT,
+
+	rMiRate FLOAT,
+	rMiValue FLOAT,
+	rIncValue FLOAT,
+	rInc1 FLOAT,
+	rInc2 FLOAT,
+	rInc3 FLOAT,
+	rInc4 FLOAT,
+	rPreInc FLOAT,
+	rSmoothness TINYINT,
 ) {
 	VAR sKey CHAR(50);
 	IF key IS NULL {
@@ -128,7 +137,27 @@ PAGE ORDER Switch (miRateDesc, dvRateDesc, roeDesc, miRateAsc, dvRateAsc, roeAsc
 		case when b.ttm>=3 then b.miRate else null end as miRate, 
 		b.roe, b.dvRate, b.ttm,
 		b.inc1, b.inc2, b.inc3, b.inc4, b.preInc, b.volumn,
-		b.smoothness
+		b.smoothness,
+
+		case when b.ttm>=3 then b.gMiRate else null end as gMiRate,
+		b.gMiValue,
+		b.gIncValue,
+		b.gInc1,
+		b.gInc2,
+		b.gInc3,
+		b.gInc4,
+		b.gPreInc,
+		b.gSmoothness,
+
+		case when b.ttm>=3 then b.rMiRate else null end as rMiRate,
+		b.rMiValue,
+		b.rIncValue,
+		b.rInc1,
+		b.rInc2,
+		b.rInc3,
+		b.rInc4,
+		b.rPreInc,
+		b.rSmoothness
 		FROM Stock as a 
 			LEFT JOIN StockValue as b on a.id=b.id
 			LEFT JOIN Market as c on a.market=c.id

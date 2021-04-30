@@ -1,4 +1,4 @@
-//=== UqApp builder created on Mon Apr 12 2021 21:30:10 GMT-0400 (GMT-04:00) ===//
+//=== UqApp builder created on Tue Apr 20 2021 10:21:36 GMT-0400 (GMT-04:00) ===//
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { IDXValue, Uq, UqTuid, UqAction, UqQuery, UqID, UqIDX, UqIX } from "tonva-react";
 
@@ -87,6 +87,29 @@ export interface ParamWriteStockIndustry {
 interface ResultWriteStockIndustry {
 }
 
+export interface ParamWriteGrossAndRevenue {
+	stocks: {
+		rawId: number;
+		gIncValue: number;
+		gInc1: number;
+		gInc2: number;
+		gInc3: number;
+		gInc4: number;
+		gPreInc: number;
+		gSmoothness: number;
+		rIncValue: number;
+		rInc1: number;
+		rInc2: number;
+		rInc3: number;
+		rInc4: number;
+		rPreInc: number;
+		rSmoothness: number;
+	}[];
+
+}
+interface ResultWriteGrossAndRevenue {
+}
+
 export interface Param$poked {
 }
 interface Return$pokedRet {
@@ -109,22 +132,41 @@ interface ReturnSearchStock$page {
 	no: string;
 	name: string;
 	rawId: number;
-	miValue: number;
-	incValue: number;
 	earning: number;
 	divident: number;
 	price: number;
 	roe: number;
+	volumn: number;
+	dvRate: number;
+	ttm: number;
+	miRate: number;
+	miValue: number;
+	incValue: number;
 	inc1: number;
 	inc2: number;
 	inc3: number;
 	inc4: number;
 	preInc: number;
-	volumn: number;
 	smoothness: number;
-	miRate: number;
-	dvRate: number;
-	ttm: number;
+	gMiRate: number;
+	gMiValue: number;
+	gIncValue: number;
+	gInc1: number;
+	gInc2: number;
+	gInc3: number;
+	gInc4: number;
+	gPreInc: number;
+	gSmoothness: number;
+	rMiRate: number;
+	rMiValue: number;
+	rIncValue: number;
+	rInc1: number;
+	rInc2: number;
+	rInc3: number;
+	rInc4: number;
+	rPreInc: number;
+	rSmoothness: number;
+	$id: number;
 }
 interface ResultSearchStock {
 	$page: ReturnSearchStock$page[];
@@ -144,21 +186,10 @@ interface ResultStockUsing {
 	groups: ReturnStockUsingGroups[];
 }
 
-export interface ParamSearchStock1 {
-	key: string;
-}
-interface ReturnSearchStock1$page {
-	id: number;
-}
-interface ResultSearchStock1 {
-	$page: ReturnSearchStock1$page[];
-}
-
 export interface $Piecewise {
 	id?: number;
 	name: string;
-	mul: number;
-	div: number;
+	ratio: number;
 	offset: number;
 	asc: number;
 }
@@ -230,24 +261,42 @@ export interface Industry {
 
 export interface StockValue {
 	id: number;
-	miValue?: number;
-	incValue?: number;
 	earning?: number;
 	divident?: number;
 	price?: number;
 	pvolumn?: number;
 	roe?: number;
+	volumn?: number;
+	date?: any;
+	dvRate?: number;
+	ttm?: number;
+	miRate?: number;
+	miValue?: number;
+	incValue?: number;
 	inc1?: number;
 	inc2?: number;
 	inc3?: number;
 	inc4?: number;
 	preInc?: number;
-	volumn?: number;
 	smoothness?: number;
-	date?: any;
-	miRate?: number;
-	dvRate?: number;
-	ttm?: number;
+	gMiRate?: number;
+	gMiValue?: number;
+	gIncValue?: number;
+	gInc1?: number;
+	gInc2?: number;
+	gInc3?: number;
+	gInc4?: number;
+	gPreInc?: number;
+	gSmoothness?: number;
+	rMiRate?: number;
+	rMiValue?: number;
+	rIncValue?: number;
+	rInc1?: number;
+	rInc2?: number;
+	rInc3?: number;
+	rInc4?: number;
+	rPreInc?: number;
+	rSmoothness?: number;
 	$act?: number;
 }
 
@@ -271,24 +320,42 @@ export interface Portfolio {
 
 export interface ActParamStockValue {
 	id: number|IDXValue;
-	miValue?: number|IDXValue;
-	incValue?: number|IDXValue;
 	earning?: number|IDXValue;
 	divident?: number|IDXValue;
 	price?: number|IDXValue;
 	pvolumn?: number|IDXValue;
 	roe?: number|IDXValue;
+	volumn?: number|IDXValue;
+	date?: any|IDXValue;
+	dvRate?: number|IDXValue;
+	ttm?: number|IDXValue;
+	miRate?: number|IDXValue;
+	miValue?: number|IDXValue;
+	incValue?: number|IDXValue;
 	inc1?: number|IDXValue;
 	inc2?: number|IDXValue;
 	inc3?: number|IDXValue;
 	inc4?: number|IDXValue;
 	preInc?: number|IDXValue;
-	volumn?: number|IDXValue;
 	smoothness?: number|IDXValue;
-	date?: any|IDXValue;
-	miRate?: number|IDXValue;
-	dvRate?: number|IDXValue;
-	ttm?: number|IDXValue;
+	gMiRate?: number|IDXValue;
+	gMiValue?: number|IDXValue;
+	gIncValue?: number|IDXValue;
+	gInc1?: number|IDXValue;
+	gInc2?: number|IDXValue;
+	gInc3?: number|IDXValue;
+	gInc4?: number|IDXValue;
+	gPreInc?: number|IDXValue;
+	gSmoothness?: number|IDXValue;
+	rMiRate?: number|IDXValue;
+	rMiValue?: number|IDXValue;
+	rIncValue?: number|IDXValue;
+	rInc1?: number|IDXValue;
+	rInc2?: number|IDXValue;
+	rInc3?: number|IDXValue;
+	rInc4?: number|IDXValue;
+	rPreInc?: number|IDXValue;
+	rSmoothness?: number|IDXValue;
 	$act?: number;
 }
 
@@ -380,10 +447,10 @@ export interface UqExt extends Uq {
 	WritePrice: UqAction<ParamWritePrice, ResultWritePrice>;
 	WriteIndustryStock: UqAction<ParamWriteIndustryStock, ResultWriteIndustryStock>;
 	WriteStockIndustry: UqAction<ParamWriteStockIndustry, ResultWriteStockIndustry>;
+	WriteGrossAndRevenue: UqAction<ParamWriteGrossAndRevenue, ResultWriteGrossAndRevenue>;
 	$poked: UqQuery<Param$poked, Result$poked>;
 	SearchStock: UqQuery<ParamSearchStock, ResultSearchStock>;
 	StockUsing: UqQuery<ParamStockUsing, ResultStockUsing>;
-	SearchStock1: UqQuery<ParamSearchStock1, ResultSearchStock1>;
 	$Piecewise: UqID<any>;
 	Market: UqID<any>;
 	Transaction: UqID<any>;

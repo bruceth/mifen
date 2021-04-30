@@ -16,27 +16,20 @@ const fields = {
 		"isKey": true,
 		"label": "Name"
 	} as undefined,
-	mul: {
-		"name": "mul",
-		"type": "integer",
+	ratio: {
+		"name": "ratio",
+		"type": "number",
 		"isKey": false,
-		"widget": "updown",
-		"label": "Mul"
-	} as FieldItemInt,
-	div: {
-		"name": "div",
-		"type": "integer",
-		"isKey": false,
-		"widget": "updown",
-		"label": "Div"
-	} as FieldItemInt,
+		"widget": "number",
+		"label": "Ratio"
+	} as FieldItemNum,
 	offset: {
 		"name": "offset",
-		"type": "integer",
+		"type": "number",
 		"isKey": false,
 		"widget": "updown",
 		"label": "Offset"
-	} as FieldItemInt,
+	} as FieldItemNum,
 	asc: {
 		"name": "asc",
 		"isKey": false,
@@ -46,7 +39,7 @@ const fields = {
 /*==fields==*/
 
 export const fieldArr: FieldItem[] = [
-	fields.name, fields.mul, fields.div, fields.offset, fields.asc, 
+	fields.name, fields.offset, fields.asc, 
 ];
 
 export const ui: UI = {
