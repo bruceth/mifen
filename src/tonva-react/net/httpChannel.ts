@@ -213,7 +213,7 @@ export abstract class HttpChannel {
         let options = this.buildOptions();
         options.method = method;
         options.body = body;
-        return await new Promise<any>(async (resolve, reject) => {
+        return new Promise<any>(async (resolve, reject) => {
             await this.fetch(url, options, true, resolve, reject);
         });
     }
@@ -268,7 +268,7 @@ export class CenterHttpChannel extends HttpChannel {
         let u = this.hostUrl + url;
         if (this.apiToken === undefined && isBridged())
             return await bridgeCenterApi(u, options.method, options.body);
-        return await new Promise<any>(async (resolve, reject) => {
+        return new Promise<any>(async (resolve, reject) => {
             await this.fetch(u, options, waiting, resolve, reject);
         });
     }
@@ -277,7 +277,7 @@ export class CenterHttpChannel extends HttpChannel {
 export class UqHttpChannel extends HttpChannel {
     protected async innerFetch(url: string, options: any, waiting: boolean): Promise<any> {
         let u = this.hostUrl + url;
-        return await new Promise<any>(async (resolve, reject) => {
+        return new Promise<any>(async (resolve, reject) => {
             await this.fetch(u, options, waiting, resolve, reject);
         });
     }

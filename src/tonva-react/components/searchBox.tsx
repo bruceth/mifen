@@ -1,6 +1,6 @@
 import * as React from 'react';
 import classNames from 'classnames';
-import { env } from 'tonva-react/tool';
+import { env } from '../tool';
 
 export interface SearchBoxProps {
     className?: string;

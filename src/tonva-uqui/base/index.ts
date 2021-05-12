@@ -1,2 +1,2 @@
-export * from './Mid';
+export * from '../old/Mid';
 export * from './IDBase';

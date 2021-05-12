@@ -41,10 +41,12 @@ export abstract class UqTuid<M> extends Entity {
 	abstract resetCache(id:number|BoxId):void;
 	abstract assureBox<T> (id:number|BoxId): Promise<T>;
 	static idValue(id: {id:number}|number):number {
-		switch (typeof id) {
-			default: debugger; throw new Error('unknown id');
-			case 'object': return id.id;
-			case 'number': return id;
+		let t = typeof id;
+		switch (t) {
+			default: debugger; throw new Error('unknown id type: ' + t);
+			case 'undefined': return undefined;
+			case 'object': return (id as any).id;
+			case 'number': return id as number;
 		}
 	}
     static equ(id1:{id:number}|number, ix:{id:number}|number): boolean {
@@ -433,8 +435,8 @@ export class TuidImport extends Tuid {
         await this.tuidLocal.assureBox(id);
 		return this.tuidLocal.valueFromId(id);
     }
-    get hasDiv():boolean {return this.tuidLocal.hasDiv}
-    div(name:string):TuidDiv {return this.tuidLocal.div(name)}
+    get hasDiv():boolean {return this.tuidLocal?.hasDiv}
+    div(name:string):TuidDiv {return this.tuidLocal?.div(name)}
     async loadMain(id:number|BoxId):Promise<any> {
         let ret = await this.tuidLocal.loadMain(id);
         return ret;

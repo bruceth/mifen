@@ -300,8 +300,13 @@ export abstract class PageItems<T> {
 		let index = _.findIndex(this._items, v => this.getPageId(v) === pid);
 		if (index < 0) return;
 		return this._items[index];
-		//let oldItem = this._items[index];
-		//let oid = this.getPageId(oldItem);
-		//if (pid === oid) return oldItem;
+	}
+
+	removeItem(item:any):T {
+		let pid = this.getPageId(item);
+		let index = _.findIndex(this._items, v => this.getPageId(v) === pid);
+		if (index < 0) return;
+		let ret = this._items.splice(index, 1);
+		return ret[0];
 	}
 }

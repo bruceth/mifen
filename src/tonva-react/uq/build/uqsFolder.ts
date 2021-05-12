@@ -7,15 +7,16 @@ import { UqMan } from "../uqMan";
 import { buildTsHeader, getNameFromUq, overrideTsFile } from './tools';
 import { buildTsUqFolder } from './buildTsUqFolder';
 
-export async function buildUqsFolder(uqsFolder:string, options: AppConfig) {
-	let uqErrors = await uqsStart(options);
+export async function buildUqsFolder(uqsFolder:string, appConfig: AppConfig) {
+	let uqErrors = await uqsStart(appConfig);
 
 	let uqsMan = UQsMan.value;
 	let uqMans = uqsMan.getUqMans();
 	
 	let promiseArr:Promise<void>[] = [];
 	if (uqErrors) {
-		throw new Error(uqErrors.join('\n'));
+		console.error(uqErrors.join('\n'));
+		//throw new Error(uqErrors.join('\n'));
 	}
 
 	for (let uq of uqMans) {
@@ -64,7 +65,7 @@ export async function buildUqsFolder(uqsFolder:string, options: AppConfig) {
 async function uqsStart(uqsConfig: AppConfig):Promise<string[]> {
 	nav.forceDevelopment = true;
 	await nav.init();
-	let retErrors = await UQsMan.build(uqsConfig);
+	let retErrors = await UQsMan.buildUQs(uqsConfig);
 	return retErrors;
 }
 

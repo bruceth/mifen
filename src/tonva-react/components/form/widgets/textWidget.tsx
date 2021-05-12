@@ -70,6 +70,7 @@ export class TextWidget extends Widget {
 		});
     }
     protected onChange(evt: React.ChangeEvent<any>) {
+		this.onInputChange(evt);
     }
 
     setReadOnly(value:boolean) {

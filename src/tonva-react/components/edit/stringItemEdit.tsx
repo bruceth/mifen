@@ -45,7 +45,7 @@ export class StringItemEdit extends ItemEdit {
 		let {resolve} = props;
 		let onSave = () => {
 			this.verifyValue();
-			if (this.error === undefined) {
+			if (!this.error) {
 				let val = this.newValue;
 				resolve(val);				
 			}

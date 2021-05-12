@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IObservableArray, computed } from 'mobx';
+import { IObservableArray, computed, makeObservable } from 'mobx';
 import { PageItems } from '../../tool/pageItems';
 import {List} from './index';
 
@@ -7,6 +7,9 @@ export abstract class ListBase {
     protected list: List;
     constructor(list: List) {
         this.list = list;
+		makeObservable(this, {
+			loading: computed,
+		})
     }
     get isPaged():boolean {
         let items = this.list.props.items;
@@ -21,7 +24,7 @@ export abstract class ListBase {
         else
             return (items as PageItems<any>).items;
     }
-    @computed get loading():boolean {
+    get loading():boolean {
         let items = this.list.props.items;
         if (items === null) return false;
         if (items === undefined) return true;

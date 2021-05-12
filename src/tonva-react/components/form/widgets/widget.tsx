@@ -34,6 +34,7 @@ export abstract class Widget {
 			visible: observable,
 			value: observable,
 			disabled: observable,
+			isOk: computed,
 		});
         this.context = context;
         let {name} = itemSchema;
@@ -93,7 +94,7 @@ export abstract class Widget {
         }
     }
 
-    @computed get isOk() {
+    get isOk() {
         return this.errors.length ===0;
     }
 

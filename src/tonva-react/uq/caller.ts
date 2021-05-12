@@ -39,9 +39,7 @@ export abstract class EntityCaller<T> extends Caller<T> {
         let {$uq, $modify, res} = jsonResult;
         this.entity.uq.pullModify($modify);
         if ($uq === undefined) {
-            //if (res === undefined) debugger;
             let ret = this.xresult(res);
-            //if (ret === undefined) debugger;
             return ret;
         }
         return await this.retry($uq);

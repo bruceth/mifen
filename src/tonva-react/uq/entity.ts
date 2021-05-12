@@ -103,7 +103,7 @@ export abstract class Entity {
     public setSchema(schema:any) {
         if (schema === undefined) return;
         let {name, version} = schema;
-        this.ver = version || 0;
+        this.ver = version || 0;		
 		this.setJName(name);
         this.cache.set(schema);
 		this.schema = schema;
@@ -121,7 +121,7 @@ export abstract class Entity {
 		this.arrFields = arrs;
         this.uq.buildArrFieldsTuid(arrs, fields);
 		this.returns = returns;
-        this.uq.buildArrFieldsTuid(arrs, fields);
+        this.uq.buildArrFieldsTuid(returns, fields);
     }
 
     schemaStringify():string {

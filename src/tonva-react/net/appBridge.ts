@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import {nav} from '../components';
 import {uid} from '../tool/uid';
-import {uqTokenApi, callCenterapi, centerToken, setCenterToken} from './uqApi';
+import {uqTokenApi, callCenterapi, centerToken, setCenterToken, UqTokenApi} from './uqApi';
 import {setSubAppWindow} from './wsChannel';
 import { host } from './host';
 import { env } from '../tool';
@@ -17,6 +17,7 @@ export function logoutUqTokens() {
     for (let i in uqTokens) {
         uqTokens[i] = undefined;
     }
+	UqTokenApi.clearLocal();
 }
 
 export function isBridged():boolean {
@@ -177,7 +178,7 @@ interface BridgeCenterApi {
 const brideCenterApis:{[id:string]: BridgeCenterApi} = {};
 export async function bridgeCenterApi(url:string, method:string, body:any):Promise<any> {
     console.log('bridgeCenterApi: url=%s, method=%s', url, method);
-    return await new Promise<any>(async (resolve, reject) => {
+    return new Promise<any>(async (resolve, reject) => {
         let callId:string;
         for (;;) {
             callId = uid();

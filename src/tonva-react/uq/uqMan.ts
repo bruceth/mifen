@@ -14,7 +14,7 @@ import { ReactBoxId } from './tuid/reactBoxId';
 import { Tag } from './tag/tag';
 import { UqEnum } from './enum';
 import { Entity } from './entity';
-import { CenterApi, centerApi, UqConfig } from '../app';
+import { UqConfig } from '../app';
 import { ID, IX, IDX } from './ID';
 import { nav } from '../components';
 
@@ -130,8 +130,8 @@ export interface RetActDetail3 extends RetActDetail2 {
 
 export interface ParamQueryID {
 	ID?: ID;
+	IX?: (IX|string)[];
 	IDX?: (ID|IDX)[];
-	IX?: IX[];
 	id?: number | number[];
 	key?: {[key:string]:string|number};
 	ix?: number;
@@ -332,8 +332,6 @@ export class UqMan {
         }
         this.tuidsCache = new TuidsCache(this);
     }
-
-	get center():CenterApi {return centerApi;}
 
 	getID(name:string):ID {return this.ids[name.toLowerCase()];};
 	getIDX(name:string):IDX {return this.idxs[name.toLowerCase()];};
@@ -668,10 +666,12 @@ export class UqMan {
             if (t === undefined) continue;
             let div = t.div(arr || tuid);
             f._tuid = div && div.buildTuidDivBox(ownerField);
+			/*
             if (f._tuid === undefined) {
                 debugger;
                 throw new Error(`owner field ${owner} is not tuid`);
             }
+			*/
         }
     }
     buildArrFieldsTuid(arrFields:ArrFields[], mainFields:Field[]) {
@@ -853,7 +853,7 @@ export class UqMan {
 		let ret = await this.uqApi.post(IDPath('query-id'), {
 			...param,
 			ID: entityName(ID),
-			IX: IX.map(v => entityName(v)),
+			IX: IX?.map(v => entityName(v)),
 			IDX: this.IDXToString(IDX),
 		});
 		return ret;

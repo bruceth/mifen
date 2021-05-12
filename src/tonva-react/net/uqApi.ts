@@ -223,6 +223,9 @@ export abstract class CenterApiBase extends ApiBase {
 
 const uqTokensName = 'uqTokens';
 export class UqTokenApi extends CenterApiBase {
+	static clearLocal() {
+		env.localDb.removeItem(uqTokensName);
+	}
     private localMap: LocalMap = env.localDb.map(uqTokensName);
 
     async uq(params: {unit:number, uqOwner:string, uqName:string}):Promise<any> {

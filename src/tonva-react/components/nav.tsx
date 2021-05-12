@@ -585,10 +585,14 @@ export class Nav {
 	reloadUser = () => {
 		let user: User = this.local.user.get();
 		let curUser = nav.user;
-		if (user === undefined && curUser === undefined) return;
-		if (user && curUser && user.id === curUser.id) return;
-		if (!user) nav.logout();
-		else nav.logined(user)
+		if (!user && !curUser) return;
+		if (user?.id === curUser?.id) return;
+		if (!user) {
+			nav.logout();
+		}
+		else {
+			nav.logined(user);
+		}
 	}
 
     async start() {
@@ -807,16 +811,16 @@ export class Nav {
 		netToken.set(user.id, user.token);
 		nav.clear();
 
-        if (callback !== undefined) //this.loginCallbacks.has)
-            callback(user);
-            //this.loginCallbacks.call(user);
+		await this.onChangeLogin?.(this.user);
+        if (callback !== undefined) {
+            await callback(user);
+		}
         else if (this.isWebNav === true) {
 			this.navigate('/index');
 		}
 		else {
             await this.showAppView(isUserLogin);
         }
-		await this.onChangeLogin?.(this.user);
 	}
 
 	onChangeLogin: (user:User) => Promise<void>;
@@ -830,11 +834,6 @@ export class Nav {
     async userLogined(user: User, callback?: (user:User)=>Promise<void>) {
 		await this.internalLogined(user, callback, true);
     }
-
-    //wsConnect() {
-        //let ws:WSChannel = this.ws = new WSChannel(this.wsHost, this.user.token);
-        //ws.connect();
-    //}
 
     loginTop(defaultTop:JSX.Element) {
         return (this.navSettings && this.navSettings.loginTop) || defaultTop;
@@ -906,13 +905,11 @@ export class Nav {
 	}
 
     async logout(callback?:()=>Promise<void>) { //notShowLogin?:boolean) {
-        //appInFrame.unit = undefined;
-        this.local.logoutClear();
+		this.local.logoutClear();
         this.user = undefined; //{} as User;
         logoutApis();
         let guest = this.local.guest.get();
         setCenterToken(0, guest && guest.token);
-		//this.ws = undefined;
 		this.clear();
         if (callback === undefined)
             await nav.start();

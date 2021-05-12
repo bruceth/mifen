@@ -1,5 +1,5 @@
 import { ChangedHandler, ChangingHandler, FieldCustoms, FieldItem, FieldItemId, FieldItemString, ID, PickId, TFunc, UI } from "tonva-react";
-import { createPickId } from '../select';
+import { createPickId } from '../CIDSelect';
 
 export class FormUI {
 	label: string|JSX.Element;

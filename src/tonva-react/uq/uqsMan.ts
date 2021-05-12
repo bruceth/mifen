@@ -19,10 +19,22 @@ export class UQsMan {
 		let {app, uqs, tvs, version} = appConfig;
 		let retErrors:string[];
 		if (app) {
-			let {name, version} = app;
-			retErrors = await UQsMan.load(name, version, tvs);
+			let {dev, name, version} = app;
+			retErrors = await UQsMan.load(`${dev.name}/${name}`, version, tvs);
 		}
 		else if (uqs) {
+			retErrors = await UQsMan.loadUqs(uqs, version, tvs);
+		}
+		else {
+			throw new Error('either uqs or app must be defined in AppConfig');
+		}
+		return retErrors;
+	}
+
+	static async buildUQs(uqsConfig: AppConfig) {
+		let {uqs, tvs, version} = uqsConfig;
+		let retErrors:string[];
+		if (uqs) {
 			retErrors = await UQsMan.loadUqs(uqs, version, tvs);
 		}
 		else {
@@ -133,17 +145,28 @@ export class UQsMan {
     }
 
     async init(uqsData:UqData[]):Promise<void> {
-        let promiseInits: PromiseLike<void>[] = uqsData.map(uqData => {
+        let promiseInits: PromiseLike<void>[] = [];
+		for (let uqData of uqsData) {
 			let {uqOwner, ownerAlias, uqName, uqAlias} = uqData;
-			if (uqAlias) uqName = uqAlias;
-			if (ownerAlias) uqOwner = ownerAlias;
+
+			// 原名加入collection
 			let uqFullName = uqOwner + '/' + uqName;
+			if (this.collection[uqFullName]) {
+				continue;
+			}
 			let uq = new UqMan(this, uqData, undefined, this.tvs[uqFullName] || this.tvs[uqName]);
 			this.uqMans.push(uq);
 			let lower = uqFullName.toLowerCase();
 			this.collection[lower] = uq;
-			return uq.init();
-		});
+
+			// 别名加入collection
+			if (uqAlias) uqName = uqAlias;
+			if (ownerAlias) uqOwner = ownerAlias;
+			uqFullName = uqOwner + '/' + uqName;
+			lower = uqFullName.toLowerCase();
+			this.collection[lower] = uq;
+			promiseInits.push(uq.init());
+		}
         await Promise.all(promiseInits);
     }
 

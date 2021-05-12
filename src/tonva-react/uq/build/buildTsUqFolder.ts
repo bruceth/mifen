@@ -46,9 +46,9 @@ export const ui: UI = {
 };
 
 const resRaw: Res<any> = {
-	zh: {
+	$zh: {
 	},
-	en: {
+	$en: {
 	}
 };
 const res: any = {};

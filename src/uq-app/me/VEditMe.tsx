@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { observable } from 'mobx';
+import { makeObservable, observable } from 'mobx';
 import {
     userApi, ItemSchema, StringSchema, ImageSchema, UiTextItem, UiImageItem, nav, Page,
     Edit, UiSchema, VPage, Prop, FA, IconText, PropGrid
@@ -22,10 +22,13 @@ export class VEditMe extends VPage<CMe>{
             icon: { widget: 'image', label: '头像' } as UiImageItem,
         }
     }
-    @observable private data: any;
+    data: any;
 
     constructor(props: any) {
         super(props);
+		makeObservable(this, {
+			data: observable,
+		});
         let { nick, icon } = nav.user;
         this.data = {
             nick: nick,

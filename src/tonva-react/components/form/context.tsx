@@ -25,6 +25,7 @@ export abstract class Context {
 		makeObservable(this, {
 			errors: observable,
 			errorWidgets: observable,
+			hasError: computed,
 		});
         this.form = form;
         this.uiSchema = uiSchema;
@@ -208,7 +209,7 @@ export abstract class Context {
         return false;
     }
 
-    @computed get hasError():boolean {
+    get hasError():boolean {
         return this.checkHasError();
     };
 

@@ -33,11 +33,11 @@ abstract class TagItemEdit extends ItemEdit {
     private page = observer((props:{resolve:(value:any)=>void, reject: (resean?:any)=>void}):JSX.Element => {
         let {resolve} = props;
         let right = <button
-            className="btn btn-sm btn-success align-self-center"
+            className="btn btn-sm btn-success align-self-center mr-2"
             disabled={!this.isChanged}
             onClick={()=>{
                 this.verifyValue();
-                if (this.error === undefined) resolve(this.newValue);
+                if (!this.error) resolve(this.newValue);
 			}}>保存</button>;
 		/*
         let content = list?

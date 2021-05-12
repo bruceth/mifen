@@ -33,7 +33,7 @@ export abstract class Controller {
     get user():User {return nav.user}
     get isLogined():boolean {
         let {user} = nav;
-        if (user === undefined) return false;
+        if (!user) return false;
         return user.id > 0;
     }
 

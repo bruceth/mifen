@@ -119,7 +119,7 @@ export class UqQuery<P, R> extends Entity {
     setSchema(schema:any) {
         super.setSchema(schema);
         let {returns} = schema;
-        //this.returns = returns;
+        this.returns = returns;
         this.isPaged = returns && (returns as any[]).find(v => v.name === '$page') !== undefined;
     }
 
