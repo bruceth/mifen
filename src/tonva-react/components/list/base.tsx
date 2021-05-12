@@ -9,7 +9,7 @@ export abstract class ListBase {
         this.list = list;
 		makeObservable(this, {
 			loading: computed,
-		})
+		});
     }
     get isPaged():boolean {
         let items = this.list.props.items;
