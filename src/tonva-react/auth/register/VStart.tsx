@@ -30,6 +30,7 @@ export abstract class VStart<T extends CRegBase> extends VPage<T> {
 	header() {return this.pageCaption;}
 
     content():JSX.Element {
+		console.error('VStart content()');
         return <div className="w-max-20c my-5 py-5"
                 style={{marginLeft:'auto', marginRight:'auto'}}>
 			{tonvaTop()}
