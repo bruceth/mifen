@@ -14,7 +14,6 @@ export abstract class CRegBase extends Controller {
 
 	protected abstract get VStart(): new(c:Controller) => VPage<any>;
     protected async internalStart() {
-		console.error('CRegBase internalStart');
         this.openVPage(this.VStart);
     }
 
