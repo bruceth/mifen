@@ -101,16 +101,16 @@ export class CCommon extends CUqBase {
 		let {name, no, rawId} = stock;
         let market = (stock as any).$market;
 		let date = new Date();
-		let year = date.getFullYear();
-		let month = date.getMonth() + 1;
-		let dt = date.getDate();
+		// let year = date.getFullYear();
+		// let month = date.getMonth() + 1;
+		// let dt = date.getDate();
 		this.cApp.showStock({
 			id: rawId, 
 			name,
 			code: no,
             market: market.name,
 			symbol: market.name + no,
-			day: year*10000 + month*100 + dt,
+			day: undefined, //year*10000 + month*100 + dt,
 			stock
 		} as any);
 	}

@@ -58,9 +58,7 @@ export class VStockInfo extends VPage<CStockInfo> {
             {React.createElement(this.baseInfo)}
             {this.historyChart()}
             {React.createElement(this.predictInfo)}
-            {React.createElement(this.predictSeasonEarning)}
             {React.createElement(this.seasonEarning)}
-            {React.createElement(this.capitalEarning)}
             {React.createElement(this.bonus)}
         </>
     });
@@ -206,7 +204,6 @@ export class VStockInfo extends VPage<CStockInfo> {
                         data: ypredict.map(v => GFunc.numberToPrecision(v)),
                         borderColor: 'black',
                         backgroundColor: 'skyBlue',
-                        showLine: false,
                         pointStyle: "crossRot",
                         borderWidth: 1,
                         pointRadius: 5,
@@ -281,25 +278,28 @@ export class VStockInfo extends VPage<CStockInfo> {
         if (len <= 0)
             return <></>;
         let label = [];
-        let y: number[] = [];
+        let netprofit: number[] = [];
+        let profit: number[] = [];
+        let revenue: number[] = [];
+        
         for (let i = len - 1; i >= 0; --i) {
             let item = predictSeasonDataFull[i];
-            if (item.esum === undefined)
+            if (item.netprofit === undefined)
                 continue;
             label.push(GFunc.SeasonnoToYearMonth(item.season));
-            y.push(item.esum);
+            netprofit.push(item.netprofit);
+            profit.push(item.profit);
+            revenue.push(item.revenue);
         }
 
-        let er = new ErForEarning(y);
         let chartdataFull = {
             labels: label,
             datasets: [
                 {
-                    label: '收益原值',
-                    data: y.map(v => GFunc.numberToPrecision(v)),
+                    label: '净利润',
+                    data: netprofit.map(v => GFunc.numberToPrecision(v)),
                     borderColor: 'black',
                     backgroundColor: 'skyBlue',
-                    showLine: false,
                     pointStyle: "crossRot",
                     borderWidth: 1,
                     pointRadius: 5,
@@ -307,38 +307,70 @@ export class VStockInfo extends VPage<CStockInfo> {
                 } as any
             ]
         };
-        if (!(isNaN(er.B) || isNaN(er.A))) {
-            let per: number[] = [];
-            for (let i = 0; i < len; ++i) {
-                per.push(GFunc.numberToPrecision(er.predict(i), 4));
-            }
-            chartdataFull.datasets.push(
+
+        // let er = new ErForEarning(y);
+        // if (!(isNaN(er.B) || isNaN(er.A))) {
+        //     let per: number[] = [];
+        //     for (let i = 0; i < len; ++i) {
+        //         per.push(GFunc.numberToPrecision(er.predict(i), 4));
+        //     }
+        //     chartdataFull.datasets.push(
+        //         {
+        //             label: '指数 R2:' + GFunc.numberToString(er.r2, 4),
+        //             data: per,
+        //             borderColor: 'red',
+        //             backgroundColor: 'pink',
+        //             borderWidth: 1,
+        //             fill: false,
+        //         });
+        // }
+        // let lr = new SlrForEarning(y);
+        // if (!(isNaN(lr.slope) || isNaN(lr.intercept))) {
+        //     let plr: number[] = [];
+        //     for (let i = 0; i < len; ++i) {
+        //         plr.push(GFunc.numberToPrecision(lr.predict(i), 4));
+        //     }
+        //     chartdataFull.datasets.push(
+        //         {
+        //             label: '线性 R2:' + GFunc.numberToString(lr.r2, 4),
+        //             data: plr,
+        //             borderColor: 'blue',
+        //             backgroundColor: 'pink',
+        //             borderWidth: 1,
+        //             fill: false,
+        //         });
+        // }
+
+        chartdataFull.datasets.push(
+            {
+                label: '营业利润',
+                data: profit,
+                borderColor: 'red',
+                backgroundColor: 'pink',
+                borderWidth: 1,
+                fill: false,
+            });
+
+        let chartdataRevenue = {
+            labels: label,
+            datasets: [
                 {
-                    label: '指数 R2:' + GFunc.numberToString(er.r2, 4),
-                    data: per,
-                    borderColor: 'red',
-                    backgroundColor: 'pink',
-                    borderWidth: 1,
-                    fill: false,
-                });
-        }
-        let lr = new SlrForEarning(y);
-        if (!(isNaN(lr.slope) || isNaN(lr.intercept))) {
-            let plr: number[] = [];
-            for (let i = 0; i < len; ++i) {
-                plr.push(GFunc.numberToPrecision(lr.predict(i), 4));
-            }
-            chartdataFull.datasets.push(
-                {
-                    label: '线性 R2:' + GFunc.numberToString(lr.r2, 4),
-                    data: plr,
+                    label: '营业收入',
+                    data: revenue,
                     borderColor: 'blue',
-                    backgroundColor: 'pink',
+                    backgroundColor: 'skyBlue',
+                    pointStyle: "crossRot",
                     borderWidth: 1,
+                    pointRadius: 5,
                     fill: false,
-                });
-        }
-        return <RC2 data={chartdataFull} type='line' />;
+                } as any
+            ]
+        };
+
+        return <>
+            <RC2 data={chartdataFull} type='line' />
+            <RC2 data={chartdataRevenue} type='line' />
+        </>;
     };
 
     protected predictChartROE = () => {
@@ -350,10 +382,10 @@ export class VStockInfo extends VPage<CStockInfo> {
         let y: number[] = [];
         for (let i = len - 1; i >= 0; --i) {
             let item = predictSeasonDataFull[i];
-            if (item.esum === undefined)
+            if (item.netprofit === undefined)
                 continue;
             label.push(GFunc.SeasonnoToYearMonth(item.season));
-            y.push(item.esumorg / item.corg);
+            y.push(item.netprofit / item.shares / item.c);
         }
 
         let chartdataFull = {
@@ -364,7 +396,6 @@ export class VStockInfo extends VPage<CStockInfo> {
                     data: y.map(v => GFunc.numberToPrecision(v)),
                     borderColor: 'black',
                     backgroundColor: 'skyBlue',
-                    showLine: false,
                     pointStyle: "crossRot",
                     borderWidth: 1,
                     pointRadius: 5,
@@ -414,7 +445,6 @@ export class VStockInfo extends VPage<CStockInfo> {
                     data: y.map(v => GFunc.numberToPrecision(v)),
                     borderColor: 'black',
                     backgroundColor: 'skyBlue',
-                    showLine: false,
                     pointStyle: "crossRot",
                     borderWidth: 1,
                     pointRadius: 5,
@@ -444,7 +474,8 @@ export class VStockInfo extends VPage<CStockInfo> {
     };
 
     private predictSeasonEarning = observer(() => {
-        let items = this.controller.predictSeasonData;
+        //let items = this.controller.predictSeasonData;
+        let items:any[] = [];
         let header = <div className="px-3">
             <div className="px-3 c6">年月</div>
             <div className="px-3 c6 text-right">股本</div>
@@ -483,34 +514,29 @@ export class VStockInfo extends VPage<CStockInfo> {
 
     private seasonEarning = observer(() => {
         let items = this.controller.seasonData;
+        //let items:any[] = [];
         let header = <div className="px-3">
-            <div className="px-3 c6">年月</div>
-            <div className="px-3 c6 text-right">股本</div>
-            <div className="px-3 c6 text-right">季收益</div>
-            <div className="px-3 c6 text-right">年收益</div>
-            <div className="px-3 c6 text-right">ROE</div>
-            <div className="px-3 c6 text-right">股本o</div>
-            <div className="px-3 c6 text-right">季收益o</div>
-            <div className="px-3 c6 text-right">年收益o</div>
+            <div className="px-3 c8">年月</div>
+            <div className="px-3 c8 text-right">股本</div>
+            <div className="px-3 c8 text-right">营业收入</div>
+            <div className="px-3 c8 text-right">营业利润</div>
+            <div className="px-3 c8 text-right">净利润</div>
         </div>;
         return <>
-            <div className="px-3 py-1">历年季度股本收益</div>
+            <div className="px-3 py-1">历年利润表</div>
             <List header={header} loading="..."
                 items={items}
                 item={{
-                    render: (row: { season: number, c: number, e: number, esum: number, corg: number, eorg: number, esumorg: number }) => {
-                        let { season, c, e, esum, corg, eorg, esumorg } = row;
+                    render: (row: { season: number, revenue: number, profit: number, netprofit: number, shares: number, c: number, corg: number }) => {
+                        let { season, revenue, profit, netprofit, shares } = row;
                         let ym = GFunc.SeasonnoToYearMonth(season);
                         let a = 0;
                         return <div className="px-3 py-2 d-flex flex-wrap">
-                            <div className="px-3 c6">{ym.toString()}</div>
-                            <div className="px-3 c6 text-right">{GFunc.numberToFixString(c)}</div>
-                            <div className="px-3 c6 text-right">{GFunc.numberToFixString(e)}</div>
-                            <div className="px-3 c6 text-right">{GFunc.numberToFixString(esum)}</div>
-                            <div className="px-3 c6 text-right">{GFunc.percentToFixString(esum / c)}</div>
-                            <div className="px-3 c6 text-right">{GFunc.numberToFixString(corg)}</div>
-                            <div className="px-3 c6 text-right">{GFunc.numberToFixString(eorg)}</div>
-                            <div className="px-3 c6 text-right">{GFunc.numberToFixString(esumorg)}</div>
+                            <div className="px-3 c8">{ym.toString()}</div>
+                            <div className="px-3 c8 text-right">{GFunc.numberToFixString(shares, 0)}</div>
+                            <div className="px-3 c8 text-right">{GFunc.numberToFixString(revenue, 0)}</div>
+                            <div className="px-3 c8 text-right">{GFunc.numberToFixString(profit, 0)}</div>
+                            <div className="px-3 c8 text-right">{GFunc.numberToFixString(netprofit, 0)}</div>
                         </div>
                     }
                 }}
@@ -520,7 +546,8 @@ export class VStockInfo extends VPage<CStockInfo> {
 
 
     private capitalEarning = observer(() => {
-        let items = this.controller.capitalearning;
+        //let items = this.controller.capitalearning;
+        let items:any[] = [];
         let header = <div className="px-3">
             <div className="px-3 c6">年</div>
             <div className="px-3 c6 text-right">股本</div>

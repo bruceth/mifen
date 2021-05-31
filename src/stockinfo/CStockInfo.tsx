@@ -18,9 +18,9 @@ export class CStockInfo extends CUqBase {
     @observable stockTags: any[];
     selectedTags: any[];
 
-    @observable seasonData: { season: number, c: number, e: number, esum: number, corg: number, eorg: number, esumorg: number }[] = [];
-    @observable predictSeasonData: { season: number, c: number, e: number, esum: number, corg: number, eorg: number, esumorg: number }[] = [];
-    @observable predictSeasonDataFull: { season: number, c: number, e: number, esum: number, corg: number, eorg: number, esumorg: number }[] = [];
+    @observable seasonData: { season: number, c: number, corg: number, shares: number, revenue: number, profit: number, netprofit: number }[] = [];
+    @observable predictSeasonData: { season: number, c: number, shares: number, revenue: number, profit: number, netprofit: number }[] = [];
+    @observable predictSeasonDataFull: { season: number, c: number, shares: number, revenue: number, profit: number, netprofit: number }[] = [];
     @observable predictData: { e: number, b: number, r2: number, epre: number, l: number, lr2: number, lpre: number };
     @observable predictBonusData: { year: number, bonus: number }[] = [];
     @observable ypredict: number[] = [];
@@ -107,9 +107,9 @@ export class CStockInfo extends CUqBase {
         return ret;
     }
 
-    protected async loadTTMEarning(list: { seasonno: number, capital: number, earning: number, es: number, shares: number }[]) {
+    protected async loadTTMEarning(list: { seasonno: number, capital: number, revenue: number, profit: number, netprofit: number, shares: number }[]) {
         this.seasonData.splice(0);
-        let seasonlist: { [index: number]: { season: number, c: number, e: number, esum: number, corg: number, eorg: number, esumorg: number } } = {};
+        let seasonlist: { [index: number]: { season: number, c: number, corg: number, shares: number, revenue: number, profit: number, netprofit: number } } = {};
         let len = list.length;
         if (len <= 0) return;
         let minNo = list[len - 1].seasonno;
@@ -120,14 +120,14 @@ export class CStockInfo extends CUqBase {
         for (let item of list) {
             let no = item.seasonno;
             let sItem = {
-                season: no, c: item.capital * item.shares / lastShares, e: item.es * item.shares / lastShares, esum: item.earning * item.shares / lastShares,
-                corg: item.capital, eorg: item.es, esumorg: item.earning
+                season: no, c: item.capital * item.shares / lastShares, 
+                corg: item.capital, shares: item.shares, revenue: item.revenue, profit: item.profit, netprofit: item.netprofit
             }
             seasonlist[no] = sItem;
 
             let yearmonth = GFunc.GetSeasonnoYearMonth(no);
             if (yearmonth.month === 12) {
-                let ci = { year: yearmonth.year, capital: item.capital, earning: item.earning };
+                let ci = { year: yearmonth.year, capital: item.capital, earning: item.netprofit / item.shares };
                 this._capitalearning.push(ci);
             }
         }
@@ -152,7 +152,7 @@ export class CStockInfo extends CUqBase {
             let item = seasonlist[x];
             if (item === undefined) break;
             this.predictSeasonData.splice(0, 0, item);
-            this.ypredict.push(item.esum);
+            this.ypredict.push(item.netprofit / lastShares);
         }
 
         for (let x = maxNo; x >= minNo; x -= 4) {
