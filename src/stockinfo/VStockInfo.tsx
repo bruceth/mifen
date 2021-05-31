@@ -278,6 +278,7 @@ export class VStockInfo extends VPage<CStockInfo> {
         if (len <= 0)
             return <></>;
         let label = [];
+        let label3 = []
         let netprofit: number[] = [];
         let profit: number[] = [];
         let revenue: number[] = [];
@@ -286,13 +287,75 @@ export class VStockInfo extends VPage<CStockInfo> {
             let item = predictSeasonDataFull[i];
             if (item.netprofit === undefined)
                 continue;
-            label.push(GFunc.SeasonnoToYearMonth(item.season));
+            let l = GFunc.SeasonnoToYearMonth(item.season);
+            label.push(l);
+            if (i < len - 1) {
+                label3.push(l);
+            }
             netprofit.push(item.netprofit);
             profit.push(item.profit);
             revenue.push(item.revenue);
         }
 
+        let zzFunc = (e:number[]) => {
+            let len = e.length;
+            let r: number[] = [];
+            let eb = e[0];
+            for (let ei = 1; ei < len; ++ei) {
+                let eEnd = e[ei];
+                let ed = eEnd - eb;
+                let eav = (eEnd + eb) / 2;
+                if (eav > 0.0001) {
+                    r.push(ed * 100 / eav);
+                }
+                else {
+                    r.push(undefined);
+                }
+                eb = eEnd;
+            }
+            return r;
+        }
+
+        let npZZ = zzFunc(netprofit);
+        let pZZ = zzFunc(profit);
+        let rZZ = zzFunc(revenue); 
+
         let chartdataFull = {
+            labels: label3,
+            datasets: [
+                {
+                    label: '净利润',
+                    data: npZZ.map(v => GFunc.numberToPrecision(v)),
+                    borderColor: 'black',
+                    backgroundColor: 'skyBlue',
+                    pointStyle: "crossRot",
+                    borderWidth: 1,
+                    pointRadius: 5,
+                    fill: false,
+                } as any
+            ]
+        };
+        chartdataFull.datasets.push(
+            {
+                label: '营业利润',
+                data: pZZ.map(v => GFunc.numberToPrecision(v)),
+                borderColor: 'red',
+                backgroundColor: 'pink',
+                borderWidth: 1,
+                fill: false,
+            });
+        chartdataFull.datasets.push(
+            {
+                label: '营业收入',
+                data: rZZ.map(v => GFunc.numberToPrecision(v)),
+                borderColor: 'blue',
+                backgroundColor: 'skyBlue',
+                borderWidth: 1,
+                fill: false,
+            });
+     
+
+        let chartdataProfit = {
             labels: label,
             datasets: [
                 {
@@ -308,40 +371,7 @@ export class VStockInfo extends VPage<CStockInfo> {
             ]
         };
 
-        // let er = new ErForEarning(y);
-        // if (!(isNaN(er.B) || isNaN(er.A))) {
-        //     let per: number[] = [];
-        //     for (let i = 0; i < len; ++i) {
-        //         per.push(GFunc.numberToPrecision(er.predict(i), 4));
-        //     }
-        //     chartdataFull.datasets.push(
-        //         {
-        //             label: '指数 R2:' + GFunc.numberToString(er.r2, 4),
-        //             data: per,
-        //             borderColor: 'red',
-        //             backgroundColor: 'pink',
-        //             borderWidth: 1,
-        //             fill: false,
-        //         });
-        // }
-        // let lr = new SlrForEarning(y);
-        // if (!(isNaN(lr.slope) || isNaN(lr.intercept))) {
-        //     let plr: number[] = [];
-        //     for (let i = 0; i < len; ++i) {
-        //         plr.push(GFunc.numberToPrecision(lr.predict(i), 4));
-        //     }
-        //     chartdataFull.datasets.push(
-        //         {
-        //             label: '线性 R2:' + GFunc.numberToString(lr.r2, 4),
-        //             data: plr,
-        //             borderColor: 'blue',
-        //             backgroundColor: 'pink',
-        //             borderWidth: 1,
-        //             fill: false,
-        //         });
-        // }
-
-        chartdataFull.datasets.push(
+        chartdataProfit.datasets.push(
             {
                 label: '营业利润',
                 data: profit,
@@ -369,6 +399,7 @@ export class VStockInfo extends VPage<CStockInfo> {
 
         return <>
             <RC2 data={chartdataFull} type='line' />
+            <RC2 data={chartdataProfit} type='line' />
             <RC2 data={chartdataRevenue} type='line' />
         </>;
     };
