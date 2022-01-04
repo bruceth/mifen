@@ -2,10 +2,12 @@ import * as React from 'react';
 
 export class GFunc {
     public static numberToFixString(n: number, w = 2) {
-        return n === undefined ? '' : n.toFixed(w);
+        return n === undefined ? '' :
+            (isNaN(n) === true ? '-' : n.toFixed(w));
     }
     public static number(n: number, w = 2) {
-        return n === undefined ? '' : n.toFixed(w);
+        return n === undefined ? '' :
+            (isNaN(n) === true ? '-' : n.toFixed(w));
     }
 
     public static numberToMarketValue(n: number) {
@@ -13,7 +15,8 @@ export class GFunc {
     }
 
     public static numberToString(n: number, precision = 2) {
-        return n === undefined ? '' : n.toPrecision(precision);
+        return n === undefined ? '' :
+            (isNaN(n) === true ? '-' : n.toPrecision(precision));
     }
 
     public static numberToPrecision(n: number, precision = 4) {
@@ -159,7 +162,7 @@ export class GFunc {
     public static GetSeasonnoYearMonth(no: number) {
         let year = Math.floor(no / 4) + 1995;
         let month = (Math.floor(no % 4) + 1) * 3;
-        return {year: year, month: month};
+        return { year: year, month: month };
     }
 
     public static SeasonnoToBeginEnd(season: number) {

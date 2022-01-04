@@ -4,18 +4,19 @@ import { DropdownAction, DropdownActions, FA, LMR, SearchBox, VPage } from "tonv
 import { CFind } from "./CFind";
 
 export class VFind extends VPage<CFind> {
-	header() {return '发现'}
+	header() { return '发现' }
 	content() {
-		let {showA, showHK, showSH, showSZ, showAll, cGroup, cIndustries} = this.controller;
-		let buttons:[string, ()=>Promise<void>][] = [
+		let { showA, showHK, showSH, showSZ, showUS, showAll, cGroup, cIndustries } = this.controller;
+		let buttons: [string, () => Promise<void>][] = [
 			['A股', showA],
 			['港股', showHK],
 			['沪A', showSH],
 			['深A', showSZ],
+			['US', showUS],
 			['全部', showAll],
 		];
-		let renderButton = (caption:string, onClick:()=>void) => <button key={caption} 
-			className="btn btn-outline-info m-1" 
+		let renderButton = (caption: string, onClick: () => void) => <button key={caption}
+			className="btn btn-outline-info m-1"
 			onClick={onClick}>
 			{caption}
 		</button>;
@@ -52,26 +53,26 @@ export class VFind extends VPage<CFind> {
 	}
 
 	private renderMyAll() {
-		let {cApp, cGroup} = this.controller;
-		let {showStocksAll} = cGroup;
-		let {stocksMyAll, myAllCaption} = cApp.store;
+		let { cApp, cGroup } = this.controller;
+		let { showStocksAll } = cGroup;
+		let { stocksMyAll, myAllCaption } = cApp.store;
 		return this.renderSpec(stocksMyAll?.length, myAllCaption, 'home', 'text-primary', showStocksAll);
 	}
 
 	private renderMyBlock() {
 		return React.createElement(observer(() => {
-			let {cApp, cGroup} = this.controller;
-			let {showStocksBlock} = cGroup;
-			let {stocksMyBlock, myBlockCaption} = cApp.store;
+			let { cApp, cGroup } = this.controller;
+			let { showStocksBlock } = cGroup;
+			let { stocksMyBlock, myBlockCaption } = cApp.store;
 			return this.renderSpec(stocksMyBlock?.length, <>
 				<span className="mr-3">{myBlockCaption}</span>
 				<small className="text-muted">选股时不列出</small>
 			</>,
-			'ban', 'text-black', showStocksBlock);
+				'ban', 'text-black', showStocksBlock);
 		}));
 	}
 
-	private renderSpec(count:number, text:string|JSX.Element, icon:string, color:string, click:()=>void) {
+	private renderSpec(count: number, text: string | JSX.Element, icon: string, color: string, click: () => void) {
 		return React.createElement(observer(() => {
 			let right = count > 0 && <small className="align-self-center mx-3 text-muted">{count}</small>;
 			let cn = "align-self-center ml-3 " + color;
@@ -85,7 +86,7 @@ export class VFind extends VPage<CFind> {
 
 	right() {
 		return React.createElement(observer(() => {
-			let {cCommon} = this.controller.cApp;
+			let { cCommon } = this.controller.cApp;
 			let actions: DropdownAction[] = [
 				{
 					caption: '管理股票分组',

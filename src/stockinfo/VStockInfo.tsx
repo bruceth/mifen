@@ -84,10 +84,10 @@ export class VStockInfo extends VPage<CStockInfo> {
         let { cCommon } = this.controller.cApp;
         let pinStock = <div className="d-flex align-self-stretch align-items-center">
             {cCommon.renderStockLink(stock)}
-			&nbsp;
-			{cCommon.renderPinStock(stock, 2)}
-			&nbsp;
-			{cCommon.renderBlockStock(stock)}
+            &nbsp;
+            {cCommon.renderPinStock(stock, 2)}
+            &nbsp;
+            {cCommon.renderBlockStock(stock)}
         </div>;
         return <div className="bg-white">{renderStockRow(undefined, stock, undefined, pinStock)}</div>;
     });
@@ -592,11 +592,12 @@ export class VStockInfo extends VPage<CStockInfo> {
                 item={{
                     render: (row: StockCapitalearning) => {
                         let { capital, earning } = row;
+                        let roe = (earning / capital * 100);
                         return <div className="px-3 py-2 d-flex flex-wrap">
                             <div className="px-3 c6">{row.year}</div>
-                            <div className="px-3 c6 text-right"> {capital.toFixed(2)}</div>
-                            <div className="px-3 c6 text-right"> {earning.toFixed(2)}</div>
-                            <div className="px-3 c6 text-right"> {(earning / capital * 100).toFixed(1)}%</div>
+                            <div className="px-3 c6 text-right"> {capital?.toFixed(2)}</div>
+                            <div className="px-3 c6 text-right"> {earning?.toFixed(2)}</div>
+                            <div className="px-3 c6 text-right"> {isNaN(roe) === true ? '-' : roe.toFixed(1) + '%'}</div>
                         </div>
                     }
                 }}
