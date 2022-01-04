@@ -134,12 +134,12 @@ PAGE ORDER Switch (miRateDesc, dvRateDesc, roeDesc, miRateAsc, dvRateAsc, roeAsc
 	PAGE SELECT a.id, a.no, a.name, a.rawId,
 		a.market,
 		b.miValue, b.incValue, b.earning, b.divident, b.price, 
-		case when b.ttm>=3 then b.miRate else null end as miRate, 
+		b.miRate, 
 		b.roe, b.dvRate, b.ttm,
 		b.inc1, b.inc2, b.inc3, b.inc4, b.preInc, b.volumn,
 		b.smoothness,
 
-		case when b.ttm>=3 then b.gMiRate else null end as gMiRate,
+		b.gMiRate,
 		b.gMiValue,
 		b.gIncValue,
 		b.gInc1,
@@ -149,7 +149,7 @@ PAGE ORDER Switch (miRateDesc, dvRateDesc, roeDesc, miRateAsc, dvRateAsc, roeAsc
 		b.gPreInc,
 		b.gSmoothness,
 
-		case when b.ttm>=3 then b.rMiRate else null end as rMiRate,
+		b.rMiRate,
 		b.rMiValue,
 		b.rIncValue,
 		b.rInc1,
