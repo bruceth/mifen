@@ -9,13 +9,13 @@ import { CGroup } from "./group";
 type SearchOrder = 'miRateDesc' | 'miRateAsc' | 'dvRateDesc' | 'dvRateAsc' | 'roeDesc' | 'roeAsc';
 const defaultSmooth = 0;
 export interface SearchParam {
-	key: string; 
+	key: string;
 	market: string;
 	$orderSwitch: SearchOrder;
 	smooth: number;
 }
 
-export class CFind extends  CUqBase {
+export class CFind extends CUqBase {
 	readonly cGroup: CGroup;
 	readonly cIndustries: CGroup;
 	header: string = null;
@@ -66,27 +66,27 @@ export class CFind extends  CUqBase {
 		await this.research();
 	}
 
-	load = async() => {}
-	
+	load = async () => { }
+
 	async research() {
 		await this.pageStocks.first(this.searchParam);
 	}
 
-	private async searchStock(header: string, market?:string[], key?:string) {
+	private async searchStock(header: string, market?: string[], key?: string) {
 		this.header = header;
 		this.searchParam = {
-			key, 
+			key,
 			market: market?.join('\n'),
 			$orderSwitch: this.searchOrder,
-			smooth: key? 0 : this.smooth,
+			smooth: key ? 0 : this.smooth,
 		};
 		this.pageStocks = new StockPageItems(this.cApp.store);
 		await this.pageStocks.first(this.searchParam);
 		this.openVPage(VStocksPage);
 	}
 
-	onSearch = async (key:string) => {
-		await this.searchStock('搜索', ['sh', 'sz', 'hk'], key);
+	onSearch = async (key: string) => {
+		await this.searchStock('搜索', ['sh', 'sz', 'hk', 'us'], key);
 	}
 
 	showA = async () => {
@@ -101,8 +101,11 @@ export class CFind extends  CUqBase {
 	showSZ = async () => {
 		await this.searchStock('深股', ['sz']);
 	}
+	showUS = async () => {
+		await this.searchStock('US', ['us']);
+	}
 	showAll = async () => {
-		await this.searchStock('全部股票', ['sh', 'sz', 'hk']);
+		await this.searchStock('全部股票', ['sh', 'sz', 'hk', 'us']);
 	}
 
 	onClickStock = (stock: Stock & StockValue) => {
