@@ -1,14 +1,14 @@
-import {FetchError} from './fetchError';
-import {HttpChannelUI} from './httpChannelUI';
-import {env, nav} from 'tonva-react';
+import { FetchError } from './fetchError';
+import { HttpChannelUI } from './httpChannelUI';
+import { env, nav } from 'tonva-react';
 
-export async function httpGet(url:string, params?:any):Promise<any> {
+export async function httpGet(url: string, params?: any): Promise<any> {
     let channel = new HttpChannel(url, undefined, undefined);
     let ret = await channel.get('', params);
     return ret;
 }
 
-export async function httpPost(url:string, params?:any):Promise<any> {
+export async function httpPost(url: string, params?: any): Promise<any> {
     let channel = new HttpChannel(url, undefined, undefined);
     let ret = await channel.post('', params);
     return ret;
@@ -20,23 +20,23 @@ export class HttpChannel {
     private ui?: HttpChannelUI;
     private timeout: number;
 
-    constructor(hostUrl: string, apiToken:string, ui?: HttpChannelUI) {
+    constructor(hostUrl: string, apiToken: string, ui?: HttpChannelUI) {
         this.hostUrl = hostUrl;
         this.apiToken = apiToken;
         this.ui = ui;
-        this.timeout = env.isDevelopment === true? 500000:20000;
+        this.timeout = env.isDevelopment === true ? 500000 : 20000;
     }
 
     private startWait = () => {
         if (this.ui !== undefined) this.ui.startWait();
     }
 
-    private endWait = (url?:string, reject?:(reason?:any)=>void) => {
+    private endWait = (url?: string, reject?: (reason?: any) => void) => {
         if (this.ui !== undefined) this.ui.endWait();
         if (reject !== undefined) reject('访问webapi超时 ' + url);
     }
 
-    private showError = async (error:FetchError) => {
+    private showError = async (error: FetchError) => {
         if (this.ui !== undefined) await this.ui.showError(error);
     }
 
@@ -82,7 +82,7 @@ export class HttpChannel {
         options.body = JSON.stringify(params);
         return await this.innerFetch(url, options);
     }
-    async fetch(url: string, options: any, resolve:(value?:any)=>any, reject:(reason?:any)=>void):Promise<void> {
+    async fetch(url: string, options: any, resolve: (value?: any) => any, reject: (reason?: any) => void): Promise<void> {
         let that = this;
         this.startWait();
         let path = url;
@@ -107,7 +107,7 @@ export class HttpChannel {
                 throw res.statusText;
             }
             let ct = res.headers.get('content-type');
-            if (ct && ct.indexOf('json')>=0) {
+            if (ct && ct.indexOf('json') >= 0) {
                 return res.json().then(async retJson => {
                     clearTimeout(timeOutHandler);
                     that.endWait();
@@ -133,14 +133,14 @@ export class HttpChannel {
                 resolve(text);
             }
         }
-        catch(error) {
+        catch (error) {
             if (typeof error === 'string') {
                 if (error.toLowerCase().startsWith('unauthorized') === true) {
                     nav.logout();
                     return;
                 }
             }
-            await this.showError(buildError(error.message));
+            await this.showError(buildError((error as any).message));
         };
     }
 
@@ -151,7 +151,7 @@ export class HttpChannel {
         });
     }
 
-    async callFetch(url:string, method:string, body:any):Promise<any> {
+    async callFetch(url: string, method: string, body: any): Promise<any> {
         let options = this.buildOptions();
         options.method = method;
         options.body = body;
@@ -161,15 +161,15 @@ export class HttpChannel {
     }
 
     private buildOptions(): any {
-        let {language, culture} = nav;
+        let { language, culture } = nav;
         let headers = new Headers();
         //headers.append('Access-Control-Allow-Origin', '*');
         headers.append('Content-Type', 'application/json;charset=UTF-8');
         let lang = language;
         if (culture) lang += '-' + culture;
         headers.append('Accept-Language', lang);
-        if (this.apiToken) { 
-            headers.append('Authorization', this.apiToken); 
+        if (this.apiToken) {
+            headers.append('Authorization', this.apiToken);
         }
         let options = {
             headers: headers,

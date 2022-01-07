@@ -20,7 +20,7 @@ ID Stock ver 0.5 (
 	index uno (uno) unique,
 );
 
-IDX StockValue ver 0.1 (
+IDX *StockValue ver 0.1 (
 	id,
 	earning FLOAT,
 	divident FLOAT,
@@ -66,7 +66,7 @@ IDX StockValue ver 0.1 (
 	rSmoothness TINYINT DEFAULT 1,
 );
 
-IX IXIndustry (
+IX *IXIndustry (
 	ix,
 	xi,
 );
@@ -131,13 +131,13 @@ PAGE ORDER Switch (miRateDesc, dvRateDesc, roeDesc, miRateAsc, dvRateAsc, roeAsc
 	if NOT market IS NULL {
 		TEXT market INTO tblm;
 	}
-	PAGE SELECT a.id, a.no, a.name, a.rawId,
-		a.market,
-		b.miValue, b.incValue, b.earning, b.divident, b.price, 
-		b.miRate, 
-		b.roe, b.dvRate, b.ttm,
-		b.inc1, b.inc2, b.inc3, b.inc4, b.preInc, b.volumn,
-		b.smoothness,
+	PAGE SELECT a.id, a.market,a.no, a.name, a.rawId,
+
+		b.earning, b.divident, b.price, 
+		b.roe, b.volumn, b.dvRate, b.ttm,
+
+		b.miRate, b.miValue, b.incValue, 
+		b.inc1, b.inc2, b.inc3, b.inc4, b.preInc, b.smoothness,
 
 		b.gMiRate,
 		b.gMiValue,
@@ -202,7 +202,7 @@ OPEN ACT WriteStock ver 0.3 (
 ) {
 	foreach stocks {
 		VAR mId ID = ID(Market new, market);
-		VAR stock ID = ID(Stock new, mId, no);
+		VAR stock ID = ID(Stock new KEY market=mId, no=no);
 		WITH Stock as a ID stock SET a.name=name, a.rawId=rawId, a.uno=concat(market, '.', no);
 		WITH StockValue as a ID stock
 			SET a.incValue=incValue
@@ -272,7 +272,7 @@ OPEN ACT WritePrice ver 0.3 (
 ) {
 	foreach prices {
 		VAR mId ID = ID(Market new, market);
-		VAR stock ID = ID(Stock new, mId, no);
+		VAR stock ID = ID(Stock new KEY market=mId, no=no);
 		WITH Stock as a ID stock SET a.name=name, a.rawId=rawId, a.uno=concat(market, '.', no);
 		WITH StockValue as a ID stock 
 			SET a.price=price

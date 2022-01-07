@@ -6,7 +6,7 @@ ID Account ver 0.1 (
 );
 
 -- user 账号跟Account绑定
-IX UserAccount (
+IX *UserAccount (
 	ix user,
 	xi Account,
 	sort,				-- id sort
@@ -20,23 +20,23 @@ ID Holding (
 	index stock_account (stock, account) unique,
 );
 
-IDX AccountValue ver 0.1 (
+IDX *AccountValue ver 0.1 (
 	id,
 	miValue FLOAT,
 	market FLOAT,
 	count SMALLINT,
-	cash DEC(16, 4) SUM LOG TRACK,
+	cash DEC(16, 4),
 );
 
-IX AccountHolding (
+IX *AccountHolding (
 	ix,							-- account
 	xi,							-- Holding
 );
 
-IDX Portfolio ver 0.1 (
+IDX *Portfolio ver 0.1 (
 	id,							-- Holding
-	quantity BIGINT SUM LOG TRACK,
-	cost FLOAT SUM LOG TRACK,
+	quantity BIGINT,
+	cost FLOAT,
 );
 
 ID Transaction (

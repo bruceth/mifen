@@ -4,23 +4,23 @@ ID Group (
 	name char(50),
 );
 
-IX UserGroup (
+IX *UserGroup (
 	ix user,
 	xi Group,
 );
 
-IX UserAllStock (
+IX *UserAllStock (
 	ix user,
 	xi Stock,
 );
 
-IX UserBlockStock (
+IX *UserBlockStock (
 	ix user,
 	xi Stock,
 );
 
 -- Industry stock, Market stock,
-IX GroupStock (
+IX *GroupStock (
 	ix,					-- group
 	xi,					-- Stock
 	order SMALLINT,
