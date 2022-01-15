@@ -20,7 +20,7 @@
     "font-awesome": "^4.7.0",
     "jwt-decode": "^3.1.2",
     "lodash": "^4.17.21",
-    "marked": "^2.0.1",
+    "marked": "^4.0.10",
     "mobx": "^6.1.8",
     "mobx-react": "^7.1.0",
     "react": "^17.0.1",
