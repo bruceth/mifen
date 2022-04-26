@@ -10,6 +10,10 @@ export class VStockLink extends View<CCommon> {
 		let symbol = mn + no;
 		let url:string, title:string;
 		switch (mn) {
+            case 'us':
+				url = `https://xueqiu.com/S/${no}`;
+				title = '雪球';
+				break;
 			case 'hk':
 				url = `https://xueqiu.com/S/${no}`;
 				title = '雪球';

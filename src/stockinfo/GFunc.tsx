@@ -148,6 +148,23 @@ export class GFunc {
         return (year - 1995) * 4 + season;
     }
 
+    public static SeasonnoFromDayForBonus(day: number) {
+        let year = Math.floor(day / 10000);
+        let month = Math.floor((day % 10000) / 100) - 1;
+        if (month < 4) {
+            month = 0;
+        }
+        else if (month < 7) {
+            month = 3;
+        }
+        else if (month < 10) {
+            month = 6;
+        }
+        let season = Math.floor(month / 3);
+        return (year - 1995) * 4 + season;
+    }
+    
+
     public static SeasonnoFromYearMonth(year: number, month: number) {
         let season = Math.floor((month - 1) / 3);
         return (year - 1995) * 4 + season;

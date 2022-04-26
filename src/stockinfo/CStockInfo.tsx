@@ -183,7 +183,7 @@ export class CStockInfo extends CUqBase {
             let { day, bonus, shares } = item as { day: number, bonus: number, shares: number };
             if (shares <= 0 || bonus <= 0) continue;
             if (day < 19950101) continue;
-            let sno = GFunc.SeasonnoFromDay(day);
+            let sno = GFunc.SeasonnoFromDayForBonus(day);
             dataOrg[sno] = { bonus: bonus, shares: shares };
             if (minNo < 0) {
                 minNo = sno;
