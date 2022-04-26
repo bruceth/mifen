@@ -3,5 +3,5 @@ ID Blog ver 3 (
 	key no,
 	caption char(100),
 	content text,
-	sys (create, update, owner),
+	sys (create, update),
 );

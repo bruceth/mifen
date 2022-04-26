@@ -1,4 +1,4 @@
-//=== UqApp builder created on Tue Apr 20 2021 10:21:36 GMT-0400 (GMT-04:00) ===//
+//=== UqApp builder created on Thu Jan 06 2022 23:34:08 GMT-0500 (北美东部标准时间) ===//
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { IDXValue, Uq, UqTuid, UqAction, UqQuery, UqID, UqIDX, UqIX } from "tonva-react";
 
@@ -13,6 +13,7 @@ export interface Tuid$user {
 	icon: string;
 	assigned: string;
 	poke: number;
+	timezone: number;
 }
 
 export interface Tuid$sheet {
@@ -110,6 +111,12 @@ export interface ParamWriteGrossAndRevenue {
 interface ResultWriteGrossAndRevenue {
 }
 
+export interface Param$setMyTimezone {
+	_timezone: number;
+}
+interface Result$setMyTimezone {
+}
+
 export interface Param$poked {
 }
 interface Return$pokedRet {
@@ -166,7 +173,6 @@ interface ReturnSearchStock$page {
 	rInc4: number;
 	rPreInc: number;
 	rSmoothness: number;
-	$id: number;
 }
 interface ResultSearchStock {
 	$page: ReturnSearchStock$page[];
@@ -186,12 +192,16 @@ interface ResultStockUsing {
 	groups: ReturnStockUsingGroups[];
 }
 
-export interface $Piecewise {
-	id?: number;
-	name: string;
-	ratio: number;
-	offset: number;
-	asc: number;
+export interface Param$getUnitTime {
+}
+interface Return$getUnitTimeRet {
+	timezone: number;
+	unitTimeZone: number;
+	unitBizMonth: number;
+	unitBizDate: number;
+}
+interface Result$getUnitTime {
+	ret: Return$getUnitTimeRet[];
 }
 
 export interface Market {
@@ -229,14 +239,6 @@ export interface Holding {
 	everBought: number;
 }
 
-export interface $PiecewiseDetail {
-	id?: number;
-	parent: number;
-	row?: number;
-	sec: number;
-	value: number;
-}
-
 export interface Stock {
 	id?: number;
 	market: number;
@@ -251,7 +253,7 @@ export interface Blog {
 	no?: string;
 	caption: string;
 	content: string;
-	$create: any;
+	$create: Date;
 }
 
 export interface Industry {
@@ -307,7 +309,6 @@ export interface AccountValue {
 	count?: number;
 	cash?: number;
 	$act?: number;
-	$track?: number;
 }
 
 export interface Portfolio {
@@ -315,66 +316,63 @@ export interface Portfolio {
 	quantity?: number;
 	cost?: number;
 	$act?: number;
-	$track?: number;
 }
 
 export interface ActParamStockValue {
-	id: number|IDXValue;
-	earning?: number|IDXValue;
-	divident?: number|IDXValue;
-	price?: number|IDXValue;
-	pvolumn?: number|IDXValue;
-	roe?: number|IDXValue;
-	volumn?: number|IDXValue;
-	date?: any|IDXValue;
-	dvRate?: number|IDXValue;
-	ttm?: number|IDXValue;
-	miRate?: number|IDXValue;
-	miValue?: number|IDXValue;
-	incValue?: number|IDXValue;
-	inc1?: number|IDXValue;
-	inc2?: number|IDXValue;
-	inc3?: number|IDXValue;
-	inc4?: number|IDXValue;
-	preInc?: number|IDXValue;
-	smoothness?: number|IDXValue;
-	gMiRate?: number|IDXValue;
-	gMiValue?: number|IDXValue;
-	gIncValue?: number|IDXValue;
-	gInc1?: number|IDXValue;
-	gInc2?: number|IDXValue;
-	gInc3?: number|IDXValue;
-	gInc4?: number|IDXValue;
-	gPreInc?: number|IDXValue;
-	gSmoothness?: number|IDXValue;
-	rMiRate?: number|IDXValue;
-	rMiValue?: number|IDXValue;
-	rIncValue?: number|IDXValue;
-	rInc1?: number|IDXValue;
-	rInc2?: number|IDXValue;
-	rInc3?: number|IDXValue;
-	rInc4?: number|IDXValue;
-	rPreInc?: number|IDXValue;
-	rSmoothness?: number|IDXValue;
+	id: number | IDXValue;
+	earning?: number | IDXValue;
+	divident?: number | IDXValue;
+	price?: number | IDXValue;
+	pvolumn?: number | IDXValue;
+	roe?: number | IDXValue;
+	volumn?: number | IDXValue;
+	date?: any | IDXValue;
+	dvRate?: number | IDXValue;
+	ttm?: number | IDXValue;
+	miRate?: number | IDXValue;
+	miValue?: number | IDXValue;
+	incValue?: number | IDXValue;
+	inc1?: number | IDXValue;
+	inc2?: number | IDXValue;
+	inc3?: number | IDXValue;
+	inc4?: number | IDXValue;
+	preInc?: number | IDXValue;
+	smoothness?: number | IDXValue;
+	gMiRate?: number | IDXValue;
+	gMiValue?: number | IDXValue;
+	gIncValue?: number | IDXValue;
+	gInc1?: number | IDXValue;
+	gInc2?: number | IDXValue;
+	gInc3?: number | IDXValue;
+	gInc4?: number | IDXValue;
+	gPreInc?: number | IDXValue;
+	gSmoothness?: number | IDXValue;
+	rMiRate?: number | IDXValue;
+	rMiValue?: number | IDXValue;
+	rIncValue?: number | IDXValue;
+	rInc1?: number | IDXValue;
+	rInc2?: number | IDXValue;
+	rInc3?: number | IDXValue;
+	rInc4?: number | IDXValue;
+	rPreInc?: number | IDXValue;
+	rSmoothness?: number | IDXValue;
 	$act?: number;
 }
 
 export interface ActParamAccountValue {
-	id: number|IDXValue;
-	miValue?: number|IDXValue;
-	market?: number|IDXValue;
-	count?: number|IDXValue;
-	cash?: number|IDXValue;
+	id: number | IDXValue;
+	miValue?: number | IDXValue;
+	market?: number | IDXValue;
+	count?: number | IDXValue;
+	cash?: number | IDXValue;
 	$act?: number;
-	$track?: number;
 }
 
 export interface ActParamPortfolio {
-	id: number|IDXValue;
-	quantity?: number|IDXValue;
-	cost?: number|IDXValue;
+	id: number | IDXValue;
+	quantity?: number | IDXValue;
+	cost?: number | IDXValue;
 	$act?: number;
-	$track?: number;
 }
 
 export interface UserBlockStock {
@@ -415,13 +413,11 @@ export interface IXIndustry {
 }
 
 export interface ParamActs {
-	$Piecewise?: $Piecewise[];
 	market?: Market[];
 	transaction?: Transaction[];
 	group?: Group[];
 	account?: Account[];
 	holding?: Holding[];
-	$PiecewiseDetail?: $PiecewiseDetail[];
 	stock?: Stock[];
 	blog?: Blog[];
 	industry?: Industry[];
@@ -439,7 +435,7 @@ export interface ParamActs {
 
 
 export interface UqExt extends Uq {
-	Acts(param:ParamActs): Promise<any>;
+	Acts(param: ParamActs): Promise<any>;
 
 	$user: UqTuid<Tuid$user>;
 	$sheet: UqTuid<Tuid$sheet>;
@@ -448,16 +444,16 @@ export interface UqExt extends Uq {
 	WriteIndustryStock: UqAction<ParamWriteIndustryStock, ResultWriteIndustryStock>;
 	WriteStockIndustry: UqAction<ParamWriteStockIndustry, ResultWriteStockIndustry>;
 	WriteGrossAndRevenue: UqAction<ParamWriteGrossAndRevenue, ResultWriteGrossAndRevenue>;
+	$setMyTimezone: UqAction<Param$setMyTimezone, Result$setMyTimezone>;
 	$poked: UqQuery<Param$poked, Result$poked>;
 	SearchStock: UqQuery<ParamSearchStock, ResultSearchStock>;
 	StockUsing: UqQuery<ParamStockUsing, ResultStockUsing>;
-	$Piecewise: UqID<any>;
+	$getUnitTime: UqQuery<Param$getUnitTime, Result$getUnitTime>;
 	Market: UqID<any>;
 	Transaction: UqID<any>;
 	Group: UqID<any>;
 	Account: UqID<any>;
 	Holding: UqID<any>;
-	$PiecewiseDetail: UqID<any>;
 	Stock: UqID<any>;
 	Blog: UqID<any>;
 	Industry: UqID<any>;
