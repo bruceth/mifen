@@ -2,6 +2,7 @@ import { Stock } from "uq-app/uqs/BruceYuMi";
 
 export interface BaseStockInfo {
     id: number,
+    rawId: number,
     name: string,
     code: string,
     market: string,
@@ -12,6 +13,7 @@ export interface BaseStockInfo {
 export interface NStockInfo extends BaseStockInfo {
     stock?: Stock,
     day?: number,
+    trackDay?: number,
 };
 
 export interface StockPrice {

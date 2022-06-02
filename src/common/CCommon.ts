@@ -98,14 +98,15 @@ export class CCommon extends CUqBase {
 	}
 
 	showStock = async (stock: Stock) => {
-		let { name, no, rawId } = stock;
+		let { id, name, no, rawId } = stock;
 		let market = (stock as any).$market;
 		let date = new Date();
 		// let year = date.getFullYear();
 		// let month = date.getMonth() + 1;
 		// let dt = date.getDate();
 		this.cApp.showStock({
-			id: rawId,
+			id: id,
+            rawId: rawId, 
 			name,
 			code: no,
 			market: market.name,

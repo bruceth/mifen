@@ -11,6 +11,7 @@ import { CStockInfo, NStockInfo } from "stockinfo";
 import { CFind } from "find";
 import { Stock, StockValue } from "./uqs/BruceYuMi";
 import { CCommon } from "../common";
+import { CTrack } from "track";
 
 //const gaps = [10, 3,3,3,3,3,5,5,5,5,5,5,5,5,10,10,10,10,15,15,15,30,30,60];
 
@@ -24,17 +25,19 @@ export class CApp extends CUqApp {
 	cFind: CFind;
 	cCommon: CCommon;
 	store: Store;
+    cTrack: CTrack;
 
 	protected async internalStart(isUserLogin: boolean) {
 		this.setRes(res);
 		setUI(this.uqs);
-		this.store = new Store(this.uqs);
+		this.store = new Store(this.uqs, this.user);
 		await this.store.load();
 		
 		this.cHome = this.newC(CHome);
 		this.cFind = this.newC(CFind);
 		this.cMe = this.newC(CMe);
 		this.cCommon = this.newC(CCommon);
+        this.cTrack = this.newC(CTrack);
 		if (this.isDev === true) {
 			this.cBug = this.newC(CBug);
 			this.cUI = this.newC(CTester) as CTester;
@@ -84,20 +87,26 @@ export class CApp extends CUqApp {
 		cStockInfo.start(item);
 	}
 
-	openStock = (stock: Stock & StockValue) => {
-		let {name, no, rawId} = stock;
+	openStock = (stock: Stock & StockValue, trackDay?: number) => {
+		let {id, name, no, rawId} = stock;
         let market = (stock as any).$market;
-		let date = new Date();
-		let year = date.getFullYear();
-		let month = date.getMonth() + 1;
-		let dt = date.getDate();
+        let day = trackDay;
+        if (day === undefined) {
+		    let date = new Date();
+            let year = date.getFullYear();
+            let month = date.getMonth() + 1;
+            let dt = date.getDate();
+            day = year*10000 + month*100 + dt;
+        }
 		this.showStock({
-			id: rawId, 
+			id: id,
+            rawId: rawId, 
 			name,
 			code: no,
             market: market.name,
 			symbol: market.name + no,
-			day: year*10000 + month*100 + dt,
+			day: day,
+            trackDay: trackDay,
 			stock
 		} as any);
 	}

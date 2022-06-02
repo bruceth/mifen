@@ -57,6 +57,8 @@ export class VStockInfo extends VPage<CStockInfo> {
         return <>
             {React.createElement(this.baseInfo)}
             {this.historyChart()}
+            {React.createElement(this.miratesChart)}
+            {React.createElement(this.mivaluesChart)}
             {React.createElement(this.predictInfo)}
             {React.createElement(this.seasonEarning)}
             {React.createElement(this.bonus)}
@@ -94,6 +96,9 @@ export class VStockInfo extends VPage<CStockInfo> {
 
     private historyChart = () => {
         let { baseItem } = this.controller;
+        if (baseItem.trackDay !== undefined) {
+            return <></>
+        }
         let { market, code, symbol } = baseItem;
         if (market === 'sh' || market === 'sz') {
             let urlweek = `https://image.sinajs.cn/newchart/weekly/n/${symbol}.gif`;
@@ -503,6 +508,72 @@ export class VStockInfo extends VPage<CStockInfo> {
         }
         return <RC2 data={chartdataFull} type='line' />;
     };
+
+    protected miratesChart = observer(() => {
+        let { mirates } = this.controller;
+        let len = mirates.length;
+        if (len <= 0)
+            return <></>;
+        let label = [];
+        let y: number[] = [];
+        for (let i = 0; i < len; ++i) {
+            let item = mirates[i];
+            if (item.day === undefined)
+                continue;
+            label.push(item.day);
+            y.push(item.mirate);
+        }
+
+        let chartdataFull = {
+            labels: label,
+            datasets: [
+                {
+                    label: '米息率',
+                    data: y.map(v => GFunc.numberToPrecision(v)),
+                    borderColor: 'black',
+                    backgroundColor: 'skyBlue',
+                    pointStyle: "crossRot",
+                    borderWidth: 1,
+                    pointRadius: 1,
+                    fill: false,
+                } as any
+            ]
+        };
+        return <RC2 data={chartdataFull} type='line' />;
+    });
+
+    protected mivaluesChart = observer(() => {
+        let { mivalues } = this.controller;
+        let len = mivalues.length;
+        if (len <= 0)
+            return <></>;
+        let label = [];
+        let y: number[] = [];
+        for (let i = 0; i < len; ++i) {
+            let item = mivalues[i];
+            if (item.season === undefined)
+                continue;
+            label.push(GFunc.SeasonnoToYearMonth(item.season));
+            y.push(item.mivalue);
+        }
+
+        let chartdataFull = {
+            labels: label,
+            datasets: [
+                {
+                    label: '米值',
+                    data: y.map(v => GFunc.numberToPrecision(v)),
+                    borderColor: 'black',
+                    backgroundColor: 'skyBlue',
+                    pointStyle: "crossRot",
+                    borderWidth: 1,
+                    pointRadius: 5,
+                    fill: false,
+                } as any
+            ]
+        };
+        return <RC2 data={chartdataFull} type='line' />;
+    });
 
     private predictSeasonEarning = observer(() => {
         //let items = this.controller.predictSeasonData;
