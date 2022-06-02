@@ -35,6 +35,15 @@ export class CTrack extends CUqBase {
 			loadSmooth: action,
 			changeSmooth: action,
 		});
+
+        let ltd = localStorage.getItem('_trackday');
+        if (ltd !== undefined && ltd !== null) {
+            let d = parseInt(ltd);
+            if (d >= 20050101 && d < 40000000) {
+                this.trackDay = d;
+            }
+        }
+        
 		this.cGroup = this.newSub(CGroup);
 		this.cIndustries = this.newSub(CGroup);
 		this.loadSmooth();
@@ -141,6 +150,7 @@ export class CTrack extends CUqBase {
                 
         }
         this.trackDay = day;
+        localStorage.setItem('_trackday', String(this.trackDay));
         let y = Math.floor(day / 10000);
         let m = Math.floor((day % 10000) / 100);
         let d = Math.floor(day % 100);
@@ -196,6 +206,7 @@ export class CTrack extends CUqBase {
                 
         }
         this.trackDay = day;
+        localStorage.setItem('_trackday', String(this.trackDay));
     }
 
     onNextTrackDay = async() => {

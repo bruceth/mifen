@@ -561,7 +561,7 @@ export class VStockInfo extends VPage<CStockInfo> {
             labels: label,
             datasets: [
                 {
-                    label: '米值',
+                    label: '米息',
                     data: y.map(v => GFunc.numberToPrecision(v)),
                     borderColor: 'black',
                     backgroundColor: 'skyBlue',
