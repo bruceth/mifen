@@ -56,7 +56,6 @@ export class VStockInfo extends VPage<CStockInfo> {
     private pageContent = observer(() => {
         return <>
             {React.createElement(this.baseInfo)}
-            {this.historyChart()}
             {React.createElement(this.miratesChart)}
             {React.createElement(this.mivaluesChart)}
             {React.createElement(this.predictInfo)}
@@ -287,7 +286,7 @@ export class VStockInfo extends VPage<CStockInfo> {
         let netprofit: number[] = [];
         let profit: number[] = [];
         let revenue: number[] = [];
-        
+
         for (let i = len - 1; i >= 0; --i) {
             let item = predictSeasonDataFull[i];
             if (item.netprofit === undefined)
@@ -302,7 +301,7 @@ export class VStockInfo extends VPage<CStockInfo> {
             revenue.push(item.revenue);
         }
 
-        let zzFunc = (e:number[]) => {
+        let zzFunc = (e: number[]) => {
             let len = e.length;
             let r: number[] = [];
             let eb = e[0];
@@ -323,7 +322,7 @@ export class VStockInfo extends VPage<CStockInfo> {
 
         let npZZ = zzFunc(netprofit);
         let pZZ = zzFunc(profit);
-        let rZZ = zzFunc(revenue); 
+        let rZZ = zzFunc(revenue);
 
         let chartdataFull = {
             labels: label3,
@@ -358,7 +357,7 @@ export class VStockInfo extends VPage<CStockInfo> {
                 borderWidth: 1,
                 fill: false,
             });
-     
+
 
         let chartdataProfit = {
             labels: label,
@@ -516,30 +515,78 @@ export class VStockInfo extends VPage<CStockInfo> {
             return <></>;
         let label = [];
         let y: number[] = [];
+        let priceList: number[] = [];
         for (let i = 0; i < len; ++i) {
             let item = mirates[i];
             if (item.day === undefined)
                 continue;
             label.push(item.day);
-            y.push(item.mirate);
+            y.push(GFunc.numberToPrecision(item.mirate));
+            priceList.push(GFunc.numberToPrecision(item.price));
         }
 
+        // let chartdataFull = {
+        //     labels: label,
+        //     datasets: [
+        //         {
+        //             label: '米息率',
+        //             data: y,
+        //             borderColor: 'black',
+        //             backgroundColor: 'skyBlue',
+        //             pointStyle: "crossRot",
+        //             borderWidth: 1,
+        //             pointRadius: 1,
+        //             fill: false,
+        //         } as any
+        //     ]
+        // };
         let chartdataFull = {
             labels: label,
             datasets: [
                 {
                     label: '米息率',
-                    data: y.map(v => GFunc.numberToPrecision(v)),
-                    borderColor: 'black',
+                    data: y,
+                    borderColor: 'blue',
                     backgroundColor: 'skyBlue',
                     pointStyle: "crossRot",
                     borderWidth: 1,
                     pointRadius: 1,
                     fill: false,
-                } as any
+                    yAxisID: 'y-axis-1',
+                },
+                {
+                    label: '价格',
+                    data: priceList,
+                    borderColor: 'black',
+                    backgroundColor: 'pink',
+                    pointStyle: "crossRot",
+                    borderWidth: 1,
+                    pointRadius: 1,
+                    fill: false,
+                    yAxisID: 'y-axis-2',
+                }
             ]
         };
-        return <RC2 data={chartdataFull} type='line' />;
+        let options = {
+            scales: {
+                yAxes: [{
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    id: 'y-axis-1',
+                }, {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    id: 'y-axis-2',
+                    gridLines: {
+                        drawOnChartArea: false
+                    }
+                }],
+            }
+        }
+
+        return <RC2 data={chartdataFull} type='line'  options={options} />;
     });
 
     protected mivaluesChart = observer(() => {
@@ -577,7 +624,7 @@ export class VStockInfo extends VPage<CStockInfo> {
 
     private predictSeasonEarning = observer(() => {
         //let items = this.controller.predictSeasonData;
-        let items:any[] = [];
+        let items: any[] = [];
         let header = <div className="px-3">
             <div className="px-3 c6">年月</div>
             <div className="px-3 c6 text-right">股本</div>
@@ -649,7 +696,7 @@ export class VStockInfo extends VPage<CStockInfo> {
 
     private capitalEarning = observer(() => {
         //let items = this.controller.capitalearning;
-        let items:any[] = [];
+        let items: any[] = [];
         let header = <div className="px-3">
             <div className="px-3 c6">年</div>
             <div className="px-3 c6 text-right">股本</div>

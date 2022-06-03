@@ -25,7 +25,7 @@ export class CStockInfo extends CUqBase {
     @observable predictBonusData: { year: number, bonus: number }[] = [];
     @observable ypredict: number[] = [];
 
-    @observable mirates: {day: number, mirate: number}[] = [];
+    @observable mirates: {day: number, mirate: number, price: number}[] = [];
     @observable mivalues: {season: number, mivalue: number}[] = [];
 
     protected _capitalearning: IObservableArray<StockCapitalearning> = observable.array<StockCapitalearning>([], { deep: true });
@@ -95,12 +95,9 @@ export class CStockInfo extends CUqBase {
             }
             this._sharesArr = ret[5];
 
-            this.mirates.splice(0);
-            let ratesArr = ret[6] as {day: number, mirate: number}[];
-            ratesArr.forEach(v =>this.mirates.unshift(v));
-
             this.mivalues.splice(0);
             let mvArr = ret[7] as {season: number, mivalue: number, volume: number}[];
+            let mvr: {season: number, mivalue: number}[] = [];
             if (mvArr.length > 0) {
                 let vlast = mvArr[0].volume;
                 if (vlast !== undefined) {
@@ -108,11 +105,42 @@ export class CStockInfo extends CUqBase {
                         let { season, mivalue, volume } = v;
                         if (mivalue != undefined && volume != null) {
                             let miv = mivalue * volume / vlast;
-                            this.mivalues.unshift({season: season, mivalue: miv });
+                            mvr.unshift({season: season, mivalue: miv });
                         }
                     })
+                    this.mivalues.push(...mvr);
                 }
             }
+
+            let mlen = mvr.length;
+            let getMivalue = (day:number) => {
+                let season = GFunc.SeasonnoFromDay(day) - 1;
+                for (let i = 0; i < mlen; i++) {
+                    let mi = mvr[i];
+                    if (mi.season == season) {
+                        return mi.mivalue;
+                    }
+                    else if (mi.season > season) {
+                        break;
+                    }
+                }
+                return undefined;
+            }
+
+            let ratesArr = ret[6] as {day: number, mirate: number}[];
+            let rates: {day: number, mirate: number, price: number}[] = []
+            ratesArr.forEach(v =>{
+                let {day, mirate} = v;
+                let mv = getMivalue(day);
+                let price: number = undefined;
+                if (mv !== undefined && mirate !== null && mirate !== undefined) {
+                    price = mv * 100 / mirate;
+                }
+
+                rates.unshift({day: day, mirate: mirate, price: price});
+            });
+            this.mirates.splice(0);
+            this.mirates.push(...rates);
 
             await this.loadTTMEarning(ret[2]);
             this.LoadBonusData();
