@@ -546,10 +546,10 @@ export class VStockInfo extends VPage<CStockInfo> {
                 {
                     label: '米息率',
                     data: y,
-                    borderColor: 'blue',
+                    borderColor: 'magenta',
                     backgroundColor: 'skyBlue',
                     pointStyle: "crossRot",
-                    borderWidth: 1,
+                    borderWidth: 4,
                     pointRadius: 1,
                     fill: false,
                     yAxisID: 'y-axis-1',
@@ -557,7 +557,7 @@ export class VStockInfo extends VPage<CStockInfo> {
                 {
                     label: '价格',
                     data: priceList,
-                    borderColor: 'black',
+                    borderColor: 'navy',
                     backgroundColor: 'pink',
                     pointStyle: "crossRot",
                     borderWidth: 1,
