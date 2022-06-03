@@ -93,104 +93,6 @@ export class VStockInfo extends VPage<CStockInfo> {
         return <div className="bg-white">{renderStockRow(undefined, stock, undefined, pinStock)}</div>;
     });
 
-    private historyChart = () => {
-        let { baseItem } = this.controller;
-        if (baseItem.trackDay !== undefined) {
-            return <></>
-        }
-        let { market, code, symbol } = baseItem;
-        if (market === 'sh' || market === 'sz') {
-            let urlweek = `https://image.sinajs.cn/newchart/weekly/n/${symbol}.gif`;
-            let urlmonth = `https://image.sinajs.cn/newchart/monthly/n/${symbol}.gif`
-            return <div className="row">
-                <div className="col-md"><img className="w-100" alt="" src={urlweek} /></div>
-                <div className="col-md"><img className="w-100" alt="" src={urlmonth} /></div>
-            </div>;
-        }
-    }
-
-    // protected historyChart = observer(() => {
-    // 	let {historyData, baseItem} = this.controller;
-    // 	if (historyData === undefined) 
-    // 	return <></>;
-    // 	let chartHistory = <></>;
-    // 	let labelList:any[] = [];
-    // 	let priceList:number[] = [];
-    // 	let ttmList:number[] = [];
-    // 	for (let item of historyData) {
-    // 	let {day, price, ttm} = item;
-    // 	labelList.push(day);
-    // 	priceList.push(GFunc.numberToPrecision(price, 4));
-    // 	if (ttm <= 0) 
-    // 		ttmList.push(undefined);
-    // 	else {
-    // 		if (this.ttmLimit && ttm >= 35) {
-    // 		ttmList.push(35);
-    // 		}
-    // 		else {
-    // 		ttmList.push(GFunc.numberToPrecision(ttm, 4));
-    // 		}
-    // 	}
-    // 	}
-    // 	let chartdata1 = {
-    // 	labels: labelList,
-    // 	datasets: [
-    // 		{
-    // 		label: '价格',
-    // 		data: priceList,
-    // 		borderColor:'blue',
-    // 		backgroundColor:'skyBlue',
-    // 		borderWidth: 1,
-    // 		fill: false,
-    // 		yAxisID: 'y-axis-1',
-    // 		},
-    // 		{
-    // 		label: 'TTM',
-    // 		data: ttmList,
-    // 		borderColor:'red',
-    // 		backgroundColor:'pink',
-    // 		borderWidth: 1,
-    // 		fill: false,
-    // 		yAxisID: 'y-axis-2',
-    // 		}
-    // 	]
-    // 	};
-    // 	let options = {
-    // 	scales:{
-    // 		yAxes: [{
-    // 			type: 'linear',
-    // 			display: true,
-    // 			position: 'left',
-    // 			id: 'y-axis-1',
-    // 		}, {
-    // 			type: 'linear',
-    // 			display: true,
-    // 			position: 'right',
-    // 			id: 'y-axis-2',
-    // 			gridLines: {
-    // 				drawOnChartArea: false
-    // 			}
-    // 		}],       
-    // 	}
-    // 	}
-    // 	chartHistory = <RC2 data={chartdata1} type='line' options={options} />;
-    // 	let right = <></>;
-    // 	if (baseItem.day !== undefined) {
-    // 	right = <><label className="px-3"> <input type="checkbox" name="showLater" defaultChecked={false}
-    // 			onChange={this.checkShowLater} />显示后面数据</label>
-    // 		<label className="px-3"> <input type="checkbox" name="selectType" defaultChecked={this.ttmLimit}
-    // 		onChange={this.checkLimitShow} />限制TTM显示范围</label>
-    // 		</>;
-
-    // 	}
-    // 	else {
-    // 	right = <label className="px-3"> <input type="checkbox" name="selectType" defaultChecked={this.ttmLimit}
-    // 		onChange={this.checkLimitShow} />限制TTM显示范围</label>;
-    // 	}
-    // 	return <><LMR className="px-3 py-2 bg-white" left={'历史走势'} right={right}></LMR>
-    // 	<div className="px-3" style={{width:'95%'}}>{chartHistory}</div>
-    // 	</>;
-    // });
 
     protected predictInfo = observer(() => {
         let { predictData, ypredict } = this.controller;
@@ -525,21 +427,6 @@ export class VStockInfo extends VPage<CStockInfo> {
             priceList.push(GFunc.numberToPrecision(item.price));
         }
 
-        // let chartdataFull = {
-        //     labels: label,
-        //     datasets: [
-        //         {
-        //             label: '米息率',
-        //             data: y,
-        //             borderColor: 'black',
-        //             backgroundColor: 'skyBlue',
-        //             pointStyle: "crossRot",
-        //             borderWidth: 1,
-        //             pointRadius: 1,
-        //             fill: false,
-        //         } as any
-        //     ]
-        // };
         let chartdataFull = {
             labels: label,
             datasets: [
@@ -744,4 +631,104 @@ export class VStockInfo extends VPage<CStockInfo> {
             />
         </>
     });
+
+        // private historyChart = () => {
+    //     let { baseItem } = this.controller;
+    //     if (baseItem.trackDay !== undefined) {
+    //         return <></>
+    //     }
+    //     let { market, code, symbol } = baseItem;
+    //     if (market === 'sh' || market === 'sz') {
+    //         let urlweek = `https://image.sinajs.cn/newchart/weekly/n/${symbol}.gif`;
+    //         let urlmonth = `https://image.sinajs.cn/newchart/monthly/n/${symbol}.gif`
+    //         return <div className="row">
+    //             <div className="col-md"><img className="w-100" alt="" src={urlweek} /></div>
+    //             <div className="col-md"><img className="w-100" alt="" src={urlmonth} /></div>
+    //         </div>;
+    //     }
+    // }
+
+    // protected historyChart = observer(() => {
+    // 	let {historyData, baseItem} = this.controller;
+    // 	if (historyData === undefined) 
+    // 	return <></>;
+    // 	let chartHistory = <></>;
+    // 	let labelList:any[] = [];
+    // 	let priceList:number[] = [];
+    // 	let ttmList:number[] = [];
+    // 	for (let item of historyData) {
+    // 	let {day, price, ttm} = item;
+    // 	labelList.push(day);
+    // 	priceList.push(GFunc.numberToPrecision(price, 4));
+    // 	if (ttm <= 0) 
+    // 		ttmList.push(undefined);
+    // 	else {
+    // 		if (this.ttmLimit && ttm >= 35) {
+    // 		ttmList.push(35);
+    // 		}
+    // 		else {
+    // 		ttmList.push(GFunc.numberToPrecision(ttm, 4));
+    // 		}
+    // 	}
+    // 	}
+    // 	let chartdata1 = {
+    // 	labels: labelList,
+    // 	datasets: [
+    // 		{
+    // 		label: '价格',
+    // 		data: priceList,
+    // 		borderColor:'blue',
+    // 		backgroundColor:'skyBlue',
+    // 		borderWidth: 1,
+    // 		fill: false,
+    // 		yAxisID: 'y-axis-1',
+    // 		},
+    // 		{
+    // 		label: 'TTM',
+    // 		data: ttmList,
+    // 		borderColor:'red',
+    // 		backgroundColor:'pink',
+    // 		borderWidth: 1,
+    // 		fill: false,
+    // 		yAxisID: 'y-axis-2',
+    // 		}
+    // 	]
+    // 	};
+    // 	let options = {
+    // 	scales:{
+    // 		yAxes: [{
+    // 			type: 'linear',
+    // 			display: true,
+    // 			position: 'left',
+    // 			id: 'y-axis-1',
+    // 		}, {
+    // 			type: 'linear',
+    // 			display: true,
+    // 			position: 'right',
+    // 			id: 'y-axis-2',
+    // 			gridLines: {
+    // 				drawOnChartArea: false
+    // 			}
+    // 		}],       
+    // 	}
+    // 	}
+    // 	chartHistory = <RC2 data={chartdata1} type='line' options={options} />;
+    // 	let right = <></>;
+    // 	if (baseItem.day !== undefined) {
+    // 	right = <><label className="px-3"> <input type="checkbox" name="showLater" defaultChecked={false}
+    // 			onChange={this.checkShowLater} />显示后面数据</label>
+    // 		<label className="px-3"> <input type="checkbox" name="selectType" defaultChecked={this.ttmLimit}
+    // 		onChange={this.checkLimitShow} />限制TTM显示范围</label>
+    // 		</>;
+
+    // 	}
+    // 	else {
+    // 	right = <label className="px-3"> <input type="checkbox" name="selectType" defaultChecked={this.ttmLimit}
+    // 		onChange={this.checkLimitShow} />限制TTM显示范围</label>;
+    // 	}
+    // 	return <><LMR className="px-3 py-2 bg-white" left={'历史走势'} right={right}></LMR>
+    // 	<div className="px-3" style={{width:'95%'}}>{chartHistory}</div>
+    // 	</>;
+    // });
+
 }

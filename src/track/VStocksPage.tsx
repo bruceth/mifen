@@ -1,6 +1,6 @@
 import { observer } from "mobx-react";
 import React from "react";
-import { FA, List, Scroller, SearchBox, VPage } from "tonva-react";
+import { DropdownAction, DropdownActions, FA, List, Scroller, SearchBox, VPage } from "tonva-react";
 import { renderStockRow } from "tool";
 import { Stock, StockValue } from "uq-app/uqs/BruceYuMi";
 import { CTrack } from "./CTrack";
@@ -9,11 +9,11 @@ const cnStar = 'small border rounded py-1 px-2 mr-3 ';
 
 export class VStocksPage extends VPage<CTrack> {
     header() {
-        let { header, trackDay } = this.controller;
-        let str = header + ' - 日期: ';
-        str += trackDay !== undefined ? trackDay.toString() : '';
-
-        return React.createElement(observer(() => <span className="">{str}</span>))
+        return React.createElement(observer(() =>{
+            let { header, trackDay } = this.controller;
+            let str = header + ' - 日期: ';
+            str += trackDay !== undefined ? trackDay.toString() : '';
+                return <span className="">{str}</span>}))
     }
     content() {
         let { pageStocks, onClickStock } = this.controller;
@@ -23,11 +23,20 @@ export class VStocksPage extends VPage<CTrack> {
         </div>
     }
     right(): JSX.Element {
-        let { key } = this.controller.searchParam;
-        return <SearchBox className="mr-2 w-max-10c"
+        let actions: DropdownAction[] = [
+            {
+                caption: '跳到下一周',
+                action: this.controller.onNextTrackDayAndReload,
+                icon: 'calendar-plus-o',
+            },
+        ];
+    let { key } = this.controller.searchParam;
+        return <div className="d-flex"><SearchBox className="mr-2 w-max-10c"
             onSearch={this.searchInGroup}
             initKey={key}
-            placeholder={key ? '搜索' : this.controller.header + '中搜索'} />;
+            placeholder={key ? '搜索' : this.controller.header + '中搜索'} />
+            <DropdownActions actions={actions} icon="bars" className="mr-2 text-white bg-transparent border-0" />
+            </div>;
     }
 
     private searchInGroup = async (key: string) => {

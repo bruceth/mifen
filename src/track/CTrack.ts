@@ -98,63 +98,9 @@ export class CTrack extends CUqBase {
 		this.openVPage(VStocksPage);
 	}
 
-    onPickTrackDay = async (date: Date) => {
-        let day = date.getFullYear() * 10000 + (date.getMonth()+1) * 100 + date.getDate();
-        if (day === this.trackDay) {
-            return date;
-        }
-        if (day < 20050100) {
-            day = 20050101;
-        }
-        let days = await this.cApp.store.getNextTradedays(day) as {day: number}[];
-        if (Array.isArray(days) && days.length > 0) {
-            day = days[0].day;
-            let y = Math.floor(day / 10000);
-            let m = Math.floor((day % 10000) / 100);
-            let d = Math.floor(day % 100);
-            let date = new Date(y, m - 1, d);
-            let w = date.getDay();
-            let dif = 0;
-            if (w === 5) {
-            }
-            else {
-                if (w === 6) {
-                    dif = 6;
-                }
-                else {
-                    dif = 5 - w;
-                }
-                date.setTime(date.valueOf() + dif * 86400000);
-                y = date.getFullYear();
-                m = date.getMonth() + 1;
-                d = date.getDate();
-            }
-        
-            let fday = y * 10000 + m * 100 + d;
-            if (fday > day) {
-                let ni = 1;
-                let length = days.length;
-                while (ni < length) {
-                    let nitem = days[ni];
-                    let nday = nitem.day;
-                    if (nday > fday) {
-                        break;
-                    }
-                    day = nday;
-                    if (day === fday) {
-                        break;
-                    }
-                    ni++;
-                }
-            }
-                
-        }
-        this.trackDay = day;
-        localStorage.setItem('_trackday', String(this.trackDay));
-        let y = Math.floor(day / 10000);
-        let m = Math.floor((day % 10000) / 100);
-        let d = Math.floor(day % 100);
-        return new Date(y, m - 1, d);
+    private async reLoadPageStocks() {
+        this.searchParam.day = this.trackDay;
+		await this.pageStocks.first(this.searchParam);
     }
 
     onSetTrackDay = async (key: string) => {
@@ -205,6 +151,10 @@ export class CTrack extends CUqBase {
             }
                 
         }
+
+        if (this.trackDay === day) {
+            return;
+        }
         this.trackDay = day;
         localStorage.setItem('_trackday', String(this.trackDay));
     }
@@ -219,6 +169,22 @@ export class CTrack extends CUqBase {
         }
 
         await this.onSetTrackDay(keyDay.toString());
+    }
+
+    onNextTrackDayAndReload = async() => {
+        let keyDay = this.trackDay;
+        if (keyDay === undefined) {
+            keyDay = 20050101;
+        }
+        else {
+            keyDay = keyDay + 1;
+        }
+
+        let oldDay = this.trackDay;
+        await this.onSetTrackDay(keyDay.toString());
+        if (this.trackDay !== oldDay) {
+            await this.reLoadPageStocks();
+        }
     }
 
 	onSearch = async (key: string) => {
