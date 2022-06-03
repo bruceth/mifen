@@ -549,7 +549,7 @@ export class VStockInfo extends VPage<CStockInfo> {
                     borderColor: 'magenta',
                     backgroundColor: 'skyBlue',
                     pointStyle: "crossRot",
-                    borderWidth: 4,
+                    borderWidth: 3,
                     pointRadius: 1,
                     fill: false,
                     yAxisID: 'y-axis-1',
