@@ -431,23 +431,23 @@ export class VStockInfo extends VPage<CStockInfo> {
             labels: label,
             datasets: [
                 {
-                    label: '米息率',
-                    data: y,
-                    borderColor: 'magenta',
-                    backgroundColor: 'skyBlue',
-                    pointStyle: "crossRot",
-                    borderWidth: 3,
-                    pointRadius: 1,
-                    fill: false,
-                    yAxisID: 'y-axis-1',
-                },
-                {
                     label: '价格',
                     data: priceList,
                     borderColor: 'navy',
                     backgroundColor: 'pink',
                     pointStyle: "crossRot",
                     borderWidth: 1,
+                    pointRadius: 1,
+                    fill: false,
+                    yAxisID: 'y-axis-1',
+                },
+                {
+                    label: '米息率',
+                    data: y,
+                    borderColor: 'magenta',
+                    backgroundColor: 'skyBlue',
+                    pointStyle: "crossRot",
+                    borderWidth: 3,
                     pointRadius: 1,
                     fill: false,
                     yAxisID: 'y-axis-2',
@@ -459,12 +459,12 @@ export class VStockInfo extends VPage<CStockInfo> {
                 yAxes: [{
                     type: 'linear',
                     display: true,
-                    position: 'right',
+                    position: 'left',
                     id: 'y-axis-1',
                 }, {
                     type: 'linear',
                     display: true,
-                    position: 'left',
+                    position: 'right',
                     id: 'y-axis-2',
                     gridLines: {
                         drawOnChartArea: false
