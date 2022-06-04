@@ -6,12 +6,13 @@ import { CFind } from "./CFind";
 export class VFind extends VPage<CFind> {
 	header() { return '发现' }
 	content() {
-		let { showA, showHK, showSH, showSZ, showUS, showAll, cGroup, cIndustries } = this.controller;
+		let { showA, showHK, showSH, showSZ, showBJ, showUS, showAll, cGroup, cIndustries } = this.controller;
 		let buttons: [string, () => Promise<void>][] = [
 			['A股', showA],
 			['港股', showHK],
 			['沪A', showSH],
 			['深A', showSZ],
+			['京A', showBJ],
 			['US', showUS],
 			['全部', showAll],
 		];

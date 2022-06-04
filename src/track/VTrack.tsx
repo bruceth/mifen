@@ -6,11 +6,12 @@ import { CTrack } from "./CTrack";
 export class VTrack extends VPage<CTrack> {
 	header() {return React.createElement(observer(() => <div className="ml-3"> 回溯日期：{this.controller.trackDay}</div>))}
 	content() {
-		let { showA, showSH, showSZ, showAll, cGroup, cIndustries } = this.controller;
+		let { showA, showSH, showSZ, showBJ, showAll, cGroup, cIndustries } = this.controller;
 		let buttons: [string, () => Promise<void>][] = [
 			['A股', showA],
 			['沪A', showSH],
 			['深A', showSZ],
+			['京A', showBJ],
 			['全部', showAll],
 		];
 		let renderButton = (caption: string, onClick: () => void) => <button key={caption}

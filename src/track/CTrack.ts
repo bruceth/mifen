@@ -192,13 +192,16 @@ export class CTrack extends CUqBase {
 	}
 
 	showA = async () => {
-		await this.searchStock('A股', ['sh', 'sz']);
+		await this.searchStock('A股', ['sh', 'sz', 'bj']);
 	}
 	showSH = async () => {
 		await this.searchStock('沪股', ['sh']);
 	}
 	showSZ = async () => {
 		await this.searchStock('深股', ['sz']);
+	}
+	showBJ = async () => {
+		await this.searchStock('京股', ['bj']);
 	}
 	showAll = async () => {
 		await this.searchStock('全部股票', ['sh', 'sz', 'bj']);

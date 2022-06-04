@@ -86,11 +86,11 @@ export class CFind extends CUqBase {
 	}
 
 	onSearch = async (key: string) => {
-		await this.searchStock('搜索', ['sh', 'sz', 'hk', 'us'], key);
+		await this.searchStock('搜索', ['sh', 'sz', 'bj', 'hk', 'us'], key);
 	}
 
 	showA = async () => {
-		await this.searchStock('A股', ['sh', 'sz']);
+		await this.searchStock('A股', ['sh', 'sz', 'bj']);
 	}
 	showHK = async () => {
 		await this.searchStock('港股', ['hk']);
@@ -101,11 +101,14 @@ export class CFind extends CUqBase {
 	showSZ = async () => {
 		await this.searchStock('深股', ['sz']);
 	}
+	showBJ = async () => {
+		await this.searchStock('京股', ['bj']);
+	}
 	showUS = async () => {
 		await this.searchStock('US', ['us']);
 	}
 	showAll = async () => {
-		await this.searchStock('全部股票', ['sh', 'sz', 'hk', 'us']);
+		await this.searchStock('全部股票', ['sh', 'sz', 'bj', 'hk', 'us']);
 	}
 
 	onClickStock = (stock: Stock & StockValue) => {
