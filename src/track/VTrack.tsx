@@ -40,6 +40,10 @@ export class VTrack extends VPage<CTrack> {
 			<div className=" mb-3 px-1 pb-1 bg-white border-top border-bottom">
 				{cGroup.renderGroups()}
 			</div>
+			<div className="small text-muted px-3 mt-2 mb-1">行业</div>
+			<div className=" mb-3 px-1 pb-1 bg-white border-top border-bottom">
+				{cGroup.renderIndustries()}
+			</div>
 			<div className="mb-3">
 				{this.renderMyBlock()}
 			</div>

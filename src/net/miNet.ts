@@ -101,4 +101,8 @@ export class MiNet {
             return { $page: [] };
         }
     }
+
+    async q_stocksvalue(day: number, ids: number[]) {
+        return await this.miApi.call('tv_stocksvalue', [day, ids.join('\n')]);
+    }
 }

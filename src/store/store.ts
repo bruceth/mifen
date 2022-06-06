@@ -42,6 +42,10 @@ export class Store {
 		this.rootIndustries = new MRootIndustries(this);
 	}
 
+    get minet(): MiNet {
+        return this.miNet;
+    }
+    
 	stockFromId(stockId: number): Stock&StockValue {
 		return this.stocksMyAll.find(v => v.id === stockId);
 	}
