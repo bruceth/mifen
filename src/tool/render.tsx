@@ -65,7 +65,7 @@ export function renderStockRow(order: number, stock: Stock&StockValue, onClickNa
 		// ['米息分', Math.log2(miRate), 'n1'],
 		// ['米息率', miRate, 'n1'],
 		['TTM', ttm, 'n1'],
-		['股息率', dvRate/100, 'p1'],
+		['年息率', dvRate/100, 'p1'],
 		['价格', price, 'n2'],
 		['ROE', roe, 'n1'],
 		['均增', preInc/100, 'p0'],
