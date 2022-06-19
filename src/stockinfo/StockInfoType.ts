@@ -45,7 +45,7 @@ export interface StockBonus {
     shares: number,
 }
 
-export interface StockDivideInfo {
+export interface StockDividentInfo {
     day: number,
     送股: number,
     转增: number,
