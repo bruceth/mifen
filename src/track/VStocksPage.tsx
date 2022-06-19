@@ -40,8 +40,9 @@ export class VStocksPage extends VPage<CTrack> {
     }
 
     private searchInGroup = async (key: string) => {
-        let { searchParam } = this.controller;
+        let { searchParam, smooth } = this.controller;
         searchParam.key = key;
+        searchParam.smooth = key ? 0: smooth;
         await this.controller.research();
     }
 
