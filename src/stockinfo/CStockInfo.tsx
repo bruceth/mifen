@@ -73,7 +73,7 @@ export class CStockInfo extends CUqBase {
         }
         let lshares: number = this.getLastTotalShares();
         let yearDataA: { [index: number]: { bonus: number } } = {};
-        let retArr: { year: number, divident: number }[] = [];
+        let retArr: { year: number, divident: number, d3?: number }[] = [];
         let minYear = undefined;
         let maxYear = 0;
         for (let item of this._divident) {
@@ -115,14 +115,20 @@ export class CStockInfo extends CUqBase {
                     sum += item.bonus;
                 }
             }
-
-            return sum;
+            return sum !== 0 ? sum / 3 : undefined;
         }
 
         for (let yi = minYear; yi <= lastYear; yi++) {
             let item = yearDataA[yi];
             let bonus = item !== undefined ? item.bonus / lshares : undefined;
-            retArr.push({ year: yi, divident: bonus });
+            let d3 = undefined;
+            if (yi >= minYear + 2) {
+                d3 = getLast3YearData(yi);
+                if (d3 !== undefined) {
+                    d3 = d3 / lshares;
+                }
+            }
+            retArr.push({ year: yi, divident: bonus, d3 });
         }
 
         return retArr;

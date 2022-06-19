@@ -90,10 +90,12 @@ export class VBonusDetail extends VPage<CStockInfo> {
                 return <></>;
             let label = [];
             let y: number[] = [];
+            let y3: number[] = [];
             for (let i = 0; i < len; ++i) {
                 let item = dividents[i];
                 label.push(item.year);
-                y.push(item.divident);
+                y.push(GFunc.numberToPrecision(item.divident));
+                y3.push(GFunc.numberToPrecision(item.d3));
             }
 
             let chartdataFull = {
@@ -101,11 +103,21 @@ export class VBonusDetail extends VPage<CStockInfo> {
                 datasets: [
                     {
                         label: '每年分红',
-                        data: y.map(v => GFunc.numberToPrecision(v)),
+                        data: y,
                         borderColor: 'black',
                         backgroundColor: 'skyBlue',
                         pointStyle: "crossRot",
                         borderWidth: 1,
+                        pointRadius: 5,
+                        fill: false,
+                    } as any,
+                    {
+                        label: '3年均值',
+                        data: y3,
+                        borderColor: 'magenta',
+                        backgroundColor: 'skyBlue',
+                        pointStyle: "crossRot",
+                        borderWidth: 3,
                         pointRadius: 5,
                         fill: false,
                     } as any
