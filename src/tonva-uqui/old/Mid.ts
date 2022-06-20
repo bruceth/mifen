@@ -57,7 +57,7 @@ export abstract class Mid {
 		let {exFields} = schema;
 		let {fieldArr } = ui;
 		for (let f of fieldArr) {
-			let exField = (exFields as any[]).find(v => v.field === f.name);
+			let exField = (exFields as any[])?.find(v => v.field === f.name);
 			if (!exField) continue;
 			let prop = {
 				...f,
