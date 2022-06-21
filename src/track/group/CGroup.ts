@@ -12,9 +12,11 @@ export class CGroup extends CUqSub<CApp, UQs, CTrack> {
 	miAccount: MiAccount = null;
 	holdingStock: HoldingStock;
 	stocks: IObservableArray<Stock & StockValue>;
+    track: CTrack;
 
 	constructor(cTrack: CTrack) {
 		super(cTrack);
+        this.track = cTrack;
 		makeObservable(this, {
 			miGroup: observable,
 			miAccount: observable,

@@ -19,7 +19,10 @@ export class VStockList extends VPage<CGroup> {
 	}
 
 	header() {
-		return React.createElement(observer(() => <>{this.controller.listCaption}</>));
+		return React.createElement(observer(() => {
+            let str = this.controller.listCaption + ' - ' + this.controller.track.trackDay;
+            return <>{str}</>
+        }));
 	}
 	right(): JSX.Element {
 		return this.renderPageRight?.();
