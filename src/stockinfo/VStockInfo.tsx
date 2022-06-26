@@ -179,7 +179,7 @@ export class VStockInfo extends VPage<CStockInfo> {
         let { chartFull, chartProfit, chartRevenue } = this.getProfitCharts();
         let chartRoe = this.predictChartROE();
         return <>
-            <div className="px-3 py-1 bg-white cursor-pointer" onClick={() => this.controller.showProfit()} >营收利润...</div>
+            <div className="px-3 py-1 bg-white cursor-pointer text-primary" onClick={() => this.controller.showProfit()} >营收利润&gt;&gt;</div>
             <div className="row">
                 <div className="col">{chartRevenue}</div>
                 <div className="col">{chartFull}</div>
@@ -376,7 +376,7 @@ export class VStockInfo extends VPage<CStockInfo> {
 
     protected bonusInfo = observer(() => {
         return <>
-            <div className="px-3 py-1 bg-white cursor-pointer" onClick={() => this.controller.showBonus()} >分红信息...</div>
+            <div className="px-3 py-1 bg-white cursor-pointer text-primary" onClick={() => this.controller.showBonus()} >分红信息&gt;&gt;</div>
             {this.chartBonus()}
         </>
     });

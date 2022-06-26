@@ -199,31 +199,19 @@ export class CStockInfo extends CUqBase {
             }
 
             let mlen = mvr.length;
-            let getMivalue = (day: number) => {
-                let season = GFunc.SeasonnoFromDay(day) - 1;
-                for (let i = 0; i < mlen; i++) {
-                    let mi = mvr[i];
-                    if (mi.season == season) {
-                        return mi.mivalue;
-                    }
-                    else if (mi.season > season) {
-                        break;
-                    }
-                }
-                return undefined;
+
+            let ratesArr = ret[6] as { day: number, mirate: number, price: number, exright:number }[];
+            let rates: { day: number, mirate: number, price: number }[] = [];
+            let exLast = 1;
+            if (ratesArr.length > 0) {
+                let li = ratesArr[0];
+                exLast = li.exright;
             }
-
-            let ratesArr = ret[6] as { day: number, mirate: number }[];
-            let rates: { day: number, mirate: number, price: number }[] = []
             ratesArr.forEach(v => {
-                let { day, mirate } = v;
-                let mv = getMivalue(day);
-                let price: number = undefined;
-                if (mv !== undefined && mirate !== null && mirate !== undefined) {
-                    price = mv * 100 / mirate;
-                }
+                let { day, mirate, price, exright } = v;
+                let priceEx = price * exright / exLast;
 
-                rates.unshift({ day: day, mirate: mirate, price: price });
+                rates.unshift({ day: day, mirate: mirate, price: priceEx });
             });
             this.mirates.splice(0);
             this.mirates.push(...rates);
