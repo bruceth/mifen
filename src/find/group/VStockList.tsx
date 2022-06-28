@@ -41,7 +41,7 @@ export class VStockList extends VPage<CGroup> {
 		}));
 	}
 
-	private onClickName = (stock:Stock) => {
+	private onClickName = (stock:Stock & StockValue) => {
 		this.controller.onStockClick(stock);
 	}
 

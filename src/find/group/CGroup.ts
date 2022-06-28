@@ -120,7 +120,7 @@ export class CGroup extends CUqSub<CApp, UQs, CFind> {
 		})
 	}
 
-	onStockClick = async (stock: Stock) => {
-		this.cApp.cCommon.showStock(stock);
+	onStockClick = async (stock: Stock & StockValue) => {
+		this.cApp.openStock(stock); //.cCommon.showStock(stock);
 	}
 }
