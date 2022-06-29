@@ -47,8 +47,8 @@ export class VMirateAvg extends VPage<CMirateAvg> {
                     borderColor: 'red',
                     backgroundColor: 'skyBlue',
                     pointStyle: "crossRot",
-                    borderWidth: 2,
-                    pointRadius: 2,
+                    borderWidth: 1,
+                    pointRadius: 1,
                     fill: false,
                 } as any,
                 {
@@ -57,8 +57,8 @@ export class VMirateAvg extends VPage<CMirateAvg> {
                     borderColor: 'blue',
                     backgroundColor: 'skyBlue',
                     pointStyle: "crossRot",
-                    borderWidth: 2,
-                    pointRadius: 2,
+                    borderWidth: 1,
+                    pointRadius: 1,
                     fill: false,
                 } as any,
                 {
@@ -67,8 +67,8 @@ export class VMirateAvg extends VPage<CMirateAvg> {
                     borderColor: 'black',
                     backgroundColor: 'skyBlue',
                     pointStyle: "crossRot",
-                    borderWidth: 2,
-                    pointRadius: 2,
+                    borderWidth: 1,
+                    pointRadius: 1,
                     fill: false,
                 } as any,
             ]
