@@ -12,6 +12,7 @@ import { CFind } from "find";
 import { Stock, StockValue } from "./uqs/BruceYuMi";
 import { CCommon } from "../common";
 import { CTrack } from "track";
+import { CMirateAvg } from "mirateavg";
 
 //const gaps = [10, 3,3,3,3,3,5,5,5,5,5,5,5,5,10,10,10,10,15,15,15,30,30,60];
 
@@ -110,4 +111,9 @@ export class CApp extends CUqApp {
 			stock
 		} as any);
 	}
+
+    showMirateAvg = (trackDay?: number) => {
+        let cma = this.newC(CMirateAvg);
+        cma.start({day: trackDay});
+    }
 }

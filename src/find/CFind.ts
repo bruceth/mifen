@@ -111,6 +111,10 @@ export class CFind extends CUqBase {
 		await this.searchStock('全部股票', ['sh', 'sz', 'bj', 'hk', 'us']);
 	}
 
+    showMirateAvg = () => {
+        this.cApp.showMirateAvg();
+    }
+
 	onClickStock = (stock: Stock & StockValue) => {
 
 	}

@@ -207,6 +207,10 @@ export class CTrack extends CUqBase {
 		await this.searchStock('全部股票', ['sh', 'sz', 'bj']);
 	}
 
+    showMirateAvg = () => {
+        this.cApp.showMirateAvg(this.trackDay);
+    }
+
 	onClickStock = (stock: Stock & StockValue) => {
 
 	}

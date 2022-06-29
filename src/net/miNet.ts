@@ -105,4 +105,8 @@ export class MiNet {
     async q_stocksvalue(day: number, ids: number[]) {
         return await this.miApi.call('tv_stocksvalue', [day, ids.join('\n')]);
     }
+
+    async t_mirateavgquery(day: number) {
+        return await this.miApi.call(`t_mirateavg$query`, [day]);
+    }
 }

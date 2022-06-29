@@ -22,6 +22,7 @@ export class VFind extends VPage<CFind> {
 			{caption}
 		</button>;
 		return <div className="bg-light">
+            <div className="px-3 py-1 bg-white cursor-pointer text-primary" onClick={() => this.controller.showMirateAvg()} >A股历史米息率&gt;&gt;</div>
 			<div className="p-3">
 				<SearchBox className="mb-0" onSearch={this.controller.onSearch} placeholder="股票代码，名称" />
 			</div>
