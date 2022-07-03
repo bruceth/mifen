@@ -86,7 +86,7 @@ export class VMirateAvg extends VPage<CMirateAvg> {
                 {
                     label: '上证指数',
                     data: close1,
-                    borderColor: 'LimeGreen',
+                    borderColor: 'Magenta',
                     backgroundColor: 'skyBlue',
                     pointStyle: "crossRot",
                     borderWidth: 1,
@@ -135,7 +135,7 @@ export class VMirateAvg extends VPage<CMirateAvg> {
                 {
                     label: '深证成指',
                     data: close399001,
-                    borderColor: 'LimeGreen',
+                    borderColor: 'Magenta',
                     backgroundColor: 'skyBlue',
                     pointStyle: "crossRot",
                     borderWidth: 1,
@@ -184,7 +184,7 @@ export class VMirateAvg extends VPage<CMirateAvg> {
                 {
                     label: '沪深300',
                     data: close300,
-                    borderColor: 'LimeGreen',
+                    borderColor: 'Magenta',
                     backgroundColor: 'skyBlue',
                     pointStyle: "crossRot",
                     borderWidth: 1,
@@ -233,7 +233,7 @@ export class VMirateAvg extends VPage<CMirateAvg> {
                 {
                     label: '创业板指',
                     data: close399006,
-                    borderColor: 'LimeGreen',
+                    borderColor: 'Magenta',
                     backgroundColor: 'skyBlue',
                     pointStyle: "crossRot",
                     borderWidth: 1,
