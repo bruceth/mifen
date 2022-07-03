@@ -22,7 +22,6 @@ export class VFind extends VPage<CFind> {
 			{caption}
 		</button>;
 		return <div className="bg-light">
-            <div className="px-3 py-1 bg-white cursor-pointer text-primary" onClick={() => this.controller.showMirateAvg()} >A股历史米息率&gt;&gt;</div>
 			<div className="p-3">
 				<SearchBox className="mb-0" onSearch={this.controller.onSearch} placeholder="股票代码，名称" />
 			</div>
@@ -86,6 +85,10 @@ export class VFind extends VPage<CFind> {
 		}));
 	}
 
+    showAvg = () => {
+        this.controller.showMirateAvg();
+    }
+
 	right() {
 		return React.createElement(observer(() => {
 			let { cCommon } = this.controller.cApp;
@@ -94,6 +97,11 @@ export class VFind extends VPage<CFind> {
 					caption: '管理股票分组',
 					action: cCommon.manageGroups,
 					icon: 'object-group',
+				},
+				{
+					caption: 'A股历史米息率',
+					action: this.showAvg,
+					icon: 'line-chart',
 				},
 			];
 			return <DropdownActions actions={actions} icon="bars" className="mr-2 text-white bg-transparent border-0" />;

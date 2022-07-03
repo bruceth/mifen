@@ -6,7 +6,7 @@ import { VMirateAvg } from './VMirateAvg';
 
 export class CMirateAvg extends CUqBase {
     trackDay: number;
-    @observable mirates: { day: number, avg1: number, avg2: number, avg3: number }[] = [];
+    @observable mirates: { day: number, avg1: number, avg2: number, avg3: number, close1?: number, close300?: number, close399001?: number, close399006? : number }[] = [];
 
     private miNet: MiNet;
     constructor(cApp: any) {
@@ -25,9 +25,9 @@ export class CMirateAvg extends CUqBase {
             return;
         }
 
-        let arr1 = rets[0] as { day: number, avg1: number, avg2: number, avg3: number }[];
+        let arr1 = rets[0] as { day: number, avg1: number, avg2: number, avg3: number, close1?: number, close300?: number, close399001?: number, close399006? : number }[];
         let arr2 = rets[1] as { mirate: number}[];
-        if (this.trackDay !== undefined && arr2 !== undefined && arr2.length >= 40) {
+        if (this.trackDay === undefined && arr2 !== undefined && arr2.length >= 40) {
             let lastDay: number = undefined;
             if (arr1.length > 0) {
                 lastDay = arr1[0].day;

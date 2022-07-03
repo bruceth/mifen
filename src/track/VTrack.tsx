@@ -20,7 +20,6 @@ export class VTrack extends VPage<CTrack> {
 			{caption}
 		</button>;
 		return <div className="bg-light">
-            <div className="px-3 py-1 bg-white cursor-pointer text-primary" onClick={() => this.controller.showMirateAvg()} >A股历史米息率&gt;&gt;</div>
 			<div className="p-3">
 				<SearchBox className="mb-0" initKey={this.controller.trackDay.toString()} onSearch={this.controller.onSetTrackDay} placeholder="yyyymmdd" />
 			</div>
@@ -83,6 +82,10 @@ export class VTrack extends VPage<CTrack> {
 		}));
 	}
 
+    showAvg = () => {
+        this.controller.showMirateAvg();
+    }
+
 	right() {
 		return React.createElement(observer(() => {
 			let { cCommon } = this.controller.cApp;
@@ -91,6 +94,11 @@ export class VTrack extends VPage<CTrack> {
 					caption: '管理股票分组',
 					action: cCommon.manageGroups,
 					icon: 'object-group',
+				},
+				{
+					caption: 'A股历史米息率',
+					action: this.showAvg,
+					icon: 'line-chart',
 				},
                 {
 					caption: '跳到下一周',
