@@ -105,6 +105,11 @@ export class VTrack extends VPage<CTrack> {
 					action: this.controller.onNextTrackDay,
 					icon: 'calendar-plus-o',
                 },
+                {
+					caption: '跳到下一月',
+					action: this.controller.onNextTrackMonth,
+					icon: 'calendar-plus-o',
+                },
 			];
 			return <DropdownActions actions={actions} icon="bars" className="mr-2 text-white bg-transparent border-0" />;
 		}));

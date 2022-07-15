@@ -9,32 +9,32 @@ import { CGroup } from "./group";
 type SearchOrder = 'miRateDesc' | 'miRateAsc' | 'dvRateDesc' | 'dvRateAsc' | 'roeDesc' | 'roeAsc';
 const defaultSmooth = 0;
 export interface SearchParam {
-	key: string;
-	market: string;
-	$orderSwitch: SearchOrder;
-	smooth: number;
+    key: string;
+    market: string;
+    $orderSwitch: SearchOrder;
+    smooth: number;
     day: number;
 }
 
 export class CTrack extends CUqBase {
-	readonly cGroup: CGroup;
-	readonly cIndustries: CGroup;
-	header: string = null;
-	pageStocks: StockPageItems = null;
-	searchOrder: SearchOrder = 'miRateDesc';
-	searchParam: SearchParam;
-	smooth: number;
+    readonly cGroup: CGroup;
+    readonly cIndustries: CGroup;
+    header: string = null;
+    pageStocks: StockPageItems = null;
+    searchOrder: SearchOrder = 'miRateDesc';
+    searchParam: SearchParam;
+    smooth: number;
     trackDay: number = 20100108;
 
-	constructor(cApp: CApp) {
-		super(cApp);
-		makeObservable(this, {
-			header: observable,
-			smooth: observable,
+    constructor(cApp: CApp) {
+        super(cApp);
+        makeObservable(this, {
+            header: observable,
+            smooth: observable,
             trackDay: observable,
-			loadSmooth: action,
-			changeSmooth: action,
-		});
+            loadSmooth: action,
+            changeSmooth: action,
+        });
 
         let ltd = localStorage.getItem('_trackday');
         if (ltd !== undefined && ltd !== null) {
@@ -43,64 +43,64 @@ export class CTrack extends CUqBase {
                 this.trackDay = d;
             }
         }
-        
-		this.cGroup = this.newSub(CGroup);
-		this.cIndustries = this.newSub(CGroup);
-		this.loadSmooth();
-	}
 
-	tab = () => {
-		return this.renderView(VTrack);
-	}
+        this.cGroup = this.newSub(CGroup);
+        this.cIndustries = this.newSub(CGroup);
+        this.loadSmooth();
+    }
 
-	async internalStart(param: any) {
-		this.openVPage(VTrack);
-	}
+    tab = () => {
+        return this.renderView(VTrack);
+    }
 
-	loadSmooth() {
-		let t = localStorage.getItem('smooth');
-		if (!t) this.smooth = defaultSmooth;
-		else {
-			try {
-				this.smooth = Number.parseInt(t);
-			}
-			catch {
-				this.smooth = defaultSmooth;
-			}
-		}
-	}
+    async internalStart(param: any) {
+        this.openVPage(VTrack);
+    }
 
-	async changeSmooth(value: number) {
-		if (this.smooth === value) return;
-		this.smooth = value;
-		localStorage.setItem('smooth', String(value));
-		this.searchParam['smooth'] = value;
-		await this.research();
-	}
+    loadSmooth() {
+        let t = localStorage.getItem('smooth');
+        if (!t) this.smooth = defaultSmooth;
+        else {
+            try {
+                this.smooth = Number.parseInt(t);
+            }
+            catch {
+                this.smooth = defaultSmooth;
+            }
+        }
+    }
 
-	load = async () => { }
+    async changeSmooth(value: number) {
+        if (this.smooth === value) return;
+        this.smooth = value;
+        localStorage.setItem('smooth', String(value));
+        this.searchParam['smooth'] = value;
+        await this.research();
+    }
 
-	async research() {
-		await this.pageStocks.first(this.searchParam);
-	}
+    load = async () => { }
 
-	private async searchStock(header: string, market?: string[], key?: string) {
-		this.header = header;
-		this.searchParam = {
+    async research() {
+        await this.pageStocks.first(this.searchParam);
+    }
+
+    private async searchStock(header: string, market?: string[], key?: string) {
+        this.header = header;
+        this.searchParam = {
             day: this.trackDay,
-			key,
-			market: market?.join('\n'),
-			$orderSwitch: this.searchOrder,
-			smooth: key ? 0 : this.smooth,
-		};
-		this.pageStocks = new StockPageItems(this.cApp.store);
-		await this.pageStocks.first(this.searchParam);
-		this.openVPage(VStocksPage);
-	}
+            key,
+            market: market?.join('\n'),
+            $orderSwitch: this.searchOrder,
+            smooth: key ? 0 : this.smooth,
+        };
+        this.pageStocks = new StockPageItems(this.cApp.store);
+        await this.pageStocks.first(this.searchParam);
+        this.openVPage(VStocksPage);
+    }
 
     private async reLoadPageStocks() {
         this.searchParam.day = this.trackDay;
-		await this.pageStocks.first(this.searchParam);
+        await this.pageStocks.first(this.searchParam);
     }
 
     onSetTrackDay = async (key: string) => {
@@ -108,49 +108,57 @@ export class CTrack extends CUqBase {
         if (day === undefined || isNaN(day) || day < 20050100) {
             day = 20050101;
         }
-        let days = await this.cApp.store.getNextTradedays(day) as {day: number}[];
-        if (Array.isArray(days) && days.length > 0) {
-            day = days[0].day;
-            let y = Math.floor(day / 10000);
-            let m = Math.floor((day % 10000) / 100);
-            let d = Math.floor(day % 100);
-            let date = new Date(y, m - 1, d);
-            let w = date.getDay();
-            let dif = 0;
-            if (w === 5) {
+        let dret = await this.cApp.store.getNextWeekend(day) as { wday: number, nday: number }[];
+        if (Array.isArray(dret) && dret.length > 0) {
+            let { wday } = dret[0];
+            if (wday !== null) {
+                day = wday;
             }
-            else {
-                if (w === 6) {
-                    dif = 6;
-                }
-                else {
-                    dif = 5 - w;
-                }
-                date.setTime(date.valueOf() + dif * 86400000);
-                y = date.getFullYear();
-                m = date.getMonth() + 1;
-                d = date.getDate();
-            }
-        
-            let fday = y * 10000 + m * 100 + d;
-            if (fday > day) {
-                let ni = 1;
-                let length = days.length;
-                while (ni < length) {
-                    let nitem = days[ni];
-                    let nday = nitem.day;
-                    if (nday > fday) {
-                        break;
-                    }
-                    day = nday;
-                    if (day === fday) {
-                        break;
-                    }
-                    ni++;
-                }
-            }
-                
         }
+
+        // let days = await this.cApp.store.getNextTradedays(day) as {day: number}[];
+        // if (Array.isArray(days) && days.length > 0) {
+        //     day = days[0].day;
+        //     let y = Math.floor(day / 10000);
+        //     let m = Math.floor((day % 10000) / 100);
+        //     let d = Math.floor(day % 100);
+        //     let date = new Date(y, m - 1, d);
+        //     let w = date.getDay();
+        //     let dif = 0;
+        //     if (w === 5) {
+        //     }
+        //     else {
+        //         if (w === 6) {
+        //             dif = 6;
+        //         }
+        //         else {
+        //             dif = 5 - w;
+        //         }
+        //         date.setTime(date.valueOf() + dif * 86400000);
+        //         y = date.getFullYear();
+        //         m = date.getMonth() + 1;
+        //         d = date.getDate();
+        //     }
+
+        //     let fday = y * 10000 + m * 100 + d;
+        //     if (fday > day) {
+        //         let ni = 1;
+        //         let length = days.length;
+        //         while (ni < length) {
+        //             let nitem = days[ni];
+        //             let nday = nitem.day;
+        //             if (nday > fday) {
+        //                 break;
+        //             }
+        //             day = nday;
+        //             if (day === fday) {
+        //                 break;
+        //             }
+        //             ni++;
+        //         }
+        //     }
+
+        // }
 
         if (this.trackDay === day) {
             return;
@@ -159,7 +167,7 @@ export class CTrack extends CUqBase {
         localStorage.setItem('_trackday', String(this.trackDay));
     }
 
-    onNextTrackDay = async() => {
+    onNextTrackDay = async () => {
         let keyDay = this.trackDay;
         if (keyDay === undefined) {
             keyDay = 20050101;
@@ -171,7 +179,7 @@ export class CTrack extends CUqBase {
         await this.onSetTrackDay(keyDay.toString());
     }
 
-    onNextTrackDayAndReload = async() => {
+    onNextTrackDayAndReload = async () => {
         let keyDay = this.trackDay;
         if (keyDay === undefined) {
             keyDay = 20050101;
@@ -187,31 +195,59 @@ export class CTrack extends CUqBase {
         }
     }
 
-	onSearch = async (key: string) => {
-		await this.searchStock('搜索', ['sh', 'sz', 'bj'], key);
-	}
+    onNextTrackMonth = async () => {
+        let keyDay = this.trackDay;
+        if (keyDay === undefined) {
+            keyDay = 20050101;
+        }
+        else {
+            keyDay = Math.floor(keyDay / 100) * 100  + 100;
+        }
 
-	showA = async () => {
-		await this.searchStock('A股', ['sh', 'sz', 'bj']);
-	}
-	showSH = async () => {
-		await this.searchStock('沪股', ['sh']);
-	}
-	showSZ = async () => {
-		await this.searchStock('深股', ['sz']);
-	}
-	showBJ = async () => {
-		await this.searchStock('京股', ['bj']);
-	}
-	showAll = async () => {
-		await this.searchStock('全部股票', ['sh', 'sz', 'bj']);
-	}
+        await this.onSetTrackDay(keyDay.toString());
+    }
+
+    onNextTrackMonthAndReload = async () => {
+        let keyDay = this.trackDay;
+        if (keyDay === undefined) {
+            keyDay = 20050101;
+        }
+        else {
+            keyDay = Math.floor(keyDay / 100) * 100  + 100;
+        }
+
+        let oldDay = this.trackDay;
+        await this.onSetTrackDay(keyDay.toString());
+        if (this.trackDay !== oldDay) {
+            await this.reLoadPageStocks();
+        }
+    }
+
+    onSearch = async (key: string) => {
+        await this.searchStock('搜索', ['sh', 'sz', 'bj'], key);
+    }
+
+    showA = async () => {
+        await this.searchStock('A股', ['sh', 'sz', 'bj']);
+    }
+    showSH = async () => {
+        await this.searchStock('沪股', ['sh']);
+    }
+    showSZ = async () => {
+        await this.searchStock('深股', ['sz']);
+    }
+    showBJ = async () => {
+        await this.searchStock('京股', ['bj']);
+    }
+    showAll = async () => {
+        await this.searchStock('全部股票', ['sh', 'sz', 'bj']);
+    }
 
     showMirateAvg = () => {
         this.cApp.showMirateAvg(this.trackDay);
     }
 
-	onClickStock = (stock: Stock & StockValue) => {
+    onClickStock = (stock: Stock & StockValue) => {
 
-	}
+    }
 }

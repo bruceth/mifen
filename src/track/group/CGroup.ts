@@ -24,6 +24,7 @@ export class CGroup extends CUqSub<CApp, UQs, CTrack> {
 			listCaption: computed,
 			showMiGroup: action,
 			showStocksAll: action,
+            reloadItemsValue: action,
 		});
 	}
 
@@ -70,6 +71,11 @@ export class CGroup extends CUqSub<CApp, UQs, CTrack> {
         let stocks = await this.loadItemsValue(this.miGroup.stocks);
 		this.setStocksList(stocks);
 	}
+
+    reloadItemsValue = async () => {
+        let stocks = await this.loadItemsValue(this.miGroup.stocks);
+		this.setStocksList(stocks);
+    }
 
     protected loadItemsValue = async(stocks:IObservableArray<Stock & StockValue>) => {
         let ids: number[] = [];
@@ -198,4 +204,20 @@ export class CGroup extends CUqSub<CApp, UQs, CTrack> {
         let trackDay = this.owner.trackDay;
         this.cApp.openStock(stock, trackDay);
 	}
+
+    onNextTrackDay = async () => {
+        let trackDay = this.owner.trackDay;
+        await this.owner.onNextTrackDay();
+        if (trackDay !== this.owner.trackDay) {
+            await this.reloadItemsValue();
+        }
+    }
+
+    onNextTrackMonth = async () => {
+        let trackDay = this.owner.trackDay;
+        await this.owner.onNextTrackMonth();
+        if (trackDay !== this.owner.trackDay) {
+            await this.reloadItemsValue();
+        }
+    }
 }

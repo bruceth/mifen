@@ -325,7 +325,11 @@ export class Store {
         return await this.miNet.q_getnexttradedays(day);
     }
 
-	async searchTrackStock(param:any, pageStart:any, pageSize:number):Promise<{[name:string]:any[]}> {
+    async getNextWeekend(day: number) {
+        return await this.miNet.q_nextweekend(day);
+    }
+
+    async searchTrackStock(param:any, pageStart:any, pageSize:number):Promise<{[name:string]:any[]}> {
         let { day, key, market, $orderSwitch, smooth} = param as { day: number, key: string, market: string, $orderSwitch?: any, smooth?: number, }
 		let ret = await this.miNet.q_searchstock(day, this.user.id, pageStart, pageSize, $orderSwitch, key, market, smooth);
 		let {$page} = ret;

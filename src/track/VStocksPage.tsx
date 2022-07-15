@@ -29,6 +29,11 @@ export class VStocksPage extends VPage<CTrack> {
                 action: this.controller.onNextTrackDayAndReload,
                 icon: 'calendar-plus-o',
             },
+            {
+                caption: '跳到下一月',
+                action: this.controller.onNextTrackMonthAndReload,
+                icon: 'calendar-plus-o',
+            },
         ];
     let { key } = this.controller.searchParam;
         return <div className="d-flex"><SearchBox className="mr-2 w-max-10c"

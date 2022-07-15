@@ -213,6 +213,13 @@ export class CStockInfo extends CUqBase {
 
                 rates.unshift({ day: day, mirate: mirate, price: priceEx });
             });
+            if (trackDay === undefined && this.stock !== undefined && rates.length > 0) {
+                let nItem = { day: day, mirate: this.stock.miRate, price: this.stock.price };
+                let lItem = rates[rates.length -1];
+                if (day > lItem.day) {
+                    rates.push(nItem);
+                }
+            }
             this.mirates.splice(0);
             this.mirates.push(...rates);
 

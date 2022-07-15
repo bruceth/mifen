@@ -92,6 +92,10 @@ export class MiNet {
         return await this.miApi.call(`q_tradedays`, [day]);
     }
 
+    async q_nextweekend(day: number) {
+        return await this.miApi.call(`q_nextweekend`, [day]);
+    }
+
     async q_searchstock(day: number, user: number, pageStart: any, pageSize: number, orderSwitch?: string, key?: string, market?: string, smooth?: number) {
         let ret = await this.miApi.call(`tv_searchstock`, [user, pageStart, pageSize, orderSwitch, key, market, smooth, day]);
         if (Array.isArray(ret)) {

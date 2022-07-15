@@ -1,6 +1,6 @@
 import React from "react";
 import { observer } from "mobx-react";
-import { List, VPage } from "tonva-react";
+import { DropdownAction, DropdownActions, List, VPage } from "tonva-react";
 import { Stock, StockValue } from "uq-app/uqs/BruceYuMi";
 import { renderStockRow } from "tool";
 import { CGroup } from "./CGroup";
@@ -24,9 +24,40 @@ export class VStockList extends VPage<CGroup> {
             return <>{str}</>
         }));
 	}
-	right(): JSX.Element {
-		return this.renderPageRight?.();
+	
+    right(): JSX.Element {
+		//return this.renderPageRight?.();
+		return React.createElement(observer(() => {
+			let { cCommon } = this.controller.cApp;
+            let { miGroup } = this.controller;
+			let actions: DropdownAction[] = [
+                {
+					caption: '跳到下一周',
+					action: this.controller.onNextTrackDay,
+					icon: 'calendar-plus-o',
+                },
+                {
+					caption: '跳到下一月',
+					action: this.controller.onNextTrackMonth,
+					icon: 'calendar-plus-o',
+                },
+			];
+            if (miGroup.type === 'group') {
+                let cID = cCommon.buildCIDUserGroup();
+                cID.item = miGroup;
+                let onEditItem = () => {
+                    cID.onItemEdit();
+                }
+                actions.push({
+					caption: '编辑',
+					action: onEditItem,
+					icon: 'pencil-square-o',
+                })
+            }
+			return <DropdownActions actions={actions} icon="bars" className="mr-2 text-white bg-transparent border-0" />;
+		}));
 	}
+
 	content() {
 		return React.createElement(observer(() => {
 			let {miGroup, stocks} = this.controller;
