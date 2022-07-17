@@ -35,14 +35,16 @@ export class VBonusDetail extends VPage<CStockInfo> {
     });
 
     private bonus = observer(() => {
-        let { bonus, dividentOrg } = this.controller;
+        let { bonus, dividentOrg, baseItem } = this.controller;
         if (dividentOrg.length > 0) {
             let header = <div className="px-3">
                 <div className="px-3 c8">报期</div>
                 <div className="px-3 c6 text-right">分红</div>
                 <div className="px-3 c6 text-right">除权日期</div>
             </div>;
+            let url = `https://xueqiu.com/snowman/S/${baseItem.symbol}/detail#/FHPS`;
             return <>
+                <a className="px-3 py-1 btn btn-sm btn-link d-sm-inline d-none" href={url} target="_blank" rel="noreferrer">雪球分红信息</a>
                 {this.chartBonus()}
                 <div className="px-3 py-1">历年分红</div>
                 <List header={header} loading="..."
