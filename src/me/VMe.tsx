@@ -5,6 +5,7 @@ import { CMe } from './CMe';
 import { appConfig } from "../uq-app/appConfig";
 import { VFaq } from './VFaq';
 import { VAbout } from './VAbout';
+import { VRuler } from './VRuler';
 
 export class VMe extends VPage<CMe> {
 	header() {return this.t('me')}
@@ -18,6 +19,13 @@ export class VMe extends VPage<CMe> {
                 component: <LMR className="w-100" onClick={this.faq}
 					right={<FA className="align-self-center" name="angle-right" />}>
                     <IconText iconClass="text-info mr-2" icon="comments-o" text={this.t('米投体系')} />                    
+                </LMR>,
+            },
+            {
+                type: 'component',
+                component: <LMR className="w-100" onClick={this.ruler}
+					right={<FA className="align-self-center" name="angle-right" />}>
+                    <IconText iconClass="text-info mr-2" icon="comments-o" text={this.t('买入规则')} />                    
                 </LMR>,
             },
             {
@@ -89,6 +97,10 @@ export class VMe extends VPage<CMe> {
 	private about = () => {
 		this.openVPage(VAbout);
 	}
+
+    private ruler = () => {
+        this.openVPage(VRuler);
+    }
 }
 
 function userSpan(name: string, nick: string): JSX.Element {
