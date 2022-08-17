@@ -23,13 +23,6 @@ export class VMe extends VPage<CMe> {
             },
             {
                 type: 'component',
-                component: <LMR className="w-100" onClick={this.ruler}
-					right={<FA className="align-self-center" name="angle-right" />}>
-                    <IconText iconClass="text-info mr-2" icon="comments-o" text={this.t('买入规则')} />                    
-                </LMR>,
-            },
-            {
-                type: 'component',
                 component: <LMR className="w-100" onClick={this.about}
 					right={<FA className="align-self-center" name="angle-right" />}>
                     <IconText iconClass="text-info mr-2" 
