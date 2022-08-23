@@ -49,6 +49,11 @@ export class CHome extends CUqBase {
 	showIntroduction = () => {
 		this.cApp.cMe.showFaq();
 	}
+
+    onSearch = async (key: string) => {
+        this.cApp.cFind.onSearch(key);
+	}
+
 }
 
 
