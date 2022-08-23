@@ -11,7 +11,7 @@ export class VHome extends VPage<CHome> {
 			let left = <FA name="envelope-o" className="text-info align-self-center ml-2 ml-sm-3" size="lg" fixWidth={true} />
 			let leftruler = <FA name="comments-o" className="text-info align-self-center ml-2 ml-sm-3" size="lg" fixWidth={true} />
 			return <div className="pb-3">
-                <div className="p-3">
+                <div className="px-3 pt-2">
                     <SearchBox className="mb-0" onSearch={this.controller.onSearch} placeholder="股票代码，名称" />
                 </div>
 				<LMR className="d-flex pr-3 py-2 my-2 cursor-pointer bg-white"
