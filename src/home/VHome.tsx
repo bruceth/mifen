@@ -22,7 +22,7 @@ export class VHome extends VPage<CHome> {
                     <li className="my-3">
                         <div className="my-2">交易规则</div>
                         <ul className="px-3 text-info">
-                            <li><span className="mr-3">规则1: </span>每周可以进行一次买入操作。每次买入一只，金额为账户总值的1%</li>
+                            <li><span className="mr-3">规则1: </span>每周最多可以买入账户总值的2%。每次买入一只股票，金额为账户总值的1%或者2%。</li>
                             <li><span className="mr-3">规则2: </span>同一只股票最多可以买入10次</li>
                             <li><span className="mr-3">规则3: </span>买入同一只股票股票的时间间隔必须超过12周，即一个季度</li>
                             <li><span className="mr-3">规则4: </span>买入股票的米息率必须大于5并且高于已经持有股票最低米息率的50%</li>
