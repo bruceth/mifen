@@ -547,7 +547,7 @@ export class VStockInfo extends VPage<CStockInfo> {
                     yAxisID: 'y-axis-1',
                 },
                 {
-                    label: 'AVG20',
+                    label: 'MA20',
                     data: price20,
                     borderColor: 'violet',
                     backgroundColor: 'pink',
@@ -558,7 +558,7 @@ export class VStockInfo extends VPage<CStockInfo> {
                     yAxisID: 'y-axis-1',
                 },
                 {
-                    label: 'AVG60',
+                    label: 'MA60',
                     data: price60,
                     borderColor: 'limegreen',
                     backgroundColor: 'pink',
