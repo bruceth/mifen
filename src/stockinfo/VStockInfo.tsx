@@ -501,11 +501,33 @@ export class VStockInfo extends VPage<CStockInfo> {
         let label = [];
         let y: number[] = [];
         let priceList: number[] = [];
+        let priceOrg: number[] = [];
+        let price60: number[] = [];
+        let price20: number[] = [];
+        let sum20: number = 0;
+        let sum60: number = 0;
         for (let i = 0; i < len; ++i) {
             let item = mirates[i];
             if (item.day === undefined)
                 continue;
             label.push(item.day);
+            priceOrg.push(item.price);
+            sum20 += item.price;
+            sum60 += item.price;
+            if (priceOrg.length >= 20) {
+                price20.push(GFunc.numberToPrecision(sum20/20));
+                sum20 -= priceOrg[priceOrg.length - 20];
+            }
+            else {
+                price20.push(undefined);
+            }
+            if (priceOrg.length >= 60) {
+                price60.push(GFunc.numberToPrecision(sum60/60));
+                sum60 -= priceOrg[priceOrg.length - 60];
+            }
+            else {
+                price60.push(undefined);
+            }
             y.push(GFunc.numberToPrecision(item.mirate));
             priceList.push(GFunc.numberToPrecision(item.price));
         }
@@ -517,6 +539,28 @@ export class VStockInfo extends VPage<CStockInfo> {
                     label: '价格',
                     data: priceList,
                     borderColor: 'navy',
+                    backgroundColor: 'pink',
+                    pointStyle: "crossRot",
+                    borderWidth: 1,
+                    pointRadius: 1,
+                    fill: false,
+                    yAxisID: 'y-axis-1',
+                },
+                {
+                    label: 'AVG20',
+                    data: price20,
+                    borderColor: 'violet',
+                    backgroundColor: 'pink',
+                    pointStyle: "crossRot",
+                    borderWidth: 1,
+                    pointRadius: 1,
+                    fill: false,
+                    yAxisID: 'y-axis-1',
+                },
+                {
+                    label: 'AVG60',
+                    data: price60,
+                    borderColor: 'limegreen',
                     backgroundColor: 'pink',
                     pointStyle: "crossRot",
                     borderWidth: 1,
