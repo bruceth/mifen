@@ -23,7 +23,7 @@ IX *UserBlockStock (
 IX *GroupStock (
 	ix,					-- group
 	xi,					-- Stock
-	order SMALLINT,
+	seq,
 );
 
 QUERY StockUsing (

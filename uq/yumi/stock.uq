@@ -83,7 +83,7 @@ PAGE ORDER Switch (
         miRateAsc,
         dvRateAsc, 
         roeAsc
-    ) (
+)(
 	id ID,							-- (SwitchOrder，第一列ID) 合并插入 tv_$pageOrder 表，然后直接提取
 	market ID,
 	no char(20),
@@ -138,7 +138,7 @@ PAGE ORDER Switch (
 	if NOT market IS NULL {
 		TEXT market INTO tblm;
 	}
-	PAGE SELECT a.id, a.market,a.no, a.name, a.rawId,
+	PAGE SELECT a.id, a.market, a.no, a.name, a.rawId,
 
 		b.earning, b.divident, b.price, 
 		b.roe, b.volumn, b.dvRate, b.ttm,
@@ -212,8 +212,8 @@ OPEN ACT WriteStock ver 0.5 (
 	foreach stocks {
 		VAR mId ID = ID(Market new, market);
 		VAR stock ID = ID(Stock new KEY market=mId, no=no);
-		WITH Stock as a ID stock SET a.name=name, a.rawId=rawId, a.uno=concat(market, '.', no);
-		WITH StockValue as a ID stock
+		WITH Stock as a ID=stock SET a.name=name, a.rawId=rawId, a.uno=concat(market, '.', no);
+		WITH StockValue as a ID=stock
 			SET a.incValue=incValue
 				, a.miValue=incValue+IFNULL(divident,0)
 				, a.earning=earning
@@ -221,7 +221,7 @@ OPEN ACT WriteStock ver 0.5 (
 				, a.roe=roe, a.inc1=inc1, a.inc2=inc2, a.inc3=inc3, a.inc4=inc4
 				, a.preInc=preInc, a.volumn=volumn
 				, a.smoothness=smoothness;
-		WITH StockValue as a ID stock 
+		WITH StockValue as a ID=stock 
 			SET a.miRate=100 * a.miValue * a.volumn / a.price / IFNULL(a.pvolumn, a.volumn)
 				, a.dvRate=100 * a.divident * a.volumn / a.price / IFNULL(a.pvolumn, a.volumn)
 				, a.ttm=IF(a.earning>=0.01, (a.price*IFNULL(a.pvolumn, a.volumn))/a.earning/a.volumn, null)
@@ -250,7 +250,7 @@ OPEN ACT WriteGrossAndRevenue ver 0.5 (
 ) {
 	foreach stocks {
 		VAR stock ID = (SELECT a.id FROM Stock as a WHERE a.rawId=rawId);
-		WITH StockValue as a ID stock
+		WITH StockValue as a ID=stock
 			SET a.gIncValue=gIncValue
 				, a.gMiValue=gIncValue+IFNULL(a.divident,0)
 				, a.gInc1=gInc1, a.gInc2=gInc2, a.gInc3=gInc3, a.gInc4=gInc4
@@ -261,7 +261,7 @@ OPEN ACT WriteGrossAndRevenue ver 0.5 (
 				, a.rInc1=rInc1, a.rInc2=rInc2, a.rInc3=rInc3, a.rInc4=rInc4
 				, a.rPreInc=rPreInc
 				, a.rSmoothness=rSmoothness;
-		WITH StockValue as a ID stock 
+		WITH StockValue as a ID=stock 
 			SET a.gMiRate=100 * a.gMiValue * a.volumn / a.price / IFNULL(a.pvolumn, a.volumn)
 				, a.rMiRate=100 * a.rMiValue * a.volumn / a.price / IFNULL(a.pvolumn, a.volumn)
 			WHERE a.price>0 AND a.volumn>0;
@@ -282,12 +282,12 @@ OPEN ACT WritePrice ver 0.5 (
 	foreach prices {
 		VAR mId ID = ID(Market new, market);
 		VAR stock ID = ID(Stock new KEY market=mId, no=no);
-		WITH Stock as a ID stock SET a.name=name, a.rawId=rawId, a.uno=concat(market, '.', no);
-		WITH StockValue as a ID stock 
+		WITH Stock as a ID=stock SET a.name=name, a.rawId=rawId, a.uno=concat(market, '.', no);
+		WITH StockValue as a ID=stock 
 			SET a.price=price
 				, a.pvolumn=pvolumn
 				, a.date=concat(date DIV 10000, '-', (date DIV 100) MOD 100, '-', date MOD 100);
-		WITH StockValue as a ID stock 
+		WITH StockValue as a ID=stock 
 			SET a.miRate=100 * a.miValue * a.volumn / a.price / IFNULL(a.pvolumn, a.volumn)
 				, a.dvRate=100 * a.divident * a.volumn / a.price / IFNULL(a.pvolumn, a.volumn)
 				, a.ttm=IF(a.earning>=0.01, (a.price*IFNULL(a.pvolumn, a.volumn))/a.earning/a.volumn, null)

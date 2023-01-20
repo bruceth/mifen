@@ -9,7 +9,7 @@ ID Account ver 0.1 LOCAL (
 IX *UserAccount (
 	ix user,
 	xi Account,
-	sort,				-- id sort
+	seq,				-- id sort
 );
 
 ID Holding LOCAL (
