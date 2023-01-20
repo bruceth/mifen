@@ -3,11 +3,13 @@ import { observable, IObservableArray, computed, makeObservable } from 'mobx';
 import { CUqBase } from "../uq-app";
 import { GFunc } from './GFunc';
 import { VStockInfo } from './VStockInfo'
-import { NStockInfo, StockPrice, StockCapitalearning, StockBonus, StockDivideInfo } from './StockInfoType';
+import { NStockInfo, StockPrice, StockCapitalearning, StockBonus, StockDividentInfo } from './StockInfoType';
 import { Stock, StockValue } from 'uq-app/uqs/BruceYuMi';
 import { ErForEarning } from './ErForEarning';
 import { SlrForEarning } from './SlrForEarning';
-import { MiNet } from './net';
+import { MiNet } from '../net';
+import { VBonusDetail } from './VBonusDetail';
+import { VProfilDetail } from './VProfitDetail';
 
 export class CStockInfo extends CUqBase {
     stock: Stock & StockValue;
@@ -15,8 +17,6 @@ export class CStockInfo extends CUqBase {
     @observable protected loaded: boolean = false;
 
     @observable price: StockPrice;
-    @observable stockTags: any[];
-    selectedTags: any[];
 
     @observable seasonData: { season: number, c: number, corg: number, shares: number, revenue: number, profit: number, netprofit: number }[] = [];
     @observable predictSeasonData: { season: number, c: number, shares: number, revenue: number, profit: number, netprofit: number }[] = [];
@@ -25,10 +25,14 @@ export class CStockInfo extends CUqBase {
     @observable predictBonusData: { year: number, bonus: number }[] = [];
     @observable ypredict: number[] = [];
 
+    @observable mirates: { day: number, mirate: number, price: number }[] = [];
+    @observable mivalues: { season: number, mivalue: number }[] = [];
+
     protected _capitalearning: IObservableArray<StockCapitalearning> = observable.array<StockCapitalearning>([], { deep: true });
     protected _bonus: IObservableArray<StockBonus> = observable.array<StockBonus>([], { deep: true });
-    protected _divideInfo: IObservableArray<StockDivideInfo> = observable.array<StockDivideInfo>([], { deep: true });
+    protected _divideInfo: IObservableArray<StockDividentInfo> = observable.array<StockDividentInfo>([], { deep: true });
     protected _sharesArr: { day: number, shares: number }[] = [];
+    protected _divident: IObservableArray<{ year: number, season: string, divident: number, day: number }> = observable.array<{ year: number, season: string, divident: number, day: number }>([], { deep: true });
 
     @computed get capitalearning(): IObservableArray<StockCapitalearning> {
         if (this.loaded === false) return undefined;
@@ -40,9 +44,94 @@ export class CStockInfo extends CUqBase {
         return this._bonus;
     }
 
-    @computed get divideInfo(): IObservableArray<StockDivideInfo> {
+    @computed get divideInfo(): IObservableArray<StockDividentInfo> {
         if (this.loaded === false) return undefined;
+
         return this._divideInfo;
+    }
+
+    @computed get dividentOrg() {
+        if (this.loaded === false) return undefined;
+
+        return this._divident;
+    }
+
+    @computed get dividents() {
+        if (this.loaded === false) return undefined;
+        if (this._divident.length <= 0) return undefined;
+        let { day, trackDay } = this.baseItem;
+        let lday = trackDay;
+        let lastYear: number;
+        if (lday === undefined) {
+            lday = day;
+        }
+        let y = Math.floor(lday / 10000);
+        let m = Math.floor((lday % 10000) / 100);
+        lastYear = y - 1;
+        if (m < 4) {
+            lastYear--;
+        }
+        let lshares: number = this.getLastTotalShares();
+        let yearDataA: { [index: number]: { bonus: number } } = {};
+        let retArr: { year: number, divident: number, d3?: number }[] = [];
+        let minYear = undefined;
+        let maxYear = 0;
+        for (let item of this._divident) {
+            let { year, divident, day, season } = item;
+            if (minYear === undefined) {
+                minYear = year;
+            }
+            else if (year < minYear) {
+                minYear = year;
+            }
+            if (year > maxYear) {
+                maxYear = year;
+            }
+            var shares: number = undefined;
+            if (day === undefined) {
+                shares = lshares;
+            }
+            else {
+                shares = this.getTotalShares(day);
+            }
+            if (shares <= 0 || shares === undefined || shares === null || divident <= 0) continue;
+            let yb = yearDataA[year];
+            if (yb === undefined) {
+                yearDataA[year] = { bonus: divident * shares };
+            }
+            else {
+                yearDataA[year] = { bonus: yb.bonus + divident * shares }
+            }
+        }
+        if (maxYear > lastYear && trackDay === undefined) {
+            lastYear = maxYear;
+        }
+
+        let getLast3YearData = (checkYear: number) => {
+            let sum: number = 0;
+            for (let i = checkYear; i > checkYear - 3; --i) {
+                let item = yearDataA[i];
+                if (item !== undefined) {
+                    sum += item.bonus;
+                }
+            }
+            return sum !== 0 ? sum / 3 : undefined;
+        }
+
+        for (let yi = minYear; yi <= lastYear; yi++) {
+            let item = yearDataA[yi];
+            let bonus = item !== undefined ? item.bonus / lshares : undefined;
+            let d3 = undefined;
+            if (yi >= minYear + 2) {
+                d3 = getLast3YearData(yi);
+                if (d3 !== undefined) {
+                    d3 = d3 / lshares;
+                }
+            }
+            retArr.push({ year: yi, divident: bonus, d3 });
+        }
+
+        return retArr;
     }
 
     private miNet: MiNet;
@@ -58,12 +147,18 @@ export class CStockInfo extends CUqBase {
     private load = async () => {
         if (!this.baseItem) return;
 
-        let { id, day, } = this.baseItem;
-        let rets = await Promise.all([
-            this.miNet.q_stockallinfo(id, day),
-            this.miNet.t_tagstock$query(undefined, id),
-        ]);
-        this.stockTags = rets[1];
+        let { rawId, day, trackDay } = this.baseItem;
+        let rets;
+        if (trackDay !== undefined) {
+            rets = await Promise.all([
+                this.miNet.q_stockallinfotrack(rawId, trackDay)
+            ]);
+        }
+        else {
+            rets = await Promise.all([
+                this.miNet.q_stockallinfo(rawId, day)
+            ]);
+        }
         let ret = rets[0];
         if (Array.isArray(ret[0])) {
             let arr1 = ret[1];
@@ -86,11 +181,53 @@ export class CStockInfo extends CUqBase {
             }
             this._sharesArr = ret[5];
 
-            await this.loadTTMEarning(ret[2]);
+            this.mivalues.splice(0);
+            let mvArr = ret[7] as { season: number, mivalue: number, volume: number }[];
+            let mvr: { season: number, mivalue: number }[] = [];
+            if (mvArr.length > 0) {
+                let vlast = mvArr[0].volume;
+                if (vlast !== undefined) {
+                    mvArr.forEach(v => {
+                        let { season, mivalue, volume } = v;
+                        if (mivalue !== undefined && volume !== null) {
+                            let miv = mivalue * volume / vlast;
+                            mvr.unshift({ season: season, mivalue: miv });
+                        }
+                    })
+                    this.mivalues.push(...mvr);
+                }
+            }
+
+            let mlen = mvr.length;
+
+            let ratesArr = ret[6] as { day: number, mirate: number, price: number, exright:number }[];
+            let rates: { day: number, mirate: number, price: number }[] = [];
+            let exLast = 1;
+            if (ratesArr.length > 0) {
+                let li = ratesArr[0];
+                exLast = li.exright;
+            }
+            ratesArr.forEach(v => {
+                let { day, mirate, price, exright } = v;
+                let priceEx = price * exright / exLast;
+
+                rates.unshift({ day: day, mirate: mirate, price: priceEx });
+            });
+            if (trackDay === undefined && this.stock !== undefined && rates.length > 0) {
+                let nItem = { day: day, mirate: this.stock.miRate, price: this.stock.price };
+                let lItem = rates[rates.length -1];
+                if (day > lItem.day) {
+                    rates.push(nItem);
+                }
+            }
+            this.mirates.splice(0);
+            this.mirates.push(...rates);
+
+            this.loadTTMEarning(ret[2]);
+            this.LoadDivident(ret[8]);
             this.LoadBonusData();
         }
 
-        //this.isMySelect = this.cApp.store.isMyAll(this.stock);
         this.loaded = true;
     }
 
@@ -107,7 +244,17 @@ export class CStockInfo extends CUqBase {
         return ret;
     }
 
-    protected async loadTTMEarning(list: { seasonno: number, capital: number, revenue: number, profit: number, netprofit: number, shares: number }[]) {
+    protected getLastTotalShares(): number {
+        let ret: number = undefined;
+        if (this._sharesArr.length > 0) {
+            let item = this._sharesArr[0];
+            ret = item.shares;
+        }
+
+        return ret;
+    }
+
+    protected loadTTMEarning(list: { seasonno: number, capital: number, revenue: number, profit: number, netprofit: number, shares: number }[]) {
         this.seasonData.splice(0);
         let seasonlist: { [index: number]: { season: number, c: number, corg: number, shares: number, revenue: number, profit: number, netprofit: number } } = {};
         let len = list.length;
@@ -117,10 +264,11 @@ export class CStockInfo extends CUqBase {
         let lastShares = lastItem.shares;
         let maxNo = lastItem.seasonno;
 
+        let _ce = [];
         for (let item of list) {
             let no = item.seasonno;
             let sItem = {
-                season: no, c: item.capital * item.shares / lastShares, 
+                season: no, c: item.capital * item.shares / lastShares,
                 corg: item.capital, shares: item.shares, revenue: item.revenue, profit: item.profit, netprofit: item.netprofit
             }
             seasonlist[no] = sItem;
@@ -128,18 +276,21 @@ export class CStockInfo extends CUqBase {
             let yearmonth = GFunc.GetSeasonnoYearMonth(no);
             if (yearmonth.month === 12) {
                 let ci = { year: yearmonth.year, capital: item.capital, earning: item.netprofit / item.shares };
-                this._capitalearning.push(ci);
+                _ce.push(ci);
             }
         }
+        this._capitalearning.push(..._ce);
 
         let i = 0;
+        let sd = [];
         for (let seasonno = minNo; seasonno <= maxNo; ++seasonno, ++i) {
             let si = seasonlist[seasonno];
             if (si === undefined) {
                 continue;
             }
-            this.seasonData.splice(0, 0, si);
+            sd.unshift(si);
         }
+        this.seasonData.push(...sd);
 
         let noBegin = maxNo - 19;
         this.predictData = undefined;
@@ -147,19 +298,23 @@ export class CStockInfo extends CUqBase {
         this.predictSeasonDataFull.splice(0);
         if (noBegin < minNo) return;
         noBegin += 3;
-        this.ypredict = [];
+        this.ypredict.splice(0);
+        let ypt = [];
         for (let x = noBegin; x <= maxNo; x += 4) {
             let item = seasonlist[x];
             if (item === undefined) break;
             this.predictSeasonData.splice(0, 0, item);
-            this.ypredict.push(item.netprofit / lastShares);
+            ypt.push(item.netprofit / lastShares);
         }
+        this.ypredict.push(...ypt);
 
+        let psdf = [];
         for (let x = maxNo; x >= minNo; x -= 4) {
             let item = seasonlist[x];
             if (item === undefined) break;
-            this.predictSeasonDataFull.push(item);
+            psdf.push(item);
         }
+        this.predictSeasonDataFull.push(...psdf);
 
         if (this.ypredict.length === 5) {
             let er = new ErForEarning(this.ypredict);
@@ -171,11 +326,29 @@ export class CStockInfo extends CUqBase {
         }
     }
 
+    protected LoadDivident(list: { year: number, season: string, divident: number, dday: number }[]) {
+        this._divident.clear();
+        let darr = [];
+        for (let item of list) {
+            let { year, season, divident, dday } = item;
+            darr.push({ year, season, divident, day: dday });
+        }
+        this._divident.push(...darr);
+    }
+
     protected LoadBonusData() {
         this.predictBonusData.splice(0);
         if (this._sharesArr === undefined || this._sharesArr.length <= 0) return;
-        let dt = new Date();
-        let maxNo = GFunc.SeasonnoFromYearMonth(dt.getFullYear(), dt.getMonth() - 1) - 2;
+        let maxNo: number;
+        let trackDay = this.baseItem.trackDay;
+        if (trackDay === undefined) {
+            let dt = new Date();
+            maxNo = GFunc.SeasonnoFromYearMonth(dt.getFullYear(), dt.getMonth() + 1) - 2;
+        }
+        else {
+            let y =
+                maxNo = GFunc.SeasonnoFromYearMonth(Math.floor(trackDay / 10000), Math.floor((trackDay % 10000) / 100));
+        }
         let minNo = -1;
         let dataOrg: { [index: number]: { bonus: number, shares: number } } = {};
         let seasonData: { [index: number]: { bonus: number, shares: number, bs: number } } = {};
@@ -183,7 +356,7 @@ export class CStockInfo extends CUqBase {
             let { day, bonus, shares } = item as { day: number, bonus: number, shares: number };
             if (shares <= 0 || bonus <= 0) continue;
             if (day < 19950101) continue;
-            let sno = GFunc.SeasonnoFromDay(day);
+            let sno = GFunc.SeasonnoFromDayForBonus(day);
             dataOrg[sno] = { bonus: bonus, shares: shares };
             if (minNo < 0) {
                 minNo = sno;
@@ -234,6 +407,7 @@ export class CStockInfo extends CUqBase {
             return;
         }
 
+        let pbd: { year: number, bonus: number }[] = [];
         for (let i = maxNo; i >= maxNo - 16; i -= 4) {
             let ni = seasonData[i];
             if (ni === undefined) break;
@@ -242,15 +416,14 @@ export class CStockInfo extends CUqBase {
                 b = ni.bonus * ni.shares / lastShares;
             }
             let ym = GFunc.GetSeasonnoYearMonth(i);
-            this.predictBonusData.unshift({ year: ym.year, bonus: b });
+            pbd.unshift({ year: ym.year, bonus: b });
         }
+        this.predictBonusData.push(...pbd);
     }
 
     async internalStart(param: any) {
         this.baseItem = param as NStockInfo;
         this.stock = param.stock;
-        let { id } = this.baseItem;
-        //this.isMySelect = this.cApp.store.isMyAll(this.stock);
         this.initLoad();
         this.openVPage(VStockInfo);
     }
@@ -258,4 +431,11 @@ export class CStockInfo extends CUqBase {
     openMetaView = () => {
     }
 
+    showBonus = () => {
+        this.openVPage(VBonusDetail);
+    }
+
+    showProfit = () => {
+        this.openVPage(VProfilDetail)
+    }
 }

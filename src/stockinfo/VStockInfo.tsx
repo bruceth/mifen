@@ -56,10 +56,11 @@ export class VStockInfo extends VPage<CStockInfo> {
     private pageContent = observer(() => {
         return <>
             {React.createElement(this.baseInfo)}
-            {this.historyChart()}
+            {React.createElement(this.miratesChart)}
+            {React.createElement(this.mivaluesChart)}
+            {React.createElement(this.bonusInfo)}
             {React.createElement(this.predictInfo)}
-            {React.createElement(this.seasonEarning)}
-            {React.createElement(this.bonus)}
+            {React.createElement(this.profitInfo)}
         </>
     });
 
@@ -92,101 +93,6 @@ export class VStockInfo extends VPage<CStockInfo> {
         return <div className="bg-white">{renderStockRow(undefined, stock, undefined, pinStock)}</div>;
     });
 
-    private historyChart = () => {
-        let { baseItem } = this.controller;
-        let { market, code, symbol } = baseItem;
-        if (market === 'sh' || market === 'sz') {
-            let urlweek = `https://image.sinajs.cn/newchart/weekly/n/${symbol}.gif`;
-            let urlmonth = `https://image.sinajs.cn/newchart/monthly/n/${symbol}.gif`
-            return <div className="row">
-                <div className="col-md"><img className="w-100" alt="" src={urlweek} /></div>
-                <div className="col-md"><img className="w-100" alt="" src={urlmonth} /></div>
-            </div>;
-        }
-    }
-
-    // protected historyChart = observer(() => {
-    // 	let {historyData, baseItem} = this.controller;
-    // 	if (historyData === undefined) 
-    // 	return <></>;
-    // 	let chartHistory = <></>;
-    // 	let labelList:any[] = [];
-    // 	let priceList:number[] = [];
-    // 	let ttmList:number[] = [];
-    // 	for (let item of historyData) {
-    // 	let {day, price, ttm} = item;
-    // 	labelList.push(day);
-    // 	priceList.push(GFunc.numberToPrecision(price, 4));
-    // 	if (ttm <= 0) 
-    // 		ttmList.push(undefined);
-    // 	else {
-    // 		if (this.ttmLimit && ttm >= 35) {
-    // 		ttmList.push(35);
-    // 		}
-    // 		else {
-    // 		ttmList.push(GFunc.numberToPrecision(ttm, 4));
-    // 		}
-    // 	}
-    // 	}
-    // 	let chartdata1 = {
-    // 	labels: labelList,
-    // 	datasets: [
-    // 		{
-    // 		label: '价格',
-    // 		data: priceList,
-    // 		borderColor:'blue',
-    // 		backgroundColor:'skyBlue',
-    // 		borderWidth: 1,
-    // 		fill: false,
-    // 		yAxisID: 'y-axis-1',
-    // 		},
-    // 		{
-    // 		label: 'TTM',
-    // 		data: ttmList,
-    // 		borderColor:'red',
-    // 		backgroundColor:'pink',
-    // 		borderWidth: 1,
-    // 		fill: false,
-    // 		yAxisID: 'y-axis-2',
-    // 		}
-    // 	]
-    // 	};
-    // 	let options = {
-    // 	scales:{
-    // 		yAxes: [{
-    // 			type: 'linear',
-    // 			display: true,
-    // 			position: 'left',
-    // 			id: 'y-axis-1',
-    // 		}, {
-    // 			type: 'linear',
-    // 			display: true,
-    // 			position: 'right',
-    // 			id: 'y-axis-2',
-    // 			gridLines: {
-    // 				drawOnChartArea: false
-    // 			}
-    // 		}],       
-    // 	}
-    // 	}
-    // 	chartHistory = <RC2 data={chartdata1} type='line' options={options} />;
-    // 	let right = <></>;
-    // 	if (baseItem.day !== undefined) {
-    // 	right = <><label className="px-3"> <input type="checkbox" name="showLater" defaultChecked={false}
-    // 			onChange={this.checkShowLater} />显示后面数据</label>
-    // 		<label className="px-3"> <input type="checkbox" name="selectType" defaultChecked={this.ttmLimit}
-    // 		onChange={this.checkLimitShow} />限制TTM显示范围</label>
-    // 		</>;
-
-    // 	}
-    // 	else {
-    // 	right = <label className="px-3"> <input type="checkbox" name="selectType" defaultChecked={this.ttmLimit}
-    // 		onChange={this.checkLimitShow} />限制TTM显示范围</label>;
-    // 	}
-    // 	return <><LMR className="px-3 py-2 bg-white" left={'历史走势'} right={right}></LMR>
-    // 	<div className="px-3" style={{width:'95%'}}>{chartHistory}</div>
-    // 	</>;
-    // });
 
     protected predictInfo = observer(() => {
         let { predictData, ypredict } = this.controller;
@@ -244,45 +150,60 @@ export class VStockInfo extends VPage<CStockInfo> {
             }
             chart1 = <RC2 data={chartdata1} type='line' />;
         }
-        let chart2 = this.predictChartBonus();
-        let chart3 = this.predictChartFullInfo();
-        let chart4 = this.predictChartROE();
-        return <><div className="px-3 py-2 bg-white">指数回归预测</div>
-            <div className="d-flex flex-wrap">
-                <div className="px-3 c12">{GFunc.caption('e')}{GFunc.numberToString(e, 4)}</div>
-                <div className="px-3 c12">{GFunc.caption('指数b')}{GFunc.numberToString(b, 4)}</div>
-                <div className="px-3 c12">{GFunc.caption('r2')}{GFunc.numberToString(r2, 4)}</div>
-                <div className="px-3 c12">{GFunc.caption('e预测')}{GFunc.numberToString(epre)}</div>
+        return <>
+            <div className="d-flex">
+                <div className="d-flex">
+                    <div className="px-3 py-2 bg-white">指数回归预测</div>
+                    <div className="d-flex flex-wrap align-items-center">
+                        <div className="px-3 c12">{GFunc.caption('e')}{GFunc.numberToString(e, 4)}</div>
+                        <div className="px-3 c12">{GFunc.caption('指数b')}{GFunc.numberToString(b, 4)}</div>
+                        <div className="px-3 c12">{GFunc.caption('r2')}{GFunc.numberToString(r2, 4)}</div>
+                        <div className="px-3 c12">{GFunc.caption('e预测')}{GFunc.numberToString(epre)}</div>
+                    </div>
+                </div>
+                <div className="d-flex">
+                    <div className="px-3 py-2 bg-white">线性回归预测</div>
+                    <div className="d-flex flex-wrap align-items-center">
+                        <div className="px-3 c12">{GFunc.caption('e')}{GFunc.numberToString(e, 4)}</div>
+                        <div className="px-3 c12">{GFunc.caption('增长率')}{GFunc.numberToString(l, 4)}</div>
+                        <div className="px-3 c12">{GFunc.caption('r2')}{GFunc.numberToString(lr2, 4)}</div>
+                        <div className="px-3 c12">{GFunc.caption('e预测')}{GFunc.numberToString(lpre)}</div>
+                    </div>
+                </div>
             </div>
-            <div className="px-3 py-2 bg-white">线性回归预测</div>
-            <div className="d-flex flex-wrap">
-                <div className="px-3 c12">{GFunc.caption('e')}{GFunc.numberToString(e, 4)}</div>
-                <div className="px-3 c12">{GFunc.caption('增长率')}{GFunc.numberToString(l, 4)}</div>
-                <div className="px-3 c12">{GFunc.caption('r2')}{GFunc.numberToString(lr2, 4)}</div>
-                <div className="px-3 c12">{GFunc.caption('e预测')}{GFunc.numberToString(lpre)}</div>
-            </div>
-            <div className="row">
-                <div className="col">{chart1}</div>
-                <div className="col">{chart2}</div>
-            </div>
-            <div className="row">
-                <div className="col">{chart3}</div>
-                <div className="col">{chart4}</div>
-            </div>
+            <div className="col">{chart1}</div>
         </>;
     });
 
-    protected predictChartFullInfo = () => {
+    protected profitInfo = observer(() => {
+        let { chartFull, chartProfit, chartRevenue } = this.getProfitCharts();
+        let chartRoe = this.predictChartROE();
+        return <>
+            <div className="px-3 py-1 bg-white cursor-pointer text-primary" onClick={() => this.controller.showProfit()} >营收利润&gt;&gt;</div>
+            <div className="row">
+                <div className="col">{chartRevenue}</div>
+                <div className="col">{chartFull}</div>
+            </div>
+            <div className="row">
+                <div className="col">{chartProfit}</div>
+                <div className="col">{chartRoe}</div>
+            </div>
+        </>
+    });
+
+
+    protected getProfitCharts = () => {
         let { predictSeasonDataFull } = this.controller;
         let len = predictSeasonDataFull.length;
         if (len <= 0)
-            return <></>;
+            return { chartFull: <></>, chartProfit: <></>, chartRevenue: <></> };
+
         let label = [];
         let label3 = []
         let netprofit: number[] = [];
         let profit: number[] = [];
         let revenue: number[] = [];
-        
+
         for (let i = len - 1; i >= 0; --i) {
             let item = predictSeasonDataFull[i];
             if (item.netprofit === undefined)
@@ -297,7 +218,7 @@ export class VStockInfo extends VPage<CStockInfo> {
             revenue.push(item.revenue);
         }
 
-        let zzFunc = (e:number[]) => {
+        let zzFunc = (e: number[]) => {
             let len = e.length;
             let r: number[] = [];
             let eb = e[0];
@@ -318,7 +239,7 @@ export class VStockInfo extends VPage<CStockInfo> {
 
         let npZZ = zzFunc(netprofit);
         let pZZ = zzFunc(profit);
-        let rZZ = zzFunc(revenue); 
+        let rZZ = zzFunc(revenue);
 
         let chartdataFull = {
             labels: label3,
@@ -353,7 +274,7 @@ export class VStockInfo extends VPage<CStockInfo> {
                 borderWidth: 1,
                 fill: false,
             });
-     
+
 
         let chartdataProfit = {
             labels: label,
@@ -397,11 +318,11 @@ export class VStockInfo extends VPage<CStockInfo> {
             ]
         };
 
-        return <>
-            <RC2 data={chartdataFull} type='line' />
-            <RC2 data={chartdataProfit} type='line' />
-            <RC2 data={chartdataRevenue} type='line' />
-        </>;
+        return {
+            chartFull: <RC2 data={chartdataFull} type='line' />,
+            chartProfit: <RC2 data={chartdataProfit} type='line' />,
+            chartRevenue: <RC2 data={chartdataRevenue} type='line' />
+        };
     };
 
     protected predictChartROE = () => {
@@ -453,26 +374,255 @@ export class VStockInfo extends VPage<CStockInfo> {
         return <RC2 data={chartdataFull} type='line' />;
     };
 
-    protected predictChartBonus = () => {
-        let { predictBonusData } = this.controller;
-        let len = predictBonusData.length;
+    protected bonusInfo = observer(() => {
+        return <>
+            <div className="px-3 py-1 bg-white cursor-pointer text-primary" onClick={() => this.controller.showBonus()} >分红信息&gt;&gt;</div>
+            {this.chartBonus()}
+        </>
+    });
+
+    protected chartBonus = () => {
+        let { predictBonusData, dividents } = this.controller;
+        if (dividents !== undefined) {
+            let len = dividents.length;
+            if (len <= 0)
+                return <></>;
+            let label = [];
+            let y: number[] = [];
+            let y3: number[] = [];
+            for (let i = 0; i < len; ++i) {
+                let item = dividents[i];
+                label.push(item.year);
+                y.push(GFunc.numberToPrecision(item.divident));
+                y3.push(GFunc.numberToPrecision(item.d3));
+            }
+
+            let chartdataFull = {
+                labels: label,
+                datasets: [
+                    {
+                        label: '每年分红',
+                        data: y,
+                        borderColor: 'black',
+                        backgroundColor: 'skyBlue',
+                        pointStyle: "crossRot",
+                        borderWidth: 1,
+                        pointRadius: 5,
+                        fill: false,
+                    } as any,
+                    {
+                        label: '3年均值',
+                        data: y3,
+                        borderColor: 'magenta',
+                        backgroundColor: 'skyBlue',
+                        pointStyle: "crossRot",
+                        borderWidth: 3,
+                        pointRadius: 5,
+                        fill: false,
+                    } as any
+                ]
+            };
+            if (y.length >= 3) {
+                let lr = new SlrForEarning(y);
+                if (!(isNaN(lr.slope) || isNaN(lr.intercept))) {
+                    let plr: number[] = [];
+                    for (let i = 0; i < len; ++i) {
+                        plr.push(Number.parseFloat(lr.predict(i).toPrecision(4)));
+                    }
+                    chartdataFull.datasets.push(
+                        {
+                            label: '线性 R2:' + GFunc.numberToString(lr.r2, 4),
+                            data: plr,
+                            borderColor: 'blue',
+                            backgroundColor: 'pink',
+                            borderWidth: 1,
+                            fill: false,
+                        });
+                }
+            }
+            return <RC2 data={chartdataFull} type='line' />;
+        }
+        else {
+            let len = predictBonusData.length;
+            if (len <= 0)
+                return <></>;
+            let label = [];
+            let y: number[] = [];
+            for (let i = 0; i < len; ++i) {
+                let item = predictBonusData[i];
+                if (item.bonus === undefined)
+                    continue;
+                label.push(item.year);
+                y.push(item.bonus);
+            }
+
+            let chartdataFull = {
+                labels: label,
+                datasets: [
+                    {
+                        label: '分红原值',
+                        data: y.map(v => GFunc.numberToPrecision(v)),
+                        borderColor: 'black',
+                        backgroundColor: 'skyBlue',
+                        pointStyle: "crossRot",
+                        borderWidth: 1,
+                        pointRadius: 5,
+                        fill: false,
+                    } as any
+                ]
+            };
+            if (y.length >= 3) {
+                let lr = new SlrForEarning(y);
+                if (!(isNaN(lr.slope) || isNaN(lr.intercept))) {
+                    let plr: number[] = [];
+                    for (let i = 0; i < len; ++i) {
+                        plr.push(Number.parseFloat(lr.predict(i).toPrecision(4)));
+                    }
+                    chartdataFull.datasets.push(
+                        {
+                            label: '线性 R2:' + GFunc.numberToString(lr.r2, 4),
+                            data: plr,
+                            borderColor: 'blue',
+                            backgroundColor: 'pink',
+                            borderWidth: 1,
+                            fill: false,
+                        });
+                }
+            }
+            return <RC2 data={chartdataFull} type='line' />;
+        }
+    };
+
+    protected miratesChart = observer(() => {
+        let { mirates } = this.controller;
+        let len = mirates.length;
         if (len <= 0)
             return <></>;
         let label = [];
         let y: number[] = [];
+        let priceList: number[] = [];
+        let priceOrg: number[] = [];
+        let price60: number[] = [];
+        let price20: number[] = [];
+        let sum20: number = 0;
+        let sum60: number = 0;
         for (let i = 0; i < len; ++i) {
-            let item = predictBonusData[i];
-            if (item.bonus === undefined)
+            let item = mirates[i];
+            if (item.day === undefined)
                 continue;
-            label.push(item.year);
-            y.push(item.bonus);
+            label.push(item.day);
+            priceOrg.push(item.price);
+            sum20 += item.price;
+            sum60 += item.price;
+            if (priceOrg.length >= 20) {
+                price20.push(GFunc.numberToPrecision(sum20/20));
+                sum20 -= priceOrg[priceOrg.length - 20];
+            }
+            else {
+                price20.push(undefined);
+            }
+            if (priceOrg.length >= 60) {
+                price60.push(GFunc.numberToPrecision(sum60/60));
+                sum60 -= priceOrg[priceOrg.length - 60];
+            }
+            else {
+                price60.push(undefined);
+            }
+            y.push(GFunc.numberToPrecision(item.mirate));
+            priceList.push(GFunc.numberToPrecision(item.price));
         }
 
         let chartdataFull = {
             labels: label,
             datasets: [
                 {
-                    label: '分红原值',
+                    label: '价格',
+                    data: priceList,
+                    borderColor: 'navy',
+                    backgroundColor: 'pink',
+                    pointStyle: "crossRot",
+                    borderWidth: 1,
+                    pointRadius: 1,
+                    fill: false,
+                    yAxisID: 'y-axis-1',
+                },
+                {
+                    label: 'MA20',
+                    data: price20,
+                    borderColor: 'violet',
+                    backgroundColor: 'pink',
+                    pointStyle: "crossRot",
+                    borderWidth: 1,
+                    pointRadius: 1,
+                    fill: false,
+                    yAxisID: 'y-axis-1',
+                },
+                {
+                    label: 'MA60',
+                    data: price60,
+                    borderColor: 'limegreen',
+                    backgroundColor: 'pink',
+                    pointStyle: "crossRot",
+                    borderWidth: 1,
+                    pointRadius: 1,
+                    fill: false,
+                    yAxisID: 'y-axis-1',
+                },
+                {
+                    label: '米息率',
+                    data: y,
+                    borderColor: 'magenta',
+                    backgroundColor: 'skyBlue',
+                    pointStyle: "crossRot",
+                    borderWidth: 3,
+                    pointRadius: 1,
+                    fill: false,
+                    yAxisID: 'y-axis-2',
+                }
+            ]
+        };
+        let options = {
+            scales: {
+                yAxes: [{
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    id: 'y-axis-1',
+                }, {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    id: 'y-axis-2',
+                    gridLines: {
+                        drawOnChartArea: false
+                    }
+                }],
+            }
+        }
+
+        return <RC2 data={chartdataFull} type='line' options={options} />;
+    });
+
+    protected mivaluesChart = observer(() => {
+        let { mivalues } = this.controller;
+        let len = mivalues.length;
+        if (len <= 0)
+            return <></>;
+        let label = [];
+        let y: number[] = [];
+        for (let i = 0; i < len; ++i) {
+            let item = mivalues[i];
+            if (item.season === undefined)
+                continue;
+            label.push(GFunc.SeasonnoToYearMonth(item.season));
+            y.push(item.mivalue);
+        }
+
+        let chartdataFull = {
+            labels: label,
+            datasets: [
+                {
+                    label: '米息',
                     data: y.map(v => GFunc.numberToPrecision(v)),
                     borderColor: 'black',
                     backgroundColor: 'skyBlue',
@@ -483,147 +633,50 @@ export class VStockInfo extends VPage<CStockInfo> {
                 } as any
             ]
         };
-        if (y.length >= 3) {
-            let lr = new SlrForEarning(y);
-            if (!(isNaN(lr.slope) || isNaN(lr.intercept))) {
-                let plr: number[] = [];
-                for (let i = 0; i < len; ++i) {
-                    plr.push(Number.parseFloat(lr.predict(i).toPrecision(4)));
-                }
-                chartdataFull.datasets.push(
-                    {
-                        label: '线性 R2:' + GFunc.numberToString(lr.r2, 4),
-                        data: plr,
-                        borderColor: 'blue',
-                        backgroundColor: 'pink',
-                        borderWidth: 1,
-                        fill: false,
-                    });
-            }
-        }
         return <RC2 data={chartdataFull} type='line' />;
-    };
-
-    private predictSeasonEarning = observer(() => {
-        //let items = this.controller.predictSeasonData;
-        let items:any[] = [];
-        let header = <div className="px-3">
-            <div className="px-3 c6">年月</div>
-            <div className="px-3 c6 text-right">股本</div>
-            <div className="px-3 c6 text-right">季收益</div>
-            <div className="px-3 c6 text-right">年收益</div>
-            <div className="px-3 c6 text-right">ROE</div>
-            <div className="px-3 c6 text-right">股本o</div>
-            <div className="px-3 c6 text-right">季收益o</div>
-            <div className="px-3 c6 text-right">年收益o</div>
-        </div>;
-        return <>
-            <div className="px-3 py-1">历年股本收益-用于回归计算</div>
-            <List header={header} loading="..."
-                items={items}
-                item={{
-                    render: (row: { season: number, c: number, e: number, esum: number, corg: number, eorg: number, esumorg: number }) => {
-                        let { season, c, e, esum, corg, eorg, esumorg } = row;
-                        let ym = GFunc.SeasonnoToYearMonth(season);
-                        let a = 0;
-                        return <div className="px-3 py-2 d-flex flex-wrap">
-                            <div className="px-3 c6">{ym.toString()}</div>
-                            <div className="px-3 c6 text-right">{GFunc.numberToFixString(c)}</div>
-                            <div className="px-3 c6 text-right">{GFunc.numberToFixString(e)}</div>
-                            <div className="px-3 c6 text-right">{GFunc.numberToFixString(esum)}</div>
-                            <div className="px-3 c6 text-right">{GFunc.percentToFixString(esum / c)}</div>
-                            <div className="px-3 c6 text-right">{GFunc.numberToFixString(corg)}</div>
-                            <div className="px-3 c6 text-right">{GFunc.numberToFixString(eorg)}</div>
-                            <div className="px-3 c6 text-right">{GFunc.numberToFixString(esumorg)}</div>
-                        </div>
-                    }
-                }}
-            />
-        </>
     });
 
+    // private predictSeasonEarning = observer(() => {
+    //     //let items = this.controller.predictSeasonData;
+    //     let items: any[] = [];
+    //     let header = <div className="px-3">
+    //         <div className="px-3 c6">年月</div>
+    //         <div className="px-3 c6 text-right">股本</div>
+    //         <div className="px-3 c6 text-right">季收益</div>
+    //         <div className="px-3 c6 text-right">年收益</div>
+    //         <div className="px-3 c6 text-right">ROE</div>
+    //         <div className="px-3 c6 text-right">股本o</div>
+    //         <div className="px-3 c6 text-right">季收益o</div>
+    //         <div className="px-3 c6 text-right">年收益o</div>
+    //     </div>;
+    //     return <>
+    //         <div className="px-3 py-1">历年股本收益-用于回归计算</div>
+    //         <List header={header} loading="..."
+    //             items={items}
+    //             item={{
+    //                 render: (row: { season: number, c: number, e: number, esum: number, corg: number, eorg: number, esumorg: number }) => {
+    //                     let { season, c, e, esum, corg, eorg, esumorg } = row;
+    //                     let ym = GFunc.SeasonnoToYearMonth(season);
+    //                     let a = 0;
+    //                     return <div className="px-3 py-2 d-flex flex-wrap">
+    //                         <div className="px-3 c6">{ym.toString()}</div>
+    //                         <div className="px-3 c6 text-right">{GFunc.numberToFixString(c)}</div>
+    //                         <div className="px-3 c6 text-right">{GFunc.numberToFixString(e)}</div>
+    //                         <div className="px-3 c6 text-right">{GFunc.numberToFixString(esum)}</div>
+    //                         <div className="px-3 c6 text-right">{GFunc.percentToFixString(esum / c)}</div>
+    //                         <div className="px-3 c6 text-right">{GFunc.numberToFixString(corg)}</div>
+    //                         <div className="px-3 c6 text-right">{GFunc.numberToFixString(eorg)}</div>
+    //                         <div className="px-3 c6 text-right">{GFunc.numberToFixString(esumorg)}</div>
+    //                     </div>
+    //                 }
+    //             }}
+    //         />
+    //     </>
+    // });
 
-    private seasonEarning = observer(() => {
-        let items = this.controller.seasonData;
-        //let items:any[] = [];
-        let header = <div className="px-3">
-            <div className="px-3 c8">年月</div>
-            <div className="px-3 c8 text-right">股本</div>
-            <div className="px-3 c8 text-right">营业收入</div>
-            <div className="px-3 c8 text-right">营业利润</div>
-            <div className="px-3 c8 text-right">净利润</div>
-        </div>;
-        return <>
-            <div className="px-3 py-1">历年利润表</div>
-            <List header={header} loading="..."
-                items={items}
-                item={{
-                    render: (row: { season: number, revenue: number, profit: number, netprofit: number, shares: number, c: number, corg: number }) => {
-                        let { season, revenue, profit, netprofit, shares } = row;
-                        let ym = GFunc.SeasonnoToYearMonth(season);
-                        let a = 0;
-                        return <div className="px-3 py-2 d-flex flex-wrap">
-                            <div className="px-3 c8">{ym.toString()}</div>
-                            <div className="px-3 c8 text-right">{GFunc.numberToFixString(shares, 0)}</div>
-                            <div className="px-3 c8 text-right">{GFunc.numberToFixString(revenue, 0)}</div>
-                            <div className="px-3 c8 text-right">{GFunc.numberToFixString(profit, 0)}</div>
-                            <div className="px-3 c8 text-right">{GFunc.numberToFixString(netprofit, 0)}</div>
-                        </div>
-                    }
-                }}
-            />
-        </>
-    });
-
-
-    private capitalEarning = observer(() => {
-        //let items = this.controller.capitalearning;
-        let items:any[] = [];
-        let header = <div className="px-3">
-            <div className="px-3 c6">年</div>
-            <div className="px-3 c6 text-right">股本</div>
-            <div className="px-3 c6 text-right">收益</div>
-            <div className="px-3 c6 text-right">ROE</div>
-        </div>;
-        return <>
-            <div className="px-3 py-1">历年股本收益</div>
-            <List header={header} loading="..."
-                items={items}
-                item={{
-                    render: (row: StockCapitalearning) => {
-                        let { capital, earning } = row;
-                        let roe = (earning / capital * 100);
-                        return <div className="px-3 py-2 d-flex flex-wrap">
-                            <div className="px-3 c6">{row.year}</div>
-                            <div className="px-3 c6 text-right"> {capital?.toFixed(2)}</div>
-                            <div className="px-3 c6 text-right"> {earning?.toFixed(2)}</div>
-                            <div className="px-3 c6 text-right"> {isNaN(roe) === true ? '-' : roe.toFixed(1) + '%'}</div>
-                        </div>
-                    }
-                }}
-            />
-        </>
-    });
-
-    private bonus = observer(() => {
-        let items = this.controller.bonus;
-        let header = <div className="px-3">
-            <div className="px-3 c8">日期</div>
-            <div className="px-3 c6 text-right">分红</div>
-        </div>;
-        return <>
-            <div className="px-3 py-1">历年分红</div>
-            <List header={header} loading="..."
-                items={items}
-                item={{
-                    render: (row: StockBonus) => {
-                        return <div className="px-3 py-2 d-flex flex-wrap">
-                            <div className="px-3 c8">{row.day}</div>
-                            <div className="px-3 c6 text-right"> {row.bonus.toFixed(2)}</div>
-                        </div>
-                    }
-                }}
-            />
-        </>
-    });
+    // private seasonEarning = observer(() => {
+    //     return <>
+    //         <div className="px-3 py-1" onClick={()=>this.controller.showProfit()} >历年利润表</div>
+    //     </>
+    // });
 }

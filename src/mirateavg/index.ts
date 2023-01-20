@@ -1,0 +1,1 @@
+export { CMirateAvg } from "./CMirateAvg";

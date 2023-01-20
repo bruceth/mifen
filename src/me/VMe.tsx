@@ -5,6 +5,7 @@ import { CMe } from './CMe';
 import { appConfig } from "../uq-app/appConfig";
 import { VFaq } from './VFaq';
 import { VAbout } from './VAbout';
+import { VRuler } from './VRuler';
 
 export class VMe extends VPage<CMe> {
 	header() {return this.t('me')}
@@ -89,6 +90,10 @@ export class VMe extends VPage<CMe> {
 	private about = () => {
 		this.openVPage(VAbout);
 	}
+
+    private ruler = () => {
+        this.openVPage(VRuler);
+    }
 }
 
 function userSpan(name: string, nick: string): JSX.Element {

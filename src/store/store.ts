@@ -8,6 +8,8 @@ import { MGroup, MIndustry } from "./mGroup";
 import { MiAccount } from "./miAccount";
 import { marketElements } from "./market";
 import { stockMiRateSorter } from "./sorter";
+import { MiNet } from "../net";
+import { User } from "tonva-react";
 
 export class Store {
 	readonly myAllColl: {[id:number]: boolean} = {};
@@ -21,8 +23,13 @@ export class Store {
 	stocksMyAll: IObservableArray<Stock & StockValue> = null;
 	stocksMyBlock: IObservableArray<Stock & StockValue> = null;
 	groupIXs: IXBase[];
-	
-	constructor(uqs: UQs) {
+
+    private miNet: MiNet;
+    private user: User;
+
+	constructor(uqs: UQs, user: User) {
+        this.user = user;
+        this.miNet = new MiNet(user);
 		makeObservable(this, {
 			myAllColl: observable,
 			stocksMyAll: observable.shallow,
@@ -35,6 +42,10 @@ export class Store {
 		this.rootIndustries = new MRootIndustries(this);
 	}
 
+    get minet(): MiNet {
+        return this.miNet;
+    }
+    
 	stockFromId(stockId: number): Stock&StockValue {
 		return this.stocksMyAll.find(v => v.id === stockId);
 	}
@@ -308,5 +319,21 @@ export class Store {
 			val[account] =[true, everBought>0];
 		}
 		return val;
+	}
+
+    async getNextTradedays(day: number) {
+        return await this.miNet.q_getnexttradedays(day);
+    }
+
+    async getNextWeekend(day: number) {
+        return await this.miNet.q_nextweekend(day);
+    }
+
+    async searchTrackStock(param:any, pageStart:any, pageSize:number):Promise<{[name:string]:any[]}> {
+        let { day, key, market, $orderSwitch, smooth} = param as { day: number, key: string, market: string, $orderSwitch?: any, smooth?: number, }
+		let ret = await this.miNet.q_searchstock(day, this.user.id, pageStart, pageSize, $orderSwitch, key, market, smooth);
+		let {$page} = ret;
+		$page.forEach(v => this.buildStockValues(v as unknown as (Stock & StockValue)));
+		return ret as any;
 	}
 }

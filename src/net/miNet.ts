@@ -1,4 +1,4 @@
-import { consts } from "stockinfo/net/consts";
+import { consts } from "net/consts";
 import { User } from "tonva-react";
 import { MiApi } from "./miApi";
 
@@ -40,7 +40,11 @@ export class MiNet {
 		return this.miApi.query('q_stockallinfo', [id, day]);
 	}
 
-	async t_tagstock$query(tagId:any, id:any) {
+	async q_stockallinfotrack(id:any, day:any) {
+		return this.miApi.query('q_stockallinfo@track', [id, day]);
+	}
+
+    async t_tagstock$query(tagId:any, id:any) {
 		return this.miApi.query('t_tagstock$query', [this.user.id, tagId, id]) //this.uqs.mi.TagStock.query({ user: nav.user.id, stock: id })
 	}
 
@@ -83,4 +87,30 @@ export class MiNet {
 	async q_getlasttradeday() {
 		return await this.miApi.call('q_getlasttradeday', []);
 	}
+
+    async q_getnexttradedays(day: number) {
+        return await this.miApi.call(`q_tradedays`, [day]);
+    }
+
+    async q_nextweekend(day: number) {
+        return await this.miApi.call(`q_nextweekend`, [day]);
+    }
+
+    async q_searchstock(day: number, user: number, pageStart: any, pageSize: number, orderSwitch?: string, key?: string, market?: string, smooth?: number) {
+        let ret = await this.miApi.call(`tv_searchstock`, [user, pageStart, pageSize, orderSwitch, key, market, smooth, day]);
+        if (Array.isArray(ret)) {
+            return {$page: ret};
+        }
+        else {
+            return { $page: [] };
+        }
+    }
+
+    async q_stocksvalue(day: number, ids: number[]) {
+        return await this.miApi.call('tv_stocksvalue', [day, ids.join('\n')]);
+    }
+
+    async t_mirateavgquery(day: number) {
+        return await this.miApi.call(`t_mirateavg$query`, [day]);
+    }
 }

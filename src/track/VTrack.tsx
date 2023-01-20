@@ -1,19 +1,17 @@
 import { observer } from "mobx-react";
 import React from "react";
 import { DropdownAction, DropdownActions, FA, LMR, SearchBox, VPage } from "tonva-react";
-import { CFind } from "./CFind";
+import { CTrack } from "./CTrack";
 
-export class VFind extends VPage<CFind> {
-	header() { return '发现' }
+export class VTrack extends VPage<CTrack> {
+	header() {return React.createElement(observer(() => <div className="ml-3"> 回溯日期：{this.controller.trackDay}</div>))}
 	content() {
-		let { showA, showHK, showSH, showSZ, showBJ, showUS, showAll, cGroup, cIndustries } = this.controller;
+		let { showA, showSH, showSZ, showBJ, showAll, cGroup, cIndustries } = this.controller;
 		let buttons: [string, () => Promise<void>][] = [
 			['A股', showA],
-			['港股', showHK],
 			['沪A', showSH],
 			['深A', showSZ],
 			['京A', showBJ],
-			['US', showUS],
 			['全部', showAll],
 		];
 		let renderButton = (caption: string, onClick: () => void) => <button key={caption}
@@ -22,6 +20,9 @@ export class VFind extends VPage<CFind> {
 			{caption}
 		</button>;
 		return <div className="bg-light">
+			<div className="p-3">
+				<SearchBox className="mb-0" initKey={this.controller.trackDay.toString()} onSearch={this.controller.onSetTrackDay} placeholder="yyyymmdd" />
+			</div>
 			<div className="p-3">
 				<SearchBox className="mb-0" onSearch={this.controller.onSearch} placeholder="股票代码，名称" />
 			</div>
@@ -42,10 +43,6 @@ export class VFind extends VPage<CFind> {
 			<div className="small text-muted px-3 mt-2 mb-1">行业</div>
 			<div className=" mb-3 px-1 pb-1 bg-white border-top border-bottom">
 				{cGroup.renderIndustries()}
-			</div>
-			<div className="small text-muted px-3 mt-2 mb-1">门类</div>
-			<div className=" mb-3 px-1 pb-1 bg-white border-top border-bottom">
-				{cIndustries.renderRootIndustries()}
 			</div>
 			<div className="mb-3">
 				{this.renderMyBlock()}
@@ -103,6 +100,16 @@ export class VFind extends VPage<CFind> {
 					action: this.showAvg,
 					icon: 'line-chart',
 				},
+                {
+					caption: '跳到下一周',
+					action: this.controller.onNextTrackDay,
+					icon: 'calendar-plus-o',
+                },
+                {
+					caption: '跳到下一月',
+					action: this.controller.onNextTrackMonth,
+					icon: 'calendar-plus-o',
+                },
 			];
 			return <DropdownActions actions={actions} icon="bars" className="mr-2 text-white bg-transparent border-0" />;
 		}));
