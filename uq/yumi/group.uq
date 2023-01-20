@@ -1,4 +1,4 @@
-ID Group (
+ID Group LOCAL (
 	id,
 	key no,
 	name char(50),

@@ -1,4 +1,4 @@
-ID Account ver 0.1 (
+ID Account ver 0.1 LOCAL (
 	id,
 	KEY no,
 	name char(50),
@@ -12,7 +12,7 @@ IX *UserAccount (
 	sort,				-- id sort
 );
 
-ID Holding (
+ID Holding LOCAL (
 	id,
 	KEY account ID Account,
 	KEY stock ID Stock,
@@ -39,7 +39,7 @@ IDX *Portfolio ver 0.1 (
 	cost FLOAT,
 );
 
-ID Transaction (
+ID Transaction LOCAL (
 	id,
 	KEY holding ID,
 	KEY tick TIMESTAMP,
