@@ -1,4 +1,4 @@
-ID Group (
+ID Group LOCAL (
 	id,
 	key no,
 	name char(50),
@@ -23,7 +23,7 @@ IX *UserBlockStock (
 IX *GroupStock (
 	ix,					-- group
 	xi,					-- Stock
-	order SMALLINT,
+	seq,
 );
 
 QUERY StockUsing (

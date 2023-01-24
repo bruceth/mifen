@@ -4,23 +4,23 @@ import { DropdownAction, DropdownActions, FA, LMR, SearchBox, VPage } from "tonv
 import { CHome } from "./CHome";
 
 export class VHome extends VPage<CHome> {
-	header() { return '首页'; }
-	content() {
-		return React.createElement(observer(() => {
-			let {cAccount} = this.controller;
-			let left = <FA name="envelope-o" className="text-info align-self-center ml-2 ml-sm-3" size="lg" fixWidth={true} />
-			let leftruler = <FA name="comments-o" className="text-info align-self-center ml-2 ml-sm-3" size="lg" fixWidth={true} />
-			return <div className="pb-3">
+    header() { return '首页'; }
+    content() {
+        return React.createElement(observer(() => {
+            let { cAccount } = this.controller;
+            let left = <FA name="envelope-o" className="text-info align-self-center ml-2 ml-sm-3" size="lg" fixWidth={true} />
+            let leftruler = <FA name="comments-o" className="text-info align-self-center ml-2 ml-sm-3" size="lg" fixWidth={true} />
+            return <div className="pb-3">
                 <div className="px-3 pt-2">
-                    <SearchBox className="mb-0" onSearch={this.controller.onSearch} placeholder="股票代码，名称" />
+                    <SearchBox className="mb-0" onSearch={this.controller.cApp.cFind.onSearch} placeholder="股票代码，名称" />
                 </div>
-				<LMR className="d-flex pr-3 py-2 my-2 cursor-pointer bg-white"
-					left={left}
-					onClick={this.controller.showBlogs}>
-					<div className="px-2 px-sm-3">
-						米投博客
-					</div>
-				</LMR>
+                <LMR className="d-flex pr-3 py-2 my-2 cursor-pointer bg-white"
+                    left={left}
+                    onClick={this.controller.showBlogs}>
+                    <div className="px-2 px-sm-3">
+                        米投博客
+                    </div>
+                </LMR>
                 <ul className="pr-3 py-2 my-2 bg-white">
                     <li className="my-3">
                         <div className="my-2">交易规则</div>
@@ -55,22 +55,22 @@ export class VHome extends VPage<CHome> {
                         </ol>
                     </li>
                 </ul>
-    			{cAccount.renderAccounts()}
-			</div>;
-		}));
-	}
+                {cAccount.renderAccounts()}
+            </div>;
+        }));
+    }
 
-	right() {
-		return React.createElement(observer(() => {
-			let {cCommon} = this.controller.cApp;
-			let actions: DropdownAction[] = [
-				{
-					caption: '管理持仓账户',
-					action: cCommon.manageAccounts,
-					icon: 'money',
-				},
-			];
-			return <DropdownActions actions={actions} icon="bars" className="mr-2 text-white bg-transparent border-0" />;
-		}));
-	}
+    right() {
+        return React.createElement(observer(() => {
+            let { cCommon } = this.controller.cApp;
+            let actions: DropdownAction[] = [
+                {
+                    caption: '管理持仓账户',
+                    action: cCommon.manageAccounts,
+                    icon: 'money',
+                },
+            ];
+            return <DropdownActions actions={actions} icon="bars" className="mr-2 text-white bg-transparent border-0" />;
+        }));
+    }
 }
